@@ -1,0 +1,111 @@
+.loginSignupDiv {
+  font-size: 18px;
+  padding: 80px 25px 0px;
+  height: 100%;
+  width: 75%;
+}
+.loginDiv {
+  text-align: start;
+  margin-right: 10px;
+  max-width: 80%;
+  text-align: left;
+}
+.loginDiv > p {
+  margin-bottom: 15px;
+}
+.loginDiv > form > input {
+  display: block;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  width: 70%;
+  border: 1px solid #cecece;
+}
+.loginPasswordDiv {
+  position: relative;
+}
+.loginPasswordDiv > input {
+  display: block;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  width: 70%;
+  border: 1px solid #cecece;
+}
+.showPassEyeDiv {
+  position: absolute;
+  left: 72%;
+  top: 55%;
+}
+#errorWarningPTag {
+  color: red;
+  margin: 10px;
+}
+.loginDiv > form > input:focus {
+  outline: none;
+  border-color: rgb(65, 109, 109);
+}
+.loginBtn {
+  padding: 8px 20px;
+  margin: 20px 0px;
+  cursor: pointer;
+  color: whitesmoke;
+  border: none;
+  background-color: "#7873C9" !important;
+  /* thirdColor: "#7873C9",
+   thirdColorHover: "#6761cc", */
+}
+.loginBtn:hover {
+  background-color: #33578a;
+  opacity: 1;
+}
+#forgetPasswordBtn {
+  padding: 8px 0px;
+  cursor: pointer;
+  background: none;
+  color: var(--colorDark);
+}
+#forgetPasswordBtn:hover {
+  font-weight: bold;
+}
+.moveToSignupBtn {
+  padding: 8px 20px;
+  margin: 20px 0px;
+  cursor: pointer;
+  background-color: rgb(65, 109, 109);
+  color: whitesmoke;
+  border: none;
+}
+.moveToSignupBtn:hover {
+  background-color: darkslategray;
+  opacity: 1;
+}
+@media screen and (max-width: 720px) {
+  .loginSignupDiv {
+    display: block;
+    padding: 80px 20px 20px;
+    width: 100%;
+    height: 80%;
+  }
+  .loginDiv {
+    text-align: start;
+    max-width: 100%;
+  }
+  .loginDiv > form > input {
+    width: 100%;
+  }
+  .loginPasswordDiv > input {
+    width: 100%;
+  }
+  .showPassEyeDiv {
+    position: absolute;
+    left: 92%;
+    top: 55%;
+  }
+
+  .signupDiv {
+    padding-top: 60px;
+    text-align: start;
+    max-width: 100%;
+  }
+}

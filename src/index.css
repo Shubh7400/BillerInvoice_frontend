@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: Poppins-Bold;
+  src: url("../src/utils/font/Poppins-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: Poppins-Regular;
+  src: url("../src/utils/font/Poppins-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: Poppins-Thin;
+  src: url("../src/utils/font/Poppins-Thin.ttf") format("truetype");
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins-regular", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+:root {
+  --colorDark: #1d3557;
+  --colorMediumDark: #33578a;
+  --colorMedium: #457b9d;
+  --colorLight: #a8dadc;
+  --colorLightFont: #f1faee;
+  --colorDarkFont: #1d3557;
+  --colorCancelButton: #e63946;
+  --colorNormalButton: #ffb703;
+  --colorNormalButtonHover: #fb8500;
+  --thirdColor: "#7873C9";
+  --thirdColorHover: "#6761cc";
+}

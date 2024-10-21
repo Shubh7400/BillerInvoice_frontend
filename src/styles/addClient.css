@@ -1,0 +1,4 @@
+.PhoneInputInput:focus-visible {
+  border: none;
+  outline: none;
+}
