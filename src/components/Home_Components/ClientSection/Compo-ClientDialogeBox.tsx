@@ -39,7 +39,7 @@ import CompoLoading from "./Compo-Loding";
 import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
 import { CiEdit } from "react-icons/ci";
 import CompoAddClient from "./Compo_AddClient";
-import ActionConfirmer from "../../Navbar/ActionConfirmer";
+import ActionConfirmer from "../../SideBar/ActionConfirmer";
 
 function ConfirmationDialogRaw(props: {
   onClose: (newValue: string) => void;

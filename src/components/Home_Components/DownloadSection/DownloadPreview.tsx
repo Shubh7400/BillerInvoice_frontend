@@ -70,7 +70,7 @@ const DownloadPreview = () => {
                 data.address?.country}
             </p>
             <p>
-              <span className="text-sky-600 underline font-semibold ">
+              <span className="font-semibold ">
                 {data.email}
               </span>
               {" | " + data.contactNo}

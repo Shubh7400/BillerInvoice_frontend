@@ -19,7 +19,7 @@ import {
   removeAllProjectsFromInvoiceAction,
   removeProjectFromInvoiceAction,
 } from "../../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
-import ActionConfirmer from "../../Navbar/ActionConfirmer";
+import ActionConfirmer from "../../SideBar/ActionConfirmer";
 import BillAmount from "../InvoiceSection/BillAmount";
 
 const ProjectTable = () => {
