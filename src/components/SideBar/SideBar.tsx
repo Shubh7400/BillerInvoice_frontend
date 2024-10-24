@@ -9,10 +9,15 @@ const Sidebar = () => {
     logoutAdmin();
   };
   return (
-    <aside className="w-52 bg-gray-100 h-full p-4">
+    <aside className="w-[20vw] bg-gray-100 h-full p-4">
       <ul className="space-y-4">
         <li>
           <Link to="/" className="text-gray-700 hover:text-blue-500">
+            Dashboard
+          </Link>
+        </li>
+        <li>
+          <Link to="/clients" className="text-gray-700 hover:text-blue-500">
             Clients
           </Link>
         </li>

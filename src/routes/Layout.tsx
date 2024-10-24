@@ -8,16 +8,14 @@ const Layout = () => {
   const { isAuth } = useContext(AuthContext);
 
   return (
-    <div className="flex flex-col h-screen">
-      <Navbar />
-        <div className="flex flex-grow">
-      {isAuth ? (
-          <Sidebar />
-          ) : null}
-          <div className="flex-grow p-6">
-            <Outlet />
-          </div>
+    <div className="flex h-screen">
+      <Sidebar />
+      <div className="flex flex-col ">
+        <Navbar />
+        <div className="flex-grow p-6">
+          <Outlet />
         </div>
+      </div>
     </div>
   );
 };

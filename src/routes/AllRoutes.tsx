@@ -8,6 +8,7 @@ import ClientPage from "../components/Client_Component/ClientPage";
 import ProjectPage from "../components/Project_Component/ProjectPage";
 import InvoicePage from "../components/Invoice_Component/InvoicePage";
 import ProfilePage from "../components/Profile_Components/ProfilePage";
+import DashBoardPage from "../components/Dashboard_Component/DashBoardPage";
 
 const AllRoutes = () => {
   return (
@@ -15,6 +16,14 @@ const AllRoutes = () => {
       <Route element={<Layout />}>
         <Route
           path="/"
+          element={
+            <PrivateRoute>
+              <DashBoardPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/clients"
           element={
             <PrivateRoute>
               <ClientPage />
