@@ -42,7 +42,7 @@ export default function ActionConfirmer({
     <div>
       {actionTag === "Logout" ? (
         <Button onClick={handleClickOpen}>
-          <AiOutlineLogout size={20} />
+          <AiOutlineLogout size={20} /> &nbsp; Logout
         </Button>
       ) : null}
       {actionTag === "Delete" ? (

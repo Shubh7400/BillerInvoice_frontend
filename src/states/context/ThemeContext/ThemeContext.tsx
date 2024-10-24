@@ -17,7 +17,7 @@ interface ContextProviderType {
 export const ThemeContextProvider: React.FC<ContextProviderType> = ({
   children,
 }: ContextProviderType) => {
-  const [visibility, setVisibility] = useState(false);
+  const [visibility, setVisibility] = useState(true);
   const updateVisibility = () => {
     setVisibility(!visibility);
   };

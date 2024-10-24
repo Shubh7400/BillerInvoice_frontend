@@ -127,19 +127,19 @@ const SelectClient = () => {
                   {data.companyName}
                 </h3>
                 <p className="my-2">
-                  <b>Gstin: </b>
+                  <b>Gstin : </b>
                   {data.gistin}
                 </p>
                 <div className="text-black dark:text-colorLightFont opacity-70 flex flex-col justify-start gap-1">
                   <p>{data.address ? data.address.street : null}</p>
                   <p>
                     {data.address
-                      ? data.address.city + data.address.state
+                      ? data.address.city + ' ' +data.address.state
                       : null}
                   </p>
                   <p>
                     {data.address
-                      ? data.address.postalCode + " -" + data.address.country
+                      ? data.address.postalCode + " - " + data.address.country
                       : null}
                   </p>
                   <b>
@@ -165,19 +165,18 @@ const SelectClient = () => {
                   {clientObj.clientName}
                 </h2>
                 <p className="mt-2">
-                  <b>Gstin: </b>
+                  <b>Gstin.: </b>
                   {clientObj.gistin}
                 </p>
                 <p className="mb-2">
                   <b>Pancard: </b>
                   {clientObj.pancardNo}
                 </p>
-
                 <div className="text-black dark:text-colorLightFont opacity-70 flex flex-col justify-start gap-1 ">
                   <p>{clientObj.address ? clientObj.address.street : null}</p>
                   <p>
                     {clientObj.address
-                      ? clientObj.address.city + clientObj.address.state
+                      ? clientObj.address.city + ' ' +clientObj.address.state
                       : null}
                   </p>
                   <p>
