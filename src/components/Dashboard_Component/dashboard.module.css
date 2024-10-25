@@ -1,0 +1,104 @@
+.totalClints{
+    background-color: blueviolet;
+    padding: 20px;
+    border-radius: 25px;
+    width: 700px;
+    position: relative;
+}
+.animated img{
+    width: 450px ;
+    height: auto;
+    margin-top: 50px;
+    filter: drop-shadow(6px 6px 14px #363636);
+
+}
+.plane img{
+    width: 100px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    margin-top: 0;
+}
+.animated {
+    padding: 20px;
+    border-radius: 25px;
+    width: 760px;
+    position: relative;
+      color: #fff;
+      display: flex;
+    margin-bottom: 50px;
+    background: linear-gradient(-45deg, #6bafd2, #a4c8dc, #d6cbca, #eabc96, #db8876);
+      background-size: 400% 400%;
+      -webkit-animation: Gradient 15s ease infinite;
+      -moz-animation: Gradient 15s ease infinite;
+      animation: Gradient 15s ease infinite;
+  }
+  @-webkit-keyframes Gradient {
+      0% {
+          background-position: 0% 50%;
+      }
+      50% {
+          background-position: 100% 50%;
+      }
+      100% {
+          background-position: 0% 50%;
+      }
+  }
+  @-moz-keyframes Gradient {
+      0% {
+          background-position: 0% 50%;
+      }
+      50% {
+          background-position: 100% 50%;
+      }
+      100% {
+          background-position: 0% 50%;
+      }
+  }
+  @keyframes Gradient {
+      0% {
+          background-position: 0% 50%;
+      }
+      50% {
+          background-position: 100% 50%;
+      }
+      100% {
+          background-position: 0% 50%;
+      }
+  }
+  .count_total{
+    width: 50%;
+  }
+  .count_total h2{
+    color: #ffffff;
+    font-size: 30px;
+    margin-left: 30px;
+  }
+  .count_total h1{
+    color: #ffffff;
+    font-size: 80px;
+    line-height: 80px;
+    font-weight: 600;
+    margin-left: 69px;
+  }
+  .viewBotton{
+    position: absolute;
+    bottom: -14px;
+    right: -12px;
+    background-color: #E4A98A;
+    width: 259px;
+    height: 85px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 60px 0 30px;
+    box-shadow: 2px 2px 14px #999797;
+    font-size: 20px;
+}
+.tagline{
+    color: #ffffff;
+    font-size: 23px;
+    position: absolute;
+    bottom: 90px;
+    left: 50px;
+}
