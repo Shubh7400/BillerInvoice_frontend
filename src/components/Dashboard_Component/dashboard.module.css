@@ -6,7 +6,7 @@
     position: relative;
 }
 .animated img{
-    width: 450px ;
+    width: 90%;
     height: auto;
     margin-top: 50px;
     filter: drop-shadow(6px 6px 14px #363636);
@@ -22,11 +22,12 @@
 .animated {
     padding: 20px;
     border-radius: 25px;
-    width: 760px;
+    width:55%;
     position: relative;
       color: #fff;
       display: flex;
-    margin-bottom: 50px;
+    margin-bottom: 25px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     background: linear-gradient(-45deg, #6bafd2, #a4c8dc, #d6cbca, #eabc96, #db8876);
       background-size: 400% 400%;
       -webkit-animation: Gradient 15s ease infinite;
@@ -67,7 +68,7 @@
       }
   }
   .count_total{
-    width: 50%;
+    width: 75%;
   }
   .count_total h2{
     color: #ffffff;
@@ -101,4 +102,56 @@
     position: absolute;
     bottom: 90px;
     left: 50px;
+}
+.total_projects{
+    background: #E4A98A;
+    background: linear-gradient(-40deg, #e4a98a, #4a6180);
+    width: 45%;
+    height: auto;
+    margin-bottom: 25px;
+    padding: 20px;
+    margin-top: 35px;
+    border-radius: 25px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: relative;
+}
+.project{
+    width: 50%;
+    position: absolute;
+    right: -15px;
+    top: -39px;
+    filter: drop-shadow(2px 6px 18px #838383);
+}
+.project_section{
+    width: 50%;
+}
+.project_section h1{
+    color: #ffffff;
+    font-size: 80px;
+    line-height: 80px;
+    font-weight: 600;
+    margin-left: 69px;
+}
+.project_section h2{
+    color: #ffffff;
+    font-size: 30px;
+    margin-left: 30px;
+}
+.invoice{
+   position: relative;  
+   
+}
+.invoice img{
+    width: 300px;
+    border-radius: 21px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+   
+}
+.invoice_details{
+    position: absolute;
+    top: 0;
+}
+.invoice_details h1{
+    font-size: 50px;
+    font-weight: 500;
 }
