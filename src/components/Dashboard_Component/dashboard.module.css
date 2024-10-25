@@ -74,6 +74,7 @@
     color: #ffffff;
     font-size: 30px;
     margin-left: 30px;
+    font-family: revert;
   }
   .count_total h1{
     color: #ffffff;
@@ -81,6 +82,7 @@
     line-height: 80px;
     font-weight: 600;
     margin-left: 69px;
+    font-family: revert;
   }
   .viewBotton{
     position: absolute;
@@ -131,11 +133,13 @@
     line-height: 80px;
     font-weight: 600;
     margin-left: 69px;
+    font-family: revert;
 }
 .project_section h2{
     color: #ffffff;
     font-size: 30px;
     margin-left: 30px;
+    font-family: revert;
 }
 .invoice{
    position: relative;  
@@ -149,9 +153,17 @@
 }
 .invoice_details{
     position: absolute;
-    top: 0;
+    top: 61px;
+    left: 36px;
 }
 .invoice_details h1{
-    font-size: 50px;
-    font-weight: 500;
+    font-size: 90px;
+    font-weight: 600;
+    font-family: revert;
+}
+.invoice_details h2{
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 33px;
+    font-family: revert;
 }

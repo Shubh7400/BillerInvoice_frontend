@@ -50,7 +50,8 @@ function DashBoardPage() {
           <img src={invoice} alt="" />
           <div className={`${styles.invoice_details}`}>
             <h1>197</h1>
-            <h2>Genrated Invoice</h2>
+            <h2>Genrated </h2>
+            <h2>Invoice</h2>
           </div>
         </div>
       </div>
