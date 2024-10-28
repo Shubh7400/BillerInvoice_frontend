@@ -29,14 +29,14 @@ const Sidebar = () => {
       </div>
       <ul className={`${styles.menulist} space-y-4`}>
         <li>
-          <Link to="/" className=" text-[20px] flex items-center gap-[10px]">
+          <Link to="/" className=" text-[16px] flex items-center gap-[10px]">
             <LuLayoutDashboard /> Dashboard
           </Link>
         </li>
         <li>
           <Link
             to="/clients"
-            className=" text-[20px] flex items-center gap-[10px] "
+            className=" text-[16px] flex items-center gap-[10px] "
           >
             <FaRegUser /> Clients
           </Link>
@@ -44,7 +44,7 @@ const Sidebar = () => {
         <li>
           <Link
             to="/projects"
-            className=" text-[20px] flex items-center gap-[10px]"
+            className=" text-[16px] flex items-center gap-[10px]"
           >
             <GoProjectSymlink /> Projects
           </Link>
@@ -52,7 +52,7 @@ const Sidebar = () => {
         <li>
           <Link
             to="/invoices"
-            className=" text-[20px] flex items-center gap-[10px] "
+            className=" text-[16px] flex items-center gap-[10px] "
           >
             <TbFileInvoice /> Invoices
           </Link>
@@ -60,7 +60,7 @@ const Sidebar = () => {
         <li>
           <Link
             to="/profile"
-            className=" text-[20px] flex items-center gap-[10px] "
+            className=" text-[16px] flex items-center gap-[10px] "
           >
             <CgProfile /> Profile
           </Link>
