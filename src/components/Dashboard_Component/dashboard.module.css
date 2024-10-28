@@ -159,3 +159,28 @@
     font-size: 50px;
     font-weight: 500;
 }
+.profile {
+    background-color: #E4A98A;
+    background-image: url("../assets/profilebg.gif");
+    width: 215px;
+    border-radius: 21px;
+    background-size: cover;
+    padding: 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.companyLogo{
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 5px solid #4a6180;
+    padding: 5px;
+}
+.profile p{
+    font-size: 17px;
+    color: #000000;
+    text-align: center;
+    margin-top: 5px;
+}
