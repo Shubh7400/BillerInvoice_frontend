@@ -9,6 +9,7 @@ import ProjectPage from "../components/Project_Component/ProjectPage";
 import InvoicePage from "../components/Invoice_Component/InvoicePage";
 import ProfilePage from "../components/Profile_Components/ProfilePage";
 import DashBoardPage from "../components/Dashboard_Component/DashBoardPage";
+import AddClientPage from "../components/Client_Component/AddClientPage";
 
 const AllRoutes = () => {
   return (
@@ -34,7 +35,7 @@ const AllRoutes = () => {
           path="/add-client"
           element={
             <PrivateRoute>
-              <ClientPage />
+              <AddClientPage forEditClient={false} clientToEdit={null} /> 
             </PrivateRoute>
           }
         />
