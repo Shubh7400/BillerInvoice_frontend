@@ -11,14 +11,14 @@ const Navbar = () => {
   const { visibility, updateVisibility } = useContext(ThemeContext);
   return (
     <>
-      <nav className="h-18 w-[85vw] mb-0 text-colorDarkFont dark:text-colorLightFont     flex justify-end p-4  items-center text-xl sticky top-0 ">
+      <nav className="h-18 w-[83vw] mb-0 text-colorDarkFont dark:text-colorLightFont     flex justify-end p-3  items-center text-xl sticky top-0 ">
         {/* <div
           className="mx-8 font-poppins-bold text-2xl text-thirdColor hover:text-thirdColorHover cursor-pointer tracking-widest "
           onClick={() => navigate("/")}
         >
           Biller
         </div> */}
-        <Link to="/profile" className="text-gray-700 text-[35px] flex items-center gap-[10px] hover:text-blue-500">
+        <Link to="/profile" className="text-gray-700 text-[30px] flex items-center gap-[10px] hover:text-blue-500">
           <CgProfile />
           </Link>
         {/* <div className="flex justify-between items-center ">

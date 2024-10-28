@@ -8,12 +8,12 @@
 .animated img{
     width: 90%;
     height: auto;
-    margin-top: 50px;
+    margin-top: 40px;
     filter: drop-shadow(6px 6px 14px #363636);
 
 }
 .plane img{
-    width: 100px;
+    width: 75px;
     position: absolute;
     top: 20px;
     right: 20px;
@@ -68,27 +68,29 @@
       }
   }
   .count_total{
-    width: 75%;
+    width: 100%;
   }
   .count_total h2{
     color: #ffffff;
-    font-size: 30px;
-    margin-left: 30px;
+    font-size: 25px;
+    margin-left: 20px;
   }
   .count_total h1{
     color: #ffffff;
-    font-size: 80px;
+    font-size: 66px;
     line-height: 80px;
     font-weight: 600;
-    margin-left: 69px;
+    /* margin-left: 69px; */
+    text-align: end;
+
   }
   .viewBotton{
     position: absolute;
     bottom: -14px;
     right: -12px;
     background-color: #E4A98A;
-    width: 259px;
-    height: 85px;
+    width: 224px;
+    height: 66px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -98,17 +100,17 @@
 }
 .tagline{
     color: #ffffff;
-    font-size: 23px;
+    font-size: 16px;
     position: absolute;
-    bottom: 90px;
-    left: 50px;
+    bottom: 50px;
+    left: 40px;
 }
 .total_projects{
     background: #E4A98A;
     background: linear-gradient(-40deg, #e4a98a, #4a6180);
     width: 45%;
     height: auto;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     padding: 20px;
     margin-top: 35px;
     border-radius: 25px;
@@ -127,14 +129,15 @@
 }
 .project_section h1{
     color: #ffffff;
-    font-size: 80px;
+    font-size: 66px;
     line-height: 80px;
     font-weight: 600;
-    margin-left: 69px;
+    /* margin-left: 69px; */
+    text-align: end;
 }
 .project_section h2{
     color: #ffffff;
-    font-size: 30px;
+    font-size: 25px;
     margin-left: 30px;
 }
 .invoice{
@@ -142,14 +145,15 @@
    
 }
 .invoice img{
-    width: 300px;
+    width: 215px;
     border-radius: 21px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
    
 }
 .invoice_details{
     position: absolute;
-    top: 0;
+    bottom: 37px;
+    left: 20px;
 }
 .invoice_details h1{
     font-size: 50px;
