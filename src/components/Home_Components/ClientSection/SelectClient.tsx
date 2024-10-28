@@ -10,9 +10,14 @@ import CompoLoading from "./Compo-Loding";
 import CompoAddClient from "./Compo_AddClient";
 import cubexoLogo from "../../../utils/images/cubexoLogo.webp";
 import gamaedgeLogo from "../../../utils/images/gammaedgeLogo.png";
+import { useNavigate } from "react-router-dom";
+import { Button, useTheme } from "@mui/material";
+
 
 const SelectClient = () => {
   const { isAuth, adminId } = useContext(AuthContext);
+  const  navigate = useNavigate();
+  const materialTheme = useTheme();
   const [companyLogo, setCompanyLogo] = useState<string>();
   const dispatch = useDispatch<AppDispatch>();
   const { loading, data, error } = useSelector(
@@ -108,12 +113,24 @@ const SelectClient = () => {
           <ConfirmationDialog />
         </div>
         <div>
-          <CompoAddClient forEditClient={false} clientToEdit={null} />
+          {/* <CompoAddClient forEditClient={false} clientToEdit={null} /> */}
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: materialTheme.palette.primary.main,
+              ":hover": {
+                backgroundColor: materialTheme.palette.secondary.main,
+              },
+            }}
+            onClick={() => navigate('/add-client')}
+          >
+            Add Client
+          </Button>
         </div>
       </div>
       <div className="flex flex-row text-xs sm:text-sm  sm:flex-row  w-auto    m-2 rounded-lg sm:mx-8 bg-white dark:bg-slate-800 bg-opacity-50 shadow-lg dark:shadow-slate-950 sm:p-2 ">
         <div className="w-1/2 overflow-hidden ">
-          {data ? (
+          {/* {data ? (
             <div className="text-black dark:text-colorLightFont p-4">
               <div className="bg-slate-100 flex justify-start items-center  h-8 sm:h-16 w-30 sm:w-48  p-3 mb-2 rounded-lg">
                 <img
@@ -155,7 +172,7 @@ const SelectClient = () => {
             </div>
           ) : (
             "Loding..."
-          )}
+          )} */}
         </div>
         <div className=" border-l w-1/2  border-l-slate-400  flex flex-col justify-end items-start ">
           {clientObj && selectedClient.loading !== "idle" ? (
@@ -165,7 +182,7 @@ const SelectClient = () => {
                   {clientObj.clientName}
                 </h2>
                 <p className="mt-2">
-                  <b>Gstin.: </b>
+                  <b>Gstin : </b>
                   {clientObj.gistin}
                 </p>
                 <p className="mb-2">
@@ -176,7 +193,7 @@ const SelectClient = () => {
                   <p>{clientObj.address ? clientObj.address.street : null}</p>
                   <p>
                     {clientObj.address
-                      ? clientObj.address.city + ' ' +clientObj.address.state
+                      ? clientObj.address.city + " " + clientObj.address.state
                       : null}
                   </p>
                   <p>
