@@ -4,6 +4,6 @@ const config = {
   apiUrlProject: process.env.REACT_APP_API_URL_PROJECT,
   apiUrlInvoice: process.env.REACT_APP_API_URL_INVOICE,
   apiUrlAuth: process.env.REACT_APP_API_URL_AUTH,
-};
-
+  apiUrlDashboard: process.env.REACT_APP_API_URL_DASHBOARD,
+}
 export default config;

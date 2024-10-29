@@ -8,38 +8,28 @@ import { Link } from "react-router-dom";
 import { Outlet, useNavigate } from "react-router-dom";
 import cubexoLogo from "../../utils/images/cubexoLogo.webp";
 import MyMapComponent from "./location";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../states/redux/store";
+import { getDashBoardData } from "../../states/redux/DashboardStates/dashboardSlice";
 
 const Sidebar = () => {
   const navigate = useNavigate();
 };
 
 function DashBoardPage() {
-  const [data, setData] = useState({
-    totalClients: 320,
-    totalProjects: 4451,
-    invoicesGenerated:420,
+  const dispatch = useDispatch<AppDispatch>();
+  const [dashBoardData, setData] = useState({
     companyName: "Cubexo",
   });
 
-  useEffect(() => {
-    // Fetch data from API
-    const fetchData = async () => {
-      try {
-        const response = await fetch("https://api.example.com/dashboard"); // Replace with your API endpoint
-        const result = await response.json();
-        setData({
-          totalClients: result.totalClients,
-          totalProjects: result.totalProjects,
-          invoicesGenerated: result.invoicesGenerated,
-          companyName: result.companyName,
-        });
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      }
-    };
+  const { loading, data, error } = useSelector(
+    (state: RootState) => state.dashboardState
+  );
 
-    fetchData();
-  }, []);
+  useEffect(() => {
+    dispatch(getDashBoardData());
+  }, [dispatch]);
+  
 
   return (
     <div>
@@ -86,7 +76,7 @@ function DashBoardPage() {
         <div className={`${styles.invoice}`}>
           <img src={invoice} alt="Invoice" />
           <div className={`${styles.invoice_details}`}>
-            <h1>{data.invoicesGenerated}</h1>
+            <h1>{data.totalInvoices}</h1>
             <h2>Generated Invoice</h2>
           </div>
         </div>
@@ -97,7 +87,7 @@ function DashBoardPage() {
             alt="Company Logo"
             className={styles.companyLogo}
           />
-          <p>{data.companyName}</p>
+          <p>{dashBoardData.companyName}</p>
           <div>
             <Link
               to="/profile"

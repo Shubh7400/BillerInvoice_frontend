@@ -7,6 +7,7 @@ import projectsForInvoiceReducer from "./InvoiceProjectState/addProjectForInvoic
 import invoiceObjectReducer from "./InvoiceProjectState/invoiceObjectState";
 import editClientReducer from "././ClientStates/editClientSlice";
 import deleteClientReducer from "././ClientStates/deleteClientSlice";
+import dashBoardReducers from "./DashboardStates/dashboardSlice";
 export const store = configureStore({
   reducer: {
     adminState: adminReducer,
@@ -17,6 +18,7 @@ export const store = configureStore({
     deleteClientState: deleteClientReducer,
     projectsForInvoiceState: projectsForInvoiceReducer,
     invoiceObjectState: invoiceObjectReducer,
+    dashboardState: dashBoardReducers,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
