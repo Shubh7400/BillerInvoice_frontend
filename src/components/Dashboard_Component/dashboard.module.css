@@ -69,11 +69,12 @@
   }
   .count_total{
     width: 100%;
+    text-align: left;
   }
   .count_total h2{
     color: #ffffff;
     font-size: 25px;
-    margin-left: 20px;
+    /* margin-left: 20px; */
   }
   .count_total h1{
     color: #ffffff;
@@ -125,7 +126,8 @@
     filter: drop-shadow(2px 6px 18px #838383);
 }
 .project_section{
-    width: 50%;
+    width: 70%;
+    text-align: left;
 }
 .project_section h1{
     color: #ffffff;
@@ -142,10 +144,10 @@
 }
 .invoice{
    position: relative;  
-   
+   width: 25%;
 }
 .invoice img{
-    width: 215px;
+    /* width: 25%; */
     border-radius: 21px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
    
@@ -162,7 +164,7 @@
 .profile {
     background-color: #E4A98A;
     background-image: url("../assets/profilebg.gif");
-    width: 215px;
+    width: 25%;
     border-radius: 21px;
     background-size: cover;
     padding: 20px;
