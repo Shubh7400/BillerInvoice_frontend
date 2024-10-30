@@ -25,7 +25,7 @@ function DashBoardPage() {
   const { loading, data, error } = useSelector(
     (state: RootState) => state.dashboardState
   );
-
+console.log("Dashboard",data);
   useEffect(() => {
     dispatch(getDashBoardData());
   }, [dispatch]);

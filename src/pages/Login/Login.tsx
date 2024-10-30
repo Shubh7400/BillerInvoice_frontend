@@ -229,6 +229,17 @@ const Login = () => {
     }}>
       <div className="bg-[#ebebeb2b] shadow-md backdrop-blur-sm w-[80%] h-[90%] flex items-center m-auto rounded-[20px]">
         <div className="md:flex w-[100%] p-0 ">
+        <div className=" bg-[#989fce] text-colorDarkFont dark:text-colorLightFont dark:bg-slate-800 md:w-2/3 h-[90vh] p-4 md:p-24 text-3xl md:text-6xl flex justify-start items-center md:flex-col m-0  ">
+            <div className="flex flex-col gap-4 md:gap-8">
+              <p>Your</p>
+              <p>Personal</p>
+              <p>
+                <mark className="p-1 px-8 rounded-md bg-thirdColor ">Billing</mark>
+              </p>
+              <p>Patner</p>
+            </div>
+          </div>
+          
           <div className={styles.loginSignupDiv}>
             
           {!otpVerified ? (
@@ -391,16 +402,7 @@ const Login = () => {
             />
           )}
           </div>
-          <div className=" bg-[#989fce] text-colorDarkFont dark:text-colorLightFont dark:bg-slate-800 md:w-2/3 h-[90vh] p-4 md:p-24 text-3xl md:text-6xl flex justify-start items-center md:flex-col m-0  ">
-            <div className="flex flex-col gap-4 md:gap-8">
-              <p>Your</p>
-              <p>Personal</p>
-              <p>
-                <mark className="p-1 px-8 rounded-md bg-thirdColor ">Billing</mark>
-              </p>
-              <p>Patner</p>
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>
