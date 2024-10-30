@@ -12,6 +12,7 @@ import cubexoLogo from "../../../utils/images/cubexoLogo.webp";
 import gamaedgeLogo from "../../../utils/images/gammaedgeLogo.png";
 import { useNavigate } from "react-router-dom";
 import { Button, useTheme } from "@mui/material";
+import { FaRegUser } from "react-icons/fa";
 
 
 const SelectClient = () => {
@@ -108,16 +109,19 @@ const SelectClient = () => {
 
   return (
     <section>
-      <div className="flex justify-around sm:justify-end items-center pr-4 pt-6 sm:pr-8 sticky top-2 bg-slate-200 dark:bg-slate-700 z-10 ">
-        <div>
-          <ConfirmationDialog />
-        </div>
-        <div>
+      <div className="flex justify-between items-center">
           {/* <CompoAddClient forEditClient={false} clientToEdit={null} /> */}
+
+          <div className="flex gap-2 items-center text-[20px]">
+          <FaRegUser />
+          <h1> Clients List</h1>
+          </div>
+
           <Button
             variant="contained"
             sx={{
-              backgroundColor: materialTheme.palette.primary.main,
+              backgroundColor: "#d9a990",
+              borderRadius: "20px",
               ":hover": {
                 backgroundColor: materialTheme.palette.secondary.main,
               },
@@ -127,10 +131,15 @@ const SelectClient = () => {
             Add Client
           </Button>
         </div>
+      <div className=" pt-6 top-2  z-10 ">
+        <div >
+          <ConfirmationDialog />
+        </div>
+       
       </div>
-      <div className="flex flex-row text-xs sm:text-sm  sm:flex-row  w-auto    m-2 rounded-lg sm:mx-8 bg-white dark:bg-slate-800 bg-opacity-50 shadow-lg dark:shadow-slate-950 sm:p-2 ">
+      {/* <div className="flex flex-row text-xs sm:text-sm  sm:flex-row  w-auto    m-2 rounded-lg sm:mx-8 bg-white dark:bg-slate-800 bg-opacity-50 shadow-lg dark:shadow-slate-950 sm:p-2 ">
         <div className="w-1/2 overflow-hidden ">
-          {/* {data ? (
+          {data ? (
             <div className="text-black dark:text-colorLightFont p-4">
               <div className="bg-slate-100 flex justify-start items-center  h-8 sm:h-16 w-30 sm:w-48  p-3 mb-2 rounded-lg">
                 <img
@@ -172,7 +181,7 @@ const SelectClient = () => {
             </div>
           ) : (
             "Loding..."
-          )} */}
+          )}
         </div>
         <div className=" border-l w-1/2  border-l-slate-400  flex flex-col justify-end items-start ">
           {clientObj && selectedClient.loading !== "idle" ? (
@@ -222,9 +231,9 @@ const SelectClient = () => {
             <h4>{null}</h4>
           )}
         </div>
-      </div>
+      </div> */}
     </section>
-  );
-};
+  )
+}
 
 export default SelectClient;

@@ -2,7 +2,7 @@ import React from 'react';
 
 const MyMapComponent = () => {
   return (
-    <div style={{ width: '530px', height: '215px', borderRadius: '20px', overflow: 'hidden' }}>
+    <div style={{ width: '100%', height: '100%', borderRadius: '20px', overflow: 'hidden' }}>
       <iframe
         title="Location"
 

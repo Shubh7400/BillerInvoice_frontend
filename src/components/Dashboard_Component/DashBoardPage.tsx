@@ -36,8 +36,10 @@ function DashBoardPage() {
       <div className="flex gap-[30px]">
         <div className={`${styles.animated}`}>
           <div className={`${styles.count_total}`}>
+            <div className="w-[75%] text-end">
             <h2>Total Clients</h2>
             <h1>{data.totalClients}</h1>
+            </div>
           </div>
           <div>
             <img src={clients} alt="Clients" />
@@ -59,8 +61,10 @@ function DashBoardPage() {
 
         <div className={`${styles.total_projects}`}>
           <div className={`${styles.project_section}`}>
-            <h2>Total Projects</h2>
-            <h1>{data.totalProjects}</h1>
+            <div className="w-[70%] text-end">
+              <h2>Total Projects</h2>
+              <h1>{data.totalProjects}</h1>
+            </div>
           </div>
           <div className={`${styles.project}`}>
             <img src={projects} alt="Projects" />
