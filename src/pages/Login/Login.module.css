@@ -1,8 +1,11 @@
 .loginSignupDiv {
   font-size: 18px;
-  padding: 80px 25px 0px;
+  /* padding: 80px 25px 0px; */
   height: 100%;
   width: 75%;
+}
+.logo{
+  margin: auto;
 }
 .loginDiv {
   text-align: start;

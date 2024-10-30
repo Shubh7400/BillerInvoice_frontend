@@ -16,6 +16,8 @@ import {
 } from "../../states/query/ChangePassword_queries/changePasswordQueries";
 import { enqueueSnackbar } from "notistack";
 import ChangePassword from "../../components/Login_Components/ChangePassword";
+import bg_image from "../../components/assets/home_bg.png";
+import companylogo from "../../components/assets/cubexo_logo.png"
 
 const Login = () => {
   const navigate = useNavigate();
@@ -215,174 +217,190 @@ const Login = () => {
   }
 
   return (
-    <div className="md:flex h-screen m-0 p-0  ">
-      <div className={styles.loginSignupDiv}>
-        {!otpVerified ? (
-          <div className={styles.loginDiv}>
-            <h1 className="text-3xl mb-5">
-              {startChangePassword ? "Verify Otp" : "Admin Login"}
-            </h1>
-            <hr />
-            {!isAuth && startChangePassword ? (
-              <p className="text-slate-500   ">
-                Verify your registered email address to receive otp, and proceed
-                to create new password.
-              </p>
-            ) : !isAuth ? (
-              <p className="text-slate-500 ">
-                If you have an account, sign in with email address. In case of
-                any signing issue, please use Forgot Password link.
-              </p>
-            ) : (
-              <p>Contact developer to add new admin</p>
-            )}
-            {isAuth ? (
-              <button id={styles.logoutBtn} onClick={() => handleLogout()}>
-                Logout
-              </button>
-            ) : (
-              <form
-                onSubmit={(e) => {
-                  !startChangePassword
-                    ? handleSubmit(e)
-                    : handleOtpComplete(e, otpData);
-                }}
-              >
-                {invalidError.length > 0 ? (
-                  <Alert severity="error">{invalidError}</Alert>
-                ) : null}
-                {otpLoading ? <LinearProgress /> : null}
-                {isError && !startChangePassword ? (
-                  <Alert severity="error">
-                    User with give email or password not found! Try using right
-                    email and password.
-                  </Alert>
-                ) : null}
-                {isLoading ? <LinearProgress /> : null}
-                <label htmlFor="email">Email:</label>
-                <br />
-                {!startChangePassword ? (
-                  <input
-                    type="email"
-                    id="email"
-                    placeholder="Enter email"
-                    name="email"
-                    required
-                    value={authData.email}
-                    onChange={(e) => handleChange(e)}
-                  />
-                ) : (
-                  <>
-                    <input
-                      type="email"
-                      id="otpEmail"
-                      placeholder="Enter email"
-                      name="otpEmail"
-                      required
-                      value={otpData.email}
-                      onChange={(e) => handleOtpDataChange(e)}
-                    />
-                    {!startTimer && !otpLoading ? (
-                      <div
-                        onClick={handleSentOtpCommand}
-                        className="text-sm cursor-pointer text-indigo-700 mb-4 "
-                      >
-                        {requestLiteral}
-                      </div>
-                    ) : (
-                      <div className="text-sm text-red-600 mb-4">
-                        {timer} sec.
-                      </div>
-                    )}
-                  </>
-                )}
-                {!startChangePassword ? (
-                  <div className={styles.loginPasswordDiv}>
-                    <label htmlFor="password">Password:</label>
-                    <br />
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      id="password"
-                      placeholder="Enter password"
-                      name="password"
-                      required
-                      onChange={(e) => handleChange(e)}
-                    />
-                    <div
-                      className={styles.showPassEyeDiv}
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <AiOutlineEye />
-                      ) : (
-                        <AiOutlineEyeInvisible />
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="sm:w-[70%]">
-                    <label htmlFor="otpBoxes">Enter Otp:</label>
-                    <div className=" mt-2 mb-8 ">
-                      <MuiOtpInput
-                        id="otpBoxes"
-                        length={6}
-                        onComplete={(e) => handleOtpComplete}
-                        value={otp}
-                        onChange={(e) => handleOtpDataChange(e)}
-                      />
-                    </div>
-                  </div>
-                )}
-                {!isAuth && startChangePassword ? (
-                  <button
-                    className="bg-thirdColor py-2 px-4 cursor-pointer text-[whitesmoke] border-none hover:bg-colorMediumDark "
-                    type="submit"
-                  >
-                    Verify Otp
-                  </button>
-                ) : !isAuth ? (
-                  <button
-                    className="bg-thirdColor py-2 px-5 cursor-pointer text-[whitesmoke] border-none hover:bg-colorMediumDark "
-                    type="submit"
-                  >
-                    Login
-                  </button>
-                ) : null}
-              </form>
-            )}
-            <div className=" mt-4">
-              {!startChangePassword ? (
-                <button
-                  onClick={handleStartChangePassword}
-                  id={styles.forgetPasswordBtn}
-                >
-                  Forget password ?
+    <div className="md:flex h-screen m-0 p-0  "
+    style={{
+      // background: 'linear-gradient(-45deg, #95b3bf, #c6cdd3, #e5d8d9, #f1e1d9, #f3e1cd)',
+      // background: "#dce5e4",
+      backgroundImage:`url(${bg_image})`,
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      minHeight: "100vh",
+      overflow: "hidden",
+    }}>
+      <div className="bg-[#ebebeb2b] shadow-md backdrop-blur-sm w-[80%] h-[90%] flex items-center m-auto rounded-[20px]">
+        <div className="md:flex w-[100%] p-0 ">
+          <div className={styles.loginSignupDiv}>
+            
+          {!otpVerified ? (
+            <div className={styles.loginDiv}>
+              <div>
+              <img src={companylogo} alt=""  className={styles.logo}/>
+            </div>
+              <h1 className="text-3xl mb-5">
+                {startChangePassword ? "Verify Otp" : "Admin Login"}
+              </h1>
+              <hr />
+              {!isAuth && startChangePassword ? (
+                <p className="text-slate-500   ">
+                  Verify your registered email address to receive otp, and proceed
+                  to create new password.
+                </p>
+              ) : !isAuth ? (
+                <p className="text-slate-500 ">
+                  If you have an account, sign in with email address.
+                </p>
+              ) : (
+                <p>Contact developer to add new admin</p>
+              )}
+              {isAuth ? (
+                <button id={styles.logoutBtn} onClick={() => handleLogout()}>
+                  Logout
                 </button>
               ) : (
-                <button
-                  onClick={handleStartChangePassword}
-                  id={styles.forgetPasswordBtn}
+                <form
+                  onSubmit={(e) => {
+                    !startChangePassword
+                      ? handleSubmit(e)
+                      : handleOtpComplete(e, otpData);
+                  }}
                 >
-                  Back to login.
-                </button>
+                  {invalidError.length > 0 ? (
+                    <Alert severity="error">{invalidError}</Alert>
+                  ) : null}
+                  {otpLoading ? <LinearProgress /> : null}
+                  {isError && !startChangePassword ? (
+                    <Alert severity="error">
+                      User with give email or password not found! Try using right
+                      email and password.
+                    </Alert>
+                  ) : null}
+                  {isLoading ? <LinearProgress /> : null}
+                  <label htmlFor="email">Email:</label>
+                  <br />
+                  {!startChangePassword ? (
+                    <input
+                      type="email"
+                      id="email"
+                      placeholder="Enter email"
+                      name="email"
+                      required
+                      value={authData.email}
+                      onChange={(e) => handleChange(e)}
+                    />
+                  ) : (
+                    <>
+                      <input
+                        type="email"
+                        id="otpEmail"
+                        placeholder="Enter email"
+                        name="otpEmail"
+                        required
+                        value={otpData.email}
+                        onChange={(e) => handleOtpDataChange(e)}
+                      />
+                      {!startTimer && !otpLoading ? (
+                        <div
+                          onClick={handleSentOtpCommand}
+                          className="text-sm cursor-pointer text-indigo-700 mb-4 "
+                        >
+                          {requestLiteral}
+                        </div>
+                      ) : (
+                        <div className="text-sm text-red-600 mb-4">
+                          {timer} sec.
+                        </div>
+                      )}
+                    </>
+                  )}
+                  {!startChangePassword ? (
+                    <div className={styles.loginPasswordDiv}>
+                      <label htmlFor="password">Password:</label>
+                      <br />
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        placeholder="Enter password"
+                        name="password"
+                        required
+                        onChange={(e) => handleChange(e)}
+                      />
+                      <div
+                        className={styles.showPassEyeDiv}
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <AiOutlineEye />
+                        ) : (
+                          <AiOutlineEyeInvisible />
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="sm:w-[70%]">
+                      <label htmlFor="otpBoxes">Enter Otp:</label>
+                      <div className=" mt-2 mb-8 ">
+                        <MuiOtpInput
+                          id="otpBoxes"
+                          length={6}
+                          onComplete={(e) => handleOtpComplete}
+                          value={otp}
+                          onChange={(e) => handleOtpDataChange(e)}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {!isAuth && startChangePassword ? (
+                    <button
+                      className="bg-thirdColor py-2 px-4 cursor-pointer text-[whitesmoke] border-none hover:bg-colorMediumDark "
+                      type="submit"
+                    >
+                      Verify Otp
+                    </button>
+                  ) : !isAuth ? (
+                    <button
+                      className="bg-thirdColor py-2 px-5 cursor-pointer text-[whitesmoke] border-none hover:bg-colorMediumDark "
+                      type="submit"
+                    >
+                      Login
+                    </button>
+                  ) : null}
+                </form>
               )}
+              <div className=" mt-4">
+                {!startChangePassword ? (
+                  <button
+                    onClick={handleStartChangePassword}
+                    id={styles.forgetPasswordBtn}
+                  >
+                    Forget password ?
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleStartChangePassword}
+                    id={styles.forgetPasswordBtn}
+                  >
+                    Back to login.
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <ChangePassword
+              email={otpData.email}
+              handleSetOtpVerified={handleSetOtpVerified}
+            />
+          )}
+          </div>
+          <div className=" bg-[#989fce] text-colorDarkFont dark:text-colorLightFont dark:bg-slate-800 md:w-2/3 h-[90vh] p-4 md:p-24 text-3xl md:text-6xl flex justify-start items-center md:flex-col m-0  ">
+            <div className="flex flex-col gap-4 md:gap-8">
+              <p>Your</p>
+              <p>Personal</p>
+              <p>
+                <mark className="p-1 px-8 rounded-md bg-thirdColor ">Billing</mark>
+              </p>
+              <p>Patner</p>
             </div>
           </div>
-        ) : (
-          <ChangePassword
-            email={otpData.email}
-            handleSetOtpVerified={handleSetOtpVerified}
-          />
-        )}
-      </div>
-      <div className=" bg-[#989fce] text-colorDarkFont dark:text-colorLightFont dark:bg-slate-800 md:w-2/3 sm:h-40 md:h-auto p-4 md:p-24 text-3xl md:text-6xl flex justify-start items-center md:flex-col m-0  ">
-        <div className="flex flex-col gap-4 md:gap-8">
-          <p>Your</p>
-          <p>Personal</p>
-          <p>
-            <mark className="p-1 px-8 rounded-md bg-thirdColor ">Billing</mark>
-          </p>
-          <p>Patner</p>
         </div>
       </div>
     </div>
