@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from "../../states/redux/store";
 import { ClientType } from "../../types/types";
 import { Button, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ProjectTable from "../Home_Components/ProjectSection/ProjectTable";
 
 const ProjectPage = () => {
   const clients = useSelector((state: RootState) => state.allClientsState);
@@ -62,6 +63,7 @@ const ProjectPage = () => {
               </div>
             </div>
           </div>
+          <ProjectTable />
         </div>
       ) : (
         <div className="flex justify-center items-center gap-10">
