@@ -105,9 +105,10 @@ export default function ClientSelectionTable({
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Select</TableCell>
+                <TableCell>{""}</TableCell>
                 <TableCell>Client Name</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell>Client Email</TableCell>
+                <TableCell>{""}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -136,6 +137,7 @@ export default function ClientSelectionTable({
                       />
                     </TableCell>
                     <TableCell>{client.clientName}</TableCell>
+                    <TableCell>{client.email}</TableCell>
                     <TableCell>
                       <div className="flex">
                         <CompoAddClient
