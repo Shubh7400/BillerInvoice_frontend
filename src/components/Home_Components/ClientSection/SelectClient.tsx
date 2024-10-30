@@ -11,20 +11,26 @@ import CompoAddClient from "./Compo_AddClient";
 import cubexoLogo from "../../../utils/images/cubexoLogo.webp";
 import gamaedgeLogo from "../../../utils/images/gammaedgeLogo.png";
 import { useNavigate } from "react-router-dom";
-import { Button, useTheme } from "@mui/material";
+import { Button, TextField, useTheme } from "@mui/material";
 import { FaRegUser } from "react-icons/fa";
-
 
 const SelectClient = () => {
   const { isAuth, adminId } = useContext(AuthContext);
-  const  navigate = useNavigate();
+  const navigate = useNavigate();
   const materialTheme = useTheme();
   const [companyLogo, setCompanyLogo] = useState<string>();
+  const [searchClientName, setSearchClientName] = React.useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
   const { loading, data, error } = useSelector(
     (state: RootState) => state.adminState
   );
-  const clients = useSelector((state: RootState) => state.allClientsState);
+
+  const {
+    loading: clientsLoading,
+    data: clients,
+    error: clientsError,
+  } = useSelector((state: RootState) => state.allClientsState);
+
   const selectedClient = useSelector(
     (state: RootState) => state.selectedClientState
   );
@@ -96,7 +102,7 @@ const SelectClient = () => {
         <br />
         {"Admin network error-" + error}
         <br />
-        {"All Client get req network error-" + clients.error}
+        {"All Client get req network error-" + clientsError}
         <br />
         {"Selected client get reqById nework error-" +
           selectedClient.error}{" "}
@@ -104,38 +110,48 @@ const SelectClient = () => {
     );
   }
 
-  const clientsArr: ClientType[] = clients.data;
-  const clientObj: ClientType = selectedClient.data;
-
   return (
     <section>
       <div className="flex justify-between items-center">
-          {/* <CompoAddClient forEditClient={false} clientToEdit={null} /> */}
+        {/* <CompoAddClient forEditClient={false} clientToEdit={null} /> */}
 
-          <div className="flex gap-2 items-center text-[20px]">
+        <div className="flex gap-2 items-center text-[20px]">
           <FaRegUser />
           <h1> Clients List</h1>
-          </div>
+        </div>
 
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#d9a990",
-              borderRadius: "20px",
-              ":hover": {
-                backgroundColor: materialTheme.palette.secondary.main,
-              },
-            }}
-            onClick={() => navigate('/add-client')}
-          >
-            Add Client
-          </Button>
-        </div>
+        <TextField
+          autoFocus
+          margin="dense"
+          label="Search by client name"
+          type="text"
+          variant="standard"
+          value={searchClientName}
+          onChange={(e) => setSearchClientName(e.target.value)}
+        />
+
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: "#d9a990",
+            borderRadius: "20px",
+            ":hover": {
+              backgroundColor: materialTheme.palette.secondary.main,
+            },
+          }}
+          onClick={() => navigate("/add-client")}
+        >
+          Add Client
+        </Button>
+      </div>
       <div className=" pt-6 top-2  z-10 ">
-        <div >
-          <ConfirmationDialog />
+        <div>
+          <ConfirmationDialog
+            clientsLoading={clientsLoading}
+            clients={clients}
+            searchClientName={searchClientName}
+          />
         </div>
-       
       </div>
       {/* <div className="flex flex-row text-xs sm:text-sm  sm:flex-row  w-auto    m-2 rounded-lg sm:mx-8 bg-white dark:bg-slate-800 bg-opacity-50 shadow-lg dark:shadow-slate-950 sm:p-2 ">
         <div className="w-1/2 overflow-hidden ">
@@ -233,7 +249,7 @@ const SelectClient = () => {
         </div>
       </div> */}
     </section>
-  )
-}
+  );
+};
 
 export default SelectClient;

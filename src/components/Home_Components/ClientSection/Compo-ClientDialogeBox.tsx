@@ -16,11 +16,7 @@ import {
 } from "../../../states/redux/ClientStates/selectedClientSlice";
 import { AppDispatch, RootState } from "../../../states/redux/store";
 import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates/allClientSlice";
-import {
-  CircularProgress,
-  TextField,
-  useTheme,
-} from "@mui/material";
+import { CircularProgress, TextField, useTheme } from "@mui/material";
 import {
   deleteClientAction,
   makeStateLoadingNeutralInDeleteClient,
@@ -31,26 +27,36 @@ import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
 import CompoAddClient from "./Compo_AddClient";
 import ActionConfirmer from "../../SideBar/ActionConfirmer";
 import { Outlet, useNavigate } from "react-router-dom";
+import { ClientType } from "../../../types/types";
 
-export default function ClientSelectionTable() {
+type ClientSelectionTableProps = {
+  clientsLoading: string;
+  clients: ClientType[];
+  searchClientName: string;
+};
+export default function ClientSelectionTable({
+  clientsLoading,
+  clients,
+  searchClientName,
+}: ClientSelectionTableProps) {
   const dispatch = useDispatch<AppDispatch>();
   const materialTheme = useTheme();
   const { adminId } = React.useContext(AuthContext);
 
   const [selectedClientId, setSelectedClientId] = React.useState<string>("");
-  const [searchClientName, setSearchClientName] = React.useState<string>("");
   const [clientDetails, setClientDetails] = React.useState<any>(null); // Store client details
   const { deleteLoading, deleteData, deleteError } = useSelector(
     (state: RootState) => state.deleteClientState
   );
   const navigate = useNavigate();
-  const {
-    loading: clientsLoading,
-    data: clients,
-    error: clientsError,
-  } = useSelector((state: RootState) => state.allClientsState);
+
   const [deletingClientIdString, setDeletingClientIdString] =
     React.useState<string>("");
+
+  const selectedClient = useSelector(
+    (state: RootState) => state.selectedClientState
+  );
+  const clientObj: ClientType = selectedClient.data;
 
   React.useEffect(() => {
     if (deleteLoading === "succeeded" && deleteData) {
@@ -68,6 +74,7 @@ export default function ClientSelectionTable() {
   React.useEffect(() => {
     if (adminId) {
       dispatch(getAllClientsByAdminIdAction(adminId));
+      setSelectedClientId(clientObj._id || "");
     }
   }, [adminId, dispatch]);
 
@@ -81,7 +88,9 @@ export default function ClientSelectionTable() {
   const handleConfirmSelection = () => {
     if (selectedClientId) {
       dispatch(getClientByIdAction(selectedClientId));
-      const selectedClient = clients.find(client => client._id === selectedClientId);
+      const selectedClient = clients.find(
+        (client) => client._id === selectedClientId
+      );
       setClientDetails(selectedClient); // Store selected client details
       navigate("/projects"); // Navigate to the /project page
     }
@@ -89,17 +98,6 @@ export default function ClientSelectionTable() {
 
   return (
     <Box>
-      <TextField
-        autoFocus
-        margin="dense"
-        label="Search by client name"
-        type="text"
-        fullWidth
-        variant="standard"
-        value={searchClientName}
-        onChange={(e) => setSearchClientName(e.target.value)}
-      />
-
       {clientsLoading === "pending" ? (
         <CompoLoading forAllClients={true} forSelectClient={false} />
       ) : (
@@ -114,43 +112,46 @@ export default function ClientSelectionTable() {
             </TableHead>
             <TableBody>
               {clients
-                .filter((ele) => {
+                .filter((ele: ClientType) => {
                   if (searchClientName.length <= 0) {
                     return true;
                   }
                   let searchQ = searchClientName.toLowerCase();
                   let clientName = ele.clientName.toLowerCase();
-                  return clientName.startsWith(searchQ);
+                  return clientName.includes(searchQ);
                 })
-                .map((client) => (
+                .map((client: ClientType) => (
                   <TableRow key={client._id}>
                     <TableCell>
                       <FormControlLabel
                         control={
                           <Radio
                             checked={selectedClientId === client._id}
-                            onChange={() => setSelectedClientId(client._id || "")}
+                            onChange={() =>
+                              setSelectedClientId(client._id || "")
+                            }
                           />
                         }
                         label=""
                       />
                     </TableCell>
                     <TableCell>{client.clientName}</TableCell>
-                    <TableCell >
+                    <TableCell>
                       <div className="flex">
-                      <CompoAddClient
-                        forEditClient={true}
-                        clientToEdit={client}
-                      />
-                      {deleteLoading === "pending" && deletingClientIdString === client._id ? (
-                        <CircularProgress size={25} />
-                      ) : (
-                        <ActionConfirmer
-                          actionTag="Delete"
-                          actionFunction={handleDeleteClient}
-                          parameter={client._id}
+                        <CompoAddClient
+                          forEditClient={true}
+                          clientToEdit={client}
                         />
-                      )}
+                        {deleteLoading === "pending" &&
+                        deletingClientIdString === client._id ? (
+                          <CircularProgress size={25} />
+                        ) : (
+                          <ActionConfirmer
+                            actionTag="Delete"
+                            actionFunction={handleDeleteClient}
+                            parameter={client._id}
+                          />
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -179,10 +180,12 @@ export default function ClientSelectionTable() {
       {clientDetails && (
         <Box sx={{ marginTop: "20px" }}>
           <h2>Client Details</h2>
-          <p><strong>Name:</strong> {clientDetails.clientName}</p>
+          <p>
+            <strong>Name:</strong> {clientDetails.clientName}
+          </p>
           {/* Add more client details here as needed */}
         </Box>
       )}
     </Box>
-  )
+  );
 }

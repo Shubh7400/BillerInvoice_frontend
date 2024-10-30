@@ -255,7 +255,6 @@ export default function CompoAddClient({
     setFormError("");
     setIncompleteError("");
   };
-  console.log(clientData);
   const handleMobileNoChange = (e: E164Number | undefined) => {
     setClientData({ ...clientData, contactNo: e });
   };
