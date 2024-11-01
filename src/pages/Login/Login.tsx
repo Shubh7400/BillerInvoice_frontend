@@ -17,7 +17,10 @@ import {
 import { enqueueSnackbar } from "notistack";
 import ChangePassword from "../../components/Login_Components/ChangePassword";
 import bg_image from "../../components/assets/home_bg.png";
-import companylogo from "../../components/assets/cubexo_logo.png"
+import companylogo from "../../components/assets/cubexo_logo.png";
+import modale from "../../components/assets/modal.png";
+import invoice from "../../components/assets/bill.png";
+import handshake from "../../components/assets/handshake.png"
 
 const Login = () => {
   const navigate = useNavigate();
@@ -229,17 +232,8 @@ const Login = () => {
     }}>
       <div className="bg-[#ebebeb2b] shadow-md backdrop-blur-sm w-[80%] h-[90%] flex items-center m-auto rounded-[20px]">
         <div className="md:flex w-[100%] p-0 ">
-        <div className=" bg-[#989fce] text-colorDarkFont dark:text-colorLightFont dark:bg-slate-800 md:w-2/3 h-[90vh] p-4 md:p-24 text-3xl md:text-6xl flex justify-start items-center md:flex-col m-0  ">
-            <div className="flex flex-col gap-4 md:gap-8">
-              <p>Your</p>
-              <p>Personal</p>
-              <p>
-                <mark className="p-1 px-8 rounded-md bg-thirdColor ">Billing</mark>
-              </p>
-              <p>Patner</p>
-            </div>
-          </div>
           
+
           <div className={styles.loginSignupDiv}>
             
           {!otpVerified ? (
@@ -247,7 +241,8 @@ const Login = () => {
               <div>
               <img src={companylogo} alt=""  className={styles.logo}/>
             </div>
-              <h1 className="text-3xl mb-5">
+              <div className="mx-auto mt-5 w-[82%] shadow-[0px_7px_29px_0px_rgba(100,100,111,0.2)] rounded-[20px] border border-[#f1f1f1] p-4 bg-white">
+              <h1 className="text-3xl mb-2.5 ">
                 {startChangePassword ? "Verify Otp" : "Admin Login"}
               </h1>
               <hr />
@@ -369,7 +364,7 @@ const Login = () => {
                     </button>
                   ) : !isAuth ? (
                     <button
-                      className="bg-thirdColor py-2 px-5 cursor-pointer text-[whitesmoke] border-none hover:bg-colorMediumDark "
+                      className="bg-[#d9a990] w-[100%] py-2 px-5 cursor-pointer text-[whitesmoke] border-none hover:bg-[#4a6180] "
                       type="submit"
                     >
                       Login
@@ -394,6 +389,7 @@ const Login = () => {
                   </button>
                 )}
               </div>
+              </div>
             </div>
           ) : (
             <ChangePassword
@@ -402,7 +398,23 @@ const Login = () => {
             />
           )}
           </div>
-          
+          <div className={`${styles.animated} md:w-2/3 h-[90vh] p-4 md:p-24 text-3xl md:text-6xl   `}>
+            <div className={`${styles.billing_title}  flex flex-col gap-4 md:gap-8`}>
+              <p>Your</p>
+              <p>Personal</p>
+              <div className={styles.wrapper}>
+                <h1 className={styles.typing_demo}>
+                  Billing
+                </h1>
+              </div>
+              <p>Patner</p>
+            </div>
+           
+              <img src={modale} alt=""  className={styles.modal}/>
+              <img src={invoice} alt=""  className={styles.invoice}/>
+              <img src={handshake} alt=""  className={styles.handshake}/>
+           
+          </div>
         </div>
       </div>
     </div>

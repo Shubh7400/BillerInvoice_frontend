@@ -1,0 +1,79 @@
+.table_scroll{
+    
+    width: 100%;
+	height: 60vh;
+	background: #F5F5F5;
+	overflow-y: scroll;
+    border-radius: 20px;
+}
+.table_scroll::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+    border-radius: 50px;
+}
+
+.table_scroll::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+    border-radius: 50px;
+}
+
+.table_scroll::-webkit-scrollbar-thumb
+{
+    background: linear-gradient(-45deg, #6bafd2, #a4c8dc, #d6cbca, #eabc96, #db8876);
+    border-radius: 50px;
+}
+
+.animated {
+
+      color: #fff !important;
+      display: flex;
+        position: sticky;
+        width: 100%;
+        top: 0;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    background: linear-gradient(-45deg, #6bafd2, #a4c8dc, #d6cbca, #eabc96, #db8876);
+      background-size: 400% 400%;
+      -webkit-animation: Gradient 15s ease infinite;
+      -moz-animation: Gradient 15s ease infinite;
+      animation: Gradient 15s ease infinite;
+  }
+  @-webkit-keyframes Gradient {
+      0% {
+          background-position: 0% 50%;
+      }
+      50% {
+          background-position: 100% 50%;
+      }
+      100% {
+          background-position: 0% 50%;
+      }
+  }
+  @-moz-keyframes Gradient {
+      0% {
+          background-position: 0% 50%;
+      }
+      50% {
+          background-position: 100% 50%;
+      }
+      100% {
+          background-position: 0% 50%;
+      }
+  }
+  @keyframes Gradient {
+      0% {
+          background-position: 0% 50%;
+      }
+      50% {
+          background-position: 100% 50%;
+      }
+      100% {
+          background-position: 0% 50%;
+      }
+  }
+  .animated th{
+    color: #fff;
+    font-size: 18px;
+  }

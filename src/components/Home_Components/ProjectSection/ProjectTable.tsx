@@ -133,6 +133,7 @@ const ProjectTable = () => {
 
   return (
     <section className="pb-14 ">
+      
       <div>
         <CompoAddProject
           clientId={selectedClientState.data._id}
@@ -140,13 +141,11 @@ const ProjectTable = () => {
           forAddProject={true}
         />
       </div>
-      <div className=" dark:text-colorLightFont px-8 pb-4 ">
-        <table className="border-none table ">
-          <caption className="text-xl font-bold text-center p-4 bg-white dark:bg-slate-800 caption shadow-md dark:shadow-slate-950 ">
-            PROJECT DETAILS
-          </caption>
+      <div className=" dark:text-colorLightFont rounded-[20px]">
+        <table className=" rounded-[20px] w-[80vw]">
+          
           <thead className="thead  ">
-            <tr className="dark:bg-slate-800 dark:text-colorLightFont tr ">
+            <tr className="">
               <th className=" md:flex md:pl-8 th ">
                 <FormControlLabel
                   control={
@@ -170,7 +169,7 @@ const ProjectTable = () => {
               <th className="th">Working Period</th>
               <th className="th">Conversion Rate</th>
               <th className="th">Amount</th>
-              <th className="th"></th>
+              <th className="th"> Action</th>
             </tr>
           </thead>
           <tbody className="shadow-lg dark:shadow-slate-950">

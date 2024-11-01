@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, TextField, useTheme } from "@mui/material";
 import { FaRegUser } from "react-icons/fa";
 
+
 const SelectClient = () => {
   const { isAuth, adminId } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -120,8 +121,8 @@ const SelectClient = () => {
           <h1> Clients List</h1>
         </div>
 
+        <div className="flex gap-4 items-center">
         <TextField
-          autoFocus
           margin="dense"
           label="Search by client name"
           type="text"
@@ -136,13 +137,14 @@ const SelectClient = () => {
             backgroundColor: "#d9a990",
             borderRadius: "20px",
             ":hover": {
-              backgroundColor: materialTheme.palette.secondary.main,
+              backgroundColor:"#4a6180",
             },
           }}
           onClick={() => navigate("/add-client")}
         >
           Add Client
         </Button>
+        </div>
       </div>
       <div className=" pt-6 top-2  z-10 ">
         <div>
