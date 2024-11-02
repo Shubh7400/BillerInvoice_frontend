@@ -1,26 +1,102 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../states/redux/store";
+import { AuthContext } from "../../states/context/AuthContext/AuthContext";
+import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
+import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
+import cubexoLogo from "../../utils/images/cubexoLogo.webp";
+import gamaedgeLogo from "../../utils/images/gammaedgeLogo.png";
+import { useNavigate } from "react-router-dom";
+import { Button, TextField, useTheme } from "@mui/material";
+import { FaRegUser } from "react-icons/fa";
 const ProfilePage = () => {
-  const clients = useSelector((state: RootState) => state.allClientsState);
+
+  const { isAuth, adminId } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const materialTheme = useTheme();
+  const [companyLogo, setCompanyLogo] = useState<string>();
+  const [searchClientName, setSearchClientName] = React.useState<string>("");
+  const dispatch = useDispatch<AppDispatch>();
   const { loading, data, error } = useSelector(
     (state: RootState) => state.adminState
   );
-  const [companyLogo, setCompanyLogo] = useState<string>();
+
+  const {
+    loading: clientsLoading,
+    data: clients,
+    error: clientsError,
+  } = useSelector((state: RootState) => state.allClientsState);
+
+  const selectedClient = useSelector(
+    (state: RootState) => state.selectedClientState
+  );
+  const addedNewClientState = useSelector(
+    (state: RootState) => state.addClientState
+  );
+  // -------------------------------------------------------
+  // "https://gammaedge.io/images/logo1.png";
+  // "https://www.cubexo.io/images/Logo.webp";
+  useEffect(() => {
+    if (
+      loading === "succeeded" &&
+      adminId &&
+      adminId === "6516a4ba98fd8b5ed365d5f4"
+    ) {
+      setCompanyLogo(gamaedgeLogo);
+    } else if (loading === "succeeded" && adminId) {
+      setCompanyLogo(cubexoLogo);
+    }
+  }, [loading, data, adminId]);
+
+  useEffect(() => {
+    if (isAuth && adminId) {
+      dispatch(getAdminByIdAction(adminId));
+    }
+  }, [isAuth, adminId, dispatch]);
+
+  useEffect(() => {
+    if (adminId && loading === "succeeded") {
+      let timer = setTimeout(() => {
+        dispatch(getAllClientsByAdminIdAction(adminId));
+        return () => {
+          clearTimeout(timer);
+        };
+      }, 1000);
+    }
+  }, [dispatch, adminId, loading]);
+
+  useEffect(() => {
+    if (addedNewClientState.loading === "succeeded" && adminId) {
+      dispatch(getAllClientsByAdminIdAction(adminId));
+    }
+  }, [
+    addedNewClientState.loading,
+    addedNewClientState,
+    addedNewClientState.data,
+    dispatch,
+    adminId,
+  ]);
+  useEffect(() => {
+    if ((adminId && error) || selectedClient.error) {
+      window.location.reload();
+    }
+  }, [error, adminId, selectedClient.error]);
+
+
   
   return (
     <div>
       {data ? (
-            <div className="text-black dark:text-colorLightFont p-4">
-              <div className="bg-slate-100 flex justify-start items-center  h-8 sm:h-16 w-30 sm:w-48  p-3 mb-2 rounded-lg">
+            <div className="text-black dark:text-colorLightFont p-4 relative border-2 border-[#c1c1c1] rounded-[20px]">
+              <div className="bg-slate-100 flex justify-start items-center rounded-[15px]  h-auto  w-[200px]  p-2  b ">
                 <img
                   src={companyLogo}
                   alt="CompanyLogo"
-                  className="h-auto w-auto "
+                  className="h-auto w-[200px] "
                 />
               </div>
-              <div className=" text-black dark:text-colorLightFont ">
-                <h3 className=" text-sm sm:text-sm mt-6 font-semibold ">
+              <div className=" text-black dark:text-colorLightFont pt-5 ">
+                <h3 className=" text-2xl font-semibold ">
                   {data.companyName}
                 </h3>
                 <p className="my-2">

@@ -1,13 +1,8 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux"; // Assuming you're using Redux
+import { useDispatch, useSelector } from "react-redux";
 import {
   addNewClientAction,
   makeStateLoadingNeutralInAddClient,
@@ -34,6 +29,9 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import { E164Number } from "libphonenumber-js/core";
 import "../../styles/addClient.css";
+import { Link } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { IoChevronBackSharp } from "react-icons/io5";
 
 export default function AddClientPage({
   forEditClient,
@@ -48,21 +46,6 @@ export default function AddClientPage({
   const [controlEditLoading, setControlEditLoading] = useState(false);
   const [addClientLoadingController, setAddClientLoadingController] =
     useState(false);
-  //--------------------------------------------------------
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    if (handleSelectClientClose) {
-      handleSelectClientClose();
-    }
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  // -------------------------------------------------------
 
   const materialTheme = useTheme();
   const [selectedCountry, setSelectedCountry] = useState<CountryInfoType>(
@@ -76,6 +59,8 @@ export default function AddClientPage({
   );
   const [incompleteError, setIncompleteError] = useState("");
   const [formError, setFormError] = useState("");
+  const navigate = useNavigate();
+  const [isHovered, setIsHovered] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -115,11 +100,10 @@ export default function AddClientPage({
         dispatch(getClientByIdAction(clientToEdit?._id!));
       }
       enqueueSnackbar({
-        message: "Client edited successfull",
+        message: "Client edited successfully",
         variant: "success",
       });
       setFormError("");
-      handleClose();
     } else if (editClientState.loading === "failed" && controlEditLoading) {
       setControlEditLoading(false);
       setFormError(`Error in updating client! Try again`);
@@ -137,7 +121,7 @@ export default function AddClientPage({
     } else {
       setClientData({ ...clientData });
     }
-  }, [clientToEdit, open]);
+  }, [clientToEdit]);
 
   React.useEffect(() => {
     if (adminId) {
@@ -147,7 +131,6 @@ export default function AddClientPage({
 
   React.useEffect(() => {
     if (addClientLoading === "succeeded") {
-      // setAddClientLoadingController(false);
       dispatch(makeStateLoadingNeutralInAddClient(true));
       if (adminId) {
         dispatch(getAllClientsByAdminIdAction(adminId));
@@ -157,105 +140,28 @@ export default function AddClientPage({
         variant: "success",
       });
       setFormError("");
-      // handleClose();
     } else if (addClientLoading === "failed") {
-      // setAddClientLoadingController(false);
       setFormError(`${addClientError}`);
-      if (
-        addClientError ===
-        "Error in adding new client Error: Client with this name already exists"
-      ) {
-        enqueueSnackbar({
-          message: "Error, client with this name already exists.Try again!",
-          variant: "error",
-        });
-      } else {
-        enqueueSnackbar({
-          message: "Error in adding client.Try again!",
-          variant: "error",
-        });
-      }
+      enqueueSnackbar({
+        message: "Error in adding client. Try again!",
+        variant: "error",
+      });
       dispatch(makeStateLoadingNeutralInAddClient(true));
     }
   }, [addClientLoading, addClientError]);
-
-  // ----------------Change of Country State City----------------------
-
-  React.useEffect(() => {
-    setClientData({
-      ...clientData,
-      address: {
-        ...clientData.address,
-        country: selectedCountry.name,
-        state: "",
-        city: "",
-      },
-    });
-    if (adminId) {
-      setClientData((prev) => {
-        return { ...prev, user: adminId };
-      });
-    }
-  }, [selectedCountry]);
-
-  React.useEffect(() => {
-    setClientData({
-      ...clientData,
-      address: {
-        ...clientData.address,
-        country: selectedCountry.name,
-        state: selectedState.name,
-        city: "",
-      },
-    });
-    if (adminId) {
-      setClientData((prev) => {
-        return { ...prev, user: adminId };
-      });
-    }
-  }, [selectedState]);
-
-  React.useEffect(() => {
-    setClientData({
-      ...clientData,
-      address: {
-        ...clientData.address,
-        country: selectedCountry.name,
-        state: selectedState.name,
-        city: selectedCity.name,
-      },
-    });
-    if (adminId) {
-      setClientData((prev) => {
-        return { ...prev, user: adminId };
-      });
-    }
-  }, [selectedCity]);
-
-  // ------------------------------------------------------------------
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    if (name === "gistin" || name === "pancardNo") {
-      setClientData({
-        ...clientData,
-        [name]: value.toLocaleUpperCase(),
-      });
-    } else if (name === "email") {
-      let sanitisedEmail = value.trim();
-      setClientData({ ...clientData, email: sanitisedEmail });
-    } else {
-      setClientData({
-        ...clientData,
-        [name]: value,
-      });
-    }
+    setClientData({
+      ...clientData,
+      [name]: value,
+    });
     setFormError("");
     setIncompleteError("");
   };
-  console.log(clientData);
+
   const handleMobileNoChange = (e: E164Number | undefined) => {
     setClientData({ ...clientData, contactNo: e });
   };
@@ -280,44 +186,11 @@ export default function AddClientPage({
     if (clientNameTemp.length < 2) {
       setFormError("Client name minimum length is 2");
       return false;
-    } else if (obj.contactNo.length !== 13) {
-      setFormError("Contactno. must be of 10 digit only.");
-      return false;
-    } else if (obj.clientName.length > 50 || obj.clientName.length < 2) {
-      setFormError(
-        "Client name must not exceed 50 characters and not below 2 characters."
-      );
-      return false;
-    } else if (obj.gistin.length !== 15) {
-      setFormError("Gstin must be of 15 digit only.");
-      return false;
-    } else if (obj.pancardNo.length !== 10) {
-      setFormError("Pancard must be of 10 digit only.");
-      return false;
-    } else if (obj.email) {
-      const pattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-      if (!pattern.test(obj.email)) {
-        setFormError("Invalid email address*");
-        return false;
-      } else if (/\s/.test(obj.email)) {
-        setFormError("Invalid email address,spaces not allowed*");
-        return false;
-      } else if (obj.email.length > 50) {
-        setFormError("Email must be less then 51 characters");
-        return false;
-      }
-      setFormError("");
-      return pattern.test(obj.email);
-    } else if (obj.address.street.length > 50) {
-      setFormError("Street name must not exceed 50 characters");
-      return false;
     }
-    setFormError("");
     return true;
   }
 
   const handleAddClientSubmit = () => {
-    setClientData({ ...clientData, clientName: clientData.clientName.trim() });
     if (areAllFieldsFilled(clientData) && areEntriesValid(clientData)) {
       dispatch(addNewClientAction(clientData));
       setAddClientLoadingController(true);
@@ -325,6 +198,7 @@ export default function AddClientPage({
       setIncompleteError("Incomplete fields");
     }
   };
+
   const handleEditClientSubmit = () => {
     if (
       areAllFieldsFilled(clientData) &&
@@ -339,181 +213,97 @@ export default function AddClientPage({
       setIncompleteError("Incomplete fields");
     }
   };
+
   return (
     <div>
-      {!forEditClient ? (
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: materialTheme.palette.primary.main,
-            ":hover": {
-              backgroundColor: materialTheme.palette.secondary.main,
-            },
-          }}
-          // onClick={handleClickOpen}
-        >
-          Add Client
-        </Button>
-      ) : (
-        <Button onClick={handleClickOpen}>
-          <CiEdit
-            size={20}
-            className="text-thirdColor hover:text-violet-900  "
-          />
-        </Button>
-      )}
-      <Dialog open={true} /*onClose={handleClose}*/>
-        <DialogTitle>
-          {forEditClient ? "Edit Client" : "Add Client"}
-        </DialogTitle>
-        {formError.length > 0 ? (
-          <Alert severity="error"> {formError}</Alert>
-        ) : incompleteError.length > 0 ? (
-          <Alert severity="error"> {incompleteError}</Alert>
-        ) : null}
-        {addClientLoading === "pending" ||
-        editClientState.loading === "pending" ? (
-          <LinearProgress />
-        ) : null}
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="clientName"
-            label="Client Name"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="clientName"
-            value={clientData.clientName}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-          <TextField
-            margin="dense"
-            id="email"
-            label="Email"
-            type="email"
-            fullWidth
-            variant="standard"
-            name="email"
-            value={clientData.email}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-          <div className="py-2 border-b border-b-slate-400 hover:border-b-black hover:border-b-2 ">
-            <label className="text-sm text-gray-500 hover:text-thirdColorHover ">
-              Contact No.
-            </label>
-            <PhoneInput
-              defaultCountry="IN"
-              international
-              countryCallingCodeEditable={false}
-              placeholder="Enter phone number"
-              value={clientData.contactNo}
-              onChange={(e) => handleMobileNoChange(e)}
-              className="border-none pt-2  PhoneInputInput"
-            />
-          </div>
-          <TextField
-            margin="dense"
-            id="pancardNo"
-            label="Pancard Number"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="pancardNo"
-            value={clientData.pancardNo}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-          <TextField
-            margin="dense"
-            id="gistin"
-            label="GSTIN"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="gistin"
-            value={clientData.gistin}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-          <TextField
-            margin="dense"
-            id="conversionRate"
-            label="Conversion Rate"
-            type="number"
-            fullWidth
-            variant="standard"
-            name="conversionRate"
-            value={clientData.conversionRate}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-          <TextField
-            margin="dense"
-            id="street"
-            label="Street Address"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="street"
-            value={clientData.address.street}
-            onChange={(e) => {
-              setClientData({
-                ...clientData,
-                address: { ...clientData.address, street: e.target.value },
-              });
-            }}
-            required
-          />
-          <Typography
-            className="text-xs opacity-70 mt-4"
-            sx={{ marginTop: "10px" }}
-          >
-            {" "}
-            Select Region
-          </Typography>
-          <SelectCountryStateCity
-            selectedCountry={selectedCountry}
-            selectedState={selectedState}
-            selectedCity={selectedCity}
-            setSelectedCountry={setSelectedCountry}
-            setSelectedState={setSelectedState}
-            setSelectedCity={setSelectedCity}
-            forEditClient={forEditClient}
-            countryString={clientData.address.country}
-            stateString={clientData.address.state}
-            cityString={clientData.address.city}
-          />
-          <TextField
-            margin="dense"
-            id="postalCode"
-            label="Postal Code"
-            type="text"
-            fullWidth
-            variant="standard"
-            name="postalCode"
-            value={clientData.address.postalCode}
-            onChange={(e) => {
-              setClientData({
-                ...clientData,
-                address: { ...clientData.address, postalCode: e.target.value },
-              });
-            }}
-            required
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          {!forEditClient ? (
-            <Button onClick={handleAddClientSubmit}>Add Client</Button>
-          ) : (
-            <Button onClick={handleEditClientSubmit}>Edit Client</Button>
-          )}
-        </DialogActions>
-      </Dialog>
+      <div className="flex justify-between items-center mb-5">
+      <Typography variant="h5">
+        {forEditClient ? "Edit Client" : "Add Client"}
+      </Typography>
+      <Link
+        to="/clients"
+        className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
+        style={{
+          backgroundColor:'#d9a990',
+          borderRadius: '20px',
+          padding:'5px 10px'
+        }}
+      
+      >
+       <IoChevronBackSharp /> BACK
+      </Link>
+      </div>
+      {formError && <Alert severity="error">{formError}</Alert>}
+      {incompleteError && <Alert severity="error">{incompleteError}</Alert>}
+      {(addClientLoading === "pending" || editClientState.loading === "pending") && <LinearProgress />}
+      <TextField
+      className="mb-2"
+        label="Client Name"
+        name="clientName"
+        value={clientData.clientName}
+        onChange={handleChange}
+        fullWidth
+        required
+      />
+      <div className="flex gap-5 mt-3">
+      <TextField
+        className="w-[50%]"
+        label="Email"
+        name="email"
+        value={clientData.email}
+        onChange={handleChange}
+        required
+      />
+      <PhoneInput
+        className="w-[50%] rounded"
+        style={{border:'1px solid rgba(0, 0, 0, 0.23)', padding:'5px',}}
+        defaultCountry="IN"
+        international
+        countryCallingCodeEditable={false}
+        placeholder="Enter phone number"
+        value={clientData.contactNo}
+        onChange={handleMobileNoChange}
+      />
+      </div>
+      <SelectCountryStateCity
+        selectedCountry={selectedCountry}
+        selectedState={selectedState}
+        selectedCity={selectedCity}
+        setSelectedCountry={setSelectedCountry}
+        setSelectedState={setSelectedState}
+        setSelectedCity={setSelectedCity}
+        forEditClient={forEditClient}
+        countryString={clientData.address.country}
+        stateString={clientData.address.state}
+        cityString={clientData.address.city}
+      />
+      <TextField
+        label="Postal Code"
+        name="postalCode"
+        value={clientData.address.postalCode}
+        onChange={(e) =>
+          setClientData({
+            ...clientData,
+            address: { ...clientData.address, postalCode: e.target.value },
+          })
+        }
+        fullWidth
+        required
+      />
+      <Button onClick={forEditClient ? handleEditClientSubmit : handleAddClientSubmit}
+      className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
+      style={{
+        backgroundColor: isHovered ? '#4a6180' : '#d9a990',
+        borderRadius: '20px',
+        padding:'5px 15px',
+        color:'#fff ',
+        marginTop: '10px'
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      >
+        {forEditClient ? "Edit Client" : "Add Client"}
+      </Button>
     </div>
   );
 }

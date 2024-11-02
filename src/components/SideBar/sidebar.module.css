@@ -2,9 +2,9 @@
     margin-top: 50px;
     
 }
-.menulist li{
+.menulist li a{
     margin-bottom: 10px;
-    background-color: transparent;
+    background: transparent;
     width: 170px;
     height: 40px;
     border-radius: 50px;
@@ -16,8 +16,8 @@
     transform: 0.4s linear;
     
 }
-.menulist li:hover{
-    background-color: #000;
+.menulist li a:hover{
+    background: linear-gradient(-40deg, #bfc9c7, #4a6180);
     color: #fff;
 }
 /* .menulist li a{

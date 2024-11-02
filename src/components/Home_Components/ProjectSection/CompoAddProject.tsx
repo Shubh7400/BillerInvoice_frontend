@@ -251,7 +251,7 @@ export default function CompoAddProject({
   return (
     <>
       {forAddProject ? (
-        <div className="flex w-screen justify-end w-[80vw] pr-12 pt-2 pb-2">
+        <div className="flex justify-end w-[80vw] mt-5 pr-2 pt-2 pb-2">
           <Button
             disabled={!clientId || !adminId}
             variant="contained"
