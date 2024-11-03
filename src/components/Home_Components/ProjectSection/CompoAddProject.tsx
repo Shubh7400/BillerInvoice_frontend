@@ -251,16 +251,16 @@ export default function CompoAddProject({
   return (
     <>
       {forAddProject ? (
-        <div className="flex w-screen justify-end pr-12 pt-4">
+        <div className="flex justify-end w-[80vw] mt-5 pr-2 pt-2 pb-2">
           <Button
             disabled={!clientId || !adminId}
             variant="contained"
             sx={{
-              backgroundColor: materialTheme.palette.primary.main,
+              backgroundColor: "#d9a990",
+              borderRadius: "20px",
               ":hover": {
-                backgroundColor: materialTheme.palette.secondary.main,
+                backgroundColor:"#4a6180",
               },
-              cursor: "pointer",
             }}
             onClick={() => handleAddProjectClick()}
           >

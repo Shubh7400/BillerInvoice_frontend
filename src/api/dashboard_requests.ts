@@ -12,6 +12,7 @@ export async function getDashBoardDataAPI() {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log(response,"error");
     return response.data;
   } catch (error: any) {
     throw new Error(`${error.response.data.message}`);

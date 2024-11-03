@@ -1,25 +1,31 @@
 .loginSignupDiv {
   font-size: 18px;
-  padding: 80px 25px 0px;
-  height: 100%;
-  width: 75%;
+  /* padding: 80px 25px 0px; */
+  height: 90vh;
+  width: 55%;
+  padding: 30px;
+}
+.logo{
+  margin: auto;
 }
 .loginDiv {
   text-align: start;
   margin-right: 10px;
-  max-width: 80%;
+  max-width: 100%;
   text-align: left;
 }
 .loginDiv > p {
-  margin-bottom: 15px;
+  margin: auto;
+    width: 73%;
+    margin-bottom: 20px;
 }
-.loginDiv > form > input {
+form > input {
   display: block;
   padding: 8px;
   margin-top: 5px;
   margin-bottom: 5px;
-  width: 70%;
-  border: 1px solid #cecece;
+  width: 100%;
+  border: 1px solid #cecece !important;
 }
 .loginPasswordDiv {
   position: relative;
@@ -29,13 +35,14 @@
   padding: 8px;
   margin-top: 5px;
   margin-bottom: 15px;
-  width: 70%;
+  width: 100%;
   border: 1px solid #cecece;
 }
 .showPassEyeDiv {
   position: absolute;
-  left: 72%;
-  top: 55%;
+  right: 5%;
+  bottom: 18%;
+
 }
 #errorWarningPTag {
   color: red;
@@ -108,4 +115,143 @@
     text-align: start;
     max-width: 100%;
   }
+}
+.animated {
+  padding: 20px;
+  border-radius: 20px;
+  width:55%;
+  position: relative;
+    color: #fff;
+    /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  background: linear-gradient(-45deg, #6bafd2, #a4c8dc, #d6cbca, #eabc96, #db8876);
+    background-size: 400% 400%;
+    -webkit-animation: Gradient 15s ease infinite;
+    -moz-animation: Gradient 15s ease infinite;
+    animation: Gradient 15s ease infinite;
+}
+@-webkit-keyframes Gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+@-moz-keyframes Gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+@keyframes Gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+.wrapper {
+  /* height: 100vh; */
+  display: grid;
+  /* place-items: center; */
+}
+
+.typing_demo {
+  width: 200px;
+  height: 70px;
+  font-weight: 700;
+  animation: typing 2s steps(12), blink .5s step-end infinite alternate;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 3px solid;
+    font-family: sans-serif;
+    font-size: 4rem;
+    text-align: left;
+}
+
+@keyframes typing {
+  from {
+      width: 0;
+  }
+}
+
+@keyframes blink {
+  50% {
+      border-color: transparent;
+  }
+}
+form input{
+  border-radius: 50px;
+  background-color: transparent;
+}
+
+/* form {
+  margin: auto;
+  width: 70%;
+} */
+button{
+  border-radius: 50px;
+  background-color: #d9a990 ;
+}
+button:hover{
+  background-color: #4a6180;
+}
+.modal{
+  height: auto;
+  width: 75%;
+  position: absolute;
+  bottom: 0;
+  right: 0
+}
+.billing_title{
+  margin-left: 20px;
+  margin-top: 30px;
+}
+.billing_title p{
+  font-size: 48px;
+  line-height: 20px;
+}
+.invoice{
+  width: 100px;
+  height: auto;
+  position: absolute;
+  top: 80px;
+  right: 30px;
+  opacity: 0.5;
+  animation: float 8s ease-in-out infinite;
+}
+.handshake{
+  width: 100px;
+  height: auto;
+  position: absolute;
+  bottom: 80px;
+  left: 30px;
+  opacity: 0.5;
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+	0% {
+		transform: translatey(0px);
+	}
+	50% {
+		transform: translatey(-20px);
+	}
+	100% {
+		transform: translatey(0px);
+	}
 }

@@ -28,6 +28,7 @@ import CompoAddClient from "./Compo_AddClient";
 import ActionConfirmer from "../../SideBar/ActionConfirmer";
 import { Outlet, useNavigate } from "react-router-dom";
 import { ClientType } from "../../../types/types";
+import Styles from "./client.module.css"
 
 type ClientSelectionTableProps = {
   clientsLoading: string;
@@ -101,17 +102,17 @@ export default function ClientSelectionTable({
       {clientsLoading === "pending" ? (
         <CompoLoading forAllClients={true} forSelectClient={false} />
       ) : (
-        <TableContainer className="h-[58vh] overflow-y-scroll overflow-x-hidden">
+        <TableContainer className={Styles.table_scroll}>
           <Table>
-            <TableHead>
+            <TableHead className={Styles.animated} >
               <TableRow>
-                <TableCell>{""}</TableCell>
-                <TableCell>Client Name</TableCell>
-                <TableCell>Client Email</TableCell>
-                <TableCell>{""}</TableCell>
+                <TableCell style={{ paddingRight:'0'}}>Select</TableCell>
+                <TableCell style={{paddingLeft:'0', paddingRight:'0'}}>Client Name</TableCell>
+                <TableCell style={{paddingLeft:'0', paddingRight:'0'}}>Client Email</TableCell>
+                <TableCell style={{paddingLeft:'0', paddingRight:'0'}}>Action</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody  >
               {clients
                 .filter((ele: ClientType) => {
                   if (searchClientName.length <= 0) {
@@ -122,8 +123,8 @@ export default function ClientSelectionTable({
                   return clientName.includes(searchQ);
                 })
                 .map((client: ClientType) => (
-                  <TableRow key={client._id}>
-                    <TableCell>
+                  <TableRow key={client._id} className="p-3">
+                    <TableCell style={{paddingTop: '0', paddingBottom: '0', paddingLeft:'20px'}}>
                       <FormControlLabel
                         control={
                           <Radio
@@ -136,9 +137,9 @@ export default function ClientSelectionTable({
                         label=""
                       />
                     </TableCell>
-                    <TableCell>{client.clientName}</TableCell>
-                    <TableCell>{client.email}</TableCell>
-                    <TableCell>
+                    <TableCell style={{padding:'0' }}>{client.clientName}</TableCell>
+                    <TableCell style={{padding:'0'}}>{client.email}</TableCell>
+                    <TableCell style={{padding:'0'}}>
                       <div className="flex">
                         <CompoAddClient
                           forEditClient={true}
@@ -172,8 +173,9 @@ export default function ClientSelectionTable({
           backgroundColor: "#d9a990",
           borderRadius: "20px",
           ":hover": {
-            backgroundColor: materialTheme.palette.secondary.main,
-          },
+            backgroundColor: "#4a6180",
+          }
+          , position:'absolute', bottom:'50px', right:'40px'
         }}
       >
         Confirm Selection
