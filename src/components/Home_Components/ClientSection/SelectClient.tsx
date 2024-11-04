@@ -13,6 +13,7 @@ import gamaedgeLogo from "../../../utils/images/gammaedgeLogo.png";
 import { useNavigate } from "react-router-dom";
 import { Button, TextField, useTheme } from "@mui/material";
 import { FaRegUser } from "react-icons/fa";
+import Styles from "./client.module.css"
 
 
 const SelectClient = () => {
@@ -122,14 +123,21 @@ const SelectClient = () => {
         </div>
 
         <div className="flex gap-4 items-center">
-        <TextField
-          margin="dense"
-          label="Search by client name"
-          type="text"
-          variant="standard"
-          value={searchClientName}
-          onChange={(e) => setSearchClientName(e.target.value)}
-        />
+        <div className={Styles.search_input}>
+          <TextField
+            margin="dense"
+            label="Search by client name"
+            type="text"
+            variant="outlined"
+            value={searchClientName}
+            onChange={(e) => setSearchClientName(e.target.value)}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "50px",
+              },
+            }}
+          />
+        </div>
 
         <Button
           variant="contained"

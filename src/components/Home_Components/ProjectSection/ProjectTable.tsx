@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import "./ProjectTable.css";
+import Styles from "./ProjectTable.module.css";
 import CompoAddProject from "./CompoAddProject";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../states/redux/store";
@@ -21,12 +21,18 @@ import {
 } from "../../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import ActionConfirmer from "../../SideBar/ActionConfirmer";
 import BillAmount from "../InvoiceSection/BillAmount";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
 const ProjectTable = () => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const materialTheme = useTheme();
-
+  const [isHovered, setIsHovered] = useState(false);
   // -----------------------------------------------------
   const { isAuth, adminId } = useContext(AuthContext);
   const selectedClientState = useSelector(
@@ -141,131 +147,110 @@ const ProjectTable = () => {
           forAddProject={true}
         />
       </div>
-      <div className=" dark:text-colorLightFont rounded-[20px]">
-        <table className=" rounded-[20px] w-[80vw]">
-          
-          <thead className="thead  ">
-            <tr className="">
-              <th className=" md:flex md:pl-8 th ">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={allChecked ? allChecked : false}
-                      sx={{
-                        color: materialTheme.palette.primary.main,
-                        "&.Mui-checked": {
+      <div className="  rounded-[20px]">
+      <TableContainer className={Styles.table_scroll}>
+        <Table>
+          <TableHead className={Styles.animated}>
+            <TableRow >
+              <TableCell style={{ paddingRight: '0' }}>Select</TableCell>
+              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Sr.no.</TableCell>
+              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Project</TableCell>
+              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Project Period</TableCell>
+              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Rate</TableCell>
+              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Working Period</TableCell>
+              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Conversion Rate</TableCell>
+              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Amount</TableCell>
+              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          {data?.map((project: ProjectType, index: number) => (
+              <TableRow key={project._id} className="p-3">
+                <TableCell style={{ paddingTop: '0', paddingBottom: '0', paddingLeft: '20px' }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={allChecked ? allChecked : false}
+                        sx={{
                           color: materialTheme.palette.primary.main,
-                        },
-                      }}
-                      onChange={(e) => handleAllCheckboxChange(e, data)}
-                    />
-                  }
-                  label="Sr.no."
-                />
-              </th>
-              <th className="th">Project</th>
-              <th className="th">Project Period</th>
-              <th className="th">Rate</th>
-              <th className="th">Working Period</th>
-              <th className="th">Conversion Rate</th>
-              <th className="th">Amount</th>
-              <th className="th"> Action</th>
-            </tr>
-          </thead>
-          <tbody className="shadow-lg dark:shadow-slate-950">
-            {data?.map((project: any, index: any) => {
-              return (
-                <tr
-                  className="dark:bg-slate-800 dark:text-colorLightFont tr "
-                  key={project._id}
-                >
-                  <td data-label="Sr.no." className=" md:flex md:pl-8 td ">
-                    <div className=" flex justify-end items-center md:justify-start md:w-full md:text-start md:mt-4">
-                      <input
-                        type="checkbox"
-                        className="w-5 h-5 border-2  accent-thirdColor cursor-pointer mr-4 "
-                        ref={(element) =>
-                          (checkboxesRefs.current[index] = element)
-                        }
-                        onChange={(e) =>
-                          handleSingleCheckboxChange(e, index, project)
-                        }
+                          "&.Mui-checked": {
+                            color: materialTheme.palette.primary.main,
+                          },
+                        }}
+                        onChange={(e) => handleSingleCheckboxChange(e, index, project)}
                       />
-                      <label>{index + 1}</label>
+                    }
+                    label=""
+                  />
+                </TableCell>
+                <TableCell style={{ padding: '0' }}>{index + 1}</TableCell>
+                <TableCell style={{ padding: '0' }}>
+                  {project.projectName}
+                  <br />
+                  {project.projectManager}
+                </TableCell>
+                <TableCell style={{ padding: '0' }}>
+                  {project.projectPeriod ? (
+                    <>
+                      {project.projectPeriod} ({project.workingPeriodType})
+                    </>
+                  ) : (
+                    'Hour based project'
+                  )}
+                </TableCell>
+                <TableCell style={{ padding: '0' }}>
+                  {project.rate}
+                  (
+                  {project.currencyType === 'rupees' ? (
+                    <span>&#x20B9;</span>
+                  ) : project.currencyType === 'dollars' ? (
+                    <span>$</span>
+                  ) : project.currencyType === 'pounds' ? (
+                    <span>&#163;</span>
+                  ) : null}
+                  /{project.workingPeriodType})
+                </TableCell>
+                <TableCell style={{ padding: '0' }}>
+                  {project.workingPeriod}({project.workingPeriodType})
+                </TableCell>
+                <TableCell style={{ padding: '0' }}>
+                  {project.currencyType === 'rupees' ? (
+                    <span>&#x20B9; </span>
+                  ) : project.currencyType === 'dollars' ? (
+                    <span>$ </span>
+                  ) : project.currencyType === 'pounds' ? (
+                    <span>&#163; </span>
+                  ) : null}
+                  {project.conversionRate}
+                </TableCell>
+                <TableCell style={{ padding: '0' }}>
+                  &#x20B9; {project.amount ? project.amount : 0}
+                </TableCell>
+                <TableCell style={{ padding: '0' }}>
+                  <div className="flex">
+                    <div className={Styles.editButton}>
+                    <CompoAddProject 
+                      clientId={selectedClientState.data._id}
+                      adminId={adminId}
+                      forAddProject={false}
+                      projectToEdit={project}
+                    />
                     </div>
-                  </td>
-                  <td
-                    data-label="Project"
-                    className="td overflow-hidden overflow-ellipsis"
-                  >
-                    {project.projectName}
-                    <br />
-                    {project.projectManager}
-                  </td>
-                  <td data-label="Project Period" className="td">
-                    {project.projectPeriod ? (
-                      <>
-                        {project.projectPeriod} ({project.workingPeriodType}){" "}
-                      </>
-                    ) : (
-                      "Hour based project"
-                    )}
-                  </td>
-                  <td data-label="Rate" className="td">
-                    {project.rate}(
-                    {project.currencyType === "rupees" ? (
-                      <span>&#x20B9;</span>
-                    ) : project.currencyType === "dollars" ? (
-                      <span>$</span>
-                    ) : project.currencyType === "pounds" ? (
-                      <span>&#163;</span>
-                    ) : null}
-                    /{project.workingPeriodType})
-                  </td>
-                  <td data-label="Working Period" className="td">
-                    {project.workingPeriod}({project.workingPeriodType})
-                  </td>
-                  <td data-label="Conversion Rate" className="td">
-                    {project.currencyType === "rupees" ? (
-                      <span>&#x20B9; </span>
-                    ) : project.currencyType === "dollars" ? (
-                      <span>$ </span>
-                    ) : project.currencyType === "pounds" ? (
-                      <span>&#163; </span>
-                    ) : null}
-                    {project.conversionRate}
-                  </td>
-                  <td data-label="Amount" className="td">
-                    {" "}
-                    &#x20B9; {project.amount ? project.amount : 0}
-                  </td>
-                  <td className="td">
-                    <div className="h-14 md:h-auto flex  justify-between items-center md:justify-around ">
-                      <div>
-                        <CompoAddProject
-                          clientId={selectedClientState.data._id}
-                          adminId={adminId}
-                          forAddProject={false}
-                          projectToEdit={project}
-                        />
-                      </div>
-                      <div
-                        className=" cursor-pointer 
-                      opacity-70 hover:opacity-100 "
-                      >
-                        <ActionConfirmer
-                          actionTag="Delete"
-                          actionFunction={handleProjectDelete}
-                          parameter={project._id}
-                        />
-                      </div>
+                    <div className={Styles.editButton}>
+                    <ActionConfirmer
+                      actionTag="Delete"
+                      actionFunction={handleProjectDelete}
+                      parameter={project._id}
+                    />
                     </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
       </div>
       {/* <BillAmount /> */}
     </section>
