@@ -105,7 +105,9 @@ export default function SelectCountryStateCity({
         }}
         value={selectedCity}
         onChange={(item) => {
-          if (item) setSelectedCity(item);
+          if (item) {
+            setSelectedCity(item);
+          }
         }}
       />
     </div>

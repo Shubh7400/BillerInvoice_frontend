@@ -80,7 +80,7 @@ export default function AddClientPage({
     gistin: "",
     conversionRate: 83,
     address: {
-      street: "",
+      street: "NA",
       city: selectedCountry.name,
       state: selectedState.name,
       country: selectedCity.name,
@@ -150,6 +150,18 @@ export default function AddClientPage({
     }
   }, [addClientLoading, addClientError]);
 
+  React.useEffect(() => {
+    setClientData((prevData) => ({
+      ...prevData,
+      address: {
+        ...prevData.address,
+        country: selectedCountry.name || "",
+        state: selectedState.name || "",
+        city: selectedCity.name || "",
+      },
+    }));
+  }, [selectedCountry, selectedState, selectedCity]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -167,6 +179,7 @@ export default function AddClientPage({
   };
 
   function areAllFieldsFilled(obj: any) {
+    console.log(obj, " <<< oBJ");
     for (const key in obj) {
       if (typeof obj[key] === "object" && obj[key] !== null) {
         if (!areAllFieldsFilled(obj[key])) {
@@ -217,27 +230,27 @@ export default function AddClientPage({
   return (
     <div>
       <div className="flex justify-between items-center mb-5">
-      <Typography variant="h5">
-        {forEditClient ? "Edit Client" : "Add Client"}
-      </Typography>
-      <Link
-        to="/clients"
-        className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
-        style={{
-          backgroundColor:'#d9a990',
-          borderRadius: '20px',
-          padding:'5px 10px'
-        }}
-      
-      >
-       <IoChevronBackSharp /> BACK
-      </Link>
+        <Typography variant="h5">
+          {forEditClient ? "Edit Client" : "Add Client"}
+        </Typography>
+        <Link
+          to="/clients"
+          className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
+          style={{
+            backgroundColor: "#d9a990",
+            borderRadius: "20px",
+            padding: "5px 10px",
+          }}
+        >
+          <IoChevronBackSharp /> BACK
+        </Link>
       </div>
       {formError && <Alert severity="error">{formError}</Alert>}
       {incompleteError && <Alert severity="error">{incompleteError}</Alert>}
-      {(addClientLoading === "pending" || editClientState.loading === "pending") && <LinearProgress />}
+      {(addClientLoading === "pending" ||
+        editClientState.loading === "pending") && <LinearProgress />}
       <TextField
-      className="mb-2"
+        className="mb-2"
         label="Client Name"
         name="clientName"
         value={clientData.clientName}
@@ -246,25 +259,44 @@ export default function AddClientPage({
         required
       />
       <div className="flex gap-5 mt-3">
-      <TextField
-        className="w-[50%]"
-        label="Email"
-        name="email"
-        value={clientData.email}
-        onChange={handleChange}
-        required
-      />
-      <PhoneInput
-        className="w-[50%] rounded"
-        style={{border:'1px solid rgba(0, 0, 0, 0.23)', padding:'5px',}}
-        defaultCountry="IN"
-        international
-        countryCallingCodeEditable={false}
-        placeholder="Enter phone number"
-        value={clientData.contactNo}
-        onChange={handleMobileNoChange}
-      />
+        <TextField
+          className="w-[50%]"
+          label="Email"
+          name="email"
+          value={clientData.email}
+          onChange={handleChange}
+          required
+        />
+        <PhoneInput
+          className="w-[50%] rounded"
+          style={{ border: "1px solid rgba(0, 0, 0, 0.23)", padding: "5px" }}
+          defaultCountry="IN"
+          international
+          countryCallingCodeEditable={false}
+          placeholder="Enter phone number"
+          value={clientData.contactNo}
+          onChange={handleMobileNoChange}
+        />
       </div>
+      <div className="flex gap-5 mt-3">
+        <TextField
+          className="w-[50%]"
+          label="GST No."
+          name="gistin"
+          value={clientData.gistin}
+          onChange={handleChange}
+          required
+        />
+        <TextField
+          className="w-[50%]"
+          label="PAN"
+          name="pancardNo"
+          value={clientData.pancardNo}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
       <SelectCountryStateCity
         selectedCountry={selectedCountry}
         selectedState={selectedState}
@@ -290,17 +322,18 @@ export default function AddClientPage({
         fullWidth
         required
       />
-      <Button onClick={forEditClient ? handleEditClientSubmit : handleAddClientSubmit}
-      className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
-      style={{
-        backgroundColor: isHovered ? '#4a6180' : '#d9a990',
-        borderRadius: '20px',
-        padding:'5px 15px',
-        color:'#fff ',
-        marginTop: '10px'
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      <Button
+        onClick={forEditClient ? handleEditClientSubmit : handleAddClientSubmit}
+        className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
+        style={{
+          backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+          borderRadius: "20px",
+          padding: "5px 15px",
+          color: "#fff ",
+          marginTop: "10px",
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         {forEditClient ? "Edit Client" : "Add Client"}
       </Button>

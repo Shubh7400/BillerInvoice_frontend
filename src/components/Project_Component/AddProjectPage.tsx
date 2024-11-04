@@ -8,17 +8,16 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { Alert, LinearProgress, MenuItem, useTheme } from "@mui/material";
-import { ProjectType, UpdateProjectDataType } from "../../../types/types";
+import { ProjectType, UpdateProjectDataType } from "../../types/types";
 import {
   useAddNewProject,
   useUpdateProject,
-} from "../../../states/query/Project_queries/projectQueries";
-import { queryClient } from "../../..";
+} from "../../states/query/Project_queries/projectQueries";
+import { queryClient } from "../..";
 import { CiEdit } from "react-icons/ci";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
-
-export default function CompoAddProject({
+function AddProjectPage({
   adminId,
   clientId,
   forAddProject,
@@ -30,7 +29,6 @@ export default function CompoAddProject({
   projectId?: string | undefined;
   projectToEdit?: ProjectType;
 }) {
-  // -----------------------------------------------------
   const [toEdit, setToEdit] = useState<boolean>();
   const handleToAddClick = () => {
     setToEdit(false);
@@ -40,7 +38,7 @@ export default function CompoAddProject({
   };
 
   // ------------------------------------------------------
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -253,7 +251,7 @@ export default function CompoAddProject({
 
   return (
     <>
-      {forAddProject ? (
+      {/* {forAddProject ? (
         <div className="flex justify-end w-[80vw] mt-5 pr-2 pt-2 pb-2">
           <Button
             disabled={!clientId || !adminId}
@@ -290,13 +288,12 @@ export default function CompoAddProject({
             <CiEdit size={25} />
           </Button>
         </div>
-      )}
+      )} */}
       <div>
-        <Dialog open={open} onClose={handleClose}>
+        {/* <Dialog open={open} onClose={handleClose}> */}
           <DialogTitle>
             {forAddProject ? "Add Project" : "Edit Project"}
           </DialogTitle>
-          ;
           {incompleteError.length > 0 ? (
             <Alert severity="error"> {incompleteError}</Alert>
           ) : null}
@@ -456,8 +453,10 @@ export default function CompoAddProject({
               <Button onClick={(e) => handleEditSubmit(e)}>Edit Project</Button>
             )}
           </DialogActions>
-        </Dialog>
+        {/* </Dialog> */}
       </div>
     </>
   );
 }
+
+export default AddProjectPage;
