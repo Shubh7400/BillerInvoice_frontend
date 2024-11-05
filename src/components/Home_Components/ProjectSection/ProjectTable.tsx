@@ -8,7 +8,13 @@ import {
   useDeleteProject,
   useFetchAllProjectsByClientId,
 } from "../../../states/query/Project_queries/projectQueries";
-import { Alert, Checkbox, FormControlLabel, useTheme } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  useTheme,
+} from "@mui/material";
 import { RiDeleteBin7Line } from "react-icons/ri";
 import { queryClient } from "../../..";
 import { useSnackbar } from "notistack";
@@ -27,8 +33,10 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { useNavigate } from "react-router-dom";
 
 const ProjectTable = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const materialTheme = useTheme();
@@ -48,6 +56,10 @@ const ProjectTable = () => {
   const [allChecked, setAllChecked] = useState<boolean>();
   type CheckboxRefType = Array<HTMLInputElement | null>;
   const checkboxesRefs = useRef<CheckboxRefType>([]);
+  const [selectedProjectId, setSelectedProjectId] = React.useState<
+    string | undefined
+  >("");
+  const [projectDetails, setProjectDetails] = React.useState<any>(null); // Store client details
 
   const handleProjectDelete = (projectId: string) => {
     DeleteProjectMutationHandler.mutate(projectId, {
@@ -129,17 +141,23 @@ const ProjectTable = () => {
       (checkboxRef) => checkboxRef?.checked === true
     );
     setAllChecked(areAllChecked);
-
     if (isChecked) {
       dispatch(addProjectForInvoiceAction(project));
+      setSelectedProjectId(project?._id);
+      setProjectDetails(project);
     } else if (!isChecked && project._id) {
       dispatch(removeProjectFromInvoiceAction(project._id));
+      setSelectedProjectId("");
+      setAllChecked(false);
     }
+  };
+
+  const handleConfirmSelection = () => {
+    navigate("/invoices");
   };
 
   return (
     <section className="pb-14 ">
-      
       <div>
         <CompoAddProject
           clientId={selectedClientState.data._id}
@@ -148,111 +166,152 @@ const ProjectTable = () => {
         />
       </div>
       <div className="  rounded-[20px]">
-      <TableContainer className={Styles.table_scroll}>
-        <Table>
-          <TableHead className={Styles.animated}>
-            <TableRow >
-              <TableCell style={{ paddingRight: '0' }}>Select</TableCell>
-              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Sr.no.</TableCell>
-              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Project</TableCell>
-              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Project Period</TableCell>
-              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Rate</TableCell>
-              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Working Period</TableCell>
-              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Conversion Rate</TableCell>
-              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Amount</TableCell>
-              <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-          {data?.map((project: ProjectType, index: number) => (
-              <TableRow key={project._id} className="p-3">
-                <TableCell style={{ paddingTop: '0', paddingBottom: '0', paddingLeft: '20px' }}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={allChecked ? allChecked : false}
-                        sx={{
-                          color: materialTheme.palette.primary.main,
-                          "&.Mui-checked": {
-                            color: materialTheme.palette.primary.main,
-                          },
-                        }}
-                        onChange={(e) => handleSingleCheckboxChange(e, index, project)}
-                      />
-                    }
-                    label=""
-                  />
+        <TableContainer className={Styles.table_scroll}>
+          <Table>
+            <TableHead className={Styles.animated}>
+              <TableRow>
+                <TableCell style={{ paddingRight: "0" }}>Select</TableCell>
+                <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  Sr.no.
                 </TableCell>
-                <TableCell style={{ padding: '0' }}>{index + 1}</TableCell>
-                <TableCell style={{ padding: '0' }}>
-                  {project.projectName}
-                  <br />
-                  {project.projectManager}
+                <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  Project
                 </TableCell>
-                <TableCell style={{ padding: '0' }}>
-                  {project.projectPeriod ? (
-                    <>
-                      {project.projectPeriod} ({project.workingPeriodType})
-                    </>
-                  ) : (
-                    'Hour based project'
-                  )}
+                <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  Project Period
                 </TableCell>
-                <TableCell style={{ padding: '0' }}>
-                  {project.rate}
-                  (
-                  {project.currencyType === 'rupees' ? (
-                    <span>&#x20B9;</span>
-                  ) : project.currencyType === 'dollars' ? (
-                    <span>$</span>
-                  ) : project.currencyType === 'pounds' ? (
-                    <span>&#163;</span>
-                  ) : null}
-                  /{project.workingPeriodType})
+                <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  Rate
                 </TableCell>
-                <TableCell style={{ padding: '0' }}>
-                  {project.workingPeriod}({project.workingPeriodType})
+                <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  Working Period
                 </TableCell>
-                <TableCell style={{ padding: '0' }}>
-                  {project.currencyType === 'rupees' ? (
-                    <span>&#x20B9; </span>
-                  ) : project.currencyType === 'dollars' ? (
-                    <span>$ </span>
-                  ) : project.currencyType === 'pounds' ? (
-                    <span>&#163; </span>
-                  ) : null}
-                  {project.conversionRate}
+                <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  Conversion Rate
                 </TableCell>
-                <TableCell style={{ padding: '0' }}>
-                  &#x20B9; {project.amount ? project.amount : 0}
+                <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  Amount
                 </TableCell>
-                <TableCell style={{ padding: '0' }}>
-                  <div className="flex">
-                    <div className={Styles.editButton}>
-                    <CompoAddProject 
-                      clientId={selectedClientState.data._id}
-                      adminId={adminId}
-                      forAddProject={false}
-                      projectToEdit={project}
-                    />
-                    </div>
-                    <div className={Styles.editButton}>
-                    <ActionConfirmer
-                      actionTag="Delete"
-                      actionFunction={handleProjectDelete}
-                      parameter={project._id}
-                    />
-                    </div>
-                  </div>
+                <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  Action
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
+            </TableHead>
+            <TableBody>
+              {data?.map((project: ProjectType, index: number) => (
+                <TableRow key={project._id} className="p-3">
+                  <TableCell
+                    style={{
+                      paddingTop: "0",
+                      paddingBottom: "0",
+                      paddingLeft: "20px",
+                    }}
+                  >
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={allChecked ? allChecked : false}
+                          sx={{
+                            color: materialTheme.palette.primary.main,
+                            "&.Mui-checked": {
+                              color: materialTheme.palette.primary.main,
+                            },
+                          }}
+                          onChange={(e) =>
+                            handleSingleCheckboxChange(e, index, project)
+                          }
+                        />
+                      }
+                      label=""
+                    />
+                  </TableCell>
+                  <TableCell style={{ padding: "0" }}>{index + 1}</TableCell>
+                  <TableCell style={{ padding: "0" }}>
+                    {project.projectName}
+                    <br />
+                    {project.projectManager}
+                  </TableCell>
+                  <TableCell style={{ padding: "0" }}>
+                    {project.projectPeriod ? (
+                      <>
+                        {project.projectPeriod} ({project.workingPeriodType})
+                      </>
+                    ) : (
+                      "Hour based project"
+                    )}
+                  </TableCell>
+                  <TableCell style={{ padding: "0" }}>
+                    {project.rate}(
+                    {project.currencyType === "rupees" ? (
+                      <span>&#x20B9;</span>
+                    ) : project.currencyType === "dollars" ? (
+                      <span>$</span>
+                    ) : project.currencyType === "pounds" ? (
+                      <span>&#163;</span>
+                    ) : null}
+                    /{project.workingPeriodType})
+                  </TableCell>
+                  <TableCell style={{ padding: "0" }}>
+                    {project.workingPeriod}({project.workingPeriodType})
+                  </TableCell>
+                  <TableCell style={{ padding: "0" }}>
+                    {project.currencyType === "rupees" ? (
+                      <span>&#x20B9; </span>
+                    ) : project.currencyType === "dollars" ? (
+                      <span>$ </span>
+                    ) : project.currencyType === "pounds" ? (
+                      <span>&#163; </span>
+                    ) : null}
+                    {project.conversionRate}
+                  </TableCell>
+                  <TableCell style={{ padding: "0" }}>
+                    &#x20B9; {project.amount ? project.amount : 0}
+                  </TableCell>
+                  <TableCell style={{ padding: "0" }}>
+                    <div className="flex">
+                      <div className={Styles.editButton}>
+                        <CompoAddProject
+                          clientId={selectedClientState.data._id}
+                          adminId={adminId}
+                          forAddProject={false}
+                          projectToEdit={project}
+                        />
+                      </div>
+                      <div className={Styles.editButton}>
+                        <ActionConfirmer
+                          actionTag="Delete"
+                          actionFunction={handleProjectDelete}
+                          parameter={project._id}
+                        />
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
-      {/* <BillAmount /> */}
+      <div>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleConfirmSelection}
+          disabled={!selectedProjectId}
+          sx={{
+            backgroundColor: "#d9a990",
+            borderRadius: "20px",
+            ":hover": {
+              backgroundColor: "#4a6180",
+            },
+            position: "absolute",
+            bottom: "50px",
+            right: "40px",
+          }}
+        >
+          View Invoice
+        </Button>
+      </div>
     </section>
   );
 };

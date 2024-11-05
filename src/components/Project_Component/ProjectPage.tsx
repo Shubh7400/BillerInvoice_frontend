@@ -22,8 +22,8 @@ const ProjectPage = () => {
     <div>
       {clientObj && selectedClient.loading !== "idle" ? (
         <div className="  w-[80vw]  flex flex-col justify-end items-start ">
-          <div className="text-black dark:text-colorLightFont  w-[80vw] ">
-            <div className=" text-black dark:text-colorLightFont  overflow-hidden overflow-ellipsis">
+          <div className="text-black  w-[80vw] ">
+            <div className=" text-black   overflow-hidden overflow-ellipsis">
             
               <div className="flex items-center justify-between w-100%">
                   <h2 className=" text-md sm:text-xl my-2 font-semibold overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden ">
@@ -45,7 +45,7 @@ const ProjectPage = () => {
                       {clientObj.pancardNo}
                     </p>
                 </div>
-                <div className="text-black dark:text-colorLightFont opacity-70 flex flex-col justify-start gap-1 ">
+                <div className="text-black opacity-70 flex flex-col justify-start gap-1 ">
                   {/* <p>{clientObj.address ? clientObj.address.street : null}</p>
                   <p>
                     {clientObj.address
