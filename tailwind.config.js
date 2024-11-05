@@ -24,6 +24,9 @@ module.exports = {
         cubexoThemeColor: "#1bbc9b",
         colorPdf: "#5a51be",
       },
+      backgroundImage: {
+        'custom-gradient': 'linear-gradient(-40deg, #bfc9c7, #4a6180)',
+      },
     },
   },
   plugins: [],
