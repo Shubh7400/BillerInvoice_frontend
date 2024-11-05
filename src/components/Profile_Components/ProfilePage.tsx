@@ -87,7 +87,7 @@ const ProfilePage = () => {
   return (
     <div>
       {data ? (
-            <div className="text-black dark:text-colorLightFont p-4 relative border-2 border-[#c1c1c1] rounded-[20px]">
+            <div className="text-black  p-4 relative border-2 border-[#c1c1c1] rounded-[20px]">
               <div className="bg-slate-100 flex justify-start items-center rounded-[15px]  h-auto  w-[200px]  p-2  b ">
                 <img
                   src={companyLogo}
@@ -95,7 +95,7 @@ const ProfilePage = () => {
                   className="h-auto w-[200px] "
                 />
               </div>
-              <div className=" text-black dark:text-colorLightFont pt-5 ">
+              <div className=" text-black  pt-5 ">
                 <h3 className=" text-2xl font-semibold ">
                   {data.companyName}
                 </h3>
@@ -103,7 +103,7 @@ const ProfilePage = () => {
                   <b>Gstin : </b>
                   {data.gistin}
                 </p>
-                <div className="text-black dark:text-colorLightFont opacity-70 flex flex-col justify-start gap-1">
+                <div className="text-black  opacity-70 flex flex-col justify-start gap-1">
                   <p>{data.address ? data.address.street : null}</p>
                   <p>
                     {data.address
