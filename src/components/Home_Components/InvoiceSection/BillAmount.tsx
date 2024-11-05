@@ -73,9 +73,10 @@ export default function InvoiceDrawer() {
       setClientSameState(selectedClientState.data.sameState);
     }
   }, [adminState, selectedClientState]);
-
+  
   React.useEffect(() => {
     dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
+    toggleDrawer(true)
   }, [invoiceNo]);
 
   React.useEffect(() => {
@@ -210,7 +211,8 @@ export default function InvoiceDrawer() {
     }
   };
 
-  const toggleDrawer = (newOpen: boolean) => () => {
+  const toggleDrawer = (newOpen: boolean) => {
+    console.log('jasbjabdbas');
     if (projectsForInvoice && projectsForInvoice.length > 0) {
       generateAndPreviewPDF();
       setPreviewAllowed(true);
@@ -318,23 +320,23 @@ export default function InvoiceDrawer() {
           },
         }}
       />
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: "8%",
-          right: "12%",
-          maxWidth: "100px",
-          height: "40px",
-          zIndex: 600,
-          color: "white",
-        }}
-      >
-        <Button variant="contained" onClick={toggleDrawer(true)}>
-          Invoice
-        </Button>
-      </Box>
+        {/* <Box
+          sx={{
+            position: "fixed",
+            bottom: "8%",
+            right: "12%",
+            maxWidth: "100px",
+            height: "40px",
+            zIndex: 600,
+            color: "white",
+          }}
+        >
+          <Button variant="contained" onClick={toggleDrawer(true)}>
+            Invoice
+          </Button>
+        </Box> */}
 
-      <SwipeableDrawer
+      {/* <SwipeableDrawer
         anchor="bottom"
         open={open}
         onClose={toggleDrawer(false)}
@@ -348,18 +350,18 @@ export default function InvoiceDrawer() {
           width: "100%",
           height: "40%",
         }}
-      >
+      > */}
         {/*Drawer header*/}
         <Box
           sx={{
-            position: "absolute",
+            // position: "absolute",
             top: -drawerBleeding,
-            borderTopLeftRadius: 8,
-            borderTopRightRadius: 8,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
             visibility: "visible",
             right: 0,
             left: 0,
-            bgcolor: bgColorHeadStyledBox,
+            bgcolor: '#cfa184cf',
           }}
         >
           <Box
@@ -428,7 +430,7 @@ export default function InvoiceDrawer() {
                       onChange={(newDate) => handleInvoiceDateChange(newDate)}
                       format="DD/MM/YYYY"
                       // label="Invoice date"
-                      sx={{ backgroundColor: "#cecece" }}
+                      sx={{ backgroundColor: "#cecece"}}
                     />
                   </DemoItem>
                   <DemoItem>
@@ -517,43 +519,50 @@ export default function InvoiceDrawer() {
               left: "1%",
             }}
           >
-            <Button
-              sx={{
-                width: { xs: "50%", sm: "150px" },
-                backgroundColor: materialTheme.palette.primary.main,
-                color: "white",
-                ":hover": {
-                  backgroundColor: materialTheme.palette.secondary.main,
-                },
-                padding: { sm: "10px 25px" },
-                mr: { xs: "3px", sm: "35px", md: "40px" },
-              }}
-              onClick={(timer) => {
-                handleInvoiceDownload(timer);
-              }}
-              disabled={!allowDownload}
-            >
-              Download
-            </Button>
-            <Button
-              sx={{
-                width: { xs: "50%", sm: "150px" },
-
-                backgroundColor: materialTheme.palette.primary.main,
-                color: "white",
-                ":hover": {
-                  backgroundColor: materialTheme.palette.secondary.main,
-                },
-                padding: "10px 25px",
-              }}
-              disabled={!previewAllowed}
-              onClick={() => previewExecution(true)}
-            >
-              Preview
-            </Button>
+           
           </Box>
+          
         </Box>
-      </SwipeableDrawer>
+
+        <div className="mt-3 flex gap-3">
+          <Button
+              sx={{
+                backgroundColor: "#d9a990",
+                borderRadius: "20px",
+                ":hover": {
+                  backgroundColor: "#4a6180",
+                },
+                // position: "absolute",
+                // bottom: "50px",
+                // right: "40px",
+                color: "#fff"
+              }}
+                onClick={(timer) => {
+                  handleInvoiceDownload(timer);
+                }}
+                disabled={!allowDownload}
+              >
+                Download
+          </Button>
+          <Button
+            sx={{
+              backgroundColor: "#d9a990",
+              borderRadius: "20px",
+              ":hover": {
+                backgroundColor: "#4a6180",
+              },
+              // position: "absolute",
+              // bottom: "50px",
+              // right: "40px",
+              color: "#fff"
+            }}
+            disabled={!previewAllowed}
+            onClick={() => previewExecution(true)}
+          >
+            Preview
+          </Button>
+        </div>
+      {/* </SwipeableDrawer> */}
 
       {showPreview ? (
         <div className="w-screen h-[900px] sm:h-[1200px] absolute top-[0px] right-[0] z-[100] bg-[#989fce] bg-opacity-80 ">
