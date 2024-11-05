@@ -4,14 +4,14 @@
 }
 .menulist li a{
     margin-bottom: 10px;
-    background: transparent;
+  
     width: 170px;
     height: 40px;
     border-radius: 50px;
-    /* margin: auto; */
+    margin: auto;
     display: flex;
     padding: 18px;
-    color: #000;
+
     cursor: pointer;
     transform: 0.4s linear;
     
@@ -20,6 +20,3 @@
     background: linear-gradient(-40deg, #bfc9c7, #4a6180);
     color: #fff;
 }
-/* .menulist li a{
-    color: #fff;
-} */
