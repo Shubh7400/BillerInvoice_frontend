@@ -322,14 +322,15 @@ export default function AddClientPage({
         fullWidth
         required
       />
-      <Button
+     <div className="flex justify-end">
+     <Button
         onClick={forEditClient ? handleEditClientSubmit : handleAddClientSubmit}
         className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
         style={{
           backgroundColor: isHovered ? "#4a6180" : "#d9a990",
           borderRadius: "20px",
           padding: "5px 15px",
-          color: "#fff ",
+          color: "#fff ", 
           marginTop: "10px",
         }}
         onMouseEnter={() => setIsHovered(true)}
@@ -337,6 +338,7 @@ export default function AddClientPage({
       >
         {forEditClient ? "Edit Client" : "Add Client"}
       </Button>
+     </div>
     </div>
   );
 }

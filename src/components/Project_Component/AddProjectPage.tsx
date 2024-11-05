@@ -17,6 +17,8 @@ import { queryClient } from "../..";
 import { CiEdit } from "react-icons/ci";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { IoChevronBackSharp } from "react-icons/io5";
 function AddProjectPage({
   adminId,
   clientId,
@@ -47,6 +49,8 @@ function AddProjectPage({
   };
   // --------------------------------------------------------
   const materialTheme = useTheme();
+  const [isHovered, setIsHovered] = useState(false);
+
   const { enqueueSnackbar } = useSnackbar();
   const [workPeriodType, setWorkPeriodType] = useState("hours");
   const [currencyType, setCurrencyType] = useState("rupees");
@@ -291,9 +295,22 @@ function AddProjectPage({
       )} */}
       <div>
         {/* <Dialog open={open} onClose={handleClose}> */}
-          <DialogTitle>
+          <div className="flex justify-between items-center mb-4 " >
+          <DialogTitle style={{padding:'0'}}>
             {forAddProject ? "Add Project" : "Edit Project"}
           </DialogTitle>
+          <Link
+          to="/projects"
+          className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
+          style={{
+            backgroundColor: "#d9a990",
+            borderRadius: "20px",
+            padding: "5px 10px",
+          }}
+        >
+          <IoChevronBackSharp /> BACK
+        </Link>
+          </div>
           {incompleteError.length > 0 ? (
             <Alert severity="error"> {incompleteError}</Alert>
           ) : null}
@@ -301,16 +318,16 @@ function AddProjectPage({
             <Alert severity="error"> {formError}</Alert>
           ) : null}
           {loading ? <LinearProgress /> : null}
-          <DialogContent>
+          <DialogContent style={{padding:'0'}}>
             <form onSubmit={handleAddSubmit}>
               <TextField
-                autoFocus
+               
                 margin="dense"
                 id="projectName"
                 label="Project Name"
                 type="text"
                 fullWidth
-                variant="standard"
+                variant="outlined"
                 name="projectName"
                 value={projectData.projectName}
                 onChange={handleChange}
@@ -323,19 +340,19 @@ function AddProjectPage({
                 label="Project Manager"
                 type="text"
                 fullWidth
-                variant="standard"
+                variant="outlined"
                 name="projectManager"
                 value={projectData.projectManager}
                 onChange={handleChange}
               />
-              <div className="flex ">
+              <div className="flex gap-2">
                 <TextField
                   select
                   margin="dense"
                   id="currencyType"
                   label="Rate/Currency type"
                   fullWidth
-                  variant="standard"
+                  variant="outlined"
                   name="currencyType"
                   value={projectData.currencyType || ""}
                   onChange={handleChange}
@@ -351,7 +368,7 @@ function AddProjectPage({
                   id="workingPeriodType"
                   label="Rate/Work based on"
                   fullWidth
-                  variant="standard"
+                  variant="outlined"
                   name="workingPeriodType"
                   value={projectData.workingPeriodType || ""}
                   onChange={handleChange}
@@ -368,7 +385,7 @@ function AddProjectPage({
                 })`}
                 type="number"
                 fullWidth
-                variant="standard"
+                variant="outlined"
                 name="rate"
                 value={projectData.rate === 0 ? "" : projectData.rate}
                 onChange={handleChange}
@@ -380,7 +397,7 @@ function AddProjectPage({
                   label={`Total project period in ${workPeriodType}`}
                   type="number"
                   fullWidth
-                  variant="standard"
+                  variant="outlined"
                   name="projectPeriod"
                   value={projectData.projectPeriod}
                   onChange={handleChange}
@@ -388,7 +405,7 @@ function AddProjectPage({
               ) : null}
               {workPeriodType === "hours" ? (
                 <>
-                  <label className=" text-[12px] text-sky-700">
+                  <label className=" text-[14px] text-gray-500">
                     {`Actual working in ${workPeriodType}`}
                   </label>
 
@@ -397,7 +414,7 @@ function AddProjectPage({
                     id="periodFrom"
                     type="time" // Set the type to "time" for HH:MM input
                     fullWidth
-                    variant="standard"
+                    variant="outlined"
                     name="workingPeriod"
                     value={projectData.workingPeriod}
                     onChange={handleChange}
@@ -419,13 +436,13 @@ function AddProjectPage({
                   label={`Actual working in ${workPeriodType}`}
                   type="number"
                   fullWidth
-                  variant="standard"
+                  variant="outlined"
                   name="workingPeriod"
                   value={projectData.workingPeriod}
                   onChange={handleChange}
                 />
               )}
-              <label className=" text-[12px] text-sky-700">
+              <label className="text-[14px] text-gray-500">
                 Conversion rate*
               </label>
               <TextField
@@ -433,7 +450,7 @@ function AddProjectPage({
                 id="conversionRate"
                 type="number"
                 fullWidth
-                variant="standard"
+                variant="outlined"
                 name="conversionRate"
                 value={
                   projectData.conversionRate <= 0
@@ -446,11 +463,31 @@ function AddProjectPage({
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
+            {/* <Button onClick={handleClose}>Cancel</Button> */}
             {!toEdit ? (
-              <Button onClick={(e) => handleAddSubmit(e)}>Add Project</Button>
+              <Button onClick={(e) => handleAddSubmit(e)}
+              style={{
+                backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+                borderRadius: "20px",
+                padding: "5px 15px",
+                color: "#fff ",
+                marginTop: "10px",
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              >Add Project</Button>
             ) : (
-              <Button onClick={(e) => handleEditSubmit(e)}>Edit Project</Button>
+              <Button onClick={(e) => handleEditSubmit(e)}
+              style={{
+                backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+                borderRadius: "20px",
+                padding: "5px 15px",
+                color: "#fff ",
+                marginTop: "10px",
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              >Edit Project</Button>
             )}
           </DialogActions>
         {/* </Dialog> */}

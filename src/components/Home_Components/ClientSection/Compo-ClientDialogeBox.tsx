@@ -141,10 +141,14 @@ export default function ClientSelectionTable({
                     <TableCell style={{padding:'0'}}>{client.email}</TableCell>
                     <TableCell style={{padding:'0'}}>
                       <div className="flex">
+
+                      <div className={Styles.editButton}>
                         <CompoAddClient
                           forEditClient={true}
                           clientToEdit={client}
                         />
+                        </div>
+                        <div className={Styles.editButton}>
                         {deleteLoading === "pending" &&
                         deletingClientIdString === client._id ? (
                           <CircularProgress size={25} />
@@ -155,6 +159,7 @@ export default function ClientSelectionTable({
                             parameter={client._id}
                           />
                         )}
+                        </div>
                       </div>
                     </TableCell>
                   </TableRow>
