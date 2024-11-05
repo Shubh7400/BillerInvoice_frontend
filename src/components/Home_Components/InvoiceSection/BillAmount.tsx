@@ -29,6 +29,7 @@ import { ThemeContext } from "../../../states/context/ThemeContext/ThemeContext"
 import { AppBar, Dialog, IconButton, Toolbar } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
+import Styles from "./billi.module.css"
 // import CloseIcon from "@mui/icons-material/Close";
 const drawerBleeding = 56;
 let windowWidth: number | undefined = window.innerWidth;
@@ -308,6 +309,8 @@ export default function InvoiceDrawer() {
     if (value) setOpen(false);
     setShowPreview(value);
   };
+  
+
 
   return (
     <Box>
@@ -523,7 +526,25 @@ export default function InvoiceDrawer() {
           </Box>
           
         </Box>
-
+        <Global
+  styles={{
+    ".MuiDrawer-root > .MuiPaper-root": {
+      height: `calc(52% - ${drawerBleeding}px)`,
+      overflow: "visible",
+    },
+    ".MuiInputBase-root": {
+      background: "transparent !important",
+      borderRadius: "50px !important",
+      
+    },
+    ".MuiInputBase-input":{
+      height: "0.4375em !important",
+    },
+    ".MuiFormControl-root": {
+      background: "transparent !important",
+    }
+  }}
+/>
         <div className="mt-3 flex gap-3">
           <Button
               sx={{
