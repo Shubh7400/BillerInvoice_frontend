@@ -142,7 +142,6 @@ const ProjectTable = () => {
     );
     setAllChecked(areAllChecked);
     if (isChecked) {
-      dispatch(addProjectForInvoiceAction(project));
       setSelectedProjectId(project?._id);
       setProjectDetails(project);
     } else if (!isChecked && project._id) {
@@ -153,6 +152,7 @@ const ProjectTable = () => {
   };
 
   const handleConfirmSelection = () => {
+    dispatch(addProjectForInvoiceAction(projectDetails));
     navigate("/invoices");
   };
 
