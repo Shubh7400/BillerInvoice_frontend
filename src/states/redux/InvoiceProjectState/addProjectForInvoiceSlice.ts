@@ -16,9 +16,22 @@ const addProjectForInvoiceSlice = createSlice({
   reducers: {
     addProjectForInvoiceAction: (state, action: PayloadAction<ProjectType>) => {
       return produce(state, (draftState: InitialStateType) => {
-        draftState.projectsForInvoice.push(action.payload);
+        const { clientId, _id } = action.payload;
+        if (
+          draftState.projectsForInvoice.length > 0 &&
+          draftState.projectsForInvoice[0].clientId !== clientId
+        ) {
+          draftState.projectsForInvoice = [];
+        }
+        const existingProject = draftState.projectsForInvoice.find(
+          (project) => project._id === _id
+        );
+        if (!existingProject) {
+          draftState.projectsForInvoice.push(action.payload);
+        }
       });
     },
+
     addAllProjectsForInvoiceAction: (
       state,
       action: PayloadAction<ProjectType[]>

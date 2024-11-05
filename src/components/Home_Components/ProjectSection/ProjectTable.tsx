@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Styles from "./ProjectTable.module.css";
 import CompoAddProject from "./CompoAddProject";
 import { useDispatch, useSelector } from "react-redux";
@@ -59,7 +59,18 @@ const ProjectTable = () => {
   const [selectedProjectId, setSelectedProjectId] = React.useState<
     string | undefined
   >("");
-  const [projectDetails, setProjectDetails] = React.useState<any>(null); // Store client details
+  const [projectDetails, setProjectDetails] = useState<ProjectType[]>([]);
+  const [projectId, setProjectId] = React.useState<any>([]);
+  const { projectsForInvoice } = useSelector(
+    (state: RootState) => state.projectsForInvoiceState
+  );
+
+  useEffect(() => {
+    if (projectsForInvoice.length !== 0) {
+      setProjectId(projectsForInvoice.map((project) => project._id));
+      setProjectDetails(projectsForInvoice);
+    }
+  }, [projectsForInvoice]);
 
   const handleProjectDelete = (projectId: string) => {
     DeleteProjectMutationHandler.mutate(projectId, {
@@ -131,29 +142,62 @@ const ProjectTable = () => {
     }
   };
 
+  // const handleSingleCheckboxChange = (
+  //   e: React.ChangeEvent<HTMLInputElement>,
+  //   index: number,
+  //   project: ProjectType
+  // ) => {
+  //   const isChecked = e.target.checked;
+  //   const areAllChecked = checkboxesRefs.current.every(
+  //     (checkboxRef) => checkboxRef?.checked === true
+  //   );
+  //   if (isChecked) {
+  //     setAllChecked(areAllChecked);
+  //     setSelectedProjectId(project?._id);
+  //     setProjectDetails(project);
+  //   } else if (!isChecked && project._id) {
+  //     // dispatch(removeProjectFromInvoiceAction(project._id));
+  //     setSelectedProjectId("");
+  //     setAllChecked(false);
+  //   }
+  // };
+
   const handleSingleCheckboxChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number,
     project: ProjectType
   ) => {
     const isChecked = e.target.checked;
-    const areAllChecked = checkboxesRefs.current.every(
-      (checkboxRef) => checkboxRef?.checked === true
-    );
-    setAllChecked(areAllChecked);
+    const newProjectId = [...projectId];
+    let newProjectDetails = [...projectDetails];
+
     if (isChecked) {
-      dispatch(addProjectForInvoiceAction(project));
-      setSelectedProjectId(project?._id);
-      setProjectDetails(project);
-    } else if (!isChecked && project._id) {
-      dispatch(removeProjectFromInvoiceAction(project._id));
+      if (!newProjectId.includes(project._id)) {
+        newProjectId.push(project._id);
+        setSelectedProjectId(project?._id);
+        newProjectDetails.push(project);
+        setProjectDetails(newProjectDetails);
+      }
+    } else {
       setSelectedProjectId("");
       setAllChecked(false);
+      const indexToRemove = newProjectId.indexOf(project._id);
+      if (indexToRemove > -1) {
+        newProjectId.splice(indexToRemove, 1);
+      }
     }
+
+    setProjectId(newProjectId);
+    setAllChecked(newProjectId.length === projectsForInvoice.length); // Update "Select All" state
   };
 
   const handleConfirmSelection = () => {
-    navigate("/invoices");
+    if (projectDetails) {
+      projectDetails.forEach((project: ProjectType) => {
+        dispatch(addProjectForInvoiceAction(project));
+      });
+      navigate("/invoices");
+    }
   };
 
   return (
@@ -210,7 +254,8 @@ const ProjectTable = () => {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={allChecked ? allChecked : false}
+                          checked={projectId.includes(project._id)}
+                          // checked={allChecked ? allChecked : false}
                           sx={{
                             color: materialTheme.palette.primary.main,
                             "&.Mui-checked": {
@@ -297,7 +342,7 @@ const ProjectTable = () => {
           variant="contained"
           color="primary"
           onClick={handleConfirmSelection}
-          disabled={!selectedProjectId}
+          disabled={!Array.isArray(projectId)}
           sx={{
             backgroundColor: "#d9a990",
             borderRadius: "20px",
