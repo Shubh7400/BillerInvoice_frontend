@@ -92,8 +92,8 @@ export default function ClientSelectionTable({
       const selectedClient = clients.find(
         (client) => client._id === selectedClientId
       );
-      setClientDetails(selectedClient); // Store selected client details
-      navigate("/projects"); // Navigate to the /project page
+      setClientDetails(selectedClient); 
+      navigate("/client/details");
     }
   };
 
