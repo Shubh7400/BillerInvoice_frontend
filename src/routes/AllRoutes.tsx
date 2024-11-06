@@ -14,6 +14,8 @@ import AddProjectPage from "../components/Project_Component/AddProjectPage";
 import { useSelector } from "react-redux";
 import { AuthContext } from "../states/context/AuthContext/AuthContext";
 import { RootState } from "../states/redux/store";
+import ProjectDetailPage from "../components/Project_Component/ProjectDetailPage";
+import InvoiceMainPage from "../components/Invoice_Component/InvoiceMainPage";
 
 const AllRoutes = () => {
   const { isAuth, adminId } = useContext(AuthContext);
@@ -48,10 +50,26 @@ const AllRoutes = () => {
           }
         />
         <Route
+          path="/client/details"
+          element={
+            <PrivateRoute>
+              <ProjectPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/projects"
           element={
             <PrivateRoute>
               <ProjectPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/project/details"
+          element={
+            <PrivateRoute>
+              <ProjectDetailPage />
             </PrivateRoute>
           }
         />
@@ -71,7 +89,7 @@ const AllRoutes = () => {
           path="/invoices"
           element={
             <PrivateRoute>
-              <InvoicePage />
+              <InvoiceMainPage />
             </PrivateRoute>
           }
         />
