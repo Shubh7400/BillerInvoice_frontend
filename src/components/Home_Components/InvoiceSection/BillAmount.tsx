@@ -545,7 +545,7 @@ export default function InvoiceDrawer() {
     }
   }}
 />
-        <div className="mt-3 flex gap-3">
+        <div className="mt-3 flex gap-3 justify-end">
           <Button
               sx={{
                 backgroundColor: "#d9a990",
