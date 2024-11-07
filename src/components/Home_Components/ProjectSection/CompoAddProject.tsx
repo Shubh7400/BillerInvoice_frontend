@@ -31,7 +31,7 @@ export default function CompoAddProject({
   projectToEdit?: ProjectType;
 }) {
   // -----------------------------------------------------
-  const [toEdit, setToEdit] = useState<boolean>();
+  const [toEdit, setToEdit] = useState<boolean>(false);
   const handleToAddClick = () => {
     setToEdit(false);
   };
@@ -211,7 +211,7 @@ export default function CompoAddProject({
   };
 
   React.useEffect(() => {
-    if (!toEdit) {
+    if (forAddProject && !toEdit) {
       setProjectData({
         projectName: "",
         projectManager: "",
@@ -226,7 +226,7 @@ export default function CompoAddProject({
         clientId: clientId ? clientId : "",
       });
     }
-    if (toEdit && projectToEdit) {
+    if (!forAddProject && toEdit && projectToEdit) {
       let newProjectToEdit = { ...projectToEdit };
       delete newProjectToEdit.amount;
       setProjectData(newProjectToEdit);
@@ -244,11 +244,11 @@ export default function CompoAddProject({
 
   const handleAddProjectClick = () => {
     handleToAddClick();
-    handleClickOpen();
+    // handleClickOpen();
   };
   const handleEditProjectClick = () => {
     handleToEditClick();
-    handleClickOpen();
+    // handleClickOpen();
   };
 
   return (
@@ -256,7 +256,7 @@ export default function CompoAddProject({
       {forAddProject ? (
         <div className="flex justify-end w-[80vw] mt-5 pr-2 pt-2 pb-2">
           <Button
-            disabled={!clientId || !adminId}
+            disabled={!adminId}
             variant="contained"
             sx={{
               backgroundColor: "#d9a990",
@@ -265,7 +265,11 @@ export default function CompoAddProject({
                 backgroundColor: "#4a6180",
               },
             }}
-            onClick={() => navigate("/add-project")}
+            onClick={() => {
+              handleAddProjectClick()
+              navigate("/add-project")
+            }
+            }
           >
             Add Project
           </Button>
@@ -273,7 +277,7 @@ export default function CompoAddProject({
       ) : (
         <div className="">
           <Button
-            disabled={!clientId || !adminId}
+            disabled={!adminId}
             variant="outlined"
             sx={{
               color: materialTheme.palette.primary.main,
@@ -285,12 +289,17 @@ export default function CompoAddProject({
               },
               cursor: "pointer",
             }}
-            onClick={() => handleEditProjectClick()}
+            onClick={() => {
+              handleEditProjectClick();
+              navigate("/edit-project")
+            }
+            }
           >
             <CiEdit size={25} />
           </Button>
-        </div>
-      )}
+        </div >
+      )
+      }
       <div>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>
@@ -366,9 +375,8 @@ export default function CompoAddProject({
               <TextField
                 margin="dense"
                 id="rate"
-                label={`Rate (${currencyType}/${
-                  workPeriodType === "days" ? "months" : "hours"
-                })`}
+                label={`Rate (${currencyType}/${workPeriodType === "days" ? "months" : "hours"
+                  })`}
                 type="number"
                 fullWidth
                 variant="standard"

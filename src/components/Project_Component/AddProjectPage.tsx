@@ -31,7 +31,7 @@ function AddProjectPage({
   projectId?: string | undefined;
   projectToEdit?: ProjectType;
 }) {
-  const [toEdit, setToEdit] = useState<boolean>();
+  const [toEdit, setToEdit] = useState<boolean>(false);
   const handleToAddClick = () => {
     setToEdit(false);
   };
@@ -40,7 +40,7 @@ function AddProjectPage({
   };
 
   // ------------------------------------------------------
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -49,8 +49,6 @@ function AddProjectPage({
   };
   // --------------------------------------------------------
   const materialTheme = useTheme();
-  const [isHovered, setIsHovered] = useState(false);
-
   const { enqueueSnackbar } = useSnackbar();
   const [workPeriodType, setWorkPeriodType] = useState("hours");
   const [currencyType, setCurrencyType] = useState("rupees");
@@ -67,8 +65,8 @@ function AddProjectPage({
     currencyType: "rupees",
     conversionRate: 1,
     paymentStatus: false,
-    adminId: adminId ? adminId : "",
-    clientId: clientId ? clientId : "",
+    adminId: "",
+    clientId: "",
   });
 
   const navigate = useNavigate();
@@ -150,6 +148,7 @@ function AddProjectPage({
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
+
     if (areAllRequiredFieldsFilled(projectData)) {
       setLoading(true);
       addProjectMutation.mutate(projectData, {
@@ -158,17 +157,10 @@ function AddProjectPage({
           queryClient.refetchQueries(["projects", clientId]);
           setLoading(false);
           handleClose();
-          enqueueSnackbar("Project added successfully.", {
-            variant: "success",
-          });
-          navigate("/projects");
         },
         onError(error) {
           setLoading(false);
           setIncompleteError("Add request error, add again.");
-          enqueueSnackbar("Error in adding project. Try again! ", {
-            variant: "error",
-          });
         },
       });
     } else {
@@ -201,7 +193,7 @@ function AddProjectPage({
             enqueueSnackbar("Project edited successfully.", {
               variant: "success",
             });
-            navigate("/projects");
+
             handleClose();
           },
           onError(error) {
@@ -219,7 +211,8 @@ function AddProjectPage({
   };
 
   React.useEffect(() => {
-    if (!toEdit) {
+    
+    if (forAddProject && toEdit) {
       setProjectData({
         projectName: "",
         projectManager: "",
@@ -234,7 +227,8 @@ function AddProjectPage({
         clientId: clientId ? clientId : "",
       });
     }
-    if (toEdit && projectToEdit) {
+    console.log(forAddProject, '<<<< >>>>>', toEdit);
+    if (!forAddProject && !toEdit && projectToEdit) {
       let newProjectToEdit = { ...projectToEdit };
       delete newProjectToEdit.amount;
       setProjectData(newProjectToEdit);
@@ -256,7 +250,7 @@ function AddProjectPage({
   };
   const handleEditProjectClick = () => {
     handleToEditClick();
-    handleClickOpen();
+    // handleClickOpen();
   };
 
   return (
@@ -385,9 +379,8 @@ function AddProjectPage({
             <TextField
               margin="dense"
               id="rate"
-              label={`Rate (${currencyType}/${
-                workPeriodType === "days" ? "months" : "hours"
-              })`}
+              label={`Rate (${currencyType}/${workPeriodType === "days" ? "months" : "hours"
+                })`}
               type="number"
               fullWidth
               variant="outlined"
@@ -467,8 +460,8 @@ function AddProjectPage({
             />
           </form>
         </DialogContent>
-        <DialogActions>
-          {/* <Button onClick={handleClose}>Cancel</Button> */}
+        {/* <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
           {!toEdit ? (
             <Button
               onClick={(e) => handleAddSubmit(e)}
@@ -500,7 +493,7 @@ function AddProjectPage({
               Edit Project
             </Button>
           )}
-        </DialogActions>
+        </DialogActions> */}
         {/* </Dialog> */}
       </div>
     </>
