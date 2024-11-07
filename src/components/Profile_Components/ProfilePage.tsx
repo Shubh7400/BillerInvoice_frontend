@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../../states/redux/store";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
-import cubexoLogo from "../../utils/images/cubexoLogo.webp";
+import cubexoLogo from "../assets/cubexo_logo.png";
 import gamaedgeLogo from "../../utils/images/gammaedgeLogo.png";
 import { useNavigate } from "react-router-dom";
 import { Button, TextField, useTheme } from "@mui/material";

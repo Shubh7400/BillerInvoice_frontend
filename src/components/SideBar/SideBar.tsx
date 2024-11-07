@@ -46,7 +46,7 @@ const Sidebar = () => {
             to="/clients"
             className={({ isActive }) =>
               isActive
-                ? "bg-custom-gradient text-blue-700 rounded-[50px]  flex items-center gap-[10px]"
+                ? "bg-custom-gradient text-white rounded-[50px]  flex items-center gap-[10px]"
                 : "text-[16px] flex items-center gap-[10px]"
             }
             
@@ -59,7 +59,7 @@ const Sidebar = () => {
             to="/projects"
             className={({ isActive }) =>
               isActive
-                ? "bg-custom-gradient text-blue-700 rounded-[50px]  flex items-center gap-[10px]"
+                ? "bg-custom-gradient text-white rounded-[50px]  flex items-center gap-[10px]"
                 : "text-[16px] flex items-center gap-[10px]"
             }
           >
@@ -71,7 +71,7 @@ const Sidebar = () => {
             to="/invoices"
             className={({ isActive }) =>
               isActive
-                ? "bg-custom-gradient text-blue-700 rounded-[50px]  flex items-center gap-[10px]"
+                ? "bg-custom-gradient text-white rounded-[50px]  flex items-center gap-[10px]"
                 : "text-[16px] flex items-center gap-[10px]"
             }
           >
@@ -83,7 +83,7 @@ const Sidebar = () => {
             to="/profile"
             className={({ isActive }) =>
               isActive
-                ? "bg-custom-gradient text-blue-700 rounded-[50px]  flex items-center gap-[10px]"
+                ? "bg-custom-gradient text-white rounded-[50px]  flex items-center gap-[10px]"
                 : "text-[16px] flex items-center gap-[10px]"
             }
           >
