@@ -6,6 +6,7 @@ import { RootState } from "../../../states/redux/store";
 import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
 import {
   useDeleteProject,
+  useFetchAllProjectsByAdminId,
   useFetchAllProjectsByClientId,
 } from "../../../states/query/Project_queries/projectQueries";
 import {
@@ -46,9 +47,8 @@ const ProjectTable = () => {
   const selectedClientState = useSelector(
     (state: RootState) => state.selectedClientState
   );
-  const { isLoading, data, isError } = useFetchAllProjectsByClientId(
-    selectedClientState.data._id
-  );
+  const { isLoading, data, isError } = useFetchAllProjectsByAdminId(adminId);
+
   const DeleteProjectMutationHandler = useDeleteProject(
     selectedClientState.data._id
   );
@@ -100,13 +100,6 @@ const ProjectTable = () => {
         </div>
         <div className="text-xl font-bold text-center p-4 ">
           <h3>PROJECT DETAILS</h3>
-          {isLoading ? (
-            <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
-              {!selectedClientState.data._id
-                ? "Please select client to display projects or to add project !!"
-                : null}
-            </p>
-          ) : null}
           {isError ? (
             <p className="font-thin p-4 ">
               <Alert severity="error">Network request error, refresh!!!</Alert>
@@ -114,7 +107,7 @@ const ProjectTable = () => {
           ) : null}
           {data && (data === "" || data.length <= 0) ? (
             <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
-              Selected Client has no project available !
+              No project available !
             </p>
           ) : null}
         </div>
@@ -214,12 +207,15 @@ const ProjectTable = () => {
           <Table>
             <TableHead className={Styles.animated}>
               <TableRow>
-                <TableCell style={{ paddingRight: "0" }}>Select</TableCell>
+                {/* <TableCell style={{ paddingRight: "0" }}>Select</TableCell> */}
                 <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
-                  Sr.no.
+                  Sr.No.
                 </TableCell>
                 <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                   Project
+                </TableCell>
+                <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  Manager
                 </TableCell>
                 <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                   Project Period
@@ -237,14 +233,14 @@ const ProjectTable = () => {
                   Amount
                 </TableCell>
                 <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
-                  Action
+                  {' '}
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {data?.map((project: ProjectType, index: number) => (
                 <TableRow key={project._id} className="p-3">
-                  <TableCell
+                  {/* <TableCell
                     style={{
                       paddingTop: "0",
                       paddingBottom: "0",
@@ -269,11 +265,12 @@ const ProjectTable = () => {
                       }
                       label=""
                     />
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell style={{ padding: "0" }}>{index + 1}</TableCell>
                   <TableCell style={{ padding: "0" }}>
                     {project.projectName}
-                    <br />
+                  </TableCell>
+                  <TableCell style={{ padding: "0" }}>
                     {project.projectManager}
                   </TableCell>
                   <TableCell style={{ padding: "0" }}>

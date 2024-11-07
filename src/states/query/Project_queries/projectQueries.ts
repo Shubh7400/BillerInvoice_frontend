@@ -3,6 +3,7 @@ import {
   addProject,
   deleteProject,
   editProject,
+  getAllProjectsByAdminId,
   getAllProjectsByClientId,
   getProjectById,
 } from "../../../api/project_requests";
@@ -66,4 +67,14 @@ export const useDeleteProject = (clientId: string | undefined) => {
     }
   );
   return DeleteProjectMutationHandler;
+};
+
+export const useFetchAllProjectsByAdminId = (adminId: string | null) => {
+  return useQuery(
+    ["projects/admin", adminId],
+    () => (adminId ? getAllProjectsByAdminId(adminId) : null),
+    {
+      enabled: !!adminId,
+    }
+  );
 };

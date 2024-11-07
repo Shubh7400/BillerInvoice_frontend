@@ -121,3 +121,28 @@ export async function deleteProject(projectId: string) {
     throw new Error("Error in deleting project");
   }
 }
+
+export async function getAllProjectsByAdminId(AdminId: string) {
+  let token = localStorage.getItem("billAppAuthToken");
+  if (token) {
+    token = token.substring(1, token.length - 1);
+  }
+  try {
+    const response = await axios.get(`${config.apiUrlProject}/admin/${AdminId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(
+      "================res after getAllProjectByAdminId================>",
+      response
+    );
+    return response.data;
+  } catch (error) {
+    console.log(
+      "Error in getting allprojects :from getAllClients function-",
+      error
+    );
+    throw new Error("Error in getting all admin projects");
+  }
+}
