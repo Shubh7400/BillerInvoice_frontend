@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Grid, Typography, Select, MenuItem, FormControl, styled, SelectChangeEvent } from '@mui/material';
 import { AppDispatch, RootState } from "../../../states/redux/store";
 import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../../states/redux/AdminStates/adminSlice";
@@ -14,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import { Button, TextField, useTheme } from "@mui/material";
 import { FaRegUser } from "react-icons/fa";
 import Styles from "./client.module.css"
+import { Link } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
 
 
 const SelectClient = () => {
@@ -117,9 +120,13 @@ const SelectClient = () => {
       <div className="flex justify-between items-center">
         {/* <CompoAddClient forEditClient={false} clientToEdit={null} /> */}
 
-        <div className="flex gap-2 items-center text-[20px]">
-          <FaRegUser />
-          <h1> Clients List</h1>
+        <div className='flex items-center gap-2'>
+          <Link to="/" className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px] ">
+            <IoIosArrowBack />
+          </Link>
+          <Typography variant="h5" component="h2" className='text-center'>
+            CLIENT LIST
+          </Typography>
         </div>
 
         <div className="flex gap-4 items-center">

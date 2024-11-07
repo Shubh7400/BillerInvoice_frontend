@@ -6,7 +6,7 @@ import projects from "../assets/project-task.png";
 import invoice from "../assets/invoicebg.png";
 import { Link } from "react-router-dom";
 import { Outlet, useNavigate } from "react-router-dom";
-import cubexoLogo from "../../utils/images/cubexoLogo.webp";
+import cubexoLogo from "../assets/cubexo_logo.png";
 import MyMapComponent from "./location";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../states/redux/store";
