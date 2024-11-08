@@ -248,12 +248,10 @@ const Login = () => {
               <hr />
               {!isAuth && startChangePassword ? (
                 <p className="text-slate-500   ">
-                  Verify your registered email address to receive otp, and proceed
-                  to create new password.
+                  
                 </p>
               ) : !isAuth ? (
                 <p className="text-slate-500 ">
-                  If you have an account, sign in with email address.
                 </p>
               ) : (
                 <p>Contact developer to add new admin</p>
@@ -351,13 +349,20 @@ const Login = () => {
                           onComplete={(e) => handleOtpComplete}
                           value={otp}
                           onChange={(e) => handleOtpDataChange(e)}
+                          sx={{
+                            "& input": {
+                              height: "40px",
+                              width: "40px",
+                              padding:"0"
+                            },
+                          }}
                         />
                       </div>
                     </div>
                   )}
                   {!isAuth && startChangePassword ? (
                     <button
-                      className="bg-thirdColor py-2 px-4 cursor-pointer text-[whitesmoke] border-none hover:bg-colorMediumDark "
+                      className="bg-[#d9a990] py-2 px-4 cursor-pointer text-[whitesmoke] border-none hover:bg-[#4a6180] "
                       type="submit"
                     >
                       Verify Otp
