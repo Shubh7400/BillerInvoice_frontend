@@ -202,7 +202,7 @@ const TabPillsComponent: React.FC = () => {
                 variant="h6"
                 component="span"
                 className='absolute top-5 right-3'
-                style={{ fontSize: '60px', color: '#000', fontWeight: '500' }}
+                style={{ fontSize: '60px', color: '#000', fontWeight: '300',fontFamily: 'Rubik'}}
               >
                 {displayData}
               </Typography>
