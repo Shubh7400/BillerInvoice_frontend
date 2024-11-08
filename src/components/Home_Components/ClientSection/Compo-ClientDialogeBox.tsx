@@ -86,13 +86,13 @@ export default function ClientSelectionTable({
     }
   };
 
-  const handleConfirmSelection = () => {
-    if (selectedClientId) {
-      dispatch(getClientByIdAction(selectedClientId));
+  const handleConfirmSelection = (clientId: string) => {
+    if (clientId) {
+      dispatch(getClientByIdAction(clientId));
       const selectedClient = clients.find(
-        (client) => client._id === selectedClientId
+        (client) => client._id === clientId
       );
-      setClientDetails(selectedClient); 
+      setClientDetails(selectedClient);
       navigate("/client/details");
     }
   };
@@ -106,10 +106,12 @@ export default function ClientSelectionTable({
           <Table>
             <TableHead className={Styles.animated} >
               <TableRow>
-                <TableCell style={{ paddingRight:'0'}}>Select</TableCell>
-                <TableCell style={{paddingLeft:'0', paddingRight:'0'}}>Client Name</TableCell>
-                <TableCell style={{paddingLeft:'0', paddingRight:'0'}}>Client Email</TableCell>
-                <TableCell style={{paddingLeft:'0', paddingRight:'0'}}>Action</TableCell>
+                <TableCell style={{ paddingRight: '0' }}>Sr. No.</TableCell>
+                <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Client Name</TableCell>
+                <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Client Email</TableCell>
+                <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Client Phone</TableCell>
+                <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Action</TableCell>
+                <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>{''}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody  >
@@ -122,78 +124,58 @@ export default function ClientSelectionTable({
                   let clientName = ele.clientName.toLowerCase();
                   return clientName.includes(searchQ);
                 })
-                .map((client: ClientType) => (
+                .map((client: ClientType, index: number) => (
                   <TableRow key={client._id} className="p-3">
-                    <TableCell style={{paddingTop: '0', paddingBottom: '0', paddingLeft:'20px'}}>
-                      <FormControlLabel
-                        control={
-                          <Radio
-                            checked={selectedClientId === client._id}
-                            onChange={() =>
-                              setSelectedClientId(client._id || "")
-                            }
-                          />
-                        }
-                        label=""
-                      />
-                    </TableCell>
-                    <TableCell style={{padding:'0' }}>{client.clientName}</TableCell>
-                    <TableCell style={{padding:'0'}}>{client.email}</TableCell>
-                    <TableCell style={{padding:'0'}}>
+                    <TableCell style={{ padding: '0' }}>{index + 1}</TableCell>
+                    <TableCell style={{ padding: '0' }}>{client.clientName}</TableCell>
+                    <TableCell style={{ padding: '0' }}>{client.email}</TableCell>
+                    <TableCell style={{ padding: '0' }}>{client.contactNo}</TableCell>
+                    <TableCell style={{ padding: '0' }}>
                       <div className="flex">
 
-                      <div className={Styles.editButton}>
-                        <CompoAddClient
-                          forEditClient={true}
-                          clientToEdit={client}
-                        />
+                        <div className={Styles.editButton}>
+                          <CompoAddClient
+                            forEditClient={true}
+                            clientToEdit={client}
+                          />
                         </div>
                         <div className={Styles.editButton}>
-                        {deleteLoading === "pending" &&
-                        deletingClientIdString === client._id ? (
-                          <CircularProgress size={25} />
-                        ) : (
-                          <ActionConfirmer
-                            actionTag="Delete"
-                            actionFunction={handleDeleteClient}
-                            parameter={client._id}
-                          />
-                        )}
+                          {deleteLoading === "pending" &&
+                            deletingClientIdString === client._id ? (
+                            <CircularProgress size={25} />
+                          ) : (
+                            <ActionConfirmer
+                              actionTag="Delete"
+                              actionFunction={handleDeleteClient}
+                              parameter={client._id}
+                            />
+                          )}
                         </div>
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          handleConfirmSelection(client._id || "")
+                        }}
+                        sx={{
+                          backgroundColor: "#d9a990",
+                          borderRadius: "20px",
+                          ":hover": {
+                            backgroundColor: "#4a6180",
+                          }
+                        }}
+                      >
+                        View
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
           </Table>
         </TableContainer>
-      )}
-
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleConfirmSelection}
-        disabled={!selectedClientId}
-        sx={{
-          backgroundColor: "#d9a990",
-          borderRadius: "20px",
-          ":hover": {
-            backgroundColor: "#4a6180",
-          }
-          , position:'absolute', bottom:'50px', right:'40px'
-        }}
-      >
-        Confirm Selection
-      </Button>
-
-      {clientDetails && (
-        <Box sx={{ marginTop: "20px" }}>
-          <h2>Client Details</h2>
-          <p>
-            <strong>Name:</strong> {clientDetails.clientName}
-          </p>
-          {/* Add more client details here as needed */}
-        </Box>
       )}
     </Box>
   );

@@ -78,7 +78,7 @@ export default function InvoiceDrawer() {
   React.useEffect(() => {
     dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
     toggleDrawer(true)
-  }, [invoiceNo]);
+  }, [invoiceNo, projectsForInvoice]);
 
   React.useEffect(() => {
     if (visibility) {
@@ -213,7 +213,6 @@ export default function InvoiceDrawer() {
   };
 
   const toggleDrawer = (newOpen: boolean) => {
-    console.log('jasbjabdbas');
     if (projectsForInvoice && projectsForInvoice.length > 0) {
       generateAndPreviewPDF();
       setPreviewAllowed(true);

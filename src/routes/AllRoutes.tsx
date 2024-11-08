@@ -17,6 +17,7 @@ import { RootState } from "../states/redux/store";
 import ProjectDetailPage from "../components/Project_Component/ProjectDetailPage";
 import InvoiceMainPage from "../components/Invoice_Component/InvoiceMainPage";
 import InvoiceListPage from "../components/Invoice_Component/InvoiceListPage";
+import InvoiceClientPage from "../components/Invoice_Component/InvoiceClientPage";
 
 const AllRoutes = () => {
   const { isAuth, adminId } = useContext(AuthContext);
@@ -71,6 +72,14 @@ const AllRoutes = () => {
           element={
             <PrivateRoute>
               <ProjectDetailPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/client/invoices"
+          element={
+            <PrivateRoute>
+              <InvoiceClientPage/>
             </PrivateRoute>
           }
         />
