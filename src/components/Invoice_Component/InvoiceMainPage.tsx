@@ -152,7 +152,7 @@ const TabPillsComponent: React.FC = () => {
             <IoIosArrowBack />
           </Link>
           <Typography variant="h5" component="h2" className='text-center'>
-            INVOICE 
+            INVOICE
           </Typography>
         </div>
         <FormControl>
@@ -197,7 +197,7 @@ const TabPillsComponent: React.FC = () => {
                   filter: isUpcomingMonth ? 'grayscale(100%)' : 'none',
                 }}
               />
-              
+
               <Typography
                 variant="h6"
                 component="span"
@@ -217,7 +217,7 @@ const TabPillsComponent: React.FC = () => {
 
               {/* Apply dynamic color to the button */}
               <Link
-                to="/profile"
+                to="/invoice/details"
                 className={`text-gray-700 text-[20px] absolute bottom-[-5px] right-[-9px] bg-[#d1d1d194] w-[20%] h-[30%] flex justify-center items-center rounded-[50%] hover:border ${isUpcomingMonth ? 'pointer-events-none opacity-50' : ''}`}
                 style={{
                   backgroundColor: buttonColor, // Apply dynamic color here

@@ -7,7 +7,13 @@ import { useNavigate } from "react-router-dom";
 import ProjectTable from "../Home_Components/ProjectSection/ProjectTable";
 import error from "../assets/select_client.png"
 
-const ProjectPage = () => {
+const ProjectPage = (
+  {
+    projectTableforClient
+  }:
+    {
+      projectTableforClient: boolean
+    }) => {
   const clients = useSelector((state: RootState) => state.allClientsState);
   const selectedClient = useSelector(
     (state: RootState) => state.selectedClientState
@@ -17,11 +23,10 @@ const ProjectPage = () => {
   const navigate = useNavigate();
   const materialTheme = useTheme();
 
-  const clientsArr: ClientType[] = clients.data;
   return (
     <div>
       <div className="  w-[80vw]  flex flex-col justify-end items-start ">
-        <ProjectTable />
+        <ProjectTable projectTableforClient={projectTableforClient} />
       </div>
     </div>
   );

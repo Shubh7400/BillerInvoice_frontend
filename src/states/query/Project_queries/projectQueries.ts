@@ -10,12 +10,12 @@ import {
 import { ProjectType, UpdateProjectDataType } from "../../../types/types";
 import { queryClient } from "../../..";
 
-export const useFetchAllProjectsByClientId = (clientId: string | undefined) => {
+export const useFetchAllProjectsByClientId = (clientId: string | undefined, projectTableforClient: boolean) => {
   return useQuery(
     ["projects", clientId],
     () => (clientId ? getAllProjectsByClientId(clientId) : null),
     {
-      enabled: !!clientId,
+      enabled: projectTableforClient && !!clientId,
     }
   );
 };
@@ -69,12 +69,12 @@ export const useDeleteProject = (clientId: string | undefined) => {
   return DeleteProjectMutationHandler;
 };
 
-export const useFetchAllProjectsByAdminId = (adminId: string | null) => {
+export const useFetchAllProjectsByAdminId = (adminId: string | null, projectTableforClient: boolean) => {
   return useQuery(
     ["projects/admin", adminId],
     () => (adminId ? getAllProjectsByAdminId(adminId) : null),
     {
-      enabled: !!adminId,
+      enabled: !projectTableforClient && !!adminId,
     }
   );
 };
