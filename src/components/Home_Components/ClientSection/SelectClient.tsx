@@ -117,7 +117,7 @@ const SelectClient = () => {
 
   return (
     <section>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between mb-4 items-center">
         {/* <CompoAddClient forEditClient={false} clientToEdit={null} /> */}
 
         <div className='flex items-center gap-2'>
@@ -132,7 +132,7 @@ const SelectClient = () => {
         <div className="flex gap-4 items-center">
         <div className={Styles.search_input}>
           <TextField
-            margin="dense"
+            
             label="Search by client name"
             type="text"
             variant="outlined"
@@ -161,7 +161,7 @@ const SelectClient = () => {
         </Button>
         </div>
       </div>
-      <div className=" pt-6 top-2  z-10 ">
+      <div className="  top-2  z-10 ">
         <div>
           <ConfirmationDialog
             clientsLoading={clientsLoading}

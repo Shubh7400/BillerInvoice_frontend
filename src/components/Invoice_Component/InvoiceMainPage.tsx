@@ -1,22 +1,93 @@
 import React, { useState } from 'react';
 import { Grid, Typography, Select, MenuItem, FormControl, styled, SelectChangeEvent } from '@mui/material';
 import Styles from './invoive.module.css';
-import jan from '../assets/001.gif';
-import feb from '../assets/002.gif';
-import mar from '../assets/003.gif';
-import apr from '../assets/004.gif';
-import may from '../assets/005.gif';
-import jun from '../assets/001.gif';
-import jul from '../assets/002.gif';
-import aug from '../assets/003.gif';
-import sept from '../assets/004.gif';
-import oct from '../assets/005.gif';
-import nov from '../assets/001.gif';
-import dec from '../assets/002.gif';
+import one from '../assets/001.gif';
+import two from '../assets/002.gif';
+import three from '../assets/003.gif';
+import four from '../assets/004.gif';
+import five from '../assets/005.gif';
 import { Link } from "react-router-dom";
-import { Outlet, useNavigate } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa6";
 import { IoIosArrowBack } from "react-icons/io";
+import { FaArrowRight } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
+
+const tabsContent: YearContent[] = [
+  {
+    label: '2022',
+    content: {
+      January: '100',
+      February: '101',
+      March: '102',
+      April: '102',
+      May: '104',
+      June: '105',
+      July: '106',
+      August: '107',
+      September: '108',
+      October: '109',
+      November: '110',
+      December: '111',
+    },
+  },
+  {
+    label: '2023',
+    content: {
+      January: '200',
+      February: '201',
+      March: '202',
+      April: '202',
+      May: '204',
+      June: '205',
+      July: '206',
+      August: '207',
+      September: '208',
+      October: '209',
+      November: '210',
+      December: '211',
+    },
+  },
+  {
+    label: '2024',
+    content: {
+      January: '300',
+      February: '301',
+      March: '302',
+      April: '302',
+      May: '304',
+      June: '305',
+      July: '306',
+      August: '307',
+      September: '308',
+      October: '309',
+      November: '310',
+      December: '311',
+    },
+  },
+];
+
+const monthImages: { [key: string]: string } = {
+  January: one,
+  February: two,
+  March: three,
+  April: four,
+  May: five,
+  June: one,
+  July: two,
+  August: three,
+  September: four,
+  October: five,
+  November: one,
+  December: two,
+};
+
+// Map image to colors directly
+const monthColors: { [key: string]: string } = {
+  [one]: 'rgb(254, 217, 164)', // Red
+  [two]: 'rgb(191, 197, 210)', // Green
+  [three]: 'rgb(157, 225, 229)', // Blue
+  [four]: 'rgb(119, 221, 161)', // Pink
+  [five]: 'rgb(254, 224, 156)', // Yellow
+};
 
 const StyledSelect = styled(Select)({
   '&.MuiInputBase-root': {
@@ -43,7 +114,6 @@ const StyledSelect = styled(Select)({
     minWidth: '300px',
     overflowX: 'auto',
   },
-  
 });
 
 interface MonthData {
@@ -55,88 +125,22 @@ interface YearContent {
   content: MonthData;
 }
 
-const monthImages: { [key: string]: string } = {
-  January: jan,
-  February: feb,
-  March: mar,
-  April: apr,
-  May: may,
-  June: jun,
-  July: jul,
-  August: aug,
-  September: sept,
-  October: oct,
-  November: nov,
-  December: dec,
-};
-
 const TabPillsComponent: React.FC = () => {
-  const [tabIndex, setTabIndex] = useState<number>(0);
-  const [dropdownIndex, setDropdownIndex] = useState<number>(0);
   const navigate = useNavigate();
-
   const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth(); // 0 (January) to 11 (December)
-  
+
+  // Find the index of the current year in tabsContent
+  const currentYearIndex = tabsContent.findIndex(tab => tab.label === currentYear.toString());
+
+  // Initialize dropdownIndex with the current year index
+  const [dropdownIndex, setDropdownIndex] = useState<number>(currentYearIndex >= 0 ? currentYearIndex : 0);
+  const [tabIndex, setTabIndex] = useState<number>(dropdownIndex);
+
   const handleDropdownChange = (event: SelectChangeEvent<unknown>) => {
     const newIndex = Number(event.target.value as string);
     setDropdownIndex(newIndex);
     setTabIndex(newIndex);
   };
-
-  const tabsContent: YearContent[] = [
-    {
-      label: '2022',
-      content: {
-        January: '23',
-        February: '400',
-        March: '184',
-        April: '32',
-        May: '42',
-        June: '434',
-        July: '12',
-        August: '123',
-        September: '32',
-        October: '432',
-        November: '87',
-        December: '78',
-      },
-    },
-    {
-      label: '2023',
-      content: {
-        January: '231',
-        February: '4030',
-        March: '1845',
-        April: '32',
-        May: '42',
-        June: '434',
-        July: '12',
-        August: '123',
-        September: '32',
-        October: '432',
-        November: '87',
-        December: '78',
-      },
-    },
-    {
-      label: '2024',
-      content: {
-        January: '231',
-        February: '4030',
-        March: '1845',
-        April: '32',
-        May: '42',
-        June: '434',
-        July: '12',
-        August: '123',
-        September: '32',
-        October: '432',
-        November: '87',
-        December: '0',
-      },
-    },
-  ];
 
   const monthNames = Object.keys(tabsContent[dropdownIndex].content);
 
@@ -148,7 +152,7 @@ const TabPillsComponent: React.FC = () => {
             <IoIosArrowBack />
           </Link>
           <Typography variant="h5" component="h2" className='text-center'>
-            INVOICE 
+            INVOICE
           </Typography>
         </div>
         <FormControl>
@@ -172,13 +176,18 @@ const TabPillsComponent: React.FC = () => {
       <Grid container spacing={2}>
         {monthNames.map((month, index) => {
           const isCurrentYear = tabsContent[dropdownIndex].label === currentYear.toString();
-          const isUpcomingMonth = isCurrentYear && index > currentMonth;
+          const isUpcomingMonth = isCurrentYear && index > new Date().getMonth();
           const displayData = isUpcomingMonth ? 'N/A' : tabsContent[dropdownIndex].content[month];
-          
+
+          // Get the image path for the month
+          const imagePath = monthImages[month];
+          // Set color based on the image path
+          const buttonColor = monthColors[imagePath] || '#E4A98A'; // Default color if no match
+
           return (
             <Grid item xs={3} key={month} className='relative'>
               <img
-                src={monthImages[month]}
+                src={imagePath}
                 alt={`${month} image`}
                 style={{
                   width: '100%',
@@ -188,7 +197,7 @@ const TabPillsComponent: React.FC = () => {
                   filter: isUpcomingMonth ? 'grayscale(100%)' : 'none',
                 }}
               />
-              
+
               <Typography
                 variant="h6"
                 component="span"
@@ -200,15 +209,19 @@ const TabPillsComponent: React.FC = () => {
 
               <Typography
                 variant="h6"
-                className='absolute bottom-[16px] right-[4.5rem]'
+                className='absolute bottom-[16px] right-[25%] uppercase'
                 style={{ fontSize: '20px', color: '#000', fontWeight: '500' }}
               >
                 {month}
               </Typography>
-              
+
+              {/* Apply dynamic color to the button */}
               <Link
                 to="/invoice/details"
-                className={`text-gray-700 text-[20px] absolute bottom-[-5px] right-[-9px] bg-[#d1d1d194] w-[55px] h-[55px] flex justify-center items-center rounded-[50px] hover:border ${isUpcomingMonth ? 'pointer-events-none opacity-50' : ''}`}
+                className={`text-gray-700 text-[20px] absolute bottom-[-5px] right-[-9px] bg-[#d1d1d194] w-[20%] h-[30%] flex justify-center items-center rounded-[50%] hover:border ${isUpcomingMonth ? 'pointer-events-none opacity-50' : ''}`}
+                style={{
+                  backgroundColor: buttonColor, // Apply dynamic color here
+                }}
               >
                 <FaArrowRight className={Styles.arrow} />
               </Link>

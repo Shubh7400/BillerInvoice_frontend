@@ -193,7 +193,7 @@ const ProjectTable = (
   };
 
   return (
-    <section className="pb-14 ">
+    <section >
       <div>
         {clientObj && selectedClientState.loading !== "idle" && projectTableforClient ? (
           <div className="  w-[80vw]  flex flex-col justify-end items-start ">
