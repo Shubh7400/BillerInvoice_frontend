@@ -207,7 +207,7 @@ const TabPillsComponent: React.FC = () => {
               </Typography>
               
               <Link
-                to="/profile"
+                to="/invoice/details"
                 className={`text-gray-700 text-[20px] absolute bottom-[-5px] right-[-9px] bg-[#d1d1d194] w-[55px] h-[55px] flex justify-center items-center rounded-[50px] hover:border ${isUpcomingMonth ? 'pointer-events-none opacity-50' : ''}`}
               >
                 <FaArrowRight className={Styles.arrow} />
