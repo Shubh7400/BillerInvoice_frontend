@@ -78,11 +78,11 @@ export default function ClientSelectionTable({
     }
   };
 
-  const handleConfirmSelection = () => {
-    if (selectedClientId) {
-      dispatch(getClientByIdAction(selectedClientId));
+  const handleConfirmSelection = (clientId: string) => {
+    if (clientId) {
+      dispatch(getClientByIdAction(clientId));
       const selectedClient = clients.find(
-        (client) => client._id === selectedClientId
+        (client) => client._id === clientId
       );
       setClientDetails(selectedClient);
       navigate("/client/details");
@@ -119,27 +119,24 @@ export default function ClientSelectionTable({
                     .toLowerCase()
                     .includes(searchClientName.toLowerCase());
                 })
-                .map((client, index) => (
-                  <TableRow
-                    key={client._id}
-                    onClick={() => client._id && handleRowClick(client._id)} 
-                    style={{
-                      backgroundColor:
-                        selectedClientId === client._id ? "#f0f0f0" : "inherit",
-                    }}
-                    className="p-3"
-                    >
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{client.clientName}</TableCell>
-                    <TableCell>{client.email}</TableCell>
-                    <TableCell>
+                .map((client: ClientType, index: number) => (
+                  <TableRow key={client._id} className="p-3">
+                    <TableCell style={{ padding: '0' }}>{index + 1}</TableCell>
+                    <TableCell style={{ padding: '0' }}>{client.clientName}</TableCell>
+                    <TableCell style={{ padding: '0' }}>{client.email}</TableCell>
+                    <TableCell style={{ padding: '0' }}>{client.contactNo}</TableCell>
+                    <TableCell style={{ padding: '0' }}>
                       <div className="flex">
+
                         <div className={Styles.editButton}>
-                          <CompoAddClient forEditClient={true} clientToEdit={client} />
+                          <CompoAddClient
+                            forEditClient={true}
+                            clientToEdit={client}
+                          />
                         </div>
                         <div className={Styles.editButton}>
                           {deleteLoading === "pending" &&
-                          deletingClientIdString === client._id ? (
+                            deletingClientIdString === client._id ? (
                             <CircularProgress size={25} />
                           ) : (
                             <ActionConfirmer
@@ -155,14 +152,15 @@ export default function ClientSelectionTable({
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={handleConfirmSelection}
-                        disabled={!selectedClientId}
+                        onClick={() => {
+                          handleConfirmSelection(client._id || "")
+                        }}
                         sx={{
                           backgroundColor: "#d9a990",
                           borderRadius: "20px",
                           ":hover": {
                             backgroundColor: "#4a6180",
-                          },
+                          }
                         }}
                       >
                         View
@@ -173,16 +171,6 @@ export default function ClientSelectionTable({
             </TableBody>
           </Table>
         </TableContainer>
-      )}
-
-      {clientDetails && (
-        <Box sx={{ marginTop: "20px" }}>
-          <h2>Client Details</h2>
-          <p>
-            <strong>Name:</strong> {clientDetails.clientName}
-          </p>
-          {/* Add more client details here as needed */}
-        </Box>
       )}
     </Box>
   );
