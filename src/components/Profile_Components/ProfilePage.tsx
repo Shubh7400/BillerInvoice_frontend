@@ -9,6 +9,10 @@ import gamaedgeLogo from "../../utils/images/gammaedgeLogo.png";
 import { useNavigate } from "react-router-dom";
 import { Button, TextField, useTheme } from "@mui/material";
 import { FaRegUser } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
+import { Grid, Typography, Select, MenuItem, FormControl, styled, SelectChangeEvent } from '@mui/material';
+
 const ProfilePage = () => {
 
   const { isAuth, adminId } = useContext(AuthContext);
@@ -86,8 +90,21 @@ const ProfilePage = () => {
   
   return (
     <div>
+
+      <div className='flex justify-between items-center  pb-[10]'>
+        <div className='flex items-center gap-2'>
+          <Link to="/" className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px] ">
+            <IoIosArrowBack />
+          </Link>
+          <Typography variant="h5" component="h2" className='text-center'>
+            PROFILE
+          </Typography>
+        </div>
+
+        
+      </div>
       {data ? (
-            <div className="text-black  p-4 relative border-2 border-[#c1c1c1] rounded-[20px]">
+            <div className="text-black  p-4 relative border-2 border-[#c1c1c1] rounded-[20px] mt-[15px]">
               <div className="bg-slate-100 flex justify-start items-center rounded-[15px]  h-auto  w-[200px]  p-2  b ">
                 <img
                   src={companyLogo}

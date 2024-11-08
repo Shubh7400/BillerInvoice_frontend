@@ -7,8 +7,6 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Radio from "@mui/material/Radio";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getClientByIdAction,
@@ -16,7 +14,7 @@ import {
 } from "../../../states/redux/ClientStates/selectedClientSlice";
 import { AppDispatch, RootState } from "../../../states/redux/store";
 import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates/allClientSlice";
-import { CircularProgress, TextField, useTheme } from "@mui/material";
+import { CircularProgress, useTheme } from "@mui/material";
 import {
   deleteClientAction,
   makeStateLoadingNeutralInDeleteClient,
@@ -26,15 +24,16 @@ import CompoLoading from "./Compo-Loding";
 import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
 import CompoAddClient from "./Compo_AddClient";
 import ActionConfirmer from "../../SideBar/ActionConfirmer";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ClientType } from "../../../types/types";
-import Styles from "./client.module.css"
+import Styles from "./client.module.css";
 
 type ClientSelectionTableProps = {
   clientsLoading: string;
   clients: ClientType[];
   searchClientName: string;
 };
+
 export default function ClientSelectionTable({
   clientsLoading,
   clients,
@@ -45,19 +44,13 @@ export default function ClientSelectionTable({
   const { adminId } = React.useContext(AuthContext);
 
   const [selectedClientId, setSelectedClientId] = React.useState<string>("");
-  const [clientDetails, setClientDetails] = React.useState<any>(null); // Store client details
+  const [clientDetails, setClientDetails] = React.useState<any>(null); 
   const { deleteLoading, deleteData, deleteError } = useSelector(
     (state: RootState) => state.deleteClientState
   );
   const navigate = useNavigate();
-
   const [deletingClientIdString, setDeletingClientIdString] =
     React.useState<string>("");
-
-  const selectedClient = useSelector(
-    (state: RootState) => state.selectedClientState
-  );
-  const clientObj: ClientType = selectedClient.data;
 
   React.useEffect(() => {
     if (deleteLoading === "succeeded" && deleteData) {
@@ -75,7 +68,6 @@ export default function ClientSelectionTable({
   React.useEffect(() => {
     if (adminId) {
       dispatch(getAllClientsByAdminIdAction(adminId));
-      setSelectedClientId(clientObj._id || "");
     }
   }, [adminId, dispatch]);
 
@@ -97,6 +89,10 @@ export default function ClientSelectionTable({
     }
   };
 
+  const handleRowClick = (clientId: string) => {
+    setSelectedClientId(clientId);
+  };
+
   return (
     <Box>
       {clientsLoading === "pending" ? (
@@ -104,25 +100,24 @@ export default function ClientSelectionTable({
       ) : (
         <TableContainer className={Styles.table_scroll}>
           <Table>
-            <TableHead className={Styles.animated} >
+            <TableHead className={Styles.animated}>
               <TableRow>
-                <TableCell style={{ paddingRight: '0' }}>Sr. No.</TableCell>
-                <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Client Name</TableCell>
-                <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Client Email</TableCell>
-                <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Client Phone</TableCell>
-                <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>Action</TableCell>
-                <TableCell style={{ paddingLeft: '0', paddingRight: '0' }}>{''}</TableCell>
+                <TableCell>Serial No.</TableCell>
+                <TableCell>Client Name</TableCell>
+                <TableCell>Client Email</TableCell>
+                <TableCell>Action</TableCell>
+                <TableCell>Selection</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody  >
+            <TableBody>
               {clients
-                .filter((ele: ClientType) => {
+                .filter((client) => {
                   if (searchClientName.length <= 0) {
                     return true;
                   }
-                  let searchQ = searchClientName.toLowerCase();
-                  let clientName = ele.clientName.toLowerCase();
-                  return clientName.includes(searchQ);
+                  return client.clientName
+                    .toLowerCase()
+                    .includes(searchClientName.toLowerCase());
                 })
                 .map((client: ClientType, index: number) => (
                   <TableRow key={client._id} className="p-3">

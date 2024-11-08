@@ -185,7 +185,7 @@ const TabPillsComponent: React.FC = () => {
           const buttonColor = monthColors[imagePath] || '#E4A98A'; // Default color if no match
 
           return (
-            <Grid item xs={3} key={month} className='relative'>
+            <Grid item xs={3} key={month} className={`${Styles.motion_btn} relative`}>
               <img
                 src={imagePath}
                 alt={`${month} image`}
@@ -202,7 +202,7 @@ const TabPillsComponent: React.FC = () => {
                 variant="h6"
                 component="span"
                 className='absolute top-5 right-3'
-                style={{ fontSize: '60px', color: '#000', fontWeight: '500' }}
+                style={{ fontSize: '60px', color: '#000', fontWeight: '300',fontFamily: 'Rubik'}}
               >
                 {displayData}
               </Typography>

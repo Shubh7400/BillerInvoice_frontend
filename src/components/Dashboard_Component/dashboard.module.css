@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Marcellus&family=Rampart+One&family=Rubik:ital,wght@0,300..900;1,300..900&family=Satisfy&display=swap');
 .totalClints{
     background-color: blueviolet;
     padding: 20px;
@@ -78,11 +79,13 @@
   }
   .count_total h1{
     color: #ffffff;
-    font-size: 66px;
+    font-size: 80px;
     line-height: 80px;
-    font-weight: 600;
+    font-weight: 300;
     /* margin-left: 69px; */
-    text-align: end;
+    font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
 
   }
   .viewBotton{
@@ -99,12 +102,30 @@
     box-shadow: 2px 2px 14px #999797;
     font-size: 20px;
 }
+.viewproject{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #e4a98a;
+    color: #fff;
+    width: 195px;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 60px 0 20px;
+    /* box-shadow: -3px 4px 21px #fff; */
+    font-size: 18px;
+}
 .tagline{
     color: #ffffff;
-    font-size: 16px;
+    font-size: 25px;
     position: absolute;
-    bottom: 50px;
-    left: 40px;
+    bottom: 45px;
+    left: 30px;
+    font-weight: 600;
+    line-height: 27px;
+    font-family: "Caveat", cursive;
 }
 .total_projects{
     background: #E4A98A;
@@ -119,10 +140,10 @@
     position: relative;
 }
 .project{
-    width: 50%;
+    width: 45%;
     position: absolute;
-    right: -15px;
-    top: -39px;
+    right: -19px;
+    top: -40px;
     filter: drop-shadow(2px 6px 18px #838383);
 }
 .project_section{
@@ -131,11 +152,14 @@
 }
 .project_section h1{
     color: #ffffff;
-    font-size: 66px;
+    font-size: 73px;
     line-height: 80px;
-    font-weight: 600;
+    font-weight: 300;
     /* margin-left: 69px; */
     text-align: end;
+    font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
 .project_section h2{
     color: #ffffff;
@@ -154,12 +178,19 @@
 }
 .invoice_details{
     position: absolute;
-    bottom: 37px;
-    left: 20px;
+    bottom: 20px;
+    left: 0;
+    width: 90%;
+    right: 0;
+    margin: auto;
 }
 .invoice_details h1{
-    font-size: 50px;
-    font-weight: 500;
+    font-size: 60px;
+    font-weight: 300;
+    font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  
+  font-style: normal;
 }
 .profile {
     background-color: #E4A98A;

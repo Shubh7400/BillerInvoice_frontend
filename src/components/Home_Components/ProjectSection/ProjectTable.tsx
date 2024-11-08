@@ -196,14 +196,15 @@ const ProjectTable = (
   return (
     <section >
       <div>
-        {clientObj && selectedClientState.loading !== "idle" && projectTableforClient ? (
-          <ClientInfoSection />
-        ) : null}
-        <CompoAddProject
+      <CompoAddProject
           clientId={selectedClientState.data._id}
           adminId={adminId}
           forAddProject={true}
-        />
+        /> 
+        {clientObj && selectedClientState.loading !== "idle" && projectTableforClient ? (
+          <ClientInfoSection />
+        ) : null}
+        
       </div>
       {!projectTableforClient ? (
         <>
