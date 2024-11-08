@@ -13,10 +13,13 @@ import {
   useAddNewProject,
   useUpdateProject,
 } from "../../../states/query/Project_queries/projectQueries";
+import { Grid, Typography, Select,FormControl, styled, SelectChangeEvent } from '@mui/material';
 import { queryClient } from "../../..";
 import { CiEdit } from "react-icons/ci";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
 
 export default function CompoAddProject({
   adminId,
@@ -254,7 +257,15 @@ export default function CompoAddProject({
   return (
     <>
       {forAddProject ? (
-        <div className="flex justify-end w-[80vw] mt-5 pr-2 pt-2 pb-2">
+        <div className="flex justify-between w-[80vw]  pr-2  mb-4">
+          <div className='flex items-center gap-2'>
+          <Link to="/" className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px] ">
+            <IoIosArrowBack />
+          </Link>
+          <Typography variant="h5" component="h2" className='text-center'>
+            PROJECT LIST
+          </Typography>
+        </div>
           <Button
             disabled={!adminId}
             variant="contained"

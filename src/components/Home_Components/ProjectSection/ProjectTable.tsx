@@ -194,7 +194,7 @@ const ProjectTable = () => {
   };
 
   return (
-    <section className="pb-14 ">
+    <section >
       <div>
         <CompoAddProject
           clientId={selectedClientState.data._id}
@@ -208,8 +208,8 @@ const ProjectTable = () => {
             <TableHead className={Styles.animated}>
               <TableRow>
                 {/* <TableCell style={{ paddingRight: "0" }}>Select</TableCell> */}
-                <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
-                  Sr.No.
+                <TableCell style={{ paddingLeft: "10px", paddingRight: "0" }}>
+                  Sr.
                 </TableCell>
                 <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                   Project
@@ -233,7 +233,7 @@ const ProjectTable = () => {
                   Amount
                 </TableCell>
                 <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
-                  {' '}
+                  Action
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -266,7 +266,7 @@ const ProjectTable = () => {
                       label=""
                     />
                   </TableCell> */}
-                  <TableCell style={{ padding: "0" }}>{index + 1}</TableCell>
+                  <TableCell style={{ paddingLeft: "10px", paddingRight: "0", display:'flex',justifyContent:'center'}}>{index + 1}</TableCell>
                   <TableCell style={{ padding: "0" }}>
                     {project.projectName}
                   </TableCell>
