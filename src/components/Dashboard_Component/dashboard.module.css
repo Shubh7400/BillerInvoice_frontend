@@ -102,6 +102,21 @@
     box-shadow: 2px 2px 14px #999797;
     font-size: 20px;
 }
+.viewproject{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #e4a98a;
+    color: #fff;
+    width: 195px;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 60px 0 20px;
+    /* box-shadow: -3px 4px 21px #fff; */
+    font-size: 18px;
+}
 .tagline{
     color: #ffffff;
     font-size: 25px;
@@ -125,10 +140,10 @@
     position: relative;
 }
 .project{
-    width: 50%;
+    width: 45%;
     position: absolute;
-    right: -15px;
-    top: -39px;
+    right: -19px;
+    top: -40px;
     filter: drop-shadow(2px 6px 18px #838383);
 }
 .project_section{
@@ -163,8 +178,11 @@
 }
 .invoice_details{
     position: absolute;
-    bottom: 37px;
-    left: 20px;
+    bottom: 20px;
+    left: 0;
+    width: 90%;
+    right: 0;
+    margin: auto;
 }
 .invoice_details h1{
     font-size: 60px;
