@@ -8,6 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { AiOutlineLogout } from "react-icons/ai";
 import { RiDeleteBin7Line } from "react-icons/ri";
 import { useTheme } from "@mui/material";
+import Styles from "./sidebar.module.css"
 
 export default function ActionConfirmer({
   actionTag,
@@ -59,14 +60,18 @@ export default function ActionConfirmer({
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        sx={{
+          borderRadius: "20px",
+        }}
+        
       >
         <DialogTitle
           id="alert-dialog-title"
           sx={{
             width: "100%",
-            color: "#cecece",
+            color: "#fff",
           }}
-          className="bg-thirdColor"
+          className={Styles.animated}
         >
           {"Confirm " + actionTag}
         </DialogTitle>
@@ -81,7 +86,12 @@ export default function ActionConfirmer({
           <Button
             onClick={() => executeActionFunction()}
             autoFocus
-            className="bg-purple-900"
+            sx={{
+              backgroundColor: "#E4A98A", // Set your desired background color here
+              ":hover": {
+                backgroundColor: "#D08060", // Optional: Set hover color
+              },
+            }}
             variant="contained"
           >
             {actionTag}

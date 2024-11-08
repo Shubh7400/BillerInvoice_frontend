@@ -11,6 +11,7 @@ import MyMapComponent from "./location";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../states/redux/store";
 import { getDashBoardData } from "../../states/redux/DashboardStates/dashboardSlice";
+import { MdOutlineArrowForwardIos } from "react-icons/md";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -73,6 +74,12 @@ console.log("Dashboard",data);
             <p>All Projects, One Dashboard for</p>
             <p>Streamlined Success</p>
           </div>
+          <Link
+            to="/Projects"
+            className="text-[16px] flex items-center gap-[10px]"
+          >
+            <div className={styles.viewproject}>View All Project</div>
+          </Link>
         </div>
       </div>
 
@@ -80,8 +87,21 @@ console.log("Dashboard",data);
         <div className={`${styles.invoice}`}>
           <img src={invoice} alt="Invoice" />
           <div className={`${styles.invoice_details}`}>
-            <h1>{data.totalInvoices}</h1>
-            <h2>Generated Invoice</h2>
+            <h1>{data.totalInvoices}</h1> 
+           
+            
+              <div className="text-[16px] flex items-center justify-between gap-[10px]"  >
+              <h2>Generated Invoice</h2>
+              <Link
+                to="/invoices"
+                className="border border-black rounded-[50px] py-2 px-2  hover:bg-white hover:shadow-[1px 1px 1px #000]"
+              >
+              <div className="">
+                <MdOutlineArrowForwardIos />
+              </div>
+             
+             </Link>
+              </div>
           </div>
         </div>
 

@@ -30,7 +30,7 @@
       
     } 
 
-  a:hover{
+    .motion_btn a:hover{
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;  }
 
     .yearDropdown ul {

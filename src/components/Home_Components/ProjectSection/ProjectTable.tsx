@@ -195,6 +195,11 @@ const ProjectTable = (
   return (
     <section >
       <div>
+      <CompoAddProject
+          clientId={selectedClientState.data._id}
+          adminId={adminId}
+          forAddProject={true}
+        /> 
         {clientObj && selectedClientState.loading !== "idle" && projectTableforClient ? (
           <div className="  w-[80vw]  flex flex-col justify-end items-start ">
             <div className="text-black  w-[80vw] ">
@@ -248,11 +253,7 @@ const ProjectTable = (
             </div>
           </div>
         ) : null}
-        <CompoAddProject
-          clientId={selectedClientState.data._id}
-          adminId={adminId}
-          forAddProject={true}
-        />
+        
       </div>
       {((isError || isLoading || data === "" && data.length <= 0)
         && (clientProjectTableError || clientProjectTableLoading || clientProjectTableData === "" && clientProjectTableData.length <= 0))
