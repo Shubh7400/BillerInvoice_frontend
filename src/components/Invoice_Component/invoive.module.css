@@ -38,3 +38,66 @@
         max-width: 300px;
         overflow-x: auto;
     }
+
+    .project_card {
+      background-color: #E4A98A;
+      background-image: url("../assets/profilebg.gif");
+      width: auto !important;
+      border-radius: 21px;
+      background-size: cover;
+      padding: 20px;
+      position: relative;
+      margin-top: 10px;
+      margin-bottom: 10px;
+        }
+  .remove_btn{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    color: #000;
+  }
+  .project_scroll{
+    max-width: 200vw;
+    /* overflow-x: auto; */
+    gap: 10px;
+    position: relative;
+    display: flex;
+  }
+  .table_scroll{
+    
+    width: 80vw;
+	/* height: 75vh; */
+	/* background: #F5F5F5; */
+	overflow-y: auto;
+    border-radius: 20px;
+}
+.table_scroll::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+    border-radius: 50px;
+    margin-top: 10px;
+}
+
+.table_scroll::-webkit-scrollbar
+{
+	width: 6px;
+  height: 6px;
+  padding-top: 10px;
+	background-color: #F5F5F5;
+    border-radius: 50px;
+}
+
+.table_scroll::-webkit-scrollbar-thumb
+{
+    background: linear-gradient(-45deg, #6bafd2, #a4c8dc, #d6cbca, #eabc96, #db8876);
+    border-radius: 50px;
+    margin-top: 10px;
+}

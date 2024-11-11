@@ -30,6 +30,8 @@ import { AppBar, Dialog, IconButton, Toolbar } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import Styles from "./billi.module.css"
+import { Link } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
 // import CloseIcon from "@mui/icons-material/Close";
 const drawerBleeding = 56;
 let windowWidth: number | undefined = window.innerWidth;
@@ -354,7 +356,7 @@ export default function InvoiceDrawer() {
         }}
       > */}
         {/*Drawer header*/}
-        <Box
+        {/* <Box
           sx={{
             // position: "absolute",
             top: -drawerBleeding,
@@ -392,22 +394,23 @@ export default function InvoiceDrawer() {
             Fill invoice required details.
             <span className="mr-8 text-sm">Invoice no.{invoiceNo}</span>
           </Box>
-        </Box>
+        </Box> */}
         {/*Drawer body*/}
         <Box
           sx={{
             px: 2,
-            pb: 2,
+            // pb: 2,
             height: "100%",
             overflow: "auto",
             bgcolor: bgColorBodyStyledBox,
+            borderRadius: "20px"
           }}
         >
           {/*Date and Bill*/}
           <Box
             sx={{
               display: { xs: "block", sm: "flex", md: "flex" },
-              pt: "20px",
+              pt: "10px",
               px: "20px",
               justifyContent: "space-between",
             }}
@@ -476,13 +479,13 @@ export default function InvoiceDrawer() {
                 color: textColor,
               }}
             >
-              <p className=" text-xl md:text-2xl border-b-2 border-slate-800 border-opacity-70 mb-4 mt-4 md:mt-1 ">
+              <p className=" text-xl md:text-2xl border-b-2 border-slate-800 border-opacity-70 mb-3 mt-3 md:mt-1 ">
                 Bill Total
               </p>
               <div className="flex justify-between text-lg md:text-lg">
                 Subtotal:<span>{amountWithoutTax} &#8377; </span>
               </div>
-              <Box sx={{ mt: "10px" }}>
+              <Box sx={{ mt: "6px" }}>
                 {clientSameState ? (
                   <>
                     <div className="flex justify-between ">
@@ -505,7 +508,7 @@ export default function InvoiceDrawer() {
             </Box>
           </Box>
           {/*Download and Preview buttons*/}
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               justifyContent: {
@@ -522,7 +525,7 @@ export default function InvoiceDrawer() {
             }}
           >
            
-          </Box>
+          </Box> */}
           
         </Box>
         <Global
@@ -592,7 +595,7 @@ export default function InvoiceDrawer() {
           >
             <RxCross1 size={40} color="black" />
           </div>
-          <div className="m-auto w-full h-full flex justify-center items-start pt-0 mt-[15%] sm:mt-[5%] ">
+          <div className="m-auto w-full h-auto flex justify-center items-start pt-0 mt-[15%] sm:mt-[5%] ">
             {tempImgData.length > 0 ? (
               <img src={tempImgData} alt="invoice" />
             ) : (
