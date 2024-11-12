@@ -6,7 +6,7 @@ import { RootState } from "../../../states/redux/store";
 import { ClientType } from "../../../types/types";
 import cubexoLogo from "../../assets/cubexo_logo.png";
 import gammaedgeLogo from "../../../utils/images/gammaedgeLogo.png";
-import billbg from "../../assets/bill_bg.png";
+import billbg from "../../assets/invoice_bg.png";
 import { TbBorderRadius } from "react-icons/tb";
 
 const DownloadPreview = () => {
@@ -160,13 +160,13 @@ const DownloadPreview = () => {
             <h3 className="font-bold text-[20px] p-[3px]">{data.companyName}</h3>
           </div>
         </div>
-        <div className=" absolute bottom-[5%] mx-8">
+        {/* <div className=" absolute bottom-[5%] mx-8">
           <h1 className="text-[16px] font-bold">Terms and Conditions</h1>
           <ul>
             <li><span className="font-bold">1.</span> Late payments will incur a monthly interest charge of 1.5% or the maximum permitted by law, beginning from the due date until the balance is paid in full.</li>
             <li><span className="font-bold">2.</span>Once payment is complete, ownership rights are transferred to the client, unless otherwise stated in the project agreement.</li>
           </ul>
-        </div>
+        </div> */}
       </div>
     </div>
   );

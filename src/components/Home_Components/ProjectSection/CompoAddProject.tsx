@@ -259,13 +259,13 @@ export default function CompoAddProject({
       {forAddProject ? (
         <div className="flex justify-between w-[80vw]  pr-2  mb-4">
           <div className='flex items-center gap-2'>
-          <Link to="/clients" className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px] ">
-            <IoIosArrowBack />
-          </Link>
-          <Typography variant="h5" component="h2" className='text-center'>
-            PROJECT LIST
-          </Typography>
-        </div>
+            <Link to="/clients" className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px] ">
+              <IoIosArrowBack />
+            </Link>
+            <Typography variant="h5" component="h2" className='text-center'>
+              PROJECT LIST
+            </Typography>
+          </div>
           <Button
             disabled={!adminId}
             variant="contained"

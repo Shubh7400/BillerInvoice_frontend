@@ -54,7 +54,10 @@ function InvoiceClientPage() {
           <div className={`${Styles.project_scroll}`}>
           {projectsForInvoice?.map((project: ProjectType) => (
             <div key={project._id} className={`${Styles.project_card}`}>
-              <p className='text-[19px]'><strong>{project.projectName}</strong> </p>
+              <p className="text-[19px] w-[150px] overflow-hidden whitespace-nowrap text-ellipsis">
+  <strong>{project.projectName}</strong>
+</p>
+
               {/* <p><strong>Manager:</strong> {project.projectManager}</p> */}
               {/* <p><strong>Period:</strong> 
                 {project.projectPeriod ? (
@@ -63,7 +66,7 @@ function InvoiceClientPage() {
                   "Hour based project"
                 )}
               </p> */}
-              <p><strong>Rate:</strong> 
+              <p className='text-[13px]'><strong>Rate:</strong> 
                 {project.rate} 
                 ({project.currencyType === "rupees" ? (
                   <span>&#x20B9;</span>
@@ -73,10 +76,10 @@ function InvoiceClientPage() {
                   <span>&#163;</span>
                 ) : null}/{project.workingPeriodType})
               </p>
-              <p><strong>Working Period:</strong> 
+              <p className='text-[13px]'><strong>Working Time:</strong> 
                 {project.workingPeriod} ({project.workingPeriodType})
               </p>
-              <p><strong>Conversion Rate:</strong> 
+              <p className='text-[13px]'><strong>Conversion Rate:</strong> 
                 {project.currencyType === "rupees" ? (
                   <span>&#x20B9; </span>
                 ) : project.currencyType === "dollars" ? (

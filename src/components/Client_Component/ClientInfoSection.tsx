@@ -16,7 +16,7 @@ function ClientInfoSection() {
                         <div className=" text-black   overflow-hidden overflow-ellipsis">
 
                             <div className="flex items-center justify-between w-100%">
-                                <h2 className=" text-md sm:text-xl my-2 font-semibold overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden ">
+                                <h2 className=" text-md sm:text-xl mt-3 font-semibold overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden ">
                                     {clientObj.clientName}
                                 </h2>
                             </div>

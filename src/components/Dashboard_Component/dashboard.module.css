@@ -104,8 +104,8 @@
 }
 .viewproject{
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: -9px;
+    right: -9px;
     background-color: #e4a98a;
     color: #fff;
     width: 195px;
@@ -114,7 +114,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 60px 0 20px;
-    /* box-shadow: -3px 4px 21px #fff; */
+    box-shadow: 2px 2px 14px #999797;
     font-size: 18px;
 }
 .tagline{
@@ -202,8 +202,8 @@
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 .companyLogo{
-    width: 100px;
-    height: 100px;
+    width: 50%;
+    height: 50%;
     margin: auto;
     object-fit: contain;
     border-radius: 50%;
@@ -212,8 +212,8 @@
     padding: 5px;
 }
 .profile p{
-    font-size: 17px;
+    font-size: 20px;
     color: #000000;
     text-align: center;
-    margin-top: 5px;
+    margin-top: 15px;
 }
