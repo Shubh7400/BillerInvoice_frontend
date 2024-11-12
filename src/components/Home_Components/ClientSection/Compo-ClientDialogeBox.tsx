@@ -102,7 +102,7 @@ export default function ClientSelectionTable({
           <Table>
             <TableHead className={Styles.animated}>
               <TableRow>
-                <TableCell sx={{ paddingX: '10px' }}>Sr.No.</TableCell>
+                <TableCell sx={{ paddingX: '10px' ,width:'50px'}}>Sr.No.</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Client Name</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Client Email</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Contact No.</TableCell>
@@ -122,7 +122,7 @@ export default function ClientSelectionTable({
                 })
                 .map((client: ClientType, index: number) => (
                   <TableRow key={client._id} className="p-3">
-                    <TableCell sx={{ paddingX: '10px' }}>{index + 1}</TableCell>
+                    <TableCell sx={{ paddingX: '10px',textAlign:'center'}}>{index + 1}</TableCell>
                     <TableCell sx={{ padding: '0' }}>{client.clientName}</TableCell>
                     <TableCell sx={{ padding: '0' }}>{client.email}</TableCell>
                     <TableCell sx={{ padding: '0' }}>{client.contactNo}</TableCell>
