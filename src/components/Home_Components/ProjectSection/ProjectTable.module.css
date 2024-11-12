@@ -123,18 +123,51 @@ background: linear-gradient(-45deg, #6bafd2, #a4c8dc, #d6cbca, #eabc96, #db8876)
 color: #fff;
 font-size: 14px;
 } */
+.table_client_scroll{
+  width: 80vw !important;
+  height: 50vh;
+  background: #F5F5F5;
+  overflow-y: auto;
+  overflow-x: auto;
+  margin-top: 10px;
+  border-radius: 20px;
+}
+.table_client_scroll::-webkit-scrollbar {
+  width: 6px; /* Vertical scrollbar width */
+  height: 6px; /* Horizontal scrollbar height */
+  background-color: #F5F5F5;
+  border-radius: 50px;
+}
+
+.table_client_scroll::-webkit-scrollbar
+{
+width: 6px;
+background-color: #F5F5F5;
+  border-radius: 50px;
+}
+
+.table_client_scroll::-webkit-scrollbar-thumb
+{
+  background: linear-gradient(-45deg, #6bafd2, #a4c8dc, #d6cbca, #eabc96, #db8876);
+  border-radius: 50px;
+}
+
+
+
 
 .table_scroll{
     
-  width: 100%;
+  width: 80vw !important;
 height: 75vh;
 background: #F5F5F5;
 overflow-y: auto;
+overflow-x: auto;
   border-radius: 20px;
 }
-.table_scroll::-webkit-scrollbar-track{
--webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-background-color: #F5F5F5;
+.table_scroll::-webkit-scrollbar {
+  width: 6px; /* Vertical scrollbar width */
+  height: 6px; /* Horizontal scrollbar height */
+  background-color: #F5F5F5;
   border-radius: 50px;
 }
 

@@ -231,11 +231,11 @@ const ProjectTable = (
           ) : (
             <div className="  rounded-[20px]">
               <TableContainer className={Styles.table_scroll}>
-                <Table>
+                <Table sx={{width:'100vw'}}>
                   <TableHead className={Styles.animated}>
                     <TableRow>
                       {/* <TableCell style={{ paddingRight: "0" }}>Select</TableCell> */}
-                      <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                      <TableCell sx={{ paddingX: '10px' }}>
                         Sr.No.
                       </TableCell>
                       <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
@@ -263,7 +263,7 @@ const ProjectTable = (
                         Action
                       </TableCell>
                       <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
-                        {' '}
+                        selection
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -296,7 +296,7 @@ const ProjectTable = (
                       label=""
                     />
                   </TableCell> */}
-                        <TableCell style={{ padding: "0" }}>{index + 1}</TableCell>
+                        <TableCell sx={{ paddingX: '10px' }}>{index + 1}</TableCell>
                         <TableCell style={{ padding: "0" }}>
                           {project.projectName}
                         </TableCell>
@@ -358,7 +358,7 @@ const ProjectTable = (
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell>
+                        <TableCell sx={{ paddingY: "8px" }}>
                           <div>
                             <Button
                               variant="contained"
@@ -410,7 +410,7 @@ const ProjectTable = (
               </div>
             ) : (
               <div className="  rounded-[20px]">
-                <TableContainer className={Styles.table_scroll}>
+                <TableContainer className={Styles.table_client_scroll}>
                   <Table>
                     <TableHead className={Styles.animated}>
                       <TableRow>
@@ -562,8 +562,8 @@ const ProjectTable = (
                   backgroundColor: "#4a6180",
                 },
                 position: "absolute",
-                bottom: "50px",
-                right: "40px",
+                bottom: "20px",
+                right: "60px",
               }}
             >
               View Invoice
