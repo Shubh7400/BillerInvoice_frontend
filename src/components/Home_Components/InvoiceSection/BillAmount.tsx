@@ -76,11 +76,11 @@ export default function InvoiceDrawer() {
       setClientSameState(selectedClientState.data.sameState);
     }
   }, [adminState, selectedClientState]);
-  
+
   React.useEffect(() => {
     dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
     toggleDrawer(true)
-  }, [invoiceNo, projectsForInvoice]);
+  }, [invoiceNo, projectsForInvoice, showPreview]);
 
   React.useEffect(() => {
     if (visibility) {
@@ -162,7 +162,7 @@ export default function InvoiceDrawer() {
     setTimeout(async () => {
       try {
         const canvas = await html2canvas(div);
-        const imgData = await canvas.toDataURL("image/png");
+        const imgData = canvas.toDataURL("image/png");
         setTempImgData(imgData);
       } catch (error) {
         enqueueSnackbar({
@@ -173,7 +173,7 @@ export default function InvoiceDrawer() {
         // Remove the temporary div
         document.body.removeChild(div);
       }
-    }, 1000);
+    }, 100);
   };
 
   const handleInvoiceDateChange = (newDate: dayjs.Dayjs | null) => {
@@ -216,7 +216,9 @@ export default function InvoiceDrawer() {
 
   const toggleDrawer = (newOpen: boolean) => {
     if (projectsForInvoice && projectsForInvoice.length > 0) {
-      generateAndPreviewPDF();
+      if (showPreview) {
+        generateAndPreviewPDF();
+      }
       setPreviewAllowed(true);
       setOpen(newOpen);
       const projectsIdArr = projectsForInvoice.map((project) => {
@@ -310,8 +312,6 @@ export default function InvoiceDrawer() {
     if (value) setOpen(false);
     setShowPreview(value);
   };
-  
-
 
   return (
     <Box>
@@ -324,12 +324,12 @@ export default function InvoiceDrawer() {
           },
         }}
       />
-        {/* <Box
+      {/* <Box
           sx={{
             position: "fixed",
             bottom: "8%",
             right: "12%",
-            maxWidth: "100px",
+            maxWidth: "100px",project 
             height: "40px",
             zIndex: 600,
             color: "white",
@@ -599,7 +599,7 @@ export default function InvoiceDrawer() {
             {tempImgData.length > 0 ? (
               <img src={tempImgData} alt="invoice" />
             ) : (
-              <h1>Error preview again!</h1>
+              null
             )}
           </div>
         </div>
