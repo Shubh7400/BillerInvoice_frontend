@@ -102,11 +102,12 @@ export default function ClientSelectionTable({
           <Table>
             <TableHead className={Styles.animated}>
               <TableRow>
-                <TableCell>Serial No.</TableCell>
-                <TableCell>Client Name</TableCell>
-                <TableCell>Client Email</TableCell>
-                <TableCell>Action</TableCell>
-                <TableCell>Selection</TableCell>
+                <TableCell sx={{ paddingX: '10px' }}>Sr.No.</TableCell>
+                <TableCell sx={{ paddingX: 0 }}>Client Name</TableCell>
+                <TableCell sx={{ paddingX: 0 }}>Client Email</TableCell>
+                <TableCell sx={{ paddingX: 0 }}>Contact No.</TableCell>
+                <TableCell sx={{ paddingX: 0 }}>Action</TableCell>
+                <TableCell sx={{ paddingX: 0 }}>Selection</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -121,11 +122,11 @@ export default function ClientSelectionTable({
                 })
                 .map((client: ClientType, index: number) => (
                   <TableRow key={client._id} className="p-3">
-                    <TableCell style={{ padding: '0' }}>{index + 1}</TableCell>
-                    <TableCell style={{ padding: '0' }}>{client.clientName}</TableCell>
-                    <TableCell style={{ padding: '0' }}>{client.email}</TableCell>
-                    <TableCell style={{ padding: '0' }}>{client.contactNo}</TableCell>
-                    <TableCell style={{ padding: '0' }}>
+                    <TableCell sx={{ paddingX: '10px' }}>{index + 1}</TableCell>
+                    <TableCell sx={{ padding: '0' }}>{client.clientName}</TableCell>
+                    <TableCell sx={{ padding: '0' }}>{client.email}</TableCell>
+                    <TableCell sx={{ padding: '0' }}>{client.contactNo}</TableCell>
+                    <TableCell sx={{ padding: '0' }}>
                       <div className="flex">
 
                         <div className={Styles.editButton}>
@@ -148,7 +149,7 @@ export default function ClientSelectionTable({
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ padding: '0' }}>
                       <Button
                         variant="contained"
                         color="primary"
