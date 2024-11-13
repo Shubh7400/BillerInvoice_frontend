@@ -90,10 +90,8 @@ export default function CompoAddClient({
   const [clientData, setClientData] = useState<ClientType>({
     clientName: "",
     email: "",
-    contactNo: "",
     pancardNo: "",
     gistin: "",
-    conversionRate: 83,
     address: {
       street: "",
       city: selectedCountry.name,
@@ -255,9 +253,9 @@ export default function CompoAddClient({
     setFormError("");
     setIncompleteError("");
   };
-  const handleMobileNoChange = (e: E164Number | undefined) => {
-    setClientData({ ...clientData, contactNo: e });
-  };
+  // const handleMobileNoChange = (e: E164Number | undefined) => {
+  //   setClientData({ ...clientData, contactNo: e });
+  // };
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
@@ -373,7 +371,7 @@ export default function CompoAddClient({
           <Alert severity="error"> {incompleteError}</Alert>
         ) : null}
         {addClientLoading === "pending" ||
-        editClientState.loading === "pending" ? (
+          editClientState.loading === "pending" ? (
           <LinearProgress />
         ) : null}
         <DialogContent>
@@ -402,20 +400,6 @@ export default function CompoAddClient({
             onChange={(e) => handleChange(e)}
             required
           />
-          <div className="py-2 border-b border-b-slate-400 hover:border-b-black hover:border-b-2 ">
-            <label className="text-sm text-gray-500 hover:text-thirdColorHover ">
-              Contact No.
-            </label>
-            <PhoneInput
-              defaultCountry="IN"
-              international
-              countryCallingCodeEditable={false}
-              placeholder="Enter phone number"
-              value={clientData.contactNo}
-              onChange={(e) => handleMobileNoChange(e)}
-              className="border-none pt-2  PhoneInputInput"
-            />
-          </div>
           <TextField
             margin="dense"
             id="pancardNo"
@@ -426,7 +410,6 @@ export default function CompoAddClient({
             name="pancardNo"
             value={clientData.pancardNo}
             onChange={(e) => handleChange(e)}
-            required
           />
           <TextField
             margin="dense"
@@ -437,18 +420,6 @@ export default function CompoAddClient({
             variant="standard"
             name="gistin"
             value={clientData.gistin}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-          <TextField
-            margin="dense"
-            id="conversionRate"
-            label="Conversion Rate"
-            type="number"
-            fullWidth
-            variant="standard"
-            name="conversionRate"
-            value={clientData.conversionRate}
             onChange={(e) => handleChange(e)}
             required
           />

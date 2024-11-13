@@ -75,10 +75,8 @@ export default function AddClientPage({
   const [clientData, setClientData] = useState<ClientType>({
     clientName: "",
     email: "",
-    contactNo: "",
     pancardNo: "",
     gistin: "",
-    conversionRate: 83,
     address: {
       street: "NA",
       city: selectedCountry.name,
@@ -174,10 +172,6 @@ export default function AddClientPage({
     setIncompleteError("");
   };
 
-  const handleMobileNoChange = (e: E164Number | undefined) => {
-    setClientData({ ...clientData, contactNo: e });
-  };
-
   function areAllFieldsFilled(obj: any) {
     console.log(obj, " <<< oBJ");
     for (const key in obj) {
@@ -260,22 +254,12 @@ export default function AddClientPage({
       />
       <div className="flex gap-5 mt-3">
         <TextField
-          className="w-[50%]"
+          className="w-[100%]"
           label="Email"
           name="email"
           value={clientData.email}
           onChange={handleChange}
           required
-        />
-        <PhoneInput
-          className="w-[50%] rounded"
-          style={{ border: "1px solid rgba(0, 0, 0, 0.23)", padding: "5px" }}
-          defaultCountry="IN"
-          international
-          countryCallingCodeEditable={false}
-          placeholder="Enter phone number"
-          value={clientData.contactNo}
-          onChange={handleMobileNoChange}
         />
       </div>
       <div className="flex gap-5 mt-3">
@@ -293,8 +277,18 @@ export default function AddClientPage({
           name="pancardNo"
           value={clientData.pancardNo}
           onChange={handleChange}
-          required
         />
+      </div>
+      <div className="flex gap-5 mt-3">
+        <TextField
+          className="w-[100%]"
+          label="Street"
+          fullWidth
+          name="street"
+          value={clientData.pancardNo}
+          onChange={handleChange}
+        />
+        
       </div>
 
       <SelectCountryStateCity
@@ -309,36 +303,23 @@ export default function AddClientPage({
         stateString={clientData.address.state}
         cityString={clientData.address.city}
       />
-      <TextField
-        label="Postal Code"
-        name="postalCode"
-        value={clientData.address.postalCode}
-        onChange={(e) =>
-          setClientData({
-            ...clientData,
-            address: { ...clientData.address, postalCode: e.target.value },
-          })
-        }
-        fullWidth
-        required
-      />
-     <div className="flex justify-end">
-     <Button
-        onClick={forEditClient ? handleEditClientSubmit : handleAddClientSubmit}
-        className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
-        style={{
-          backgroundColor: isHovered ? "#4a6180" : "#d9a990",
-          borderRadius: "20px",
-          padding: "5px 15px",
-          color: "#fff ", 
-          marginTop: "10px",
-        }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {forEditClient ? "Edit Client" : "Add Client"}
-      </Button>
-     </div>
+      <div className="flex justify-end">
+        <Button
+          onClick={forEditClient ? handleEditClientSubmit : handleAddClientSubmit}
+          className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
+          style={{
+            backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+            borderRadius: "20px",
+            padding: "5px 15px",
+            color: "#fff ",
+            marginTop: "10px",
+          }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {forEditClient ? "Edit Client" : "Add Client"}
+        </Button>
+      </div>
     </div>
   );
 }

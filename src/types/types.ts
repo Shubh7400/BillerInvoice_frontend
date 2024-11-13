@@ -25,7 +25,6 @@ export interface ClientType {
   _id?: string;
   clientName: string;
   email: string;
-  contactNo: E164Number | undefined;
   pancardNo: string;
   address: {
     street: string;
@@ -36,7 +35,6 @@ export interface ClientType {
   };
   gistin: string;
   user: string;
-  conversionRate: number;
   sameState?: boolean;
 }
 export interface ProjectType {
