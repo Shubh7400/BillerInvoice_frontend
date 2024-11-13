@@ -194,11 +194,18 @@ const ProjectTable = ({
     setAllChecked(newProjectId.length === projectsForInvoice.length); // Update "Select All" state
   };
 
-  const handleConfirmSelection = () => {
+  const handleConfirmSelection = (selectedProject?: ProjectType) => {
     if (projectDetails) {
+      if(projectTableforClient){
       projectDetails.forEach((project: ProjectType) => {
         dispatch(addProjectForInvoiceAction(project));
       });
+    }
+    else {
+      if(selectedProject){
+      dispatch(addProjectForInvoiceAction(selectedProject));
+      }
+    }
       navigate("/client/invoices");
     }
   };
@@ -245,16 +252,17 @@ const ProjectTable = ({
               </div>
             </div>
           ) : (
+            
             <div className="  rounded-[20px]">
               <TableContainer className={Styles.table_scroll}>
                 <Table sx={{ width: "100vw" }}>
                   <TableHead className={Styles.animated}>
                     <TableRow>
                       {/* <TableCell style={{ paddingRight: "0" }}>Select</TableCell> */}
-                      <TableCell sx={{ paddingX: "10px" }}>Sr.No.</TableCell>
-                      <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
+                      <TableCell sx={{ paddingX: '10px', width:'50px'}}>
+                        Sr.No.
+                      </TableCell>
+                      <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                         Project
                       </TableCell>
                       <TableCell
@@ -334,9 +342,7 @@ const ProjectTable = ({
                       label=""
                     />
                   </TableCell> */}
-                        <TableCell sx={{ paddingX: "10px" }}>
-                          {index + 1}
-                        </TableCell>
+                        <TableCell sx={{ paddingX: '10px',textAlign:'center' }}>{index + 1}</TableCell>
                         <TableCell style={{ padding: "0" }}>
                           {project.projectName}
                         </TableCell>
@@ -404,7 +410,7 @@ const ProjectTable = ({
                             <Button
                               variant="contained"
                               color="primary"
-                              // onClick={handleConfirmSelection}
+                              onClick={() => handleConfirmSelection(project)}
                               sx={{
                                 backgroundColor: "#d9a990",
                                 borderRadius: "20px",
@@ -614,31 +620,28 @@ const ProjectTable = ({
         </>
       )}
       <div>
-        {!(
-          clientProjectTableError ||
-          clientProjectTableLoading ||
-          clientProjectTableData === "" ||
-          clientProjectTableData.length <= 0
-        ) && projectTableforClient ? (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleConfirmSelection}
-            disabled={projectId.length === 0}
-            sx={{
-              backgroundColor: "#d9a990",
-              borderRadius: "20px",
-              ":hover": {
-                backgroundColor: "#4a6180",
-              },
-              position: "absolute",
-              bottom: "20px",
-              right: "60px",
-            }}
-          >
-            View Invoice
-          </Button>
-        ) : null}
+        {
+          !(clientProjectTableError || clientProjectTableLoading || clientProjectTableData === "" || clientProjectTableData.length <= 0) && projectTableforClient ? (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleConfirmSelection()}
+              disabled={projectId.length === 0}
+              sx={{
+                backgroundColor: "#d9a990",
+                borderRadius: "20px",
+                ":hover": {
+                  backgroundColor: "#4a6180",
+                },
+                position: "absolute",
+                bottom: "20px",
+                right: "60px",
+              }}
+            >
+              View Invoice
+            </Button>
+          ) : null
+        }
       </div>
     </section>
   );

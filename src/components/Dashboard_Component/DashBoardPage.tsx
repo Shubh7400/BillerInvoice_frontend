@@ -105,14 +105,14 @@ console.log("Dashboard",data);
           </div>
         </div>
 
-        <div className={`${styles.profile}`}>
+        <div className={`${styles.profile} relative`}>
           <img
             src={cubexoLogo}
             alt="Company Logo"
             className={styles.companyLogo}
           />
           <p>{dashBoardData.companyName}</p>
-          <div>
+          <div className="absolute bottom-[20px] w-[85%]">
             <Link
               to="/profile"
               className="text-[16px] text-center mt-2 flex items-center m-auto gap-[10px]"

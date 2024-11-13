@@ -42,10 +42,10 @@
     .project_card {
       background-color: #E4A98A;
       background-image: url("../assets/profilebg.gif");
-      width: auto !important;
+      width: 200px !important;
       border-radius: 21px;
       background-size: cover;
-      padding: 20px;
+      padding: 12px;
       position: relative;
       margin-top: 10px;
       margin-bottom: 10px;
