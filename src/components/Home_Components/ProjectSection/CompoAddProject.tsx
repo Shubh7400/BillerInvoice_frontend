@@ -21,18 +21,25 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 
+interface CompoAddProjectProps{
+  clientId: string | undefined;
+  adminId: string | null;
+  forAddProject: boolean;
+  projectId?: string | undefined;
+  projectToEdit?: ProjectType; 
+  searchProjectName ?: string;
+  setSearchProjectName ?: (data : string) => void;
+}
+
 export default function CompoAddProject({
   adminId,
   clientId,
   forAddProject,
   projectToEdit,
-}: {
-  clientId: string | undefined;
-  adminId: string | null;
-  forAddProject: boolean;
-  projectId?: string | undefined;
-  projectToEdit?: ProjectType;
-}) {
+  searchProjectName,
+  setSearchProjectName,
+  
+}: CompoAddProjectProps) {
   // -----------------------------------------------------
   const [toEdit, setToEdit] = useState<boolean>(false);
   const handleToAddClick = () => {
@@ -71,6 +78,7 @@ export default function CompoAddProject({
     adminId: "",
     clientId: "",
   });
+  // const [searchProjectName, setSearchProjectName] = useState("");
 
   const navigate = useNavigate();
 
@@ -259,13 +267,31 @@ export default function CompoAddProject({
       {forAddProject ? (
         <div className="flex justify-between w-[80vw]  pr-2  mb-4">
           <div className='flex items-center gap-2'>
-            <Link to="/clients" className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px] ">
-              <IoIosArrowBack />
-            </Link>
-            <Typography variant="h5" component="h2" className='text-center'>
-              PROJECT LIST
-            </Typography>
-          </div>
+          <Link to="/clients" className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px] ">
+            <IoIosArrowBack />
+          </Link>
+          <Typography variant="h5" component="h2" className='text-center'>
+            PROJECT LIST
+          </Typography>
+          
+        </div>
+        <div>
+          <TextField
+            
+            label="Search by Project name"
+            type="text"
+            variant="outlined"
+            value={searchProjectName || ""}
+            onChange={(e) => setSearchProjectName && setSearchProjectName(e.target.value)}
+
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "50px",
+              },
+            }}
+          />
+        </div>
+        
           <Button
             disabled={!adminId}
             variant="contained"
