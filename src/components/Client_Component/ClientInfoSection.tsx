@@ -32,10 +32,6 @@ function ClientInfoSection() {
                                     </p>
                                 </div>
                                 <div className="text-black opacity-70 flex flex-col justify-start gap-1 ">
-                                    <p>
-                                        <b>Contact: </b>
-                                        {clientObj.contactNo}
-                                    </p>
                                     <p className=" overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden">
                                         <b>Email: </b>
                                         {clientObj.email}

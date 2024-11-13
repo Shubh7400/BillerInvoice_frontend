@@ -105,7 +105,6 @@ export default function ClientSelectionTable({
                 <TableCell sx={{ paddingX: '10px' ,width:'50px'}}>Sr.No.</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Client Name</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Client Email</TableCell>
-                <TableCell sx={{ paddingX: 0 }}>Contact No.</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Action</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Selection</TableCell>
               </TableRow>
@@ -125,10 +124,8 @@ export default function ClientSelectionTable({
                     <TableCell sx={{ paddingX: '10px',textAlign:'center'}}>{index + 1}</TableCell>
                     <TableCell sx={{ padding: '0' }}>{client.clientName}</TableCell>
                     <TableCell sx={{ padding: '0' }}>{client.email}</TableCell>
-                    <TableCell sx={{ padding: '0' }}>{client.contactNo}</TableCell>
                     <TableCell sx={{ padding: '0' }}>
                       <div className="flex">
-
                         <div className={Styles.editButton}>
                           <CompoAddClient
                             forEditClient={true}
