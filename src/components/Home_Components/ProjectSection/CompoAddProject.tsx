@@ -21,18 +21,25 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 
+interface CompoAddProjectProps{
+  clientId: string | undefined;
+  adminId: string | null;
+  forAddProject: boolean;
+  projectId?: string | undefined;
+  projectToEdit?: ProjectType; 
+  searchProjectName ?: string;
+  setSearchProjectName ?: (data : string) => void;
+}
+
 export default function CompoAddProject({
   adminId,
   clientId,
   forAddProject,
   projectToEdit,
-}: {
-  clientId: string | undefined;
-  adminId: string | null;
-  forAddProject: boolean;
-  projectId?: string | undefined;
-  projectToEdit?: ProjectType;
-}) {
+  searchProjectName,
+  setSearchProjectName,
+  
+}: CompoAddProjectProps) {
   // -----------------------------------------------------
   const [toEdit, setToEdit] = useState<boolean>(false);
   const handleToAddClick = () => {
@@ -71,6 +78,7 @@ export default function CompoAddProject({
     adminId: "",
     clientId: "",
   });
+  // const [searchProjectName, setSearchProjectName] = useState("");
 
   const navigate = useNavigate();
 
@@ -265,7 +273,25 @@ export default function CompoAddProject({
           <Typography variant="h5" component="h2" className='text-center'>
             PROJECT LIST
           </Typography>
+          
         </div>
+        <div>
+          <TextField
+            
+            label="Search by Project name"
+            type="text"
+            variant="outlined"
+            value={searchProjectName || ""}
+            onChange={(e) => setSearchProjectName && setSearchProjectName(e.target.value)}
+
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "50px",
+              },
+            }}
+          />
+        </div>
+        
           <Button
             disabled={!adminId}
             variant="contained"
