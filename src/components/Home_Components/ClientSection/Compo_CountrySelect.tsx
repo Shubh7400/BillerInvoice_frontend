@@ -61,7 +61,7 @@ export default function SelectCountryStateCity({
   return (
     <div className="my-2 flex flex-col">
       <label className="text-xs py-1 opacity-60">
-        Country: {countryString}
+        Country:  <b>{countryString}</b>
       </label>
       <Select
         options={countriesArr}
@@ -78,7 +78,7 @@ export default function SelectCountryStateCity({
           }
         }}
       />
-      <label className="text-xs py-1 opacity-60">State: {stateString}</label>
+      <label className="text-xs py-1 opacity-60">State: <b>{stateString}</b></label>
       <Select
         options={statesArr}
         getOptionLabel={(options) => {
@@ -94,7 +94,7 @@ export default function SelectCountryStateCity({
           }
         }}
       />
-      <label className="text-xs py-1 opacity-60">City: {cityString}</label>
+      <label className="text-xs py-1 opacity-60">City : <b>{cityString}</b> </label>
       <Select
         options={citiesArr}
         getOptionLabel={(options) => {

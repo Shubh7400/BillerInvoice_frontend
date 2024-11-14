@@ -35,6 +35,7 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import { E164Number } from "libphonenumber-js/core";
 import "../../../styles/addClient.css";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function CompoAddClient({
   forEditClient,
@@ -51,12 +52,17 @@ export default function CompoAddClient({
     useState(false);
   //--------------------------------------------------------
   const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate()
 
   const handleClickOpen = () => {
-    if (handleSelectClientClose) {
-      handleSelectClientClose();
+    // if (handleSelectClientClose) {
+    //   handleSelectClientClose();
+    // }
+    // setOpen(true);
+    if (clientToEdit && clientToEdit?._id) {
+      dispatch(getClientByIdAction(clientToEdit._id));
+      navigate("/edit-client")
     }
-    setOpen(true);
   };
 
   const handleClose = () => {
