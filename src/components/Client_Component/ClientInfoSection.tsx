@@ -31,7 +31,7 @@ function ClientInfoSection() {
                                         {clientObj.pancardNo}
                                     </p>
                                 </div>
-                                <div className="text-black opacity-70 flex flex-col justify-start gap-1 ">
+                                <div className="text-black opacity-70 flex flex-col justify-start gap-1 w-[250px]">
                                     <p>
                                         <b>Contact: </b>
                                         {clientObj.contactNo}
