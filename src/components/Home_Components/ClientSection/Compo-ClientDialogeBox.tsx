@@ -44,7 +44,7 @@ export default function ClientSelectionTable({
   const { adminId } = React.useContext(AuthContext);
 
   const [selectedClientId, setSelectedClientId] = React.useState<string>("");
-  const [clientDetails, setClientDetails] = React.useState<any>(null); 
+  const [clientDetails, setClientDetails] = React.useState<any>(null);
   const { deleteLoading, deleteData, deleteError } = useSelector(
     (state: RootState) => state.deleteClientState
   );
@@ -81,9 +81,7 @@ export default function ClientSelectionTable({
   const handleConfirmSelection = (clientId: string) => {
     if (clientId) {
       dispatch(getClientByIdAction(clientId));
-      const selectedClient = clients.find(
-        (client) => client._id === clientId
-      );
+      const selectedClient = clients.find((client) => client._id === clientId);
       setClientDetails(selectedClient);
       navigate("/client/details");
     }
@@ -102,7 +100,9 @@ export default function ClientSelectionTable({
           <Table>
             <TableHead className={Styles.animated}>
               <TableRow>
-                <TableCell sx={{ paddingX: '10px' ,width:'50px'}}>Sr.No.</TableCell>
+                <TableCell sx={{ paddingX: "10px", width: "50px" }}>
+                  Sr.No.
+                </TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Client Name</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Client Email</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>GST No.</TableCell>
@@ -126,9 +126,16 @@ export default function ClientSelectionTable({
                     <TableCell sx={{ padding: '0' }}>{client.clientName}</TableCell>
                     <TableCell sx={{ padding: '0' }}>{client.email}</TableCell>
                     <TableCell sx={{ padding: '0' }}>{client.gistin}</TableCell>
-                    <TableCell sx={{ padding: '0' }}>
-                      <div className="flex">
+                    <TableCell sx={{ padding: "0" }}>
+                      {client.clientName}
+                    </TableCell>
+                    <TableCell sx={{ padding: "0" }}>
+                      {client.email[0] || "No email provided"}{" "}
+                      {/* Display only the first email */}
+                    </TableCell>
 
+                    <TableCell sx={{ padding: "0" }}>
+                      <div className="flex">
                         <div className={Styles.editButton}>
                           <CompoAddClient
                             forEditClient={true}
@@ -137,7 +144,7 @@ export default function ClientSelectionTable({
                         </div>
                         <div className={Styles.editButton}>
                           {deleteLoading === "pending" &&
-                            deletingClientIdString === client._id ? (
+                          deletingClientIdString === client._id ? (
                             <CircularProgress size={25} />
                           ) : (
                             <ActionConfirmer
@@ -149,19 +156,19 @@ export default function ClientSelectionTable({
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell sx={{ padding: '0' }}>
+                    <TableCell sx={{ padding: "0" }}>
                       <Button
                         variant="contained"
                         color="primary"
                         onClick={() => {
-                          handleConfirmSelection(client._id || "")
+                          handleConfirmSelection(client._id || "");
                         }}
                         sx={{
                           backgroundColor: "#d9a990",
                           borderRadius: "20px",
                           ":hover": {
                             backgroundColor: "#4a6180",
-                          }
+                          },
                         }}
                       >
                         View

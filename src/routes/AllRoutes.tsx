@@ -52,10 +52,18 @@ const AllRoutes = () => {
           }
         />
         <Route
+          path="/edit-client"
+          element={
+            <PrivateRoute>
+              <AddClientPage forEditClient={true} clientToEdit={selectedClientState.data} />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/client/details"
           element={
             <PrivateRoute>
-              <ProjectPage projectTableforClient={true}/>
+              <ProjectPage projectTableforClient={true} />
             </PrivateRoute>
           }
         />
@@ -63,7 +71,7 @@ const AllRoutes = () => {
           path="/projects"
           element={
             <PrivateRoute>
-              <ProjectPage projectTableforClient={false}/>
+              <ProjectPage projectTableforClient={false} />
             </PrivateRoute>
           }
         />
@@ -79,7 +87,7 @@ const AllRoutes = () => {
           path="/client/invoices"
           element={
             <PrivateRoute>
-              <InvoiceClientPage/>
+              <InvoiceClientPage />
             </PrivateRoute>
           }
         />
