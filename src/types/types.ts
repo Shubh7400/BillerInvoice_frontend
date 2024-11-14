@@ -24,7 +24,7 @@ export interface AdminType {
 export interface ClientType {
   _id?: string;
   clientName: string;
-  email: string;
+  email: string[] ;
   pancardNo: string;
   address: {
     street: string;
