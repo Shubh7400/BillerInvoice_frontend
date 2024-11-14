@@ -173,7 +173,6 @@ export default function AddClientPage({
   };
 
   function areAllFieldsFilled(obj: any) {
-    console.log(obj, " <<< oBJ");
     for (const key in obj) {
       if (typeof obj[key] === "object" && obj[key] !== null) {
         if (!areAllFieldsFilled(obj[key])) {
@@ -254,7 +253,7 @@ export default function AddClientPage({
       />
       <div className="flex gap-5 mt-3">
         <TextField
-          className="w-[100%]"
+          className="w-[50%]"
           label="Email"
           name="email"
           value={clientData.email}
@@ -285,10 +284,9 @@ export default function AddClientPage({
           label="Street"
           fullWidth
           name="street"
-          value={clientData.pancardNo}
+          value={clientData.address.street}
           onChange={handleChange}
         />
-        
       </div>
 
       <SelectCountryStateCity
@@ -303,6 +301,7 @@ export default function AddClientPage({
         stateString={clientData.address.state}
         cityString={clientData.address.city}
       />
+    
       <div className="flex justify-end">
         <Button
           onClick={forEditClient ? handleEditClientSubmit : handleAddClientSubmit}
