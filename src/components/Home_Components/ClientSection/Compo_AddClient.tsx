@@ -4,6 +4,7 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
@@ -89,7 +90,7 @@ export default function CompoAddClient({
   const { data } = useSelector((state: RootState) => state.selectedClientState);
   const [clientData, setClientData] = useState<ClientType>({
     clientName: "",
-    email: "",
+    email:[""],
     pancardNo: "",
     gistin: "",
     address: {
@@ -243,7 +244,7 @@ export default function CompoAddClient({
       });
     } else if (name === "email") {
       let sanitisedEmail = value.trim();
-      setClientData({ ...clientData, email: sanitisedEmail });
+      setClientData({ ...clientData, email: [sanitisedEmail] });
     } else {
       setClientData({
         ...clientData,
@@ -374,6 +375,7 @@ export default function CompoAddClient({
           editClientState.loading === "pending" ? (
           <LinearProgress />
         ) : null}
+        
         <DialogContent>
           <TextField
             autoFocus

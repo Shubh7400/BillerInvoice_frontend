@@ -313,7 +313,7 @@ const ProjectTable = ({
                       if (searchProjectName.length <= 0) return true;
                       return project.projectName
                         .toLowerCase()
-                        .includes(searchProjectName.toLowerCase());
+                        .startsWith(searchProjectName.toLowerCase());
                     }).map((project: ProjectType, index: number) => (
                       <TableRow key={project._id} className="p-3">
                         {/* <TableCell

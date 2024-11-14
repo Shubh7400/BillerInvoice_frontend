@@ -1,8 +1,10 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import { Chip, Box } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   addNewClientAction,
   makeStateLoadingNeutralInAddClient,
@@ -74,18 +76,22 @@ export default function AddClientPage({
   const { data } = useSelector((state: RootState) => state.selectedClientState);
   const [clientData, setClientData] = useState<ClientType>({
     clientName: "",
-    email: "",
+    email: [],
     pancardNo: "",
     gistin: "",
     address: {
-      street: "NA",
+      street: "",
       city: selectedCountry.name,
       state: selectedState.name,
       country: selectedCity.name,
-      postalCode: "",
+      postalCode: "N/A",
     },
     user: "",
   });
+
+  const [inputEmail, setInputEmail] = useState("");
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const [emailError, setEmailError] = useState("");
 
   React.useEffect(() => {
     if (editClientState.loading === "succeeded" && controlEditLoading) {
@@ -160,29 +166,87 @@ export default function AddClientPage({
     }));
   }, [selectedCountry, selectedState, selectedCity]);
 
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setClientData({
-      ...clientData,
-      [name]: value,
-    });
+  
+    if (name === "street") {
+      // Update nested field for address.street
+      setClientData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData.address,
+          street: value,
+        },
+      }));
+    } else {
+      // Handle other fields in clientData
+      setClientData({
+        ...clientData,
+        [name]: value,
+      });
+    }
+  
     setFormError("");
     setIncompleteError("");
   };
+  
+
+  const handleAddEmail = () => {
+    if (inputEmail && emailRegex.test(inputEmail)) {
+      if (!clientData.email.includes(inputEmail)) {
+        setClientData((prev) => {
+          const updatedEmails = [...prev.email, inputEmail];
+          console.log(updatedEmails); // Log the updated email array
+          return {
+            ...prev,
+            email: updatedEmails, // Update the clientData.email state
+          };
+        });
+        setEmailError(""); // Clear any previous error
+        setInputEmail(""); // Clear the input field
+      } else {
+        setEmailError("This email has already been added.");
+      }
+    } else {
+      setEmailError("Please enter a valid email.");
+    }
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setInputEmail(e.target.value);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddEmail();
+    }
+  };
+
+  const handleRemoveEmail = (index: number) => {
+    setClientData({
+      ...clientData,
+      email: clientData.email.filter((_, i) => i !== index),
+    });
+  };
 
   function areAllFieldsFilled(obj: any) {
-    console.log(obj, " <<< oBJ");
     for (const key in obj) {
       if (typeof obj[key] === "object" && obj[key] !== null) {
-        if (!areAllFieldsFilled(obj[key])) {
+        if (Array.isArray(obj[key])) {
+          if (key === "email" && obj[key].length === 0) {
+            return false; // Ensures that at least one email is added
+          }
+        } else if (!areAllFieldsFilled(obj[key])) {
           return false;
         }
-      } else {
-        if (obj[key] === "" || obj[key] === undefined) {
-          return false;
-        }
+      } else if (obj[key] === "" || obj[key] === undefined) {
+        return false;
       }
     }
     return true;
@@ -252,15 +316,46 @@ export default function AddClientPage({
         fullWidth
         required
       />
-      <div className="flex gap-5 mt-3">
-        <TextField
-          className="w-[100%]"
-          label="Email"
-          name="email"
-          value={clientData.email}
-          onChange={handleChange}
-          required
-        />
+      <div className="flex flex-col gap-3 mt-3">
+        <div className="p-4 border border-gray-300 rounded-lg">
+          <h3 className="mb-2 text-gray-600">Email Addresses</h3>
+
+          {/* Render only if there are emails in the array */}
+          {clientData.email.length > 0 && (
+            <Box display="flex" flexWrap="wrap" gap={1} mb={2}>
+              {clientData.email.map((email, index) => (
+                <Chip
+                  key={index}
+                  label={email}
+                  onDelete={() => handleRemoveEmail(index)}
+                  deleteIcon={<CloseIcon />}
+                  aria-label={`Remove ${email}`}
+                />
+              ))}
+            </Box>
+          )}
+
+          <TextField
+            fullWidth
+            label="Enter email"
+            value={inputEmail}
+            onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
+            placeholder="Add email and press Enter"
+            aria-label="Enter email address"
+            InputProps={{
+              style: {
+                marginTop: clientData.email.length > 0 ? 16 : 0,
+                textAlign: "center", 
+              },
+            }}
+          />
+
+          {/* Error message below the input field */}
+          {emailError && (
+            <div style={{ color: "red", marginTop: 8 }}>{emailError}</div>
+          )}
+        </div>
       </div>
       <div className="flex gap-5 mt-3">
         <TextField
@@ -285,10 +380,9 @@ export default function AddClientPage({
           label="Street"
           fullWidth
           name="street"
-          value={clientData.pancardNo}
+          value={clientData.address.street}
           onChange={handleChange}
         />
-        
       </div>
 
       <SelectCountryStateCity
@@ -305,7 +399,9 @@ export default function AddClientPage({
       />
       <div className="flex justify-end">
         <Button
-          onClick={forEditClient ? handleEditClientSubmit : handleAddClientSubmit}
+          onClick={
+            forEditClient ? handleEditClientSubmit : handleAddClientSubmit
+          }
           className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
           style={{
             backgroundColor: isHovered ? "#4a6180" : "#d9a990",
