@@ -8,6 +8,8 @@ function ClientInfoSection() {
         (state: RootState) => state.selectedClientState
     );
     const clientObj: ClientType = selectedClientState.data;
+    // Assuming the email is an array and we want to show the first one
+    const firstEmail = clientObj?.email?.[0];
     return (
         <div>
             {clientObj && selectedClientState.loading !== "idle" ? (
@@ -34,7 +36,7 @@ function ClientInfoSection() {
                                 <div className="text-black opacity-70 flex flex-col justify-start gap-1 ">
                                     <p className=" overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden">
                                         <b>Email: </b>
-                                        {clientObj.email}
+                                        {firstEmail}
                                     </p>
                                 </div>
                             </div>

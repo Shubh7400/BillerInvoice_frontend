@@ -212,7 +212,7 @@ function AddProjectPage({
   };
 
   React.useEffect(() => {
-    
+
     if (forAddProject && toEdit) {
       setProjectData({
         projectName: "",
@@ -300,9 +300,9 @@ function AddProjectPage({
           <DialogTitle style={{ padding: "0" }}>
             {forAddProject ? "Add Project" : "Edit Project"}
           </DialogTitle>
-          <Link
-            to="/projects"
-            className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
+          <button
+            onClick={() => navigate(-1)}
+            className="text-[16px] flex items-center gap-[10px] text-[#fff]"
             style={{
               backgroundColor: "#d9a990",
               borderRadius: "20px",
@@ -310,7 +310,7 @@ function AddProjectPage({
             }}
           >
             <IoChevronBackSharp /> BACK
-          </Link>
+          </button>
         </div>
         {incompleteError.length > 0 ? (
           <Alert severity="error"> {incompleteError}</Alert>
