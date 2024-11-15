@@ -157,7 +157,7 @@ background-color: #F5F5F5;
 
 .table_scroll{
     
-  width: 80vw !important;
+  width: 81vw !important;
 height: 75vh;
 background: #F5F5F5;
 overflow-y: auto;
@@ -257,3 +257,17 @@ background-color: #F5F5F5;
   background-color: #c1c1c1;
   color:#db8876;
 }
+.search_input{
+  display: flex;
+  gap: 10px;
+}
+.search_input label{
+  top: -6px;
+}
+.search_input input{
+  padding: 10px;
+  border-radius: 50px;
+}
+
+
+

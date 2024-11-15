@@ -237,7 +237,6 @@ export default function AddClientPage({
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
-      if (key === "pancardNo") continue; // Skip PAN field validation
       if (typeof obj[key] === "object" && obj[key] !== null) {
         if (Array.isArray(obj[key])) {
           if (key === "email" && obj[key].length === 0) {
@@ -287,8 +286,8 @@ export default function AddClientPage({
   };
 
   return (
-    <div >
-      <div className="flex justify-between items-center mb-5 " >
+    <div>
+      <div className="flex justify-between items-center mb-5">
         <Typography variant="h5">
           {forEditClient ? "Edit Client" : "Add Client"}
         </Typography>
@@ -318,23 +317,10 @@ export default function AddClientPage({
         required
       />
       <div className="flex flex-col gap-3 mt-3">
-        <div className="p-4 border border-gray-300 rounded-lg">
-          <h3 className="mb-2 text-gray-600">Email Addresses</h3>
+        
 
           {/* Render only if there are emails in the array */}
-          {clientData.email.length > 0 && (
-            <Box display="flex" flexWrap="wrap" gap={1} mb={2}>
-              {clientData.email.map((email, index) => (
-                <Chip
-                  key={index}
-                  label={email}
-                  onDelete={() => handleRemoveEmail(index)}
-                  deleteIcon={<MdOutlineClose />}
-                  aria-label={`Remove ${email}`}
-                />
-              ))}
-            </Box>
-          )}
+          
 
           <TextField
             fullWidth
@@ -346,7 +332,7 @@ export default function AddClientPage({
             aria-label="Enter email address"
             InputProps={{
               style: {
-                marginTop: clientData.email.length > 0 ? 16 : 0,
+                // marginTop: clientData.email.length > 0 ? 16 : 0,
                 textAlign: "center", 
               },
             }}
@@ -356,7 +342,20 @@ export default function AddClientPage({
           {emailError && (
             <div style={{ color: "red", marginTop: 8 }}>{emailError}</div>
           )}
-        </div>
+          {clientData.email.length > 0 && (
+            <Box display="flex" flexWrap="wrap" gap={1} >
+              {clientData.email.map((email, index) => (
+                <Chip
+                  key={index}
+                  label={email}
+                  onDelete={() => handleRemoveEmail(index)}
+                  deleteIcon={<MdOutlineClose />}
+                  aria-label={`Remove ${email}`}
+                />
+              ))}
+            </Box>
+          )}
+        
       </div>
       <div className="flex gap-5 mt-3">
         <TextField
