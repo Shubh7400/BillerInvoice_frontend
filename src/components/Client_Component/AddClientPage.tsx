@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import { Chip, Box } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import CloseIcon from "@mui/icons-material/Close";
+import { MdOutlineClose } from "react-icons/md";
 import {
   addNewClientAction,
   makeStateLoadingNeutralInAddClient,
@@ -237,6 +237,7 @@ export default function AddClientPage({
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
+      if (key === "pancardNo") continue; // Skip PAN field validation
       if (typeof obj[key] === "object" && obj[key] !== null) {
         if (Array.isArray(obj[key])) {
           if (key === "email" && obj[key].length === 0) {
@@ -286,8 +287,8 @@ export default function AddClientPage({
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-5">
+    <div >
+      <div className="flex justify-between items-center mb-5 " >
         <Typography variant="h5">
           {forEditClient ? "Edit Client" : "Add Client"}
         </Typography>
@@ -328,7 +329,7 @@ export default function AddClientPage({
                   key={index}
                   label={email}
                   onDelete={() => handleRemoveEmail(index)}
-                  deleteIcon={<CloseIcon />}
+                  deleteIcon={<MdOutlineClose />}
                   aria-label={`Remove ${email}`}
                 />
               ))}

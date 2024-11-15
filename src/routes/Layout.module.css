@@ -1,0 +1,29 @@
+.table_scroll{
+    
+    width: 85vw !important;
+  /* height: 75vh; */
+  /* margin-bottom: 20px; */
+  background: #F5F5F5;
+  overflow-y: auto;
+  overflow-x: auto;
+    border-radius: 20px;
+  }
+  .table_scroll::-webkit-scrollbar {
+    width: 6px; /* Vertical scrollbar width */
+    height: 6px; /* Horizontal scrollbar height */
+    background-color: #F5F5F5;
+    border-radius: 50px;
+  }
+  
+  .table_scroll::-webkit-scrollbar
+  {
+  width: 6px;
+  background-color: #F5F5F5;
+    border-radius: 50px;
+  }
+  
+  .table_scroll::-webkit-scrollbar-thumb
+  {
+    background: linear-gradient(-45deg, #6bafd2, #a4c8dc, #d6cbca, #eabc96, #db8876);
+    border-radius: 50px;
+  }
