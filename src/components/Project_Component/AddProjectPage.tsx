@@ -32,6 +32,7 @@ function AddProjectPage({
   projectToEdit?: ProjectType;
 }) {
   const [toEdit, setToEdit] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState(false);
   const handleToAddClick = () => {
     setToEdit(false);
   };
@@ -460,7 +461,7 @@ function AddProjectPage({
             />
           </form>
         </DialogContent>
-        {/* <DialogActions>
+        <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           {!toEdit ? (
             <Button
@@ -493,7 +494,7 @@ function AddProjectPage({
               Edit Project
             </Button>
           )}
-        </DialogActions> */}
+        </DialogActions>
         {/* </Dialog> */}
       </div>
     </>

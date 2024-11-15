@@ -3,7 +3,8 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Sidebar from "../components/SideBar/SideBar";
 import { AuthContext } from "../states/context/AuthContext/AuthContext";
-import bg_image from "../components/assets/home_bg.png"
+import bg_image from "../components/assets/home_bg.png";
+import Styles from "./Layout.module.css";
 
 const Layout = () => {
   const { isAuth } = useContext(AuthContext);
@@ -24,7 +25,7 @@ const Layout = () => {
       <Sidebar />
       <div className="flex flex-col ">
         <Navbar />
-        <div className="flex-grow p-6 rounded-[30px] bg-[#fff]">
+        <div className={`${Styles.table_scroll} flex-grow p-6 rounded-[30px] bg-[#fff] `}>
           <Outlet />
         </div>
       </div>

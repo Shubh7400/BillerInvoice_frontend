@@ -105,6 +105,7 @@ export default function ClientSelectionTable({
                 </TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Client Name</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Client Email</TableCell>
+                <TableCell sx={{ paddingX: 0 }}>GST No.</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Action</TableCell>
                 <TableCell sx={{ paddingX: 0 }}>Selection</TableCell>
               </TableRow>
@@ -121,16 +122,16 @@ export default function ClientSelectionTable({
                 })
                 .map((client: ClientType, index: number) => (
                   <TableRow key={client._id} className="p-3">
-                    <TableCell sx={{ paddingX: "10px", textAlign: "center" }}>
-                      {index + 1}
-                    </TableCell>
-                    <TableCell sx={{ padding: "0" }}>
-                      {client.clientName}
-                    </TableCell>
+                    <TableCell sx={{ paddingX: '10px',textAlign:'center'}}>{index + 1}</TableCell>
+                    <TableCell sx={{ padding: '0' }}>{client.clientName}</TableCell>
+                    {/* <TableCell sx={{ padding: '0' }}>{client.email}</TableCell> */}
                     <TableCell sx={{ padding: "0" }}>
                       {client.email[0] || "No email provided"}{" "}
                       {/* Display only the first email */}
                     </TableCell>
+                    <TableCell sx={{ padding: '0' }}>{client.gistin}</TableCell>
+                    
+                    
 
                     <TableCell sx={{ padding: "0" }}>
                       <div className="flex">

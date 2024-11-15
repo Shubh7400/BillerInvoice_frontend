@@ -16,7 +16,7 @@ function InvoiceListPage() {
             INVOICE LIST
           </Typography>
         </div>
-
+    
         
       </div>
     </div>
