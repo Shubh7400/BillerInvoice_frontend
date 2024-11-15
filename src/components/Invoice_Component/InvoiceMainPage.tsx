@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaArrowRight } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-
+import { Button } from '@mui/material';
 const tabsContent: YearContent[] = [
   {
     label: '2022',
@@ -148,9 +148,12 @@ const TabPillsComponent: React.FC = () => {
     <div>
       <div className='flex justify-between items-center mt-[-10px]'>
         <div className='flex items-center gap-2'>
-          <Link to="/" className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px] ">
+          <button
+            onClick={() => navigate(-1)}
+            className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
+          >
             <IoIosArrowBack />
-          </Link>
+          </button>
           <Typography variant="h5" component="h2" className='text-center'>
             INVOICE
           </Typography>
@@ -202,7 +205,7 @@ const TabPillsComponent: React.FC = () => {
                 variant="h6"
                 component="span"
                 className='absolute top-5 right-3'
-                style={{ fontSize: '60px', color: '#000', fontWeight: '300',fontFamily: 'Rubik'}}
+                style={{ fontSize: '60px', color: '#000', fontWeight: '300', fontFamily: 'Rubik' }}
               >
                 {displayData}
               </Typography>

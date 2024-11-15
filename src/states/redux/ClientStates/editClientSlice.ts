@@ -14,7 +14,8 @@ export const editClientAction = createAsyncThunk(
       const res = await editClient(clientId, clientData);
       return res;
     } catch (error) {
-      return thunkApi.rejectWithValue(error);
+      return thunkApi.rejectWithValue(error instanceof Error ? error.message : "Unknown error");
+
     }
   }
 );
@@ -52,6 +53,7 @@ const editClientSlice = createSlice({
         state.loading = "failed";
         state.data = {} as ClientType;
         state.error = action.payload as string;
+
       });
   },
 });
