@@ -237,6 +237,7 @@ export default function AddClientPage({
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
+      if (key === "pancardNo") continue; // Skip PAN field validation
       if (typeof obj[key] === "object" && obj[key] !== null) {
         if (Array.isArray(obj[key])) {
           if (key === "email" && obj[key].length === 0) {
@@ -286,8 +287,8 @@ export default function AddClientPage({
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-5">
+    <div >
+      <div className="flex justify-between items-center mb-5 " >
         <Typography variant="h5">
           {forEditClient ? "Edit Client" : "Add Client"}
         </Typography>

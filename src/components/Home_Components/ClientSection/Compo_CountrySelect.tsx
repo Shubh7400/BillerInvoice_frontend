@@ -58,43 +58,72 @@ export default function SelectCountryStateCity({
     stateCode: city.stateCode,
   }));
 
+  useEffect(() => {
+    if (forEditClient) {
+      // Set selected country if it's not already set
+      if (!selectedCountry.name && countryString) {
+        const country = countriesArr.find((c) => c.name === countryString);
+        if (country) setSelectedCountry(country);
+      }
+
+      // Set selected state if it's not already set
+      if (!selectedState.name && stateString && selectedCountry?.isoCode) {
+        const state = statesArr.find((s) => s.name === stateString);
+        if (state) setSelectedState(state);
+      }
+
+      // Set selected city if it's not already set
+      if (!selectedCity.name && cityString && selectedState?.isoCode) {
+        const city = citiesArr.find((c) => c.name === cityString);
+        if (city) setSelectedCity(city);
+      }
+    }
+  }, [
+    forEditClient,
+    countryString,
+    stateString,
+    cityString,
+    countriesArr,
+    statesArr,
+    citiesArr,
+  ]);
+
   return (
     <div className="my-2 flex flex-col">
       <label className="text-xs py-1 opacity-60">
-        Country:  <b>{countryString}</b>
+        Country: <b>{countryString}</b>
       </label>
       <Select
         options={countriesArr}
-        getOptionLabel={(options) => {
-          return options["name"];
-        }}
-        getOptionValue={(options) => {
-          return options["name"];
-        }}
-        value={selectedCountry}
+        getOptionLabel={(option) => option.name}
+        getOptionValue={(option) => option.name}
+        value={selectedCountry.name ? selectedCountry : null}
         onChange={(item) => {
           if (item) {
             setSelectedCountry(item);
+            setSelectedState({} as StateInfoType); // Reset state when country changes
+            setSelectedCity({} as CityInfoType); // Reset city when country changes
           }
         }}
       />
-      <label className="text-xs py-1 opacity-60">State: <b>{stateString}</b></label>
+      <label className="text-xs py-1 opacity-60">
+        State: <b>{stateString}</b>
+      </label>
       <Select
         options={statesArr}
-        getOptionLabel={(options) => {
-          return options["name"];
-        }}
-        getOptionValue={(options) => {
-          return options["name"];
-        }}
-        value={selectedState}
+        getOptionLabel={(option) => option.name}
+        getOptionValue={(option) => option.name}
+        value={selectedState.name ? selectedState : null}
         onChange={(item) => {
           if (item) {
             setSelectedState(item);
+            setSelectedCity({} as CityInfoType); // Reset city when state changes
           }
         }}
       />
-      <label className="text-xs py-1 opacity-60">City : <b>{cityString}</b> </label>
+      <label className="text-xs py-1 opacity-60">
+        City : <b>{cityString}</b>{" "}
+      </label>
       <Select
         options={citiesArr}
         getOptionLabel={(options) => {
