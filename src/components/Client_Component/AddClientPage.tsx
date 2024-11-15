@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import { Chip, Box } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import CloseIcon from "@mui/icons-material/Close";
+import { MdOutlineClose } from "react-icons/md";
 import {
   addNewClientAction,
   makeStateLoadingNeutralInAddClient,
@@ -328,7 +328,7 @@ export default function AddClientPage({
                   key={index}
                   label={email}
                   onDelete={() => handleRemoveEmail(index)}
-                  deleteIcon={<CloseIcon />}
+                  deleteIcon={<MdOutlineClose />}
                   aria-label={`Remove ${email}`}
                 />
               ))}
