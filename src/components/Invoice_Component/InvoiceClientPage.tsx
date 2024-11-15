@@ -9,6 +9,7 @@ import { removeProjectFromInvoiceAction } from '../../states/redux/InvoiceProjec
 import BillAmount from "../../components/Home_Components/InvoiceSection/BillAmount";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import Typography from "@mui/material/Typography";
 import error from "../assets/project_error.png";
@@ -31,7 +32,7 @@ function InvoiceClientPage() {
     }
   };
   
-
+  const navigate = useNavigate();
   const [editableProjects, setEditableProjects] = useState(projectsForInvoice);
 
   const handleInputChange = (id: string, field: string, value: any) => {
@@ -45,9 +46,12 @@ function InvoiceClientPage() {
   return (
     <div>
       <div className='flex items-center gap-2'>
-        <Link to="/client/details" className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px] ">
-          <IoIosArrowBack />
-        </Link>
+      <button
+            onClick={() => navigate(-1)}
+            className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
+          >
+            <IoIosArrowBack />
+          </button>
         <Typography variant="h5" component="h2" className='text-center'>
           CLIENT INFORMATION
         </Typography>

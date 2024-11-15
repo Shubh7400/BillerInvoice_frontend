@@ -288,13 +288,13 @@ export default function AddClientPage({
 
   return (
     <div >
-      <div className="flex justify-between items-center mb-5 " >
+      <div className="flex justify-between items-center mb-5">
         <Typography variant="h5">
           {forEditClient ? "Edit Client" : "Add Client"}
         </Typography>
-        <Link
-          to="/clients"
-          className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
+        <button
+          onClick={() => navigate(-1)} // Use navigate(-1) to go back
+          className="text-[16px] flex items-center gap-[10px] text-[#fff]"
           style={{
             backgroundColor: "#d9a990",
             borderRadius: "20px",
@@ -302,7 +302,7 @@ export default function AddClientPage({
           }}
         >
           <IoChevronBackSharp /> BACK
-        </Link>
+        </button>
       </div>
       {formError && <Alert severity="error">{formError}</Alert>}
       {incompleteError && <Alert severity="error">{incompleteError}</Alert>}

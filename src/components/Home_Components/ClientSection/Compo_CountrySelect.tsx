@@ -58,24 +58,21 @@ export default function SelectCountryStateCity({
     stateCode: city.stateCode,
   }));
 
+
   useEffect(() => {
     if (forEditClient) {
-      // Set selected country if it's not already set
       if (!selectedCountry.name && countryString) {
         const country = countriesArr.find((c) => c.name === countryString);
-        if (country) setSelectedCountry(country);
+        country && setSelectedCountry(country);
       }
-
-      // Set selected state if it's not already set
       if (!selectedState.name && stateString && selectedCountry?.isoCode) {
         const state = statesArr.find((s) => s.name === stateString);
-        if (state) setSelectedState(state);
+        state && setSelectedState(state);
       }
-
-      // Set selected city if it's not already set
-      if (!selectedCity.name && cityString && selectedState?.isoCode) {
+      if (!selectedCity.name && cityString && selectedState?.isoCode && citiesArr.length > 0) {
         const city = citiesArr.find((c) => c.name === cityString);
-        if (city) setSelectedCity(city);
+        console.log("Found city:", city); // Log the city being set
+        city && setSelectedCity(city);
       }
     }
   }, [
@@ -83,10 +80,13 @@ export default function SelectCountryStateCity({
     countryString,
     stateString,
     cityString,
-    countriesArr,
-    statesArr,
+    selectedCountry,
+    selectedState,
+    selectedCity,
     citiesArr,
   ]);
+  
+
 
   return (
     <div className="my-2 flex flex-col">
@@ -126,13 +126,9 @@ export default function SelectCountryStateCity({
       </label>
       <Select
         options={citiesArr}
-        getOptionLabel={(options) => {
-          return options["name"];
-        }}
-        getOptionValue={(options) => {
-          return options["name"];
-        }}
-        value={selectedCity}
+        getOptionLabel={(options) => options.name}
+        getOptionValue={(options) => options.name}
+        value={selectedCity.name ? selectedCity : null} // Ensure this references selectedCity
         onChange={(item) => {
           if (item) {
             setSelectedCity(item);
