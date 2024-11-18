@@ -20,6 +20,7 @@ import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
+import Styles from "./ProjectTable.module.css"
 
 interface CompoAddProjectProps {
   clientId: string | undefined;
@@ -261,40 +262,41 @@ export default function CompoAddProject({
     handleToEditClick();
     // handleClickOpen();
   };
+  const handleBackButtonClick = () => {
+    navigate(-1);
+  };
 
   return (
     <>
       {forAddProject ? (
         <div className="flex justify-between w-[80vw]  pr-2  mb-4">
           <div className='flex items-center gap-2'>
-            <button
-              onClick={() => navigate(-1)}
+          <button
+              onClick={handleBackButtonClick}
               className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
             >
               <IoIosArrowBack />
-            </button>
-            <Typography variant="h5" component="h2" className='text-center'>
-              PROJECT LIST
-            </Typography>
+          </button>
+          <Typography variant="h5" component="h2" className='text-center'>
+            PROJECT LIST
+          </Typography>
+          
+        </div>
+        <div className={Styles.search_input}>
+          <TextField
+            
+            label="Search by Project name"
+            type="text"
+            variant="outlined"
+            value={searchProjectName || ""}
+            onChange={(e) => setSearchProjectName && setSearchProjectName(e.target.value)}
 
-          </div>
-          <div>
-            <TextField
-
-              label="Search by Project name"
-              type="text"
-              variant="outlined"
-              value={searchProjectName || ""}
-              onChange={(e) => setSearchProjectName && setSearchProjectName(e.target.value)}
-
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "50px",
-                },
-              }}
-            />
-          </div>
-
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "50px",
+              },
+            }}
+          />
           <Button
             disabled={!adminId}
             variant="contained"
@@ -313,6 +315,9 @@ export default function CompoAddProject({
           >
             Add Project
           </Button>
+        </div>
+        
+          
         </div>
       ) : (
         <div className="">
@@ -458,7 +463,7 @@ export default function CompoAddProject({
                     }}
                     InputProps={{
                       inputProps: {
-                        step: 300, // Set the step to 5 minutes (300 seconds)
+                        step: 300, 
                       },
                     }}
                   />
