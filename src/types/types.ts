@@ -113,6 +113,7 @@ export type CityInfoType = {
   latitude?: string | null | undefined;
   longitude?: string | null | undefined;
 };
+
 export type NewPasswordType = {
   newPassword: string;
   confirmNewPassword: string;

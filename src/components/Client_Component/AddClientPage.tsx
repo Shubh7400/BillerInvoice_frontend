@@ -44,6 +44,7 @@ export default function AddClientPage({
   clientToEdit: ClientType | null;
   handleSelectClientClose?: () => void | undefined;
 }) {
+  
   const { adminId } = React.useContext(AuthContext);
   const [controlEditLoading, setControlEditLoading] = useState(false);
   const [addClientLoadingController, setAddClientLoadingController] =
@@ -59,6 +60,7 @@ export default function AddClientPage({
   const [selectedCity, setSelectedCity] = useState<CityInfoType>(
     {} as CityInfoType
   );
+ 
   const [incompleteError, setIncompleteError] = useState("");
   const [formError, setFormError] = useState("");
   const navigate = useNavigate();
@@ -84,7 +86,7 @@ export default function AddClientPage({
       city: selectedCountry.name,
       state: selectedState.name,
       country: selectedCity.name,
-      postalCode: "N/A",
+      postalCode: "",
     },
     user: "",
   });
@@ -92,7 +94,7 @@ export default function AddClientPage({
   const [inputEmail, setInputEmail] = useState("");
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const [emailError, setEmailError] = useState("");
-  console.log("This is client data : ",clientData);
+  console.log("This is client data : ", clientData);
   React.useEffect(() => {
     if (editClientState.loading === "succeeded" && controlEditLoading) {
       setControlEditLoading(false);
@@ -180,7 +182,19 @@ export default function AddClientPage({
           street: value,
         },
       }));
-    } else {
+    } 
+
+    else if (name === "postalCode") {
+      // Update nested field for address.street
+      setClientData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData.address,
+          postalCode: value,
+        },
+      }));
+    } 
+    else {
       // Handle other fields in clientData
       setClientData({
         ...clientData,
@@ -284,6 +298,7 @@ export default function AddClientPage({
     }
   };
 
+
   return (
     <div>
       <div className="flex justify-between items-center mb-5">
@@ -384,7 +399,8 @@ export default function AddClientPage({
         />
       </div>
 
-      <SelectCountryStateCity
+
+      {clientData && <SelectCountryStateCity
         selectedCountry={selectedCountry}
         selectedState={selectedState}
         selectedCity={selectedCity}
@@ -392,10 +408,22 @@ export default function AddClientPage({
         setSelectedState={setSelectedState}
         setSelectedCity={setSelectedCity}
         forEditClient={forEditClient}
-        countryString={clientData.address.country}
+        countryString={clientData?.address.country}
         stateString={clientData.address.state}
-        cityString={clientData.address.city} 
-      /> 
+        cityString={clientToEdit?.address?.city}
+      // send pincode as props 
+      />}
+
+      <div className="flex gap-5 mt-3">
+        <TextField
+          className="w-[100%]"
+          label="postalCode"
+          fullWidth
+          name="postalCode"
+        value={clientData.address.postalCode}
+        onChange={handleChange}
+        />
+      </div>
 
       <div className="flex justify-end">
         <Button
@@ -410,8 +438,6 @@ export default function AddClientPage({
             color: "#fff ",
             marginTop: "10px",
           }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
         >
           {forEditClient ? "Edit Client" : "Add Client"}
         </Button>

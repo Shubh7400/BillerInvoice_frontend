@@ -29,7 +29,7 @@ export default function  SelectCountryStateCity({
   forEditClient: boolean;
   countryString: string;
   stateString: string;
-  cityString: string;
+  cityString: string | undefined;
 }) {
   console.log(stateString , " <<<<<>>>>>>>>" , cityString)
   const countriesArr: CountryInfoType[] = Country.getAllCountries().map(
@@ -91,16 +91,7 @@ export default function  SelectCountryStateCity({
     citiesArr,
   ]);
 
-  // const defaultCity = citiesArr.length > 0 ? citiesArr[0] : null;
-  const defaultCity = cityString;
-
-  useEffect(() => {
-    if (!selectedCity.name && citiesArr.length > 0) {
-      const defaultCity =
-        citiesArr.find((c) => c.name === cityString) ||  citiesArr[0];
-      setSelectedCity(defaultCity);
-    }
-  }, [selectedCity, citiesArr, cityString]);
+  
 
   return (
     <div className="my-2 flex flex-col">
