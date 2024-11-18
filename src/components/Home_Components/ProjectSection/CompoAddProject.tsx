@@ -13,7 +13,7 @@ import {
   useAddNewProject,
   useUpdateProject,
 } from "../../../states/query/Project_queries/projectQueries";
-import { Grid, Typography, Select,FormControl, styled, SelectChangeEvent } from '@mui/material';
+import { Grid, Typography, Select, FormControl, styled, SelectChangeEvent } from '@mui/material';
 import { queryClient } from "../../..";
 import { CiEdit } from "react-icons/ci";
 import { useSnackbar } from "notistack";
@@ -22,14 +22,14 @@ import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import Styles from "./ProjectTable.module.css"
 
-interface CompoAddProjectProps{
+interface CompoAddProjectProps {
   clientId: string | undefined;
   adminId: string | null;
   forAddProject: boolean;
   projectId?: string | undefined;
-  projectToEdit?: ProjectType; 
-  searchProjectName ?: string;
-  setSearchProjectName ?: (data : string) => void;
+  projectToEdit?: ProjectType;
+  searchProjectName?: string;
+  setSearchProjectName?: (data: string) => void;
 }
 
 export default function CompoAddProject({
@@ -39,7 +39,7 @@ export default function CompoAddProject({
   projectToEdit,
   searchProjectName,
   setSearchProjectName,
-  
+
 }: CompoAddProjectProps) {
   // -----------------------------------------------------
   const [toEdit, setToEdit] = useState<boolean>(false);

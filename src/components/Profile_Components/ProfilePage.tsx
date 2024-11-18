@@ -87,65 +87,68 @@ const ProfilePage = () => {
   }, [error, adminId, selectedClient.error]);
 
 
-  
+
   return (
     <div>
 
       <div className='flex justify-between items-center  pb-[10]'>
         <div className='flex items-center gap-2'>
-          <Link to="/" className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px] ">
+          <button
+            onClick={() => navigate(-1)}
+            className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
+          >
             <IoIosArrowBack />
-          </Link>
+          </button>
           <Typography variant="h5" component="h2" className='text-center'>
             PROFILE
           </Typography>
         </div>
 
-        
+
       </div>
       {data ? (
-            <div className="text-black  p-4 relative border-2 border-[#c1c1c1] rounded-[20px] mt-[15px]">
-              <div className="bg-slate-100 flex justify-start items-center rounded-[15px]  h-auto  w-[200px]  p-2  b ">
-                <img
-                  src={companyLogo}
-                  alt="CompanyLogo"
-                  className="h-auto w-[200px] "
-                />
-              </div>
-              <div className=" text-black  pt-5 ">
-                <h3 className=" text-2xl font-semibold ">
-                  {data.companyName}
-                </h3>
-                <p className="my-2">
-                  <b>Gstin : </b>
-                  {data.gistin}
-                </p>
-                <div className="text-black  opacity-70 flex flex-col justify-start gap-1">
-                  <p>{data.address ? data.address.street : null}</p>
-                  <p>
-                    {data.address
-                      ? data.address.city + ' ' +data.address.state
-                      : null}
-                  </p>
-                  <p>
-                    {data.address
-                      ? data.address.postalCode + " - " + data.address.country
-                      : null}
-                  </p>
-                  <b>
-                    <b>Contact: </b>
-                    {data.contactNo}
-                  </b>
-                  <p className=" overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden">
-                    <b>Email: </b>
-                    {data.email}
-                  </p>
-                </div>
-              </div>
+        <div className="text-black  p-4 relative border-2 border-[#c1c1c1] rounded-[20px] mt-[15px]">
+          <div className="bg-slate-100 flex justify-start items-center rounded-[15px]  h-auto  w-[200px]  p-2  b ">
+            <img
+              src={companyLogo}
+              alt="CompanyLogo"
+              className="h-auto w-[200px] "
+            />
+          </div>
+          <div className=" text-black  pt-5 ">
+            <h3 className=" text-2xl font-semibold ">
+              {data.companyName}
+            </h3>
+            <p className="my-2">
+              <b>Gstin : </b>
+              {data.gistin}
+            </p>
+            <div className="text-black  opacity-70 flex flex-col justify-start gap-1">
+              <p>{data.address ? data.address.street : null}</p>
+              <p>
+                {data.address
+                  ? data.address.city + ' ' + data.address.state
+                  : null}
+              </p>
+              <p>
+                {data.address
+                  ? data.address.postalCode + " - " + data.address.country
+                  : null}
+              </p>
+              <b>
+                <b>Contact: </b>
+                {data.contactNo}
+              </b>
+              <p className=" overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden">
+                <b>Email: </b>
+                {data.email}
+              </p>
             </div>
-          ) : (
-            "Loding..."
-          )}
+          </div>
+        </div>
+      ) : (
+        "Loding..."
+      )}
     </div>
   );
 };

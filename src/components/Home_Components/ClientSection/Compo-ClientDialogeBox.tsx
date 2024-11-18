@@ -76,7 +76,7 @@ export default function ClientSelectionTable({
       setDeletingClientIdString(clientId);
       dispatch(deleteClientAction(clientId));
     }
-  };
+  }
 
   const handleConfirmSelection = (clientId: string) => {
     if (clientId) {

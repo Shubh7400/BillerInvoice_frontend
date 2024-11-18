@@ -46,6 +46,8 @@ const SelectClient = () => {
   // -------------------------------------------------------
   // "https://gammaedge.io/images/logo1.png";
   // "https://www.cubexo.io/images/Logo.webp";
+
+
   useEffect(() => {
     if (
       loading === "succeeded" &&
@@ -122,44 +124,47 @@ const SelectClient = () => {
         {/* <CompoAddClient forEditClient={false} clientToEdit={null} /> */}
 
         <div className='flex items-center gap-2'>
-          <Link to="/" className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px] ">
+          <button
+            onClick={() => navigate(-1)}
+            className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
+          >
             <IoIosArrowBack />
-          </Link>
+          </button>
           <Typography variant="h5" component="h2" className='text-center'>
             CLIENT LIST
           </Typography>
         </div>
 
         <div className="flex gap-4 items-center">
-        <div className={Styles.search_input}>
-          <TextField
-            
-            label="Search by client name"
-            type="text"
-            variant="outlined"
-            value={searchClientName}
-            onChange={(e) => setSearchClientName(e.target.value)}
+          <div className={Styles.search_input}>
+            <TextField
+
+              label="Search by client name"
+              type="text"
+              variant="outlined"
+              value={searchClientName}
+              onChange={(e) => setSearchClientName(e.target.value)}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "50px",
+                },
+              }}
+            />
+          </div>
+
+          <Button
+            variant="contained"
             sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "50px",
+              backgroundColor: "#d9a990",
+              borderRadius: "20px",
+              ":hover": {
+                backgroundColor: "#4a6180",
               },
             }}
-          />
-        </div>
-
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "#d9a990",
-            borderRadius: "20px",
-            ":hover": {
-              backgroundColor:"#4a6180",
-            },
-          }}
-          onClick={() => navigate("/add-client")}
-        >
-          Add Client
-        </Button>
+            onClick={() => navigate("/add-client")}
+          >
+            Add Client
+          </Button>
         </div>
       </div>
       <div className="  top-2  z-10 ">
