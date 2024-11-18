@@ -109,8 +109,9 @@ export type CityInfoType = {
   name: string;
   countryCode: string;
   stateCode: string;
-  latitude?: string;
-  longitude?: string;
+  // latitude?: string;
+  latitude?: string | null | undefined;
+  longitude?: string | null | undefined;
 };
 export type NewPasswordType = {
   newPassword: string;

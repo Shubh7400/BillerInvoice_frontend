@@ -92,7 +92,7 @@ export default function AddClientPage({
   const [inputEmail, setInputEmail] = useState("");
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const [emailError, setEmailError] = useState("");
-
+  console.log("This is client data : ",clientData);
   React.useEffect(() => {
     if (editClientState.loading === "succeeded" && controlEditLoading) {
       setControlEditLoading(false);
@@ -166,12 +166,11 @@ export default function AddClientPage({
     }));
   }, [selectedCountry, selectedState, selectedCity]);
 
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-  
+
     if (name === "street") {
       // Update nested field for address.street
       setClientData((prevData) => ({
@@ -188,11 +187,10 @@ export default function AddClientPage({
         [name]: value,
       });
     }
-  
+
     setFormError("");
     setIncompleteError("");
   };
-  
 
   const handleAddEmail = () => {
     if (inputEmail && emailRegex.test(inputEmail)) {
@@ -287,7 +285,7 @@ export default function AddClientPage({
   };
 
   return (
-    <div >
+    <div>
       <div className="flex justify-between items-center mb-5">
         <Typography variant="h5">
           {forEditClient ? "Edit Client" : "Add Client"}
@@ -347,7 +345,7 @@ export default function AddClientPage({
             InputProps={{
               style: {
                 marginTop: clientData.email.length > 0 ? 16 : 0,
-                textAlign: "center", 
+                textAlign: "center",
               },
             }}
           />
@@ -396,9 +394,9 @@ export default function AddClientPage({
         forEditClient={forEditClient}
         countryString={clientData.address.country}
         stateString={clientData.address.state}
-        cityString={clientData.address.city}
-      />
-    
+        cityString={clientData.address.city} 
+      /> 
+
       <div className="flex justify-end">
         <Button
           onClick={

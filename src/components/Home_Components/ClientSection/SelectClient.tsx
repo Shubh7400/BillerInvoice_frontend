@@ -1,6 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState,useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Grid, Typography, Select, MenuItem, FormControl, styled, SelectChangeEvent } from '@mui/material';
+import {
+  Grid,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  styled,
+  SelectChangeEvent,
+} from "@mui/material";
 import { AppDispatch, RootState } from "../../../states/redux/store";
 import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../../states/redux/AdminStates/adminSlice";
@@ -18,7 +26,12 @@ import Styles from "./client.module.css";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 
-
+declare global {
+  interface Window {
+    __calledGetAllClients?: boolean;
+    __calledGetAdminById?: boolean;
+  }
+}
 
 const SelectClient = () => {
   const { isAuth, adminId } = useContext(AuthContext);
@@ -47,50 +60,94 @@ const SelectClient = () => {
   // "https://gammaedge.io/images/logo1.png";
   // "https://www.cubexo.io/images/Logo.webp";
 
+  // useEffect(() => {
+  //   if (
+  //     loading === "succeeded" &&
+  //     adminId &&
+  //     adminId === "6516a4ba98fd8b5ed365d5f4"
+  //   ) {
+  //     setCompanyLogo(gamaedgeLogo);
+  //   } else if (loading === "succeeded" && adminId) {
+  //     setCompanyLogo(cubexoLogo);
+  //   }
+  // }, [loading, data, adminId]);
 
-  useEffect(() => {
-    if (
-      loading === "succeeded" &&
-      adminId &&
-      adminId === "6516a4ba98fd8b5ed365d5f4"
-    ) {
-      setCompanyLogo(gamaedgeLogo);
-    } else if (loading === "succeeded" && adminId) {
-      setCompanyLogo(cubexoLogo);
+  // useEffect(() => {
+  //   if (isAuth && adminId) {
+  //     dispatch(getAdminByIdAction(adminId));
+  //   }
+  // }, [isAuth, adminId, dispatch]);
+
+  // useEffect(() => {
+  //   if (adminId && loading === "succeeded") {
+  //     let timer = setTimeout(() => {
+  //       dispatch(getAllClientsByAdminIdAction(adminId));
+  //       return () => {
+  //         clearTimeout(timer);
+  //       };
+  //     }, 1000);
+  //   }
+  // }, [dispatch, adminId, loading]);
+
+  // useEffect(() => {
+  //   if (addedNewClientState.loading === "succeeded" && adminId) {
+  //     dispatch(getAllClientsByAdminIdAction(adminId));
+  //   }
+  // }, [
+  //   addedNewClientState.loading,
+  //   addedNewClientState,
+  //   addedNewClientState.data,
+  //   dispatch,
+  //   adminId,
+  // ]);
+
+  // useEffect(() => {
+  //   if ((adminId && error) || selectedClient.error) {
+  //     window.location.reload();
+  //   }
+  // }, [error, adminId, selectedClient.error]);
+  if (typeof window !== "undefined") {
+    if (!window.__calledGetAllClients) {
+      window.__calledGetAllClients = false;
     }
-  }, [loading, data, adminId]);
+    if (!window.__calledGetAdminById) {
+      window.__calledGetAdminById = false;
+    }
+  }
 
+  // Set company logo and fetch clients
   useEffect(() => {
-    if (isAuth && adminId) {
+    if (loading === "succeeded" && adminId) {
+      setCompanyLogo(
+        adminId === "6516a4ba98fd8b5ed365d5f4" ? gamaedgeLogo : cubexoLogo
+      );
+
+      if (!window.__calledGetAllClients) {
+        dispatch(getAllClientsByAdminIdAction(adminId));
+        window.__calledGetAllClients = true; // Mark as fetched
+      }
+    }
+  }, [loading, adminId, dispatch, gamaedgeLogo, cubexoLogo]);
+
+  // Fetch admin details
+  useEffect(() => {
+    if (isAuth && adminId && !window.__calledGetAdminById) {
       dispatch(getAdminByIdAction(adminId));
+      window.__calledGetAdminById = true; // Mark as fetched
     }
   }, [isAuth, adminId, dispatch]);
 
-  useEffect(() => {
-    if (adminId && loading === "succeeded") {
-      let timer = setTimeout(() => {
-        dispatch(getAllClientsByAdminIdAction(adminId));
-        return () => {
-          clearTimeout(timer);
-        };
-      }, 1000);
-    }
-  }, [dispatch, adminId, loading]);
-
+  // Handle new client addition
   useEffect(() => {
     if (addedNewClientState.loading === "succeeded" && adminId) {
       dispatch(getAllClientsByAdminIdAction(adminId));
     }
-  }, [
-    addedNewClientState.loading,
-    addedNewClientState,
-    addedNewClientState.data,
-    dispatch,
-    adminId,
-  ]);
+  }, [addedNewClientState.loading, dispatch, adminId]);
+
+  // Error handling
   useEffect(() => {
     if ((adminId && error) || selectedClient.error) {
-      window.location.reload();
+      console.error("Error occurred:", error || selectedClient.error);
     }
   }, [error, adminId, selectedClient.error]);
 
@@ -123,14 +180,14 @@ const SelectClient = () => {
       <div className="flex justify-between mb-4 items-center">
         {/* <CompoAddClient forEditClient={false} clientToEdit={null} /> */}
 
-        <div className='flex items-center gap-2'>
+        <div className="flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}
             className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
           >
             <IoIosArrowBack />
           </button>
-          <Typography variant="h5" component="h2" className='text-center'>
+          <Typography variant="h5" component="h2" className="text-center">
             CLIENT LIST
           </Typography>
         </div>
@@ -138,7 +195,6 @@ const SelectClient = () => {
         <div className="flex gap-4 items-center">
           <div className={Styles.search_input}>
             <TextField
-
               label="Search by client name"
               type="text"
               variant="outlined"

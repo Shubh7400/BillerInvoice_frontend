@@ -8,7 +8,7 @@ import {
   StateInfoType,
 } from "../../../types/types";
 
-export default function SelectCountryStateCity({
+export default function  SelectCountryStateCity({
   selectedCountry,
   selectedState,
   selectedCity,
@@ -31,6 +31,7 @@ export default function SelectCountryStateCity({
   stateString: string;
   cityString: string;
 }) {
+  console.log(stateString , " <<<<<>>>>>>>>" , cityString)
   const countriesArr: CountryInfoType[] = Country.getAllCountries().map(
     (country) => ({
       name: country.name,
@@ -58,7 +59,6 @@ export default function SelectCountryStateCity({
     stateCode: city.stateCode,
   }));
 
-
   useEffect(() => {
     if (forEditClient) {
       if (!selectedCountry.name && countryString) {
@@ -69,7 +69,12 @@ export default function SelectCountryStateCity({
         const state = statesArr.find((s) => s.name === stateString);
         state && setSelectedState(state);
       }
-      if (!selectedCity.name && cityString && selectedState?.isoCode && citiesArr.length > 0) {
+      if (
+        !selectedCity.name &&
+        cityString &&
+        selectedState?.isoCode &&
+        citiesArr.length > 0
+      ) {
         const city = citiesArr.find((c) => c.name === cityString);
         console.log("Found city:", city); // Log the city being set
         city && setSelectedCity(city);
@@ -85,8 +90,17 @@ export default function SelectCountryStateCity({
     selectedCity,
     citiesArr,
   ]);
-  
 
+  // const defaultCity = citiesArr.length > 0 ? citiesArr[0] : null;
+  const defaultCity = cityString;
+
+  useEffect(() => {
+    if (!selectedCity.name && citiesArr.length > 0) {
+      const defaultCity =
+        citiesArr.find((c) => c.name === cityString) ||  citiesArr[0];
+      setSelectedCity(defaultCity);
+    }
+  }, [selectedCity, citiesArr, cityString]);
 
   return (
     <div className="my-2 flex flex-col">
