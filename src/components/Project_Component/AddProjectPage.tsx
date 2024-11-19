@@ -8,7 +8,11 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { Alert, LinearProgress, MenuItem, useTheme } from "@mui/material";
-import { ProjectType, UpdateProjectDataType } from "../../types/types";
+import {
+  ClientType,
+  ProjectType,
+  UpdateProjectDataType,
+} from "../../types/types";
 import {
   useAddNewProject,
   useUpdateProject,
@@ -19,20 +23,51 @@ import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { IoChevronBackSharp } from "react-icons/io5";
+import { useSelector } from "react-redux";
+import { RootState } from "../../states/redux/store";
+import Select from "react-select";
+import { InputActionMeta } from "react-select";
 function AddProjectPage({
   adminId,
   clientId,
   forAddProject,
   projectToEdit,
+  clientAddProject,
 }: {
   clientId: string | undefined;
   adminId: string | null;
   forAddProject: boolean;
   projectId?: string | undefined;
+  clientAddProject?: boolean;
   projectToEdit?: ProjectType;
 }) {
   const [toEdit, setToEdit] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [selectClient, setSelectClient] = useState<ClientType>();
+
+  const {
+    loading: clientsLoading,
+    data: clients,
+    error: clientsError,
+  } = useSelector((state: RootState) => state.allClientsState);
+
+  const clientsArr: ClientType[] = clients.map((client) => ({
+    _id: client._id,
+    clientName: client.clientName,
+    email: client.email,
+    pancardNo: client.pancardNo,
+    address: {
+      street: client.address.street,
+      city: client.address.city,
+      state: client.address.state,
+      country: client.address.country,
+      postalCode: client.address.postalCode,
+    },
+    gistin: client.gistin,
+    user: client.user,
+    sameState: client.sameState,
+  }));
+
   const handleToAddClick = () => {
     setToEdit(false);
   };
@@ -212,7 +247,6 @@ function AddProjectPage({
   };
 
   React.useEffect(() => {
-
     if (forAddProject && toEdit) {
       setProjectData({
         projectName: "",
@@ -228,7 +262,6 @@ function AddProjectPage({
         clientId: clientId ? clientId : "",
       });
     }
-    console.log(forAddProject, '<<<< >>>>>', toEdit);
     if (!forAddProject && !toEdit && projectToEdit) {
       let newProjectToEdit = { ...projectToEdit };
       delete newProjectToEdit.amount;
@@ -256,44 +289,6 @@ function AddProjectPage({
 
   return (
     <>
-      {/* {forAddProject ? (
-        <div className="flex justify-end w-[80vw] mt-5 pr-2 pt-2 pb-2">
-          <Button
-            disabled={!clientId || !adminId}
-            variant="contained"
-            sx={{
-              backgroundColor: "#d9a990",
-              borderRadius: "20px",
-              ":hover": {
-                backgroundColor: "#4a6180",
-              },
-            }}
-            onClick={() => navigate("/add-project")}
-          >
-            Add Project
-          </Button>
-        </div>
-      ) : (
-        <div className="">
-          <Button
-            disabled={!clientId || !adminId}
-            variant="outlined"
-            sx={{
-              color: materialTheme.palette.primary.main,
-              borderColor: materialTheme.palette.primary.main,
-              ":hover": {
-                borderColor: materialTheme.palette.secondary.main,
-                backgroundColor: materialTheme.palette.secondary.main,
-                color: "white",
-              },
-              cursor: "pointer",
-            }}
-            onClick={() => handleEditProjectClick()}
-          >
-            <CiEdit size={25} />
-          </Button>
-        </div>
-      )} */}
       <div>
         {/* <Dialog open={open} onClose={handleClose}> */}
         <div className="flex justify-between items-center mb-4 ">
@@ -321,6 +316,41 @@ function AddProjectPage({
         {loading ? <LinearProgress /> : null}
         <DialogContent style={{ padding: "0" }}>
           <form onSubmit={handleAddSubmit}>
+            <div>
+              {!clientAddProject ? (
+                <div>
+                  <label className="text-xs py-1 opacity-60">
+                    Select Client
+                  </label>
+                  <Select
+                    options={clientsArr}
+                    getOptionLabel={(option) => option.clientName}
+                    getOptionValue={(option) => option.clientName}
+                    value={selectClient?.clientName ? selectClient : null}
+                    onChange={(item) => {
+                      if (item) {
+                        setSelectClient(item);
+                      }
+                    }}
+                  />
+                </div>
+              ) : (
+                <div>
+                  <label className="text-xs py-1 opacity-60">
+                    Selected Client
+                  </label>
+                  <Select
+                    options={clientsArr}
+                    getOptionLabel={(option) => option.clientName}
+                    value={
+                      clientsArr.find((client) => client._id === clientId) ||
+                      null
+                    }
+                    isDisabled
+                  />
+                </div>
+              )}
+            </div>
             <TextField
               margin="dense"
               id="projectName"
@@ -332,18 +362,6 @@ function AddProjectPage({
               value={projectData.projectName}
               onChange={handleChange}
               required
-            />
-
-            <TextField
-              margin="dense"
-              id="projectManager"
-              label="Project Manager"
-              type="text"
-              fullWidth
-              variant="outlined"
-              name="projectManager"
-              value={projectData.projectManager}
-              onChange={handleChange}
             />
             <div className="flex gap-2">
               <TextField
@@ -375,13 +393,19 @@ function AddProjectPage({
               >
                 <MenuItem value="hours">Hours</MenuItem>
                 <MenuItem value="days">Months</MenuItem>
+                <MenuItem value="fixed">Fixed</MenuItem>
               </TextField>
             </div>
             <TextField
               margin="dense"
               id="rate"
-              label={`Rate (${currencyType}/${workPeriodType === "days" ? "months" : "hours"
-                })`}
+              label={
+                workPeriodType === "fixed"
+                  ? "Enter Fixed Amount"
+                  : `Rate (${currencyType}/${
+                      workPeriodType === "days" ? "months" : "hours"
+                    })`
+              }
               type="number"
               fullWidth
               variant="outlined"
@@ -389,7 +413,7 @@ function AddProjectPage({
               value={projectData.rate === 0 ? "" : projectData.rate}
               onChange={handleChange}
             />
-            {workPeriodType === "days" ? (
+            {/* {workPeriodType === "days" ? (
               <TextField
                 margin="dense"
                 id="projectPeriod"
@@ -401,8 +425,8 @@ function AddProjectPage({
                 value={projectData.projectPeriod}
                 onChange={handleChange}
               />
-            ) : null}
-            {workPeriodType === "hours" ? (
+            ) : null} */}
+            {/* {workPeriodType === "hours" ? (
               <>
                 <label className=" text-[14px] text-gray-500">
                   {`Actual working in ${workPeriodType}`}
@@ -440,25 +464,30 @@ function AddProjectPage({
                 value={projectData.workingPeriod}
                 onChange={handleChange}
               />
-            )}
-            <label className="text-[14px] text-gray-500">
-              Conversion rate*
-            </label>
-            <TextField
-              margin="dense"
-              id="conversionRate"
-              type="number"
-              fullWidth
-              variant="outlined"
-              name="conversionRate"
-              value={
-                projectData.conversionRate <= 0
-                  ? ""
-                  : projectData.conversionRate
-              }
-              onChange={handleChange}
-              required
-            />
+            )} */}
+
+            {currencyType !== "rupees" ? (
+              <>
+                <label className="text-[14px] text-gray-500">
+                  Conversion rate*
+                </label>
+                <TextField
+                  margin="dense"
+                  id="conversionRate"
+                  type="number"
+                  fullWidth
+                  variant="outlined"
+                  name="conversionRate"
+                  value={
+                    projectData.conversionRate <= 0
+                      ? ""
+                      : projectData.conversionRate
+                  }
+                  onChange={handleChange}
+                  required
+                />
+              </>
+            ) : null}
           </form>
         </DialogContent>
         <DialogActions>

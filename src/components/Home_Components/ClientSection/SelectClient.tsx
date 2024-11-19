@@ -1,6 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Grid, Typography, Select, MenuItem, FormControl, styled, SelectChangeEvent } from '@mui/material';
+import {
+  Grid,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  styled,
+  SelectChangeEvent,
+} from "@mui/material";
 import { AppDispatch, RootState } from "../../../states/redux/store";
 import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../../states/redux/AdminStates/adminSlice";
@@ -17,8 +25,6 @@ import { FaRegUser } from "react-icons/fa";
 import Styles from "./client.module.css";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
-
-
 
 const SelectClient = () => {
   const { isAuth, adminId } = useContext(AuthContext);
@@ -47,7 +53,6 @@ const SelectClient = () => {
   // "https://gammaedge.io/images/logo1.png";
   // "https://www.cubexo.io/images/Logo.webp";
 
-
   useEffect(() => {
     if (
       loading === "succeeded" &&
@@ -69,11 +74,11 @@ const SelectClient = () => {
   useEffect(() => {
     if (adminId && loading === "succeeded") {
       let timer = setTimeout(() => {
-        dispatch(getAllClientsByAdminIdAction(adminId));
+      dispatch(getAllClientsByAdminIdAction(adminId));
         return () => {
           clearTimeout(timer);
         };
-      }, 1000);
+      },0);
     }
   }, [dispatch, adminId, loading]);
 
@@ -123,14 +128,14 @@ const SelectClient = () => {
       <div className="flex justify-between mb-4 items-center">
         {/* <CompoAddClient forEditClient={false} clientToEdit={null} /> */}
 
-        <div className='flex items-center gap-2'>
+        <div className="flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}
             className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
           >
             <IoIosArrowBack />
           </button>
-          <Typography variant="h5" component="h2" className='text-center'>
+          <Typography variant="h5" component="h2" className="text-center">
             CLIENT LIST
           </Typography>
         </div>
@@ -138,7 +143,6 @@ const SelectClient = () => {
         <div className="flex gap-4 items-center">
           <div className={Styles.search_input}>
             <TextField
-
               label="Search by client name"
               type="text"
               variant="outlined"
