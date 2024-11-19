@@ -7,39 +7,23 @@ import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/al
 import cubexoLogo from "../assets/cubexo_logo.png";
 import gamaedgeLogo from "../../utils/images/gammaedgeLogo.png";
 import { useNavigate } from "react-router-dom";
-import { Button, TextField, useTheme } from "@mui/material";
-import { FaRegUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Button, TextField, Typography } from "@mui/material";
 import { IoIosArrowBack } from "react-icons/io";
-import { Grid, Typography, Select, MenuItem, FormControl, styled, SelectChangeEvent } from '@mui/material';
+import { CiEdit } from "react-icons/ci";
 
 const ProfilePage = () => {
-
   const { isAuth, adminId } = useContext(AuthContext);
   const navigate = useNavigate();
-  const materialTheme = useTheme();
   const [companyLogo, setCompanyLogo] = useState<string>();
-  const [searchClientName, setSearchClientName] = React.useState<string>("");
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editableData, setEditableData] = useState<any>({});
+  const [originalData, setOriginalData] = useState<any>({});
   const dispatch = useDispatch<AppDispatch>();
+
   const { loading, data, error } = useSelector(
     (state: RootState) => state.adminState
   );
 
-  const {
-    loading: clientsLoading,
-    data: clients,
-    error: clientsError,
-  } = useSelector((state: RootState) => state.allClientsState);
-
-  const selectedClient = useSelector(
-    (state: RootState) => state.selectedClientState
-  );
-  const addedNewClientState = useSelector(
-    (state: RootState) => state.addClientState
-  );
-  // -------------------------------------------------------
-  // "https://gammaedge.io/images/logo1.png";
-  // "https://www.cubexo.io/images/Logo.webp";
   useEffect(() => {
     if (
       loading === "succeeded" &&
@@ -59,95 +43,222 @@ const ProfilePage = () => {
   }, [isAuth, adminId, dispatch]);
 
   useEffect(() => {
-    if (adminId && loading === "succeeded") {
-      let timer = setTimeout(() => {
-        dispatch(getAllClientsByAdminIdAction(adminId));
-        return () => {
-          clearTimeout(timer);
-        };
-      }, 1000);
+    if (data) {
+      setEditableData({
+        companyName: data.companyName || "",
+        gstin: data.gistin || "",
+        address: {
+          street: data.address?.street || "",
+          city: data.address?.city || "",
+          state: data.address?.state || "",
+          postalCode: data.address?.postalCode || "",
+          country: data.address?.country || "",
+        },
+        contactNo: data.contactNo || "",
+        email: data.email || "",
+      });
+      setOriginalData({
+        companyName: data.companyName || "",
+        gstin: data.gistin || "",
+        address: {
+          street: data.address?.street || "",
+          city: data.address?.city || "",
+          state: data.address?.state || "",
+          postalCode: data.address?.postalCode || "",
+          country: data.address?.country || "",
+        },
+        contactNo: data.contactNo || "",
+        email: data.email || "",
+      });
     }
-  }, [dispatch, adminId, loading]);
-
-  useEffect(() => {
-    if (addedNewClientState.loading === "succeeded" && adminId) {
-      dispatch(getAllClientsByAdminIdAction(adminId));
+  }, [data]);
+  const [isHovered, setIsHovered] = useState(false);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (name.includes("address.")) {
+      const [_, key] = name.split(".");
+      setEditableData((prev: any) => ({
+        ...prev,
+        address: { ...prev.address, [key]: value },
+      }));
+    } else {
+      setEditableData((prev: any) => ({ ...prev, [name]: value }));
     }
-  }, [
-    addedNewClientState.loading,
-    addedNewClientState,
-    addedNewClientState.data,
-    dispatch,
-    adminId,
-  ]);
-  useEffect(() => {
-    if ((adminId && error) || selectedClient.error) {
-      window.location.reload();
-    }
-  }, [error, adminId, selectedClient.error]);
+  };
 
-
+  const handleSave = () => {
+    console.log("Updated data:", editableData);
+    // Dispatch action to save data here
+    setIsEditing(false);
+  };
+  const handleCancel = () => {
+    setEditableData(originalData); // Reset data to original state
+    setIsEditing(false);
+  };
 
   return (
     <div>
-
-      <div className='flex justify-between items-center  pb-[10]'>
-        <div className='flex items-center gap-2'>
+      <div className="flex justify-between items-center pb-[10]">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}
             className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
           >
             <IoIosArrowBack />
           </button>
-          <Typography variant="h5" component="h2" className='text-center'>
+          <Typography variant="h5" component="h2" className="text-center">
             PROFILE
           </Typography>
         </div>
-
-
       </div>
       {data ? (
-        <div className="text-black  p-4 relative border-2 border-[#c1c1c1] rounded-[20px] mt-[15px]">
-          <div className="bg-slate-100 flex justify-start items-center rounded-[15px]  h-auto  w-[200px]  p-2  b ">
-            <img
-              src={companyLogo}
-              alt="CompanyLogo"
-              className="h-auto w-[200px] "
-            />
+        <div className="text-black p-4 relative border-2 border-[#c1c1c1] rounded-[20px] mt-[15px]">
+          <div className="absolute right-[20px]">
+          {!isEditing && (
+            <button  onClick={() => setIsEditing(true)} 
+            className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
+>
+              <CiEdit />
+            </button>
+          )}
           </div>
-          <div className=" text-black  pt-5 ">
-            <h3 className=" text-2xl font-semibold ">
-              {data.companyName}
-            </h3>
-            <p className="my-2">
-              <b>Gstin : </b>
-              {data.gistin}
-            </p>
-            <div className="text-black  opacity-70 flex flex-col justify-start gap-1">
-              <p>{data.address ? data.address.street : null}</p>
-              <p>
-                {data.address
-                  ? data.address.city + ' ' + data.address.state
-                  : null}
-              </p>
-              <p>
-                {data.address
-                  ? data.address.postalCode + " - " + data.address.country
-                  : null}
-              </p>
-              <b>
-                <b>Contact: </b>
-                {data.contactNo}
-              </b>
-              <p className=" overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden">
-                <b>Email: </b>
-                {data.email}
-              </p>
-            </div>
+
+          <div className="bg-slate-100 flex justify-start items-center rounded-[15px] h-auto w-[200px] p-2">
+            <img src={companyLogo} alt="CompanyLogo" className="h-auto w-[200px]" />
+          </div>
+          <div className="text-black pt-5">
+            {isEditing ? (
+              <>
+                <TextField
+                  label="Company Name"
+                  name="companyName"
+                  value={editableData.companyName}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="GSTIN"
+                  name="gstin"
+                  value={editableData.gstin}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Street"
+                  name="address.street"
+                  value={editableData.address.street}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="City"
+                  name="address.city"
+                  value={editableData.address.city}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="State"
+                  name="address.state"
+                  value={editableData.address.state}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Postal Code"
+                  name="address.postalCode"
+                  value={editableData.address.postalCode}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Country"
+                  name="address.country"
+                  value={editableData.address.country}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Contact"
+                  name="contactNo"
+                  value={editableData.contactNo}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Email"
+                  name="email"
+                  value={editableData.email}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                
+                <div className="flex gap-2 mt-4">
+                  <Button variant="contained" color="primary" onClick={handleSave}
+                  style={{
+                    backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+                    borderRadius: "20px",
+                    padding: "5px 15px",
+                    color: "#fff ",
+                    marginTop: "10px",
+                  }}>
+                    Save
+                  </Button>
+                  <Button variant="outlined" color="secondary" onClick={handleCancel}
+                  style={{
+                    backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+                    borderRadius: "20px",
+                    padding: "5px 15px",
+                    color: "#fff ",
+                    marginTop: "10px",
+                  }}>
+                    Cancel
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3 className="text-2xl font-semibold">{data.companyName}</h3>
+                <p className="my-2">
+                  <b>Gstin: </b>
+                  {data.gistin}
+                </p>
+                <div className="text-black opacity-70 flex flex-col justify-start gap-1">
+                  <p>{data.address?.street}</p>
+                  <p>
+                    {data.address
+                      ? `${data.address.city} ${data.address.state}`
+                      : null}
+                  </p>
+                  <p>
+                    {data.address
+                      ? `${data.address.postalCode} - ${data.address.country}`
+                      : null}
+                  </p>
+                  <b>
+                    <b>Contact: </b>
+                    {data.contactNo}
+                  </b>
+                  <p>
+                    <b>Email: </b>
+                    {data.email}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
       ) : (
-        "Loding..."
+        "Loading..."
       )}
     </div>
   );
