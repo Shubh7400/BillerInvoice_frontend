@@ -55,10 +55,7 @@ const AllRoutes = () => {
           path="/edit-client"
           element={
             <PrivateRoute>
-              <AddClientPage
-                forEditClient={true}
-                clientToEdit={selectedClientState.data}
-              />
+             <AddClientPage forEditClient={true} clientToEdit={selectedClientState.data} />
             </PrivateRoute>
           }
         />

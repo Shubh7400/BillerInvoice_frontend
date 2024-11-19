@@ -8,7 +8,7 @@ import {
   StateInfoType,
 } from "../../../types/types";
 
-export default function SelectCountryStateCity({
+export default function  SelectCountryStateCity({
   selectedCountry,
   selectedState,
   selectedCity,
@@ -29,8 +29,9 @@ export default function SelectCountryStateCity({
   forEditClient: boolean;
   countryString: string;
   stateString: string;
-  cityString: string;
+  cityString: string | undefined;
 }) {
+  console.log(stateString , " <<<<<>>>>>>>>" , cityString)
   const countriesArr: CountryInfoType[] = Country.getAllCountries().map(
     (country) => ({
       name: country.name,
@@ -58,7 +59,6 @@ export default function SelectCountryStateCity({
     stateCode: city.stateCode,
   }));
 
-
   useEffect(() => {
     if (forEditClient) {
       if (!selectedCountry.name && countryString) {
@@ -69,7 +69,12 @@ export default function SelectCountryStateCity({
         const state = statesArr.find((s) => s.name === stateString);
         state && setSelectedState(state);
       }
-      if (!selectedCity.name && cityString && selectedState?.isoCode && citiesArr.length > 0) {
+      if (
+        !selectedCity.name &&
+        cityString &&
+        selectedState?.isoCode &&
+        citiesArr.length > 0
+      ) {
         const city = citiesArr.find((c) => c.name === cityString);
         console.log("Found city:", city); // Log the city being set
         city && setSelectedCity(city);
@@ -85,8 +90,8 @@ export default function SelectCountryStateCity({
     selectedCity,
     citiesArr,
   ]);
-  
 
+  
 
   return (
     <div className="my-2 flex flex-col">
@@ -105,6 +110,9 @@ export default function SelectCountryStateCity({
             setSelectedCity({} as CityInfoType); // Reset city when country changes
           }
         }}
+        filterOption={(option, inputValue) =>
+          option.label.toLowerCase().startsWith(inputValue.toLowerCase())
+        }
       />
       <label className="text-xs py-1 opacity-60">
         State: <b>{stateString}</b>
@@ -120,6 +128,9 @@ export default function SelectCountryStateCity({
             setSelectedCity({} as CityInfoType); // Reset city when state changes
           }
         }}
+        filterOption={(option, inputValue) =>
+          option.label.toLowerCase().startsWith(inputValue.toLowerCase())
+        }
       />
       <label className="text-xs py-1 opacity-60">
         City : <b>{cityString}</b>{" "}
@@ -134,6 +145,9 @@ export default function SelectCountryStateCity({
             setSelectedCity(item);
           }
         }}
+        filterOption={(option, inputValue) =>
+          option.label.toLowerCase().startsWith(inputValue.toLowerCase())
+        }
       />
     </div>
   );
