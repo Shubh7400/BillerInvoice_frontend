@@ -240,14 +240,14 @@ export default function AddClientPage({
       if (typeof obj[key] === "object" && obj[key] !== null) {
         if (Array.isArray(obj[key])) {
           if (key === "email" && obj[key].length === 0) {
-            return false; // Ensures that at least one email is added
+            return false; 
           }
         } else if (!areAllFieldsFilled(obj[key])) {
           return false;
         }
       } else if (obj[key] === "" || obj[key] === undefined) {
         return false;
-      }
+      } 
     }
     return true;
   }
