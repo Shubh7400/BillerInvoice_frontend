@@ -110,6 +110,9 @@ export default function  SelectCountryStateCity({
             setSelectedCity({} as CityInfoType); // Reset city when country changes
           }
         }}
+        filterOption={(option, inputValue) =>
+          option.label.toLowerCase().startsWith(inputValue.toLowerCase())
+        }
       />
       <label className="text-xs py-1 opacity-60">
         State: <b>{stateString}</b>
@@ -125,6 +128,9 @@ export default function  SelectCountryStateCity({
             setSelectedCity({} as CityInfoType); // Reset city when state changes
           }
         }}
+        filterOption={(option, inputValue) =>
+          option.label.toLowerCase().startsWith(inputValue.toLowerCase())
+        }
       />
       <label className="text-xs py-1 opacity-60">
         City : <b>{cityString}</b>{" "}
@@ -139,6 +145,9 @@ export default function  SelectCountryStateCity({
             setSelectedCity(item);
           }
         }}
+        filterOption={(option, inputValue) =>
+          option.label.toLowerCase().startsWith(inputValue.toLowerCase())
+        }
       />
     </div>
   );

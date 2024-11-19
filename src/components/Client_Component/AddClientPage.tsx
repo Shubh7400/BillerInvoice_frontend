@@ -2,7 +2,7 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Chip, Box } from "@mui/material";
-import { useState } from "react";
+import { useState,useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineClose } from "react-icons/md";
 import {
@@ -34,6 +34,7 @@ import "../../styles/addClient.css";
 import { Link } from "react-router-dom";
 import { Outlet, useNavigate } from "react-router-dom";
 import { IoChevronBackSharp } from "react-icons/io5";
+import SelectClient from "../Home_Components/ClientSection/SelectClient";
 
 export default function AddClientPage({
   forEditClient,
@@ -44,7 +45,7 @@ export default function AddClientPage({
   clientToEdit: ClientType | null;
   handleSelectClientClose?: () => void | undefined;
 }) {
-  
+
   const { adminId } = React.useContext(AuthContext);
   const [controlEditLoading, setControlEditLoading] = useState(false);
   const [addClientLoadingController, setAddClientLoadingController] =
@@ -60,10 +61,11 @@ export default function AddClientPage({
   const [selectedCity, setSelectedCity] = useState<CityInfoType>(
     {} as CityInfoType
   );
- 
+
   const [incompleteError, setIncompleteError] = useState("");
   const [formError, setFormError] = useState("");
   const navigate = useNavigate();
+  const navigateBack = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -94,7 +96,12 @@ export default function AddClientPage({
   const [inputEmail, setInputEmail] = useState("");
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const [emailError, setEmailError] = useState("");
-  console.log("This is client data : ", clientData);
+  const [postalCodeError, setPostalCodeError] = useState("");
+  const [gstNumberError, setGstNumberError] = useState("");
+  const [panNumberError, setPanNumberError] = useState("");
+  // console.log("This is client data : ", clientData);
+
+
   React.useEffect(() => {
     if (editClientState.loading === "succeeded" && controlEditLoading) {
       setControlEditLoading(false);
@@ -182,10 +189,17 @@ export default function AddClientPage({
           street: value,
         },
       }));
-    } 
+    }
 
     else if (name === "postalCode") {
       // Update nested field for address.street
+      const postalCodeRegex = /^[1-9][0-9]{5}$/; // 6-digit number
+      if (!postalCodeRegex.test(value)) {
+        setPostalCodeError("Invalid Postal Code");
+      }
+      else{
+        setPostalCodeError("");
+      }
       setClientData((prevData) => ({
         ...prevData,
         address: {
@@ -193,7 +207,32 @@ export default function AddClientPage({
           postalCode: value,
         },
       }));
-    } 
+    }
+    else if (name === "pancardNo") {
+      const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/ || "";
+      if (value === "" || panRegex.test(value)) {
+        setPanNumberError(""); // No error if value is empty or matches regex
+      } else {
+        setPanNumberError("Invalid PAN Number");
+      }
+      setClientData((prevData) => ({
+        ...prevData,
+        pancardNo: value,
+      }));
+    }
+    else if (name === "gistin") {
+      const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+      if (!gstRegex.test(value)) {
+        setGstNumberError("Invalid GST Number Please Check the format.");
+      }
+      else{
+        setGstNumberError("");
+      }
+      setClientData((prevData) => ({
+        ...prevData,
+        gistin: value,
+      }));
+    }
     else {
       // Handle other fields in clientData
       setClientData({
@@ -273,9 +312,10 @@ export default function AddClientPage({
     }
     return true;
   }
+  
 
   const handleAddClientSubmit = () => {
-    if (areAllFieldsFilled(clientData) && areEntriesValid(clientData)) {
+    if (areAllFieldsFilled(clientData) && areEntriesValid(clientData) && !panNumberError && !postalCodeError && !gstNumberError) {
       dispatch(addNewClientAction(clientData));
       setAddClientLoadingController(true);
     } else {
@@ -286,7 +326,7 @@ export default function AddClientPage({
   const handleEditClientSubmit = () => {
     if (
       areAllFieldsFilled(clientData) &&
-      areEntriesValid(clientData) &&
+      areEntriesValid(clientData) && !panNumberError && !postalCodeError && !gstNumberError &&
       clientToEdit
     ) {
       const clientId = clientToEdit._id!;
@@ -378,6 +418,8 @@ export default function AddClientPage({
           name="gistin"
           value={clientData.gistin}
           onChange={handleChange}
+          error={!!gstNumberError && clientData.gistin !== ""}
+          helperText={gstNumberError && clientData.gistin !== "" ? gstNumberError : ""}
           required
         />
         <TextField
@@ -386,6 +428,8 @@ export default function AddClientPage({
           name="pancardNo"
           value={clientData.pancardNo}
           onChange={handleChange}
+          error={!!panNumberError && clientData.pancardNo !== ""}
+          helperText={panNumberError && clientData.pancardNo !== "" ? panNumberError : ""}
         />
       </div>
       <div className="flex gap-5 mt-3">
@@ -420,16 +464,26 @@ export default function AddClientPage({
           label="postalCode"
           fullWidth
           name="postalCode"
-        value={clientData.address.postalCode}
-        onChange={handleChange}
+          value={clientData.address.postalCode}
+          onChange={handleChange}
+          error={!!postalCodeError && clientData.address.postalCode !== ""}
+          helperText={
+            postalCodeError && clientData.address.postalCode !== "" ? postalCodeError : ""
+          }
         />
       </div>
 
       <div className="flex justify-end">
         <Button
-          onClick={
-            forEditClient ? handleEditClientSubmit : handleAddClientSubmit
-          }
+          onClick={()=>{
+            (forEditClient ? handleEditClientSubmit : handleAddClientSubmit)();
+            if(!panNumberError && !postalCodeError && !gstNumberError && !formError && areAllFieldsFilled(clientData) &&
+            areEntriesValid(clientData))  {
+              setTimeout(() => {
+                navigate(-1);
+              }, 600);
+            }
+          }}
           className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
           style={{
             backgroundColor: isHovered ? "#4a6180" : "#d9a990",
