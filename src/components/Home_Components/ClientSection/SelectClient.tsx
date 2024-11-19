@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState,useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Grid,
@@ -25,7 +25,6 @@ import { FaRegUser } from "react-icons/fa";
 import Styles from "./client.module.css";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
-
 const SelectClient = () => {
   const { isAuth, adminId } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -78,7 +77,7 @@ const SelectClient = () => {
         return () => {
           clearTimeout(timer);
         };
-      },0);
+      }, 0);
     }
   }, [dispatch, adminId, loading]);
 
@@ -93,12 +92,13 @@ const SelectClient = () => {
     dispatch,
     adminId,
   ]);
+
   useEffect(() => {
     if ((adminId && error) || selectedClient.error) {
       window.location.reload();
     }
   }, [error, adminId, selectedClient.error]);
-
+ 
   if (
     loading === "pending" ||
     // clients.loading === "pending" ||

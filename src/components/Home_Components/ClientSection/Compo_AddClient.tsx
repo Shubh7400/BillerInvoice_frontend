@@ -81,6 +81,7 @@ export default function CompoAddClient({
   const [selectedCity, setSelectedCity] = useState<CityInfoType>(
     {} as CityInfoType
   );
+  
   const [incompleteError, setIncompleteError] = useState("");
   const [formError, setFormError] = useState("");
 
@@ -105,6 +106,7 @@ export default function CompoAddClient({
       state: selectedState.name,
       country: selectedCity.name,
       postalCode: "",
+  
     },
     user: "",
   });

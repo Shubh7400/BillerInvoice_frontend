@@ -118,7 +118,7 @@ export default function ClientSelectionTable({
                   }
                   return client.clientName
                     .toLowerCase()
-                    .includes(searchClientName.toLowerCase());
+                    .startsWith(searchClientName.toLowerCase());
                 })
                 .map((client: ClientType, index: number) => (
                   <TableRow key={client._id} className="p-3">
