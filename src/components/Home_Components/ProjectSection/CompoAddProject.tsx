@@ -13,13 +13,21 @@ import {
   useAddNewProject,
   useUpdateProject,
 } from "../../../states/query/Project_queries/projectQueries";
-import { Grid, Typography, Select, FormControl, styled, SelectChangeEvent } from '@mui/material';
+import {
+  Grid,
+  Typography,
+  Select,
+  FormControl,
+  styled,
+  SelectChangeEvent,
+} from "@mui/material";
 import { queryClient } from "../../..";
 import { CiEdit } from "react-icons/ci";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
+import Styles from "./ProjectTable.module.css";
 
 interface CompoAddProjectProps {
   clientId: string | undefined;
@@ -28,6 +36,7 @@ interface CompoAddProjectProps {
   projectId?: string | undefined;
   projectToEdit?: ProjectType;
   searchProjectName?: string;
+  projectTableforClient?: boolean;
   setSearchProjectName?: (data: string) => void;
 }
 
@@ -37,8 +46,8 @@ export default function CompoAddProject({
   forAddProject,
   projectToEdit,
   searchProjectName,
+  projectTableforClient,
   setSearchProjectName,
-
 }: CompoAddProjectProps) {
   // -----------------------------------------------------
   const [toEdit, setToEdit] = useState<boolean>(false);
@@ -261,58 +270,62 @@ export default function CompoAddProject({
     handleToEditClick();
     // handleClickOpen();
   };
+  const handleBackButtonClick = () => {
+    navigate(-1);
+  };
 
   return (
     <>
       {forAddProject ? (
         <div className="flex justify-between w-[80vw]  pr-2  mb-4">
-          <div className='flex items-center gap-2'>
+          <div className="flex items-center gap-2">
             <button
-              onClick={() => navigate(-1)}
+              onClick={handleBackButtonClick}
               className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
             >
               <IoIosArrowBack />
             </button>
-            <Typography variant="h5" component="h2" className='text-center'>
-              PROJECT LIST
+            <Typography variant="h5" component="h2" className="text-center">
+              {!projectTableforClient ? "PROJECT LIST" : "Client Details"}
             </Typography>
-
           </div>
-          <div>
+          <div className={Styles.search_input}>
             <TextField
-
               label="Search by Project name"
               type="text"
               variant="outlined"
               value={searchProjectName || ""}
-              onChange={(e) => setSearchProjectName && setSearchProjectName(e.target.value)}
-
+              onChange={(e) =>
+                setSearchProjectName && setSearchProjectName(e.target.value)
+              }
               sx={{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "50px",
                 },
               }}
             />
+            <Button
+              disabled={!adminId}
+              variant="contained"
+              sx={{
+                backgroundColor: "#d9a990",
+                borderRadius: "20px",
+                ":hover": {
+                  backgroundColor: "#4a6180",
+                },
+              }}
+              onClick={() => {
+                // handleAddProjectClick();
+                navigate(
+                  !projectTableforClient
+                    ? "/add-project"
+                    : "/client/add-project"
+                );
+              }}
+            >
+              Add Project
+            </Button>
           </div>
-
-          <Button
-            disabled={!adminId}
-            variant="contained"
-            sx={{
-              backgroundColor: "#d9a990",
-              borderRadius: "20px",
-              ":hover": {
-                backgroundColor: "#4a6180",
-              },
-            }}
-            onClick={() => {
-              handleAddProjectClick()
-              navigate("/add-project")
-            }
-            }
-          >
-            Add Project
-          </Button>
         </div>
       ) : (
         <div className="">
@@ -331,181 +344,13 @@ export default function CompoAddProject({
             }}
             onClick={() => {
               handleEditProjectClick();
-              navigate("/edit-project")
-            }
-            }
+              navigate("/edit-project");
+            }}
           >
             <CiEdit size={25} />
           </Button>
-        </div >
-      )
-      }
-      <div>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>
-            {forAddProject ? "Add Project" : "Edit Project"}
-          </DialogTitle>
-          ;
-          {incompleteError.length > 0 ? (
-            <Alert severity="error"> {incompleteError}</Alert>
-          ) : null}
-          {formError.length > 0 ? (
-            <Alert severity="error"> {formError}</Alert>
-          ) : null}
-          {loading ? <LinearProgress /> : null}
-          <DialogContent>
-            <form onSubmit={handleAddSubmit}>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="projectName"
-                label="Project Name"
-                type="text"
-                fullWidth
-                variant="standard"
-                name="projectName"
-                value={projectData.projectName}
-                onChange={handleChange}
-                required
-              />
-
-              <TextField
-                margin="dense"
-                id="projectManager"
-                label="Project Manager"
-                type="text"
-                fullWidth
-                variant="standard"
-                name="projectManager"
-                value={projectData.projectManager}
-                onChange={handleChange}
-              />
-              <div className="flex ">
-                <TextField
-                  select
-                  margin="dense"
-                  id="currencyType"
-                  label="Rate/Currency type"
-                  fullWidth
-                  variant="standard"
-                  name="currencyType"
-                  value={projectData.currencyType || ""}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="rupees">&#x20B9; (rupee)</MenuItem>
-                  <MenuItem value="dollars">$ (dollar)</MenuItem>
-                  <MenuItem value="pounds">&#163; (pounds)</MenuItem>
-                </TextField>
-
-                <TextField
-                  select
-                  margin="dense"
-                  id="workingPeriodType"
-                  label="Rate/Work based on"
-                  fullWidth
-                  variant="standard"
-                  name="workingPeriodType"
-                  value={projectData.workingPeriodType || ""}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="hours">Hours</MenuItem>
-                  <MenuItem value="days">Months</MenuItem>
-                </TextField>
-              </div>
-              <TextField
-                margin="dense"
-                id="rate"
-                label={`Rate (${currencyType}/${workPeriodType === "days" ? "months" : "hours"
-                  })`}
-                type="number"
-                fullWidth
-                variant="standard"
-                name="rate"
-                value={projectData.rate === 0 ? "" : projectData.rate}
-                onChange={handleChange}
-              />
-              {workPeriodType === "days" ? (
-                <TextField
-                  margin="dense"
-                  id="projectPeriod"
-                  label={`Total project period in ${workPeriodType}`}
-                  type="number"
-                  fullWidth
-                  variant="standard"
-                  name="projectPeriod"
-                  value={projectData.projectPeriod}
-                  onChange={handleChange}
-                />
-              ) : null}
-              {workPeriodType === "hours" ? (
-                <>
-                  <label className=" text-[12px] text-sky-700">
-                    {`Actual working in ${workPeriodType}`}
-                  </label>
-
-                  <TextField
-                    margin="dense"
-                    id="periodFrom"
-                    type="time" // Set the type to "time" for HH:MM input
-                    fullWidth
-                    variant="standard"
-                    name="workingPeriod"
-                    value={projectData.workingPeriod}
-                    onChange={handleChange}
-                    required
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    InputProps={{
-                      inputProps: {
-                        step: 300, // Set the step to 5 minutes (300 seconds)
-                      },
-                    }}
-                  />
-                </>
-              ) : (
-                <TextField
-                  margin="dense"
-                  id="workingPeriod"
-                  label={`Actual working in ${workPeriodType}`}
-                  type="number"
-                  fullWidth
-                  variant="standard"
-                  name="workingPeriod"
-                  value={projectData.workingPeriod}
-                  onChange={handleChange}
-                />
-              )}
-              <label className=" text-[12px] text-sky-700">
-                Conversion rate*
-              </label>
-              <TextField
-                margin="dense"
-                id="conversionRate"
-                type="number"
-                fullWidth
-                variant="standard"
-                name="conversionRate"
-                value={
-                  projectData.conversionRate <= 0
-                    ? ""
-                    : projectData.conversionRate
-                }
-                onChange={handleChange}
-                required
-              />
-            </form>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            {!toEdit ? (
-              <Button onClick={(e) => handleAddSubmit(e)}>Add Project</Button>
-            ) : (
-              <Button onClick={(e) => handleEditSubmit(e)}>Edit Project</Button>
-            )}
-          </DialogActions>
-        </Dialog>
-      </div>
+        </div>
+      )}
     </>
   );
 }

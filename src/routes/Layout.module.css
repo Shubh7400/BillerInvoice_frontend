@@ -1,9 +1,7 @@
 .table_scroll{
     
     width: 85vw !important;
-  /* height: 75vh; */
-  /* margin-bottom: 20px; */
-  background: #F5F5F5;
+ 
   overflow-y: auto;
   overflow-x: auto;
     border-radius: 20px;

@@ -99,6 +99,20 @@ const AllRoutes = () => {
                 clientId={selectedClientState.data._id}
                 adminId={adminId}
                 forAddProject={true}
+                clientAddProject={false}
+              />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/client/add-project"
+          element={
+            <PrivateRoute>
+              <AddProjectPage
+                clientId={selectedClientState.data._id}
+                adminId={adminId}
+                forAddProject={true}
+                clientAddProject={true}
               />
             </PrivateRoute>
           }

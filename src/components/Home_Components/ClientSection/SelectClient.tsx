@@ -25,8 +25,6 @@ import { FaRegUser } from "react-icons/fa";
 import Styles from "./client.module.css";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
-
-
 const SelectClient = () => {
   const { isAuth, adminId } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -75,7 +73,7 @@ const SelectClient = () => {
   useEffect(() => {
     if (adminId && loading === "succeeded") {
       let timer = setTimeout(() => {
-        dispatch(getAllClientsByAdminIdAction(adminId));
+      dispatch(getAllClientsByAdminIdAction(adminId));
         return () => {
           clearTimeout(timer);
         };
