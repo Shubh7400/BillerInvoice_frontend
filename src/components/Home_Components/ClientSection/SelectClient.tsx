@@ -16,7 +16,6 @@ import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates
 import ConfirmationDialog from "./Compo-ClientDialogeBox";
 import { ClientType } from "../../../types/types";
 import CompoLoading from "./Compo-Loding";
-import CompoAddClient from "./Compo_AddClient";
 import cubexoLogo from "../../../utils/images/cubexoLogo.webp";
 import gamaedgeLogo from "../../../utils/images/gammaedgeLogo.png";
 import { useNavigate } from "react-router-dom";
@@ -126,7 +125,6 @@ const SelectClient = () => {
   return (
     <section>
       <div className="flex justify-between mb-4 items-center">
-        {/* <CompoAddClient forEditClient={false} clientToEdit={null} /> */}
 
         <div className="flex items-center gap-2">
           <button
