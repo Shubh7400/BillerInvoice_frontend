@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { ClientType, ProjectType } from '../../types/types';
-import { RootState } from '../../states/redux/store';
-import { useDispatch, useSelector } from 'react-redux';
-import ClientInfoSection from '../Client_Component/ClientInfoSection';
-import { Button, TextField, useTheme } from '@mui/material';
+import React, { useState } from "react";
+import { ClientType, ProjectType } from "../../types/types";
+import { RootState } from "../../states/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import ClientInfoSection from "../Client_Component/ClientInfoSection";
+import { Button, TextField, useTheme } from "@mui/material";
 import Styles from "./invoive.module.css";
-import { removeProjectFromInvoiceAction } from '../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice';
+import { removeProjectFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import BillAmount from "../../components/Home_Components/InvoiceSection/BillAmount";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
@@ -13,7 +13,15 @@ import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import Typography from "@mui/material/Typography";
 import error from "../assets/project_error.png";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 
 function InvoiceClientPage() {
   const materialTheme = useTheme();
@@ -31,7 +39,7 @@ function InvoiceClientPage() {
       dispatch(removeProjectFromInvoiceAction(project._id));
     }
   };
-  
+
   const navigate = useNavigate();
   const [editableProjects, setEditableProjects] = useState(projectsForInvoice);
 
@@ -45,14 +53,14 @@ function InvoiceClientPage() {
 
   return (
     <div>
-      <div className='flex items-center gap-2'>
-      <button
-            onClick={() => navigate(-1)}
-            className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
-          >
-            <IoIosArrowBack />
-          </button>
-        <Typography variant="h5" component="h2" className='text-center'>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
+        >
+          <IoIosArrowBack />
+        </button>
+        <Typography variant="h5" component="h2" className="text-center">
           CLIENT INFORMATION
         </Typography>
       </div>
@@ -66,12 +74,24 @@ function InvoiceClientPage() {
           <Table>
             <TableHead className={Styles.animated}>
               <TableRow>
-                <TableCell><strong>Project Name</strong></TableCell>
-                <TableCell><strong>Rate</strong></TableCell>
-                <TableCell><strong>Working Time</strong></TableCell>
-                <TableCell><strong>Conversion Rate</strong></TableCell>
-                <TableCell><strong>Amount</strong></TableCell>
-                <TableCell><strong>Remove</strong></TableCell>
+                <TableCell>
+                  <strong>Project Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Rate</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Working Time</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Conversion Rate</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Amount</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Remove</strong>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -81,47 +101,54 @@ function InvoiceClientPage() {
                     {project.projectName}
                   </TableCell>
                   <TableCell className="text-[13px]">
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    value={project.rate || ''}  // Fallback to empty string if rate is undefined
-                    onChange={(e) => handleInputChange(project._id ?? '', 'rate', e.target.value)}  // Fallback to empty string if _id is undefined
-                    InputProps={{
-                    endAdornment: (
-                    <span>
-                      {project.currencyType === "rupees" ? '₹' :
-                        project.currencyType === "dollars" ? '$' :
-                        project.currencyType === "pounds" ? '£' : ''}
-                    </span>
-                    ),
-                    }}
+                    <TextField
+                      variant="outlined"
+                      size="small"
+                      value={project.rate || ""} // Fallback to empty string if rate is undefined
+                      onChange={(e) =>
+                        handleInputChange(
+                          project._id ?? "",
+                          "rate",
+                          e.target.value
+                        )
+                      } // Fallback to empty string if _id is undefined
+                      InputProps={{
+                        endAdornment: (
+                          <span>
+                            {project.currencyType === "rupees"
+                              ? "₹"
+                              : project.currencyType === "dollars"
+                              ? "$"
+                              : project.currencyType === "pounds"
+                              ? "£"
+                              : ""}
+                          </span>
+                        ),
+                      }}
                     />
-
-
-                  </TableCell>
-                  <TableCell className="text-[13px]">
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    value={project.workingPeriod || ''}  // Fallback to empty string
-                    onChange={(e) => handleInputChange(project._id ?? '', 'workingPeriod', e.target.value)}
-                    InputProps={{
-                      endAdornment: <span>/{project.workingPeriodType}</span>,
-                    }}
-                  />
                   </TableCell>
                   <TableCell className="text-[13px]">
                     <TextField
                       variant="outlined"
                       size="small"
                       value={project.conversionRate}
-                      onChange={(e) => handleInputChange(project._id ?? '', 'conversionRate', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange(
+                          project._id ?? "",
+                          "conversionRate",
+                          e.target.value
+                        )
+                      }
                       InputProps={{
                         startAdornment: (
                           <span>
-                            {project.currencyType === "rupees" ? '₹' :
-                             project.currencyType === "dollars" ? '$' :
-                             project.currencyType === "pounds" ? '£' : ''}
+                            {project.currencyType === "rupees"
+                              ? "₹"
+                              : project.currencyType === "dollars"
+                              ? "$"
+                              : project.currencyType === "pounds"
+                              ? "£"
+                              : ""}
                           </span>
                         ),
                       }}
@@ -131,7 +158,10 @@ function InvoiceClientPage() {
                     &#x20B9; {project.amount ? project.amount : 0}
                   </TableCell>
                   <TableCell>
-                    <Button onClick={() => handleRemoveProject(project)} className={Styles.removeButton}>
+                    <Button
+                      onClick={() => handleRemoveProject(project)}
+                      className={Styles.removeButton}
+                    >
                       <RxCross1 />
                     </Button>
                   </TableCell>
@@ -145,8 +175,8 @@ function InvoiceClientPage() {
         {projectsForInvoice.length > 0 ? (
           <BillAmount />
         ) : (
-          <div className='flex flex-col h-[60vh] justify-center items-center '>
-            <img src={error} alt="No project selected" className='w-[300px]' />
+          <div className="flex flex-col h-[60vh] justify-center items-center ">
+            <img src={error} alt="No project selected" className="w-[300px]" />
             <p>No Project Selected</p>
           </div>
         )}

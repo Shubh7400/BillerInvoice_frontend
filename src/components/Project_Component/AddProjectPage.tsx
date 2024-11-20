@@ -23,10 +23,12 @@ import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { IoChevronBackSharp } from "react-icons/io5";
-import { useSelector } from "react-redux";
-import { RootState } from "../../states/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../states/redux/store";
 import Select from "react-select";
 import { InputActionMeta } from "react-select";
+import CompoLoadingProjects from "../Home_Components/ProjectSection/CompoLoadingProjects";
+import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 function AddProjectPage({
   adminId,
   clientId,
@@ -46,10 +48,18 @@ function AddProjectPage({
   const [selectClient, setSelectClient] = useState<ClientType>();
 
   const {
+    loading: adminLoding,
+    data:adminData,
+    error:adminError,
+  } = useSelector((state: RootState) => state.adminState);
+
+  const {
     loading: clientsLoading,
     data: clients,
     error: clientsError,
   } = useSelector((state: RootState) => state.allClientsState);
+  console.log(clientsLoading, "<<<<<<<<<<", adminLoding);
+  const dispatch = useDispatch<AppDispatch>();
 
   const clientsArr: ClientType[] = clients.map((client) => ({
     _id: client._id,
@@ -93,10 +103,7 @@ function AddProjectPage({
   const [formError, setFormError] = useState("");
   const [projectData, setProjectData] = useState<ProjectType>({
     projectName: "",
-    projectManager: "",
     rate: 0,
-    projectPeriod: 0,
-    workingPeriod: "00:00",
     workingPeriodType: "hours",
     currencyType: "rupees",
     conversionRate: 1,
@@ -107,17 +114,24 @@ function AddProjectPage({
 
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    if (adminId && adminLoding === "idle") {
+      let timer = setTimeout(() => {
+        dispatch(getAllClientsByAdminIdAction(adminId));
+        return () => {
+          clearTimeout(timer); 
+        };
+      }, 0);
+    }
+  }, [dispatch, adminId, adminLoding]);
+
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void {
     let { name, value } = e.target;
     setFormError("");
     setIncompleteError("");
-    if (
-      name === "workingPeriod" &&
-      workPeriodType === "days" &&
-      parseInt(value) < 0
-    ) {
+    if (workPeriodType === "days" && parseInt(value) < 0) {
       value = "0";
     }
     if (name === "rate" || name === "conversionRate") {
@@ -162,6 +176,7 @@ function AddProjectPage({
   }
 
   function areAllRequiredFieldsFilled(obj: any) {
+    setFormError("");
     if (obj.projectName === "") {
       setFormError("Project name compulsary*");
       return false;
@@ -170,7 +185,7 @@ function AddProjectPage({
       setProjectData({ ...obj, conversionRate: 1 });
     }
     if (obj.clientId.length <= 0 || obj.adminId.length <= 0) {
-      setFormError("ClientId and AdminId compulsary. Refresh and try again !!");
+      setFormError("please select client !!");
       return false;
     }
     return true;
@@ -184,7 +199,6 @@ function AddProjectPage({
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-
     if (areAllRequiredFieldsFilled(projectData)) {
       setLoading(true);
       addProjectMutation.mutate(projectData, {
@@ -250,10 +264,7 @@ function AddProjectPage({
     if (forAddProject && toEdit) {
       setProjectData({
         projectName: "",
-        projectManager: "",
         rate: 0,
-        projectPeriod: 0,
-        workingPeriod: "00:00",
         workingPeriodType: "hours",
         currencyType: "rupees",
         conversionRate: 1,
@@ -278,142 +289,140 @@ function AddProjectPage({
     }
   }, [clientId, adminId]);
 
-  const handleAddProjectClick = () => {
-    handleToAddClick();
-    handleClickOpen();
-  };
-  const handleEditProjectClick = () => {
-    handleToEditClick();
-    // handleClickOpen();
-  };
-
   return (
     <>
-      <div>
-        {/* <Dialog open={open} onClose={handleClose}> */}
-        <div className="flex justify-between items-center mb-4 ">
-          <DialogTitle style={{ padding: "0" }}>
-            {forAddProject ? "Add Project" : "Edit Project"}
-          </DialogTitle>
-          <button
-            onClick={() => navigate(-1)}
-            className="text-[16px] flex items-center gap-[10px] text-[#fff]"
-            style={{
-              backgroundColor: "#d9a990",
-              borderRadius: "20px",
-              padding: "5px 10px",
-            }}
-          >
-            <IoChevronBackSharp /> BACK
-          </button>
-        </div>
-        {incompleteError.length > 0 ? (
-          <Alert severity="error"> {incompleteError}</Alert>
-        ) : null}
-        {formError.length > 0 ? (
-          <Alert severity="error"> {formError}</Alert>
-        ) : null}
-        {loading ? <LinearProgress /> : null}
-        <DialogContent style={{ padding: "0" }}>
-          <form onSubmit={handleAddSubmit}>
-            <div>
-              {!clientAddProject ? (
-                <div>
-                  <label className="text-xs py-1 opacity-60">
-                    Select Client
-                  </label>
-                  <Select
-                    options={clientsArr}
-                    getOptionLabel={(option) => option.clientName}
-                    getOptionValue={(option) => option.clientName}
-                    value={selectClient?.clientName ? selectClient : null}
-                    onChange={(item) => {
-                      if (item) {
-                        setSelectClient(item);
+      {clientsLoading === "idle" && <CompoLoadingProjects />}
+      {clientsLoading === "succeeded" && (
+        <div>
+          {/* <Dialog open={open} onClose={handleClose}> */}
+          <div className="flex justify-between items-center mb-4 ">
+            <DialogTitle style={{ padding: "0" }}>
+              {forAddProject ? "Add Project" : "Edit Project"}
+            </DialogTitle>
+            <button
+              onClick={() => navigate(-1)}
+              className="text-[16px] flex items-center gap-[10px] text-[#fff]"
+              style={{
+                backgroundColor: "#d9a990",
+                borderRadius: "20px",
+                padding: "5px 10px",
+              }}
+            >
+              <IoChevronBackSharp /> BACK
+            </button>
+          </div>
+          {incompleteError.length > 0 ? (
+            <Alert severity="error"> {incompleteError}</Alert>
+          ) : null}
+          {formError.length > 0 ? (
+            <Alert severity="error"> {formError}</Alert>
+          ) : null}
+          {loading ? <LinearProgress /> : null}
+          <DialogContent style={{ padding: "0" }}>
+            <form onSubmit={handleAddSubmit}>
+              <div>
+                {!clientAddProject ? (
+                  <div>
+                    <label className="text-xs py-1 opacity-60">
+                      Select Client
+                    </label>
+                    <Select
+                      options={clientsArr}
+                      getOptionLabel={(option) => option.clientName}
+                      getOptionValue={(option) => option.clientName}
+                      value={selectClient?.clientName ? selectClient : null}
+                      onChange={(item) => {
+                        if (item && item._id) {
+                          setFormError("");
+                          setSelectClient(item);
+                          setProjectData({
+                            ...projectData,
+                            clientId: item._id,
+                          });
+                        }
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <label className="text-xs py-1 opacity-60">
+                      Selected Client
+                    </label>
+                    <Select
+                      options={clientsArr}
+                      getOptionLabel={(option) => option.clientName}
+                      value={
+                        clientsArr.find((client) => client._id === clientId) ||
+                        null
                       }
-                    }}
-                  />
-                </div>
-              ) : (
-                <div>
-                  <label className="text-xs py-1 opacity-60">
-                    Selected Client
-                  </label>
-                  <Select
-                    options={clientsArr}
-                    getOptionLabel={(option) => option.clientName}
-                    value={
-                      clientsArr.find((client) => client._id === clientId) ||
-                      null
-                    }
-                    isDisabled
-                  />
-                </div>
-              )}
-            </div>
-            <TextField
-              margin="dense"
-              id="projectName"
-              label="Project Name"
-              type="text"
-              fullWidth
-              variant="outlined"
-              name="projectName"
-              value={projectData.projectName}
-              onChange={handleChange}
-              required
-            />
-            <div className="flex gap-2">
+                      isDisabled
+                    />
+                  </div>
+                )}
+              </div>
               <TextField
-                select
                 margin="dense"
-                id="currencyType"
-                label="Rate/Currency type"
+                id="projectName"
+                label="Project Name"
+                type="text"
                 fullWidth
                 variant="outlined"
-                name="currencyType"
-                value={projectData.currencyType || ""}
+                name="projectName"
+                value={projectData.projectName}
                 onChange={handleChange}
-              >
-                <MenuItem value="rupees">&#x20B9; (rupee)</MenuItem>
-                <MenuItem value="dollars">$ (dollar)</MenuItem>
-                <MenuItem value="pounds">&#163; (pounds)</MenuItem>
-              </TextField>
+                required
+              />
+              <div className="flex gap-2">
+                <TextField
+                  select
+                  margin="dense"
+                  id="currencyType"
+                  label="Rate/Currency type"
+                  fullWidth
+                  variant="outlined"
+                  name="currencyType"
+                  value={projectData.currencyType || ""}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="rupees">&#x20B9; (rupee)</MenuItem>
+                  <MenuItem value="dollars">$ (dollar)</MenuItem>
+                  <MenuItem value="pounds">&#163; (pounds)</MenuItem>
+                </TextField>
 
+                <TextField
+                  select
+                  margin="dense"
+                  id="workingPeriodType"
+                  label="Rate/Work based on"
+                  fullWidth
+                  variant="outlined"
+                  name="workingPeriodType"
+                  value={projectData.workingPeriodType || ""}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="hours">Hours</MenuItem>
+                  <MenuItem value="days">Months</MenuItem>
+                  <MenuItem value="fixed">Fixed</MenuItem>
+                </TextField>
+              </div>
               <TextField
-                select
                 margin="dense"
-                id="workingPeriodType"
-                label="Rate/Work based on"
+                id="rate"
+                label={
+                  workPeriodType === "fixed"
+                    ? "Enter Fixed Amount"
+                    : `Rate (${currencyType}/${
+                        workPeriodType === "days" ? "months" : "hours"
+                      })`
+                }
+                type="number"
                 fullWidth
                 variant="outlined"
-                name="workingPeriodType"
-                value={projectData.workingPeriodType || ""}
+                name="rate"
+                value={projectData.rate === 0 ? "" : projectData.rate}
                 onChange={handleChange}
-              >
-                <MenuItem value="hours">Hours</MenuItem>
-                <MenuItem value="days">Months</MenuItem>
-                <MenuItem value="fixed">Fixed</MenuItem>
-              </TextField>
-            </div>
-            <TextField
-              margin="dense"
-              id="rate"
-              label={
-                workPeriodType === "fixed"
-                  ? "Enter Fixed Amount"
-                  : `Rate (${currencyType}/${
-                      workPeriodType === "days" ? "months" : "hours"
-                    })`
-              }
-              type="number"
-              fullWidth
-              variant="outlined"
-              name="rate"
-              value={projectData.rate === 0 ? "" : projectData.rate}
-              onChange={handleChange}
-            />
-            {/* {workPeriodType === "days" ? (
+              />
+              {/* {workPeriodType === "days" ? (
               <TextField
                 margin="dense"
                 id="projectPeriod"
@@ -426,7 +435,7 @@ function AddProjectPage({
                 onChange={handleChange}
               />
             ) : null} */}
-            {/* {workPeriodType === "hours" ? (
+              {/* {workPeriodType === "hours" ? (
               <>
                 <label className=" text-[14px] text-gray-500">
                   {`Actual working in ${workPeriodType}`}
@@ -466,66 +475,67 @@ function AddProjectPage({
               />
             )} */}
 
-            {currencyType !== "rupees" ? (
-              <>
-                <label className="text-[14px] text-gray-500">
-                  Conversion rate*
-                </label>
-                <TextField
-                  margin="dense"
-                  id="conversionRate"
-                  type="number"
-                  fullWidth
-                  variant="outlined"
-                  name="conversionRate"
-                  value={
-                    projectData.conversionRate <= 0
-                      ? ""
-                      : projectData.conversionRate
-                  }
-                  onChange={handleChange}
-                  required
-                />
-              </>
-            ) : null}
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          {!toEdit ? (
-            <Button
-              onClick={(e) => handleAddSubmit(e)}
-              style={{
-                backgroundColor: isHovered ? "#4a6180" : "#d9a990",
-                borderRadius: "20px",
-                padding: "5px 15px",
-                color: "#fff ",
-                marginTop: "10px",
-              }}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              Add Project
-            </Button>
-          ) : (
-            <Button
-              onClick={(e) => handleEditSubmit(e)}
-              style={{
-                backgroundColor: isHovered ? "#4a6180" : "#d9a990",
-                borderRadius: "20px",
-                padding: "5px 15px",
-                color: "#fff ",
-                marginTop: "10px",
-              }}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              Edit Project
-            </Button>
-          )}
-        </DialogActions>
-        {/* </Dialog> */}
-      </div>
+              {currencyType !== "rupees" ? (
+                <>
+                  <label className="text-[14px] text-gray-500">
+                    Conversion rate*
+                  </label>
+                  <TextField
+                    margin="dense"
+                    id="conversionRate"
+                    type="number"
+                    fullWidth
+                    variant="outlined"
+                    name="conversionRate"
+                    value={
+                      projectData.conversionRate <= 0
+                        ? ""
+                        : projectData.conversionRate
+                    }
+                    onChange={handleChange}
+                    required
+                  />
+                </>
+              ) : null}
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            {!toEdit ? (
+              <Button
+                onClick={(e) => handleAddSubmit(e)}
+                style={{
+                  backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+                  borderRadius: "20px",
+                  padding: "5px 15px",
+                  color: "#fff ",
+                  marginTop: "10px",
+                }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                Add Project
+              </Button>
+            ) : (
+              <Button
+                onClick={(e) => handleEditSubmit(e)}
+                style={{
+                  backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+                  borderRadius: "20px",
+                  padding: "5px 15px",
+                  color: "#fff ",
+                  marginTop: "10px",
+                }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                Edit Project
+              </Button>
+            )}
+          </DialogActions>
+          {/* </Dialog> */}
+        </div>
+      )}
     </>
   );
 }
