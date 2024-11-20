@@ -242,7 +242,6 @@ function AddProjectPage({
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    console.log(projectData, " <<<<<<<<<<<");
 
     if (areAllRequiredFieldsFilled(projectData)) {
       setLoading(true);
