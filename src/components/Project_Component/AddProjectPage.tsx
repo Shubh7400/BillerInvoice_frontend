@@ -7,6 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
+import { Autocomplete} from '@mui/material';
 import { Alert, LinearProgress, MenuItem, useTheme } from "@mui/material";
 import {
   ClientType,
@@ -17,7 +18,7 @@ import {
   useAddNewProject,
   useUpdateProject,
 } from "../../states/query/Project_queries/projectQueries";
-import { queryClient } from "../..";
+import { queryClient } from "../.."; 
 import { CiEdit } from "react-icons/ci";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../states/redux/store";
 import Select from "react-select";
 import { InputActionMeta } from "react-select";
+import axios from "axios";
 import CompoLoadingProjects from "../Home_Components/ProjectSection/CompoLoadingProjects";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 function AddProjectPage({
@@ -85,7 +87,6 @@ function AddProjectPage({
     setToEdit(true);
   };
 
-  // ------------------------------------------------------
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -93,7 +94,7 @@ function AddProjectPage({
   const handleClose = () => {
     setOpen(false);
   };
-  // --------------------------------------------------------
+
   const materialTheme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   const [workPeriodType, setWorkPeriodType] = useState("hours");
@@ -101,6 +102,9 @@ function AddProjectPage({
   const [loading, setLoading] = useState(false);
   const [incompleteError, setIncompleteError] = useState("");
   const [formError, setFormError] = useState("");
+  const [conversionRate, setConversionRate] = useState(1);
+  const [loadingRate, setLoadingRate] = useState(false);
+  const [rateError, setRateError] = useState("");
   const [projectData, setProjectData] = useState<ProjectType>({
     projectName: "",
     rate: 0,
@@ -111,7 +115,35 @@ function AddProjectPage({
     adminId: "",
     clientId: "",
   });
+  const fetchExchangeRate = async () => {
+    setLoadingRate(true);
+    setRateError("");
+    try {
+      const response = await axios.get(
+        `https://api.exchangerate-api.com/v4/latest/USD` // Replace with your API endpoint
+      );
 
+      const rates = response.data.rates;
+      if (currencyType === "dollars") {
+        setConversionRate(rates.INR); // INR equivalent of 1 USD
+      } else if (currencyType === "pounds") {
+        setConversionRate(rates.INR / rates.GBP); // INR equivalent of 1 GBP
+      }
+    } catch (error) {
+      setRateError("Failed to fetch exchange rates. Try again.");
+      console.error("Exchange rate fetch error:", error);
+    } finally {
+      setLoadingRate(false);
+    }
+  };
+
+  const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setCurrencyType(value);
+    if (value === "rupees") {
+      setConversionRate(1); // Default for INR
+    }
+  };
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -291,103 +323,101 @@ function AddProjectPage({
 
   return (
     <>
-      {clientsLoading === "idle" && <CompoLoadingProjects />}
-      {clientsLoading === "succeeded" && (
-        <div>
-          {/* <Dialog open={open} onClose={handleClose}> */}
-          <div className="flex justify-between items-center mb-4 ">
-            <DialogTitle style={{ padding: "0" }}>
-              {forAddProject ? "Add Project" : "Edit Project"}
-            </DialogTitle>
-            <button
-              onClick={() => navigate(-1)}
-              className="text-[16px] flex items-center gap-[10px] text-[#fff]"
-              style={{
-                backgroundColor: "#d9a990",
-                borderRadius: "20px",
-                padding: "5px 10px",
-              }}
-            >
-              <IoChevronBackSharp /> BACK
-            </button>
-          </div>
-          {incompleteError.length > 0 ? (
-            <Alert severity="error"> {incompleteError}</Alert>
-          ) : null}
-          {formError.length > 0 ? (
-            <Alert severity="error"> {formError}</Alert>
-          ) : null}
-          {loading ? <LinearProgress /> : null}
-          <DialogContent style={{ padding: "0" }}>
-            <form onSubmit={handleAddSubmit}>
-              <div>
-                {!clientAddProject ? (
-                  <div>
-                    <label className="text-xs py-1 opacity-60">
-                      Select Client
-                    </label>
-                    <Select
-                      options={clientsArr}
-                      getOptionLabel={(option) => option.clientName}
-                      getOptionValue={(option) => option.clientName}
-                      value={selectClient?.clientName ? selectClient : null}
-                      onChange={(item) => {
-                        if (item && item._id) {
-                          setFormError("");
-                          setSelectClient(item);
-                          setProjectData({
-                            ...projectData,
-                            clientId: item._id,
-                          });
-                        }
-                      }}
+      <div>
+        {/* <Dialog open={open} onClose={handleClose}> */}
+        <div className="flex gap-3 items-center mb-4 ">
+        <button
+          onClick={() => navigate(-1)} // Use navigate(-1) to go back
+          className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
+          
+        >
+            <IoChevronBackSharp />
+          </button>
+          <DialogTitle style={{ padding: "0" }}>
+            {forAddProject ? "Add Project" : "Edit Project"}
+          </DialogTitle>
+          
+        </div>
+        {incompleteError.length > 0 ? (
+          <Alert severity="error"> {incompleteError}</Alert>
+        ) : null}
+        {formError.length > 0 ? (
+          <Alert severity="error"> {formError}</Alert>
+        ) : null}
+        {loading ? <LinearProgress /> : null}
+        <DialogContent style={{ padding: "0" }}>
+          <form onSubmit={handleAddSubmit}>
+            <div>
+              {!clientAddProject ? (
+                <div>
+                <label className="text-xs py-1 opacity-60">Select Client</label>
+                <Autocomplete
+                  options={clientsArr}
+                  getOptionLabel={(option) => option.clientName}
+                  value={selectClient?.clientName ? selectClient : null}
+                  onChange={(event, newValue) => {
+                    if (newValue) {
+                      setSelectClient(newValue);
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField 
+                      {...params} 
+                      variant="outlined" 
+                      size="small" 
+                      placeholder="Select Client" 
                     />
-                  </div>
-                ) : (
-                  <div>
-                    <label className="text-xs py-1 opacity-60">
-                      Selected Client
-                    </label>
-                    <Select
-                      options={clientsArr}
-                      getOptionLabel={(option) => option.clientName}
-                      value={
-                        clientsArr.find((client) => client._id === clientId) ||
-                        null
-                      }
-                      isDisabled
-                    />
-                  </div>
-                )}
+                  )}
+                />
               </div>
+              ) : (
+                <div>
+                  <label className="text-xs py-1 opacity-60">Selected Client</label>
+                  <Autocomplete
+                    options={clientsArr}
+                    getOptionLabel={(option) => option.clientName}
+                    value={clientsArr.find((client) => client._id === clientId) || null}
+                    disabled
+                    renderInput={(params) => (
+                      <TextField 
+                        {...params} 
+                        variant="outlined" 
+                        size="small" 
+                        placeholder="Selected Client" 
+                      />
+                    )}
+                  />
+                </div>
+              )}
+            </div>
+            <TextField
+              margin="dense"
+              id="projectName"
+              label="Project Name"
+              type="text"
+              fullWidth
+              variant="outlined"
+              name="projectName"
+              value={projectData.projectName}
+              onChange={handleChange}
+              required
+            />
+            <div className="flex gap-2">
               <TextField
+                select
                 margin="dense"
-                id="projectName"
-                label="Project Name"
-                type="text"
+                id="currencyType"
+                label="Rate/Currency type"
                 fullWidth
                 variant="outlined"
-                name="projectName"
-                value={projectData.projectName}
+                name="currencyType"
+                value={projectData.currencyType || ""}
                 onChange={handleChange}
-                required
-              />
-              <div className="flex gap-2">
-                <TextField
-                  select
-                  margin="dense"
-                  id="currencyType"
-                  label="Rate/Currency type"
-                  fullWidth
-                  variant="outlined"
-                  name="currencyType"
-                  value={projectData.currencyType || ""}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="rupees">&#x20B9; (rupee)</MenuItem>
-                  <MenuItem value="dollars">$ (dollar)</MenuItem>
-                  <MenuItem value="pounds">&#163; (pounds)</MenuItem>
-                </TextField>
+              >
+                <MenuItem value="rupees">&#x20B9; (rupee)</MenuItem>
+                <MenuItem value="dollars">$ (dollar)</MenuItem>
+                <MenuItem value="pounds">&#163; (pounds)</MenuItem>
+              </TextField>
 
                 <TextField
                   select
@@ -475,67 +505,80 @@ function AddProjectPage({
               />
             )} */}
 
-              {currencyType !== "rupees" ? (
-                <>
-                  <label className="text-[14px] text-gray-500">
-                    Conversion rate*
-                  </label>
-                  <TextField
-                    margin="dense"
-                    id="conversionRate"
-                    type="number"
-                    fullWidth
-                    variant="outlined"
-                    name="conversionRate"
-                    value={
-                      projectData.conversionRate <= 0
-                        ? ""
-                        : projectData.conversionRate
-                    }
-                    onChange={handleChange}
-                    required
-                  />
-                </>
-              ) : null}
-            </form>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            {!toEdit ? (
-              <Button
-                onClick={(e) => handleAddSubmit(e)}
-                style={{
-                  backgroundColor: isHovered ? "#4a6180" : "#d9a990",
-                  borderRadius: "20px",
-                  padding: "5px 15px",
-                  color: "#fff ",
-                  marginTop: "10px",
-                }}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                Add Project
-              </Button>
-            ) : (
-              <Button
-                onClick={(e) => handleEditSubmit(e)}
-                style={{
-                  backgroundColor: isHovered ? "#4a6180" : "#d9a990",
-                  borderRadius: "20px",
-                  padding: "5px 15px",
-                  color: "#fff ",
-                  marginTop: "10px",
-                }}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                Edit Project
-              </Button>
-            )}
-          </DialogActions>
-          {/* </Dialog> */}
+            {currencyType !== "rupees" ? (
+              <>
+                 <div>
+          
         </div>
-      )}
+
+        {/* Display Conversion Rate for Dollar and Pound */}
+        {currencyType !== "rupees" && (
+              <div className="relative mt-3">
+                <TextField
+                  label="Conversion Rate"
+                  type="number"
+                  value={conversionRate}
+                  onChange={(e) => setConversionRate(Number(e.target.value))}
+                  fullWidth
+                />
+
+                <Button
+                  onClick={fetchExchangeRate}
+                  disabled={loadingRate}
+                  style={{
+                    marginTop: "10px",
+                    backgroundColor: "#d9a990",
+                    color: "#fff",
+                    position:"absolute",
+                    right: "10px",
+                    top: "0px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {loadingRate ? "Fetching Rate..." : "Get Current Rate"}
+                </Button>
+              </div>
+            )}
+              </>
+            ) : null}
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          {!toEdit ? (
+            <Button
+              onClick={(e) => handleAddSubmit(e)}
+              style={{
+                backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+                borderRadius: "20px",
+                padding: "5px 15px",
+                color: "#fff ",
+                marginTop: "10px",
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              Add Project
+            </Button>
+          ) : (
+            <Button
+              onClick={(e) => handleEditSubmit(e)}
+              style={{
+                backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+                borderRadius: "20px",
+                padding: "5px 15px",
+                color: "#fff ",
+                marginTop: "10px",
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              Edit Project
+            </Button>
+          )}
+        </DialogActions>
+        {/* </Dialog> */}
+      </div>
     </>
   );
 }

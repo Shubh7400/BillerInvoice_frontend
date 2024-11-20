@@ -33,6 +33,7 @@
         position: sticky;
         width: 100%;
         top: 0;
+        z-index: 1;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     background: linear-gradient(-45deg, #6bafd2, #a4c8dc, #d6cbca, #eabc96, #db8876);
       background-size: 400% 400%;

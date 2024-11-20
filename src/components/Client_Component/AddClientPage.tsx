@@ -340,21 +340,18 @@ export default function AddClientPage({
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-5">
+      <div className="flex gap-3 items-center mb-5">
+      <button
+          onClick={() => navigate(-1)} // Use navigate(-1) to go back
+          className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
+          
+        >
+          <IoChevronBackSharp />
+        </button>
         <Typography variant="h5">
           {forEditClient ? "Edit Client" : "Add Client"}
         </Typography>
-        <button
-          onClick={() => navigate(-1)} // Use navigate(-1) to go back
-          className="text-[16px] flex items-center gap-[10px] text-[#fff]"
-          style={{
-            backgroundColor: "#d9a990",
-            borderRadius: "20px",
-            padding: "5px 10px",
-          }}
-        >
-          <IoChevronBackSharp /> BACK
-        </button>
+        
       </div>
       {formError && <Alert severity="error">{formError}</Alert>}
       {incompleteError && <Alert severity="error">{incompleteError}</Alert>}

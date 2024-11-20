@@ -77,7 +77,7 @@ export default function CompoAddProject({
   return (
     <>
       {forAddProject ? (
-        <div className="flex justify-between w-[80vw]  pr-2  mb-4">
+        <div className="flex justify-between w-[80vw] mb-4">
           <div className="flex items-center gap-2">
             <button
               onClick={handleBackButtonClick}
