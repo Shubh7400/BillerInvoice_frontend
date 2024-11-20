@@ -114,11 +114,9 @@ const DownloadPreview = () => {
                 <tr key={project._id} className="text-black">
                   <td className="border px-2 pb-4 text-center">{index + 1}</td>
                   <td className="border px-2 pb-4 text-center">{project.projectName}</td>
-                  <td className="border px-2 pb-4 text-center">{project.projectPeriod || "Hour based project"}</td>
                   <td className="border px-2 pb-4 text-center">
                     {project.rate} / {project.workingPeriodType}
                   </td>
-                  <td className="border px-2 pb-4 text-center">{project.workingPeriod}</td>
                   <td className="border px-2 pb-4 text-center">{project.conversionRate}</td>
                   <td className="border px-2 pb-4 text-center">&#x20B9; {project.amount}</td>
                 </tr>

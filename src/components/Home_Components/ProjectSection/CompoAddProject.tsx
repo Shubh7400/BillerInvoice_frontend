@@ -51,12 +51,6 @@ export default function CompoAddProject({
 }: CompoAddProjectProps) {
   // -----------------------------------------------------
   const [toEdit, setToEdit] = useState<boolean>(false);
-  const handleToAddClick = () => {
-    setToEdit(false);
-  };
-  const handleToEditClick = () => {
-    setToEdit(true);
-  };
 
   // ------------------------------------------------------
   const [open, setOpen] = React.useState(false);
@@ -74,202 +68,8 @@ export default function CompoAddProject({
   const [loading, setLoading] = useState(false);
   const [incompleteError, setIncompleteError] = useState("");
   const [formError, setFormError] = useState("");
-  const [projectData, setProjectData] = useState<ProjectType>({
-    projectName: "",
-    projectManager: "",
-    rate: 0,
-    projectPeriod: 0,
-    workingPeriod: "00:00",
-    workingPeriodType: "hours",
-    currencyType: "rupees",
-    conversionRate: 1,
-    paymentStatus: false,
-    adminId: "",
-    clientId: "",
-  });
-  // const [searchProjectName, setSearchProjectName] = useState("");
 
   const navigate = useNavigate();
-
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ): void {
-    let { name, value } = e.target;
-    setFormError("");
-    setIncompleteError("");
-    if (
-      name === "workingPeriod" &&
-      workPeriodType === "days" &&
-      parseInt(value) < 0
-    ) {
-      value = "0";
-    }
-    if (name === "rate" || name === "conversionRate") {
-      let numVal = +value;
-      if (numVal < 0) numVal = 1;
-      setProjectData((prevData) => ({
-        ...prevData,
-        [name]: numVal,
-      }));
-      return;
-    }
-    if (name === "currencyType" && value === "rupees") {
-      setProjectData((prevData) => ({
-        ...prevData,
-        currencyType: "rupees",
-        conversionRate: 1,
-      }));
-      setCurrencyType(value);
-    } else if (name === "currencyType" && value === "dollars") {
-      setProjectData((prevData) => ({
-        ...prevData,
-        currencyType: "dollars",
-        conversionRate: 83.25,
-      }));
-      setCurrencyType(value);
-    } else if (name === "currencyType" && value === "pounds") {
-      setProjectData((prevData) => ({
-        ...prevData,
-        currencyType: "pounds",
-        conversionRate: 101.35,
-      }));
-      setCurrencyType(value);
-    } else {
-      setProjectData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
-    if (name === "workingPeriodType") {
-      setWorkPeriodType(value);
-    }
-  }
-
-  function areAllRequiredFieldsFilled(obj: any) {
-    if (obj.projectName === "") {
-      setFormError("Project name compulsary*");
-      return false;
-    }
-    if (obj.conversionRate === "") {
-      setProjectData({ ...obj, conversionRate: 1 });
-    }
-    if (obj.clientId.length <= 0 || obj.adminId.length <= 0) {
-      setFormError("ClientId and AdminId compulsary. Refresh and try again !!");
-      return false;
-    }
-    return true;
-  }
-
-  const addProjectMutation = useAddNewProject();
-
-  const handleAddSubmit = (
-    e:
-      | React.FormEvent<HTMLFormElement>
-      | React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
-
-    if (areAllRequiredFieldsFilled(projectData)) {
-      setLoading(true);
-      addProjectMutation.mutate(projectData, {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["projects", clientId]);
-          queryClient.refetchQueries(["projects", clientId]);
-          setLoading(false);
-          handleClose();
-        },
-        onError(error) {
-          setLoading(false);
-          setIncompleteError("Add request error, add again.");
-        },
-      });
-    } else {
-      setIncompleteError("Incomplete fields");
-    }
-  };
-
-  const UpdateProjectMutationHandler = useUpdateProject(
-    projectData._id,
-    projectData.clientId
-  );
-
-  const handleEditSubmit = (
-    e:
-      | React.FormEvent<HTMLFormElement>
-      | React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
-    if (areAllRequiredFieldsFilled(projectData)) {
-      setLoading(true);
-      UpdateProjectMutationHandler.mutate(
-        {
-          projectId: projectData._id!,
-          updatedProjectData: projectData as UpdateProjectDataType,
-        },
-        {
-          onSuccess: () => {
-            queryClient.refetchQueries(["projects", clientId]);
-            setLoading(false);
-            enqueueSnackbar("Project edited successfully.", {
-              variant: "success",
-            });
-
-            handleClose();
-          },
-          onError(error) {
-            setLoading(false);
-            enqueueSnackbar("Error in updating project. Try again! ", {
-              variant: "error",
-            });
-            setIncompleteError("Add request error, add again.");
-          },
-        }
-      );
-    } else {
-      setIncompleteError("Incomplete fields");
-    }
-  };
-
-  React.useEffect(() => {
-    if (forAddProject && !toEdit) {
-      setProjectData({
-        projectName: "",
-        projectManager: "",
-        rate: 0,
-        projectPeriod: 0,
-        workingPeriod: "00:00",
-        workingPeriodType: "hours",
-        currencyType: "rupees",
-        conversionRate: 1,
-        paymentStatus: false,
-        adminId: adminId ? adminId : "",
-        clientId: clientId ? clientId : "",
-      });
-    }
-    if (!forAddProject && toEdit && projectToEdit) {
-      let newProjectToEdit = { ...projectToEdit };
-      delete newProjectToEdit.amount;
-      setProjectData(newProjectToEdit);
-    }
-  }, [toEdit, forAddProject, projectToEdit, clientId, adminId]);
-
-  React.useEffect(() => {
-    if (clientId) {
-      setProjectData({ ...projectData, clientId });
-    }
-    if (adminId) {
-      setProjectData({ ...projectData, adminId });
-    }
-  }, [clientId, adminId]);
-
-  const handleAddProjectClick = () => {
-    handleToAddClick();
-    // handleClickOpen();
-  };
-  const handleEditProjectClick = () => {
-    handleToEditClick();
-    // handleClickOpen();
-  };
   const handleBackButtonClick = () => {
     navigate(-1);
   };
@@ -343,7 +143,6 @@ export default function CompoAddProject({
               cursor: "pointer",
             }}
             onClick={() => {
-              handleEditProjectClick();
               navigate("/edit-project");
             }}
           >

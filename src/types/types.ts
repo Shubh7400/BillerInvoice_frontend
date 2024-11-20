@@ -40,11 +40,8 @@ export interface ClientType {
 export interface ProjectType {
   _id?: string;
   projectName: string;
-  projectManager?: string;
   rate?: number | null;
-  projectPeriod?: number;
-  workingPeriod?: string | null;
-  workingPeriodType: "hours" | "days";
+  workingPeriodType: "hours" | "days" | "fixed";
   currencyType: "rupees" | "dollars" | "pounds";
   conversionRate: number;
   paymentStatus: boolean;
