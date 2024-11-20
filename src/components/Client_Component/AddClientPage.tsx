@@ -34,7 +34,6 @@ import "../../styles/addClient.css";
 import { Link } from "react-router-dom";
 import { Outlet, useNavigate } from "react-router-dom";
 import { IoChevronBackSharp } from "react-icons/io5";
-import SelectClient from "../Home_Components/ClientSection/SelectClient";
 
 export default function AddClientPage({
   forEditClient,
@@ -60,11 +59,9 @@ export default function AddClientPage({
   const [selectedCity, setSelectedCity] = useState<CityInfoType>(
     {} as CityInfoType
   );
-
   const [incompleteError, setIncompleteError] = useState("");
   const [formError, setFormError] = useState("");
   const navigate = useNavigate();
-  const navigateBack = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -87,7 +84,7 @@ export default function AddClientPage({
       city: selectedCountry.name,
       state: selectedState.name,
       country: selectedCity.name,
-      postalCode: "",
+      postalCode: "N/A",
     },
     user: "",
   });
@@ -173,11 +170,12 @@ export default function AddClientPage({
     }));
   }, [selectedCountry, selectedState, selectedCity]);
 
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
+  
     if (name === "street") {
       // Update nested field for address.street
       setClientData((prevData) => ({
@@ -232,10 +230,11 @@ export default function AddClientPage({
         [name]: value,
       });
     }
-
+  
     setFormError("");
     setIncompleteError("");
   };
+  
 
   const handleAddEmail = () => {
     if (inputEmail && emailRegex.test(inputEmail)) {
@@ -495,6 +494,8 @@ export default function AddClientPage({
             color: "#fff ",
             marginTop: "10px",
           }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           {forEditClient ? "Edit Client" : "Add Client"}
         </Button>

@@ -467,11 +467,11 @@ const ProjectTable = ({
                       >
                         Project
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Manager
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
@@ -482,21 +482,21 @@ const ProjectTable = ({
                       >
                         Rate
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Working Period
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Conversion Rate
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Amount
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
@@ -566,9 +566,9 @@ const ProjectTable = ({
                           ) : null}
                           {project.conversionRate}
                         </TableCell>
-                        <TableCell style={{ padding: "0" }}>
+                        {/* <TableCell style={{ padding: "0" }}>
                           &#x20B9; {project.amount ? project.amount : 0}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell style={{ padding: "0" }}>
                           <div className="flex">
                             <div className={Styles.editButton}>

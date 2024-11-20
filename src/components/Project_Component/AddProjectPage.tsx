@@ -151,7 +151,7 @@ function AddProjectPage({
     const value = e.target.value;
     setCurrencyType(value);
     if (value === "rupees") {
-      setConversionRate(1); // Default for INR
+      setConversionRate(1); 
     }
   };
   const navigate = useNavigate();
