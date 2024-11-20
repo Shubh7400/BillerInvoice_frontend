@@ -365,13 +365,7 @@ const ProjectTable = ({
                           {project.workingPeriod}({project.workingPeriodType})
                         </TableCell> */}
                         <TableCell style={{ padding: "0" }}>
-                          {project.currencyType === "rupees" ? (
-                            <span>&#x20B9; </span>
-                          ) : project.currencyType === "dollars" ? (
-                            <span>$ </span>
-                          ) : project.currencyType === "pounds" ? (
-                            <span>&#163; </span>
-                          ) : null}
+                          <span>&#x20B9; </span>
                           {project.conversionRate}
                         </TableCell>
                         {/* <TableCell style={{ padding: "0" }}>
@@ -557,13 +551,7 @@ const ProjectTable = ({
                           ({project.workingPeriodType})
                         </TableCell>
                         <TableCell style={{ padding: "0" }}>
-                          {project.currencyType === "rupees" ? (
-                            <span>&#x20B9; </span>
-                          ) : project.currencyType === "dollars" ? (
-                            <span>$ </span>
-                          ) : project.currencyType === "pounds" ? (
-                            <span>&#163; </span>
-                          ) : null}
+                          <span>&#x20B9; </span>
                           {project.conversionRate}
                         </TableCell>
                         {/* <TableCell style={{ padding: "0" }}>
@@ -620,7 +608,7 @@ const ProjectTable = ({
               right: "60px",
             }}
           >
-            View Invoice
+            View Invoice...
           </Button>
         ) : null}
       </div>
