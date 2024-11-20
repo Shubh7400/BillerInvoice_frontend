@@ -2,7 +2,7 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Chip, Box } from "@mui/material";
-import { useState,useCallback } from "react";
+import { useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineClose } from "react-icons/md";
 import {
@@ -197,7 +197,7 @@ export default function AddClientPage({
       if (!postalCodeRegex.test(value)) {
         setPostalCodeError("Invalid Postal Code");
       }
-      else{
+      else {
         setPostalCodeError("");
       }
       setClientData((prevData) => ({
@@ -209,7 +209,7 @@ export default function AddClientPage({
       }));
     }
     else if (name === "pancardNo") {
-      const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/ || "";
+      const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
       if (value === "" || panRegex.test(value)) {
         setPanNumberError(""); // No error if value is empty or matches regex
       } else {
@@ -225,7 +225,7 @@ export default function AddClientPage({
       if (!gstRegex.test(value)) {
         setGstNumberError("Invalid GST Number Please Check the format.");
       }
-      else{
+      else {
         setGstNumberError("");
       }
       setClientData((prevData) => ({
@@ -288,17 +288,22 @@ export default function AddClientPage({
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
+      // Skip the pancardNo field
+      if (key === "pancardNo") {
+        continue;
+      }
+
       if (typeof obj[key] === "object" && obj[key] !== null) {
         if (Array.isArray(obj[key])) {
           if (key === "email" && obj[key].length === 0) {
-            return false; 
+            return false;
           }
         } else if (!areAllFieldsFilled(obj[key])) {
           return false;
         }
       } else if (obj[key] === "" || obj[key] === undefined) {
         return false;
-      } 
+      }
     }
     return true;
   }
@@ -311,7 +316,7 @@ export default function AddClientPage({
     }
     return true;
   }
-  
+
 
   const handleAddClientSubmit = () => {
     if (areAllFieldsFilled(clientData) && areEntriesValid(clientData) && !panNumberError && !postalCodeError && !gstNumberError) {
@@ -341,17 +346,17 @@ export default function AddClientPage({
   return (
     <div>
       <div className="flex gap-3 items-center mb-5">
-      <button
+        <button
           onClick={() => navigate(-1)} // Use navigate(-1) to go back
           className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
-          
+
         >
           <IoChevronBackSharp />
         </button>
         <Typography variant="h5">
           {forEditClient ? "Edit Client" : "Add Client"}
         </Typography>
-        
+
       </div>
       {formError && <Alert severity="error">{formError}</Alert>}
       {incompleteError && <Alert severity="error">{incompleteError}</Alert>}
@@ -367,45 +372,45 @@ export default function AddClientPage({
         required
       />
       <div className="flex flex-col gap-3 mt-3">
-        
 
-          {/* Render only if there are emails in the array */}
-          
 
-          <TextField
-            fullWidth
-            label="Enter email"
-            value={inputEmail}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            placeholder="Add email and press Enter"
-            aria-label="Enter email address"
-            InputProps={{
-              style: {
-                marginTop: clientData.email.length > 0 ? 16 : 0,
-                textAlign: "center",
-              },
-            }}
-          />
+        {/* Render only if there are emails in the array */}
 
-          {/* Error message below the input field */}
-          {emailError && (
-            <div style={{ color: "red", marginTop: 8 }}>{emailError}</div>
-          )}
-          {clientData.email.length > 0 && (
-            <Box display="flex" flexWrap="wrap" gap={1} >
-              {clientData.email.map((email, index) => (
-                <Chip
-                  key={index}
-                  label={email}
-                  onDelete={() => handleRemoveEmail(index)}
-                  deleteIcon={<MdOutlineClose />}
-                  aria-label={`Remove ${email}`}
-                />
-              ))}
-            </Box>
-          )}
-        
+
+        <TextField
+          fullWidth
+          label="Enter email"
+          value={inputEmail}
+          onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
+          placeholder="Add email and press Enter"
+          aria-label="Enter email address"
+          InputProps={{
+            style: {
+              marginTop: clientData.email.length > 0 ? 16 : 0,
+              textAlign: "center",
+            },
+          }}
+        />
+
+        {/* Error message below the input field */}
+        {emailError && (
+          <div style={{ color: "red", marginTop: 8 }}>{emailError}</div>
+        )}
+        {clientData.email.length > 0 && (
+          <Box display="flex" flexWrap="wrap" gap={1} >
+            {clientData.email.map((email, index) => (
+              <Chip
+                key={index}
+                label={email}
+                onDelete={() => handleRemoveEmail(index)}
+                deleteIcon={<MdOutlineClose />}
+                aria-label={`Remove ${email}`}
+              />
+            ))}
+          </Box>
+        )}
+
       </div>
       <div className="flex gap-5 mt-3">
         <TextField
@@ -471,10 +476,10 @@ export default function AddClientPage({
 
       <div className="flex justify-end">
         <Button
-          onClick={()=>{
+          onClick={() => {
             (forEditClient ? handleEditClientSubmit : handleAddClientSubmit)();
-            if(!panNumberError && !postalCodeError && !gstNumberError && !formError && areAllFieldsFilled(clientData) &&
-            areEntriesValid(clientData))  {
+            if (!panNumberError && !postalCodeError && !gstNumberError && !formError && areAllFieldsFilled(clientData) &&
+              areEntriesValid(clientData)) {
               setTimeout(() => {
                 navigate(-1);
               }, 600);
