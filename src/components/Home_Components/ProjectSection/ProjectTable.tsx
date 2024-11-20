@@ -196,16 +196,15 @@ const ProjectTable = ({
 
   const handleConfirmSelection = (selectedProject?: ProjectType) => {
     if (projectDetails) {
-      if(projectTableforClient){
-      projectDetails.forEach((project: ProjectType) => {
-        dispatch(addProjectForInvoiceAction(project));
-      });
-    }
-    else {
-      if(selectedProject){
-      dispatch(addProjectForInvoiceAction(selectedProject));
+      if (projectTableforClient) {
+        projectDetails.forEach((project: ProjectType) => {
+          dispatch(addProjectForInvoiceAction(project));
+        });
+      } else {
+        if (selectedProject) {
+          dispatch(addProjectForInvoiceAction(selectedProject));
+        }
       }
-    }
       navigate("/client/invoices");
     }
   };
@@ -350,19 +349,6 @@ const ProjectTable = ({
                         </TableCell>
                         <TableCell style={{ padding: "0" }}>
                           {project.projectName}
-                        </TableCell>
-                        <TableCell style={{ padding: "0" }}>
-                          {project.projectManager}
-                        </TableCell>
-                        <TableCell style={{ padding: "0" }}>
-                          {project.projectPeriod ? (
-                            <>
-                              {project.projectPeriod} (
-                              {project.workingPeriodType})
-                            </>
-                          ) : (
-                            "Hour based project"
-                          )}
                         </TableCell>
                         <TableCell style={{ padding: "0" }}>
                           {project.rate}(
@@ -556,19 +542,6 @@ const ProjectTable = ({
                         <TableCell style={{ padding: "0" }}>
                           {project.projectName}
                         </TableCell>
-                        {/* <TableCell style={{ padding: "0" }}>
-                          {project.projectManager}
-                        </TableCell> */}
-                        <TableCell style={{ padding: "0" }}>
-                          {project.projectPeriod ? (
-                            <>
-                              {project.projectPeriod} (
-                              {project.workingPeriodType})
-                            </>
-                          ) : (
-                            "Hour based project"
-                          )}
-                        </TableCell>
                         <TableCell style={{ padding: "0" }}>
                           {project.rate}(
                           {project.currencyType === "rupees" ? (
@@ -580,9 +553,9 @@ const ProjectTable = ({
                           ) : null}
                           /{project.workingPeriodType})
                         </TableCell>
-                        {/* <TableCell style={{ padding: "0" }}>
-                          {project.workingPeriod}({project.workingPeriodType})
-                        </TableCell> */}
+                        <TableCell style={{ padding: "0" }}>
+                          ({project.workingPeriodType})
+                        </TableCell>
                         <TableCell style={{ padding: "0" }}>
                           {project.currencyType === "rupees" ? (
                             <span>&#x20B9; </span>

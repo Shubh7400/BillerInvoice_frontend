@@ -2,7 +2,7 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Chip, Box } from "@mui/material";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineClose } from "react-icons/md";
 import {
@@ -92,6 +92,10 @@ export default function AddClientPage({
   const [inputEmail, setInputEmail] = useState("");
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const [emailError, setEmailError] = useState("");
+  const [postalCodeError, setPostalCodeError] = useState("");
+  const [gstNumberError, setGstNumberError] = useState("");
+  const [panNumberError, setPanNumberError] = useState<string | null>(null);
+  // console.log("This is client data : ", clientData);
 
   React.useEffect(() => {
     if (editClientState.loading === "succeeded" && controlEditLoading) {
@@ -181,6 +185,44 @@ export default function AddClientPage({
           street: value,
         },
       }));
+    } else if (name === "postalCode") {
+      // Update nested field for address.street
+      const postalCodeRegex = /^[1-9][0-9]{5}$/; // 6-digit number
+      if (!postalCodeRegex.test(value)) {
+        setPostalCodeError("Invalid Postal Code");
+      } else {
+        setPostalCodeError("");
+      }
+      setClientData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData.address,
+          postalCode: value,
+        },
+      }));
+    } else if (name === "pancardNo") {
+      const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/ || "";
+      if (value === "" || panRegex.test(value)) {
+        setPanNumberError(null); // No error if value is empty or matches regex
+      } else {
+        setPanNumberError("Invalid PAN Number");
+      }
+      setClientData((prevData) => ({
+        ...prevData,
+        pancardNo: value,
+      }));
+    } else if (name === "gistin") {
+      const gstRegex =
+        /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+      if (!gstRegex.test(value)) {
+        setGstNumberError("Invalid GST Number Please Check the format.");
+      } else {
+        setGstNumberError("");
+      }
+      setClientData((prevData) => ({
+        ...prevData,
+        gistin: value,
+      }));
     } else {
       // Handle other fields in clientData
       setClientData({
@@ -240,14 +282,14 @@ export default function AddClientPage({
       if (typeof obj[key] === "object" && obj[key] !== null) {
         if (Array.isArray(obj[key])) {
           if (key === "email" && obj[key].length === 0) {
-            return false; 
+            return false;
           }
         } else if (!areAllFieldsFilled(obj[key])) {
           return false;
         }
       } else if (obj[key] === "" || obj[key] === undefined) {
         return false;
-      } 
+      }
     }
     return true;
   }
@@ -262,7 +304,14 @@ export default function AddClientPage({
   }
 
   const handleAddClientSubmit = () => {
-    if (areAllFieldsFilled(clientData) && areEntriesValid(clientData)) {
+    console.log(panNumberError, " <<<<<");
+    if (
+      areAllFieldsFilled(clientData) &&
+      areEntriesValid(clientData) &&
+      !panNumberError &&
+      !postalCodeError &&
+      !gstNumberError
+    ) {
       dispatch(addNewClientAction(clientData));
       setAddClientLoadingController(true);
     } else {
@@ -274,6 +323,9 @@ export default function AddClientPage({
     if (
       areAllFieldsFilled(clientData) &&
       areEntriesValid(clientData) &&
+      !panNumberError &&
+      !postalCodeError &&
+      !gstNumberError &&
       clientToEdit
     ) {
       const clientId = clientToEdit._id!;
@@ -288,17 +340,15 @@ export default function AddClientPage({
   return (
     <div>
       <div className="flex gap-3 items-center mb-5">
-      <button
+        <button
           onClick={() => navigate(-1)} // Use navigate(-1) to go back
           className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
-          
         >
           <IoChevronBackSharp />
         </button>
         <Typography variant="h5">
           {forEditClient ? "Edit Client" : "Add Client"}
         </Typography>
-        
       </div>
       {formError && <Alert severity="error">{formError}</Alert>}
       {incompleteError && <Alert severity="error">{incompleteError}</Alert>}
@@ -314,45 +364,41 @@ export default function AddClientPage({
         required
       />
       <div className="flex flex-col gap-3 mt-3">
-        
+        {/* Render only if there are emails in the array */}
 
-          {/* Render only if there are emails in the array */}
-          
+        <TextField
+          fullWidth
+          label="Enter email"
+          value={inputEmail}
+          onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
+          placeholder="Add email and press Enter"
+          aria-label="Enter email address"
+          InputProps={{
+            style: {
+              marginTop: clientData.email.length > 0 ? 16 : 0,
+              textAlign: "center",
+            },
+          }}
+        />
 
-          <TextField
-            fullWidth
-            label="Enter email"
-            value={inputEmail}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            placeholder="Add email and press Enter"
-            aria-label="Enter email address"
-            InputProps={{
-              style: {
-                // marginTop: clientData.email.length > 0 ? 16 : 0,
-                textAlign: "center", 
-              },
-            }}
-          />
-
-          {/* Error message below the input field */}
-          {emailError && (
-            <div style={{ color: "red", marginTop: 8 }}>{emailError}</div>
-          )}
-          {clientData.email.length > 0 && (
-            <Box display="flex" flexWrap="wrap" gap={1} >
-              {clientData.email.map((email, index) => (
-                <Chip
-                  key={index}
-                  label={email}
-                  onDelete={() => handleRemoveEmail(index)}
-                  deleteIcon={<MdOutlineClose />}
-                  aria-label={`Remove ${email}`}
-                />
-              ))}
-            </Box>
-          )}
-        
+        {/* Error message below the input field */}
+        {emailError && (
+          <div style={{ color: "red", marginTop: 8 }}>{emailError}</div>
+        )}
+        {clientData.email.length > 0 && (
+          <Box display="flex" flexWrap="wrap" gap={1}>
+            {clientData.email.map((email, index) => (
+              <Chip
+                key={index}
+                label={email}
+                onDelete={() => handleRemoveEmail(index)}
+                deleteIcon={<MdOutlineClose />}
+                aria-label={`Remove ${email}`}
+              />
+            ))}
+          </Box>
+        )}
       </div>
       <div className="flex gap-5 mt-3">
         <TextField
@@ -361,6 +407,10 @@ export default function AddClientPage({
           name="gistin"
           value={clientData.gistin}
           onChange={handleChange}
+          error={!!gstNumberError && clientData.gistin !== ""}
+          helperText={
+            gstNumberError && clientData.gistin !== "" ? gstNumberError : ""
+          }
           required
         />
         <TextField
@@ -369,6 +419,10 @@ export default function AddClientPage({
           name="pancardNo"
           value={clientData.pancardNo}
           onChange={handleChange}
+          error={!!panNumberError && clientData.pancardNo !== ""}
+          helperText={
+            panNumberError && clientData.pancardNo !== "" ? panNumberError : ""
+          }
         />
       </div>
       <div className="flex gap-5 mt-3">
@@ -382,24 +436,56 @@ export default function AddClientPage({
         />
       </div>
 
-      <SelectCountryStateCity
-        selectedCountry={selectedCountry}
-        selectedState={selectedState}
-        selectedCity={selectedCity}
-        setSelectedCountry={setSelectedCountry}
-        setSelectedState={setSelectedState}
-        setSelectedCity={setSelectedCity}
-        forEditClient={forEditClient}
-        countryString={clientData.address.country}
-        stateString={clientData.address.state}
-        cityString={clientData.address.city}
-      />
-    
+      {clientData && (
+        <SelectCountryStateCity
+          selectedCountry={selectedCountry}
+          selectedState={selectedState}
+          selectedCity={selectedCity}
+          setSelectedCountry={setSelectedCountry}
+          setSelectedState={setSelectedState}
+          setSelectedCity={setSelectedCity}
+          forEditClient={forEditClient}
+          countryString={clientData?.address.country}
+          stateString={clientData.address.state}
+          cityString={clientToEdit?.address?.city}
+          // send pincode as props
+        />
+      )}
+
+      <div className="flex gap-5 mt-3">
+        <TextField
+          className="w-[100%]"
+          label="postalCode"
+          fullWidth
+          name="postalCode"
+          value={clientData.address.postalCode}
+          onChange={handleChange}
+          error={!!postalCodeError && clientData.address.postalCode !== ""}
+          helperText={
+            postalCodeError && clientData.address.postalCode !== ""
+              ? postalCodeError
+              : ""
+          }
+        />
+      </div>
+
       <div className="flex justify-end">
         <Button
-          onClick={
-            forEditClient ? handleEditClientSubmit : handleAddClientSubmit
-          }
+          onClick={() => {
+            (forEditClient ? handleEditClientSubmit : handleAddClientSubmit)();
+            if (
+              !panNumberError &&
+              !postalCodeError &&
+              !gstNumberError &&
+              !formError &&
+              areAllFieldsFilled(clientData) &&
+              areEntriesValid(clientData)
+            ) {
+              setTimeout(() => {
+                navigate(-1);
+              }, 600);
+            }
+          }}
           className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
           style={{
             backgroundColor: isHovered ? "#4a6180" : "#d9a990",

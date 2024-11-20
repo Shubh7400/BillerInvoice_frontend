@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
-import { Autocomplete} from '@mui/material';
+import { Autocomplete } from "@mui/material";
 import { Alert, LinearProgress, MenuItem, useTheme } from "@mui/material";
 import {
   ClientType,
@@ -24,12 +24,14 @@ import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { IoChevronBackSharp } from "react-icons/io5";
-import { useSelector } from "react-redux";
-import { RootState } from "../../states/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../states/redux/store";
 import Select from "react-select";
 import { InputActionMeta } from "react-select";
-import axios from "axios"; 
-
+import axios from "axios";
+import CompoLoadingProjects from "../Home_Components/ProjectSection/CompoLoadingProjects";
+import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
+import { log } from "node:console";
 function AddProjectPage({
   adminId,
   clientId,
@@ -49,10 +51,17 @@ function AddProjectPage({
   const [selectClient, setSelectClient] = useState<ClientType>();
 
   const {
+    loading: adminLoding,
+    data: adminData,
+    error: adminError,
+  } = useSelector((state: RootState) => state.adminState);
+
+  const {
     loading: clientsLoading,
     data: clients,
     error: clientsError,
   } = useSelector((state: RootState) => state.allClientsState);
+  const dispatch = useDispatch<AppDispatch>();
 
   const clientsArr: ClientType[] = clients.map((client) => ({
     _id: client._id,
@@ -98,10 +107,7 @@ function AddProjectPage({
   const [rateError, setRateError] = useState("");
   const [projectData, setProjectData] = useState<ProjectType>({
     projectName: "",
-    projectManager: "",
     rate: 0,
-    projectPeriod: 0,
-    workingPeriod: "00:00",
     workingPeriodType: "hours",
     currencyType: "rupees",
     conversionRate: 1,
@@ -120,8 +126,18 @@ function AddProjectPage({
       const rates = response.data.rates;
       if (currencyType === "dollars") {
         setConversionRate(rates.INR); // INR equivalent of 1 USD
+        setProjectData((prevData) => ({
+          ...prevData,
+          currencyType: "dollars",
+          conversionRate: rates.INR,
+        }));
       } else if (currencyType === "pounds") {
         setConversionRate(rates.INR / rates.GBP); // INR equivalent of 1 GBP
+        setProjectData((prevData) => ({
+          ...prevData,
+          currencyType: "pounds",
+          conversionRate: rates.INR / rates.GBP,
+        }));
       }
     } catch (error) {
       setRateError("Failed to fetch exchange rates. Try again.");
@@ -140,17 +156,25 @@ function AddProjectPage({
   };
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    if (adminId && adminLoding === "idle") {
+      let timer = setTimeout(() => {
+        dispatch(getAllClientsByAdminIdAction(adminId));
+        return () => {
+          clearTimeout(timer);
+        };
+      }, 0);
+    }
+  }, [dispatch, adminId, adminLoding]);
+
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void {
     let { name, value } = e.target;
     setFormError("");
     setIncompleteError("");
-    if (
-      name === "workingPeriod" &&
-      workPeriodType === "days" &&
-      parseInt(value) < 0
-    ) {
+
+    if (workPeriodType === "days" && parseInt(value) < 0) {
       value = "0";
     }
     if (name === "rate" || name === "conversionRate") {
@@ -173,14 +197,14 @@ function AddProjectPage({
       setProjectData((prevData) => ({
         ...prevData,
         currencyType: "dollars",
-        conversionRate: 83.25,
+        conversionRate: conversionRate,
       }));
       setCurrencyType(value);
     } else if (name === "currencyType" && value === "pounds") {
       setProjectData((prevData) => ({
         ...prevData,
         currencyType: "pounds",
-        conversionRate: 101.35,
+        conversionRate: conversionRate,
       }));
       setCurrencyType(value);
     } else {
@@ -195,6 +219,7 @@ function AddProjectPage({
   }
 
   function areAllRequiredFieldsFilled(obj: any) {
+    setFormError("");
     if (obj.projectName === "") {
       setFormError("Project name compulsary*");
       return false;
@@ -203,7 +228,7 @@ function AddProjectPage({
       setProjectData({ ...obj, conversionRate: 1 });
     }
     if (obj.clientId.length <= 0 || obj.adminId.length <= 0) {
-      setFormError("ClientId and AdminId compulsary. Refresh and try again !!");
+      setFormError("please select client !!");
       return false;
     }
     return true;
@@ -283,10 +308,7 @@ function AddProjectPage({
     if (forAddProject && toEdit) {
       setProjectData({
         projectName: "",
-        projectManager: "",
         rate: 0,
-        projectPeriod: 0,
-        workingPeriod: "00:00",
         workingPeriodType: "hours",
         currencyType: "rupees",
         conversionRate: 1,
@@ -311,31 +333,20 @@ function AddProjectPage({
     }
   }, [clientId, adminId]);
 
-  const handleAddProjectClick = () => {
-    handleToAddClick();
-    handleClickOpen();
-  };
-  const handleEditProjectClick = () => {
-    handleToEditClick();
-    handleClickOpen();
-  };
-
   return (
     <>
       <div>
         {/* <Dialog open={open} onClose={handleClose}> */}
         <div className="flex gap-3 items-center mb-4 ">
-        <button
-          onClick={() => navigate(-1)} // Use navigate(-1) to go back
-          className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
-          
-        >
+          <button
+            onClick={() => navigate(-1)} // Use navigate(-1) to go back
+            className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
+          >
             <IoChevronBackSharp />
           </button>
           <DialogTitle style={{ padding: "0" }}>
             {forAddProject ? "Add Project" : "Edit Project"}
           </DialogTitle>
-          
         </div>
         {incompleteError.length > 0 ? (
           <Alert severity="error"> {incompleteError}</Alert>
@@ -349,40 +360,52 @@ function AddProjectPage({
             <div>
               {!clientAddProject ? (
                 <div>
-                <label className="text-xs py-1 opacity-60">Select Client</label>
-                <Autocomplete
-                  options={clientsArr}
-                  getOptionLabel={(option) => option.clientName}
-                  value={selectClient?.clientName ? selectClient : null}
-                  onChange={(event, newValue) => {
-                    if (newValue) {
-                      setSelectClient(newValue);
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField 
-                      {...params} 
-                      variant="outlined" 
-                      size="small" 
-                      placeholder="Select Client" 
-                    />
-                  )}
-                />
-              </div>
-              ) : (
-                <div>
-                  <label className="text-xs py-1 opacity-60">Selected Client</label>
+                  <label className="text-xs py-1 opacity-60">
+                    Select Client
+                  </label>
                   <Autocomplete
                     options={clientsArr}
                     getOptionLabel={(option) => option.clientName}
-                    value={clientsArr.find((client) => client._id === clientId) || null}
+                    value={selectClient?.clientName ? selectClient : null}
+                    onChange={(event, newValue) => {
+                      if (newValue && newValue._id) {
+                        setFormError("");
+                        setSelectClient(newValue);
+                        setProjectData({
+                          ...projectData,
+                          clientId: newValue._id,
+                        });
+                      }
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        size="small"
+                        placeholder="Select Client"
+                      />
+                    )}
+                  />
+                </div>
+              ) : (
+                <div>
+                  <label className="text-xs py-1 opacity-60">
+                    Selected Client
+                  </label>
+                  <Autocomplete
+                    options={clientsArr}
+                    getOptionLabel={(option) => option.clientName}
+                    value={
+                      clientsArr.find((client) => client._id === clientId) ||
+                      null
+                    }
                     disabled
                     renderInput={(params) => (
-                      <TextField 
-                        {...params} 
-                        variant="outlined" 
-                        size="small" 
-                        placeholder="Selected Client" 
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        size="small"
+                        placeholder="Selected Client"
                       />
                     )}
                   />
@@ -506,38 +529,40 @@ function AddProjectPage({
 
             {currencyType !== "rupees" ? (
               <>
-                 <div>
-          
-        </div>
+                <div></div>
 
-        {/* Display Conversion Rate for Dollar and Pound */}
-        {currencyType !== "rupees" && (
-              <div className="relative mt-3">
-                <TextField
-                  label="Conversion Rate"
-                  type="number"
-                  value={conversionRate}
-                  onChange={(e) => setConversionRate(Number(e.target.value))}
-                  fullWidth
-                />
+                {/* Display Conversion Rate for Dollar and Pound */}
+                {currencyType !== "rupees" && (
+                  <div className="relative mt-3">
+                    <TextField
+                      label="Conversion Rate"
+                      type="number"
+                      value={conversionRate}
+                      name="conversionRate"
+                      onChange={(e) => {
+                        setConversionRate(Number(e.target.value));
+                        handleChange(e);
+                      }}
+                      fullWidth
+                    />
 
-                <Button
-                  onClick={fetchExchangeRate}
-                  disabled={loadingRate}
-                  style={{
-                    marginTop: "10px",
-                    backgroundColor: "#d9a990",
-                    color: "#fff",
-                    position:"absolute",
-                    right: "10px",
-                    top: "0px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {loadingRate ? "Fetching Rate..." : "Get Current Rate"}
-                </Button>
-              </div>
-            )}
+                    <Button
+                      onClick={fetchExchangeRate}
+                      disabled={loadingRate}
+                      style={{
+                        marginTop: "10px",
+                        backgroundColor: "#d9a990",
+                        color: "#fff",
+                        position: "absolute",
+                        right: "10px",
+                        top: "0px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {loadingRate ? "Fetching Rate..." : "Get Current Rate"}
+                    </Button>
+                  </div>
+                )}
               </>
             ) : null}
           </form>
