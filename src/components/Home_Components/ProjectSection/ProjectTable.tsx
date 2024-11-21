@@ -54,6 +54,7 @@ const ProjectTable = ({
   );
   const clientObj: ClientType = selectedClientState.data;
 
+
   const [ProjectData, setProjectData] = useState<ProjectType[]>([]);
   const [searchProjectName, setSearchProjectName] = useState("");
   const { isLoading, data, isError } = useFetchAllProjectsByAdminId(
@@ -76,6 +77,7 @@ const ProjectTable = ({
     } else if (data) {
       setProjectData(data);
     }
+
     return () => {
       setProjectData([]);
     };
@@ -101,8 +103,10 @@ const ProjectTable = ({
     (state: RootState) => state.projectsForInvoiceState
   );
 
+  console.log("from project table :", ProjectData);
   useEffect(() => {
     if (projectsForInvoice.length !== 0) {
+
       setProjectId(projectsForInvoice.map((project) => project._id));
       setProjectDetails(projectsForInvoice);
     }
@@ -114,8 +118,13 @@ const ProjectTable = ({
         enqueueSnackbar("Project deleted successfully.", {
           variant: "success",
         });
+        // Update the project list locally
+        setProjectData((prevProjects) =>
+          prevProjects.filter((project) => project._id !== projectId)
+        );
         queryClient.refetchQueries(["projects", selectedClientState.data._id]);
       },
+
       onError: () => {
         enqueueSnackbar("Error in deleting project. Try again!", {
           variant: "error",
@@ -221,8 +230,8 @@ const ProjectTable = ({
           searchProjectName={searchProjectName}
         />
         {clientObj &&
-        selectedClientState.loading !== "idle" &&
-        projectTableforClient ? (
+          selectedClientState.loading !== "idle" &&
+          projectTableforClient ? (
           <ClientInfoSection />
         ) : null}
       </div>
@@ -242,9 +251,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                (clientProjectTableData &&
-                  (clientProjectTableData === "" ||
-                    clientProjectTableData.length <= 0)) ? (
+                  (clientProjectTableData &&
+                    (clientProjectTableData === "" ||
+                      clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -309,39 +318,13 @@ const ProjectTable = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {ProjectData.filter((project) => {
+                    {ProjectData && ProjectData?.filter((project) => {
                       if (searchProjectName.length <= 0) return true;
                       return project.projectName
                         .toLowerCase()
                         .startsWith(searchProjectName.toLowerCase());
                     }).map((project: ProjectType, index: number) => (
                       <TableRow key={project._id} className="p-3">
-                        {/* <TableCell
-                    style={{
-                      paddingTop: "0",
-                      paddingBottom: "0",
-                      paddingLeft: "20px",
-                    }}
-                  >
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={projectId.includes(project._id)}
-                          // checked={allChecked ? allChecked : false}
-                          sx={{
-                            color: materialTheme.palette.primary.main,
-                            "&.Mui-checked": {
-                              color: materialTheme.palette.primary.main,
-                            },
-                          }}
-                          onChange={(e) =>
-                            handleSingleCheckboxChange(e, index, project)
-                          }
-                        />
-                      }
-                      label=""
-                    />
-                  </TableCell> */}
                         <TableCell
                           sx={{ paddingX: "10px", textAlign: "center" }}
                         >
@@ -423,9 +406,9 @@ const ProjectTable = ({
         <>
           {/* Project Table for Client  */}
           {clientProjectTableError ||
-          clientProjectTableLoading ||
-          clientProjectTableData === "" ||
-          clientProjectTableData.length <= 0 ? (
+            clientProjectTableLoading ||
+            clientProjectTableData === "" ||
+            clientProjectTableData.length <= 0 ? (
             <div>
               <div></div>
               <div className="text-xl font-bold text-center p-4 ">
@@ -438,9 +421,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                (clientProjectTableData &&
-                  (clientProjectTableData === "" ||
-                    clientProjectTableData.length <= 0)) ? (
+                  (clientProjectTableData &&
+                    (clientProjectTableData === "" ||
+                      clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -588,7 +571,7 @@ const ProjectTable = ({
           )}
         </>
       )}
-      <div>
+      {ProjectData && <div>
         {!(
           clientProjectTableError ||
           clientProjectTableLoading ||
@@ -614,7 +597,7 @@ const ProjectTable = ({
             View Invoice...
           </Button>
         ) : null}
-      </div>
+      </div>}
     </section>
   );
 };

@@ -200,8 +200,9 @@ export default function AddClientPage({
           postalCode: value,
         },
       }));
-    } else if (name === "pancardNo") {
-      const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/ || "";
+    }
+    else if (name === "pancardNo") {
+      const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
       if (value === "" || panRegex.test(value)) {
         setPanNumberError(null); // No error if value is empty or matches regex
       } else {
@@ -279,6 +280,11 @@ export default function AddClientPage({
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
+      // Skip the pancardNo field
+      if (key === "pancardNo") {
+        continue;
+      }
+
       if (typeof obj[key] === "object" && obj[key] !== null) {
         if (Array.isArray(obj[key])) {
           if (key === "email" && obj[key].length === 0) {

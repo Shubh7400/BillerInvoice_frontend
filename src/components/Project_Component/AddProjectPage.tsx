@@ -241,6 +241,7 @@ function AddProjectPage({
       | React.FormEvent<HTMLFormElement>
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
+    console.log("Project Data: ",projectData);
     e.preventDefault();
 
     if (areAllRequiredFieldsFilled(projectData)) {
@@ -251,15 +252,31 @@ function AddProjectPage({
           queryClient.refetchQueries(["projects", clientId]);
           setLoading(false);
           handleClose();
+        //  Success message after adding project
+          enqueueSnackbar("Project added successfully.", {
+            variant: "success",
+          });
         },
+        
         onError(error) {
           setLoading(false);
           setIncompleteError("Add request error, add again.");
+        // Error message if there is a failure
+          enqueueSnackbar("Error in adding project. Try again!", {
+            variant: "error",
+          });
         },
+       
       });
     } else {
       setIncompleteError("Incomplete fields");
     }
+    // if (!formError && !incompleteError  ) {
+    //           setTimeout(() => {
+    //             navigate(-1);
+    //           }, 600);
+    //         }
+    
   };
 
   const UpdateProjectMutationHandler = useUpdateProject(
@@ -339,7 +356,9 @@ function AddProjectPage({
         {/* <Dialog open={open} onClose={handleClose}> */}
         <div className="flex gap-3 items-center mb-4 ">
           <button
-            onClick={() => navigate(-1)} // Use navigate(-1) to go back
+            onClick={() => setTimeout(() => {
+              navigate(-1);
+            }, 600)} // Use navigate(-1) to go back
             className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
           >
             <IoChevronBackSharp />
