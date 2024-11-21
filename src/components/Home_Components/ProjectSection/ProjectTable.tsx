@@ -271,11 +271,11 @@ const ProjectTable = ({
                       >
                         Client Name
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Project Period
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
@@ -349,6 +349,9 @@ const ProjectTable = ({
                         </TableCell>
                         <TableCell style={{ padding: "0" }}>
                           {project.projectName}
+                        </TableCell>
+                        <TableCell style={{ padding: "0" }}>
+                          
                         </TableCell>
                         <TableCell style={{ padding: "0" }}>
                           {project.rate}(
