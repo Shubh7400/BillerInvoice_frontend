@@ -130,9 +130,6 @@ export default function ClientSelectionTable({
                       {/* Display only the first email */}
                     </TableCell>
                     <TableCell sx={{ padding: '0' }}>{client.gistin}</TableCell>
-                    
-                    
-
                     <TableCell sx={{ padding: "0" }}>
                       <div className="flex">
                         <div className={Styles.editButton}>

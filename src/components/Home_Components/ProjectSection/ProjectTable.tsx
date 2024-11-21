@@ -348,13 +348,7 @@ const ProjectTable = ({
                           {project.workingPeriod}({project.workingPeriodType})
                         </TableCell> */}
                         <TableCell style={{ padding: "0" }}>
-                          {project.currencyType === "rupees" ? (
-                            <span>&#x20B9; </span>
-                          ) : project.currencyType === "dollars" ? (
-                            <span>$ </span>
-                          ) : project.currencyType === "pounds" ? (
-                            <span>&#163; </span>
-                          ) : null}
+                          <span>&#x20B9; </span>
                           {project.conversionRate}
                         </TableCell>
                         {/* <TableCell style={{ padding: "0" }}>
@@ -450,11 +444,11 @@ const ProjectTable = ({
                       >
                         Project
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Manager
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
@@ -465,21 +459,21 @@ const ProjectTable = ({
                       >
                         Rate
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Working Period
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Conversion Rate
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Amount
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
@@ -540,18 +534,12 @@ const ProjectTable = ({
                           ({project.workingPeriodType})
                         </TableCell>
                         <TableCell style={{ padding: "0" }}>
-                          {project.currencyType === "rupees" ? (
-                            <span>&#x20B9; </span>
-                          ) : project.currencyType === "dollars" ? (
-                            <span>$ </span>
-                          ) : project.currencyType === "pounds" ? (
-                            <span>&#163; </span>
-                          ) : null}
+                          <span>&#x20B9; </span>
                           {project.conversionRate}
                         </TableCell>
-                        <TableCell style={{ padding: "0" }}>
+                        {/* <TableCell style={{ padding: "0" }}>
                           &#x20B9; {project.amount ? project.amount : 0}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell style={{ padding: "0" }}>
                           <div className="flex">
                             <div className={Styles.editButton}>
@@ -603,7 +591,7 @@ const ProjectTable = ({
               right: "60px",
             }}
           >
-            View Invoice
+            View Invoice...
           </Button>
         ) : null}
       </div>}
