@@ -10,6 +10,9 @@ function ClientInfoSection() {
     const clientObj: ClientType = selectedClientState.data;
     // Assuming the email is an array and we want to show the first one
     const firstEmail = clientObj?.email?.[0];
+    const fullAddress = `${clientObj.address.street}, ${clientObj.address.city}, ${clientObj.address.state}, ${clientObj.address.country} `;
+    
+    
     return (
         <div>
             {clientObj && selectedClientState.loading !== "idle" ? (
@@ -29,8 +32,8 @@ function ClientInfoSection() {
                                         {clientObj.gistin}
                                     </p>
                                     <p className="mb-2">
-                                        <b>Pancard: </b>
-                                        {clientObj.pancardNo}
+                                        <b>address: </b>
+                                        {fullAddress}
                                     </p>
                                 </div>
                                 <div className="text-black opacity-70 flex flex-col justify-start gap-1 ">

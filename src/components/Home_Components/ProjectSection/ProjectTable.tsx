@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Styles from "./ProjectTable.module.css";
 import CompoAddProject from "./CompoAddProject";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../states/redux/store";
+import { AppDispatch, RootState } from "../../../states/redux/store";
 import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
 import {
   useDeleteProject,
@@ -36,6 +36,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useNavigate } from "react-router-dom";
 import ClientInfoSection from "../../Client_Component/ClientInfoSection";
+import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates/allClientSlice";
 
 const ProjectTable = ({
   projectTableforClient,
@@ -43,7 +44,7 @@ const ProjectTable = ({
   projectTableforClient: boolean;
 }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { enqueueSnackbar } = useSnackbar();
   const materialTheme = useTheme();
   const [isHovered, setIsHovered] = useState(false);
@@ -53,7 +54,6 @@ const ProjectTable = ({
     (state: RootState) => state.selectedClientState
   );
   const clientObj: ClientType = selectedClientState.data;
-
 
   const [ProjectData, setProjectData] = useState<ProjectType[]>([]);
   const [searchProjectName, setSearchProjectName] = useState("");
@@ -70,6 +70,33 @@ const ProjectTable = ({
   const DeleteProjectMutationHandler = useDeleteProject(
     selectedClientState.data._id
   );
+
+  const {
+    loading: adminLoding,
+    data: adminData,
+    error: adminError,
+  } = useSelector((state: RootState) => state.adminState);
+
+  const {
+    loading: clientsLoading,
+    data: clients,
+    error: clientsError,
+  } = useSelector((state: RootState) => state.allClientsState);
+
+  React.useEffect(() => {
+    if (adminId && adminLoding === "idle") {
+      let timer = setTimeout(() => {
+        dispatch(getAllClientsByAdminIdAction(adminId));
+        return () => {
+          clearTimeout(timer);
+        };
+      }, 0);
+    }
+  }, [dispatch, adminId, adminLoding]);
+  const getClientName = (clientId: string) => {
+    const selectData = clients.find((item) => item._id === clientId);
+    return selectData?.clientName || ""
+  };
 
   useEffect(() => {
     if (projectTableforClient && clientProjectTableData) {
@@ -106,7 +133,6 @@ const ProjectTable = ({
   console.log("from project table :", ProjectData);
   useEffect(() => {
     if (projectsForInvoice.length !== 0) {
-
       setProjectId(projectsForInvoice.map((project) => project._id));
       setProjectDetails(projectsForInvoice);
     }
@@ -230,8 +256,8 @@ const ProjectTable = ({
           searchProjectName={searchProjectName}
         />
         {clientObj &&
-          selectedClientState.loading !== "idle" &&
-          projectTableforClient ? (
+        selectedClientState.loading !== "idle" &&
+        projectTableforClient ? (
           <ClientInfoSection />
         ) : null}
       </div>
@@ -240,7 +266,6 @@ const ProjectTable = ({
           {/* Project Table for all  */}
           {isError || isLoading || (data === "" && data.length <= 0) ? (
             <div>
-              <div></div>
               <div className="text-xl font-bold text-center p-4 ">
                 <h3>PROJECT DETAILS</h3>
                 {isError || clientProjectTableError ? (
@@ -251,9 +276,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                  (clientProjectTableData &&
-                    (clientProjectTableData === "" ||
-                      clientProjectTableData.length <= 0)) ? (
+                (clientProjectTableData &&
+                  (clientProjectTableData === "" ||
+                    clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -318,84 +343,85 @@ const ProjectTable = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {ProjectData && ProjectData?.filter((project) => {
-                      if (searchProjectName.length <= 0) return true;
-                      return project.projectName
-                        .toLowerCase()
-                        .startsWith(searchProjectName.toLowerCase());
-                    }).map((project: ProjectType, index: number) => (
-                      <TableRow key={project._id} className="p-3">
-                        <TableCell
-                          sx={{ paddingX: "10px", textAlign: "center" }}
-                        >
-                          {index + 1}
-                        </TableCell>
-                        <TableCell style={{ padding: "0" }}>
-                          {project.projectName}
-                        </TableCell>
-                        <TableCell style={{ padding: "0" }}>
-                          
-                        </TableCell>
-                        <TableCell style={{ padding: "0" }}>
-                          {project.rate}(
-                          {project.currencyType === "rupees" ? (
-                            <span>&#x20B9;</span>
-                          ) : project.currencyType === "dollars" ? (
-                            <span>$</span>
-                          ) : project.currencyType === "pounds" ? (
-                            <span>&#163;</span>
-                          ) : null}
-                          /{project.workingPeriodType})
-                        </TableCell>
-                        {/* <TableCell style={{ padding: "0" }}>
+                    {ProjectData &&
+                      ProjectData?.filter((project) => {
+                        if (searchProjectName.length <= 0) return true;
+                        return project.projectName
+                          .toLowerCase()
+                          .startsWith(searchProjectName.toLowerCase());
+                      }).map((project: ProjectType, index: number) => (
+                        <TableRow key={project._id} className="p-3">
+                          <TableCell
+                            sx={{ paddingX: "10px", textAlign: "center" }}
+                          >
+                            {index + 1}
+                          </TableCell>
+                          <TableCell style={{ padding: "0" }}>
+                            {project.projectName}
+                          </TableCell>
+                          <TableCell style={{ padding: "0" }}>
+                          {getClientName(project.clientId)}
+                          </TableCell>
+                          <TableCell style={{ padding: "0" }}>
+                            {project.rate}(
+                            {project.currencyType === "rupees" ? (
+                              <span>&#x20B9;</span>
+                            ) : project.currencyType === "dollars" ? (
+                              <span>$</span>
+                            ) : project.currencyType === "pounds" ? (
+                              <span>&#163;</span>
+                            ) : null}
+                            /{project.workingPeriodType})
+                          </TableCell>
+                          {/* <TableCell style={{ padding: "0" }}>
                           {project.workingPeriod}({project.workingPeriodType})
                         </TableCell> */}
-                        <TableCell style={{ padding: "0" }}>
-                          <span>&#x20B9; </span>
-                          {project.conversionRate}
-                        </TableCell>
-                        {/* <TableCell style={{ padding: "0" }}>
+                          <TableCell style={{ padding: "0" }}>
+                            <span>&#x20B9; </span>
+                            {project.conversionRate}
+                          </TableCell>
+                          {/* <TableCell style={{ padding: "0" }}>
                           &#x20B9; {project.amount ? project.amount : 0}
                         </TableCell> */}
-                        <TableCell style={{ padding: "0" }}>
-                          <div className="flex">
-                            <div className={Styles.editButton}>
-                              <CompoAddProject
-                                clientId={selectedClientState.data._id}
-                                adminId={adminId}
-                                forAddProject={false}
-                                projectToEdit={project}
-                              />
+                          <TableCell style={{ padding: "0" }}>
+                            <div className="flex">
+                              <div className={Styles.editButton}>
+                                <CompoAddProject
+                                  clientId={selectedClientState.data._id}
+                                  adminId={adminId}
+                                  forAddProject={false}
+                                  projectToEdit={project}
+                                />
+                              </div>
+                              <div className={Styles.editButton}>
+                                <ActionConfirmer
+                                  actionTag="Delete"
+                                  actionFunction={handleProjectDelete}
+                                  parameter={project._id}
+                                />
+                              </div>
                             </div>
-                            <div className={Styles.editButton}>
-                              <ActionConfirmer
-                                actionTag="Delete"
-                                actionFunction={handleProjectDelete}
-                                parameter={project._id}
-                              />
+                          </TableCell>
+                          <TableCell sx={{ paddingY: "8px" }}>
+                            <div>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleConfirmSelection(project)}
+                                sx={{
+                                  backgroundColor: "#d9a990",
+                                  borderRadius: "20px",
+                                  ":hover": {
+                                    backgroundColor: "#4a6180",
+                                  },
+                                }}
+                              >
+                                view
+                              </Button>
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell sx={{ paddingY: "8px" }}>
-                          <div>
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={() => handleConfirmSelection(project)}
-                              sx={{
-                                backgroundColor: "#d9a990",
-                                borderRadius: "20px",
-                                ":hover": {
-                                  backgroundColor: "#4a6180",
-                                },
-                              }}
-                            >
-                              view
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                          </TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -406,9 +432,9 @@ const ProjectTable = ({
         <>
           {/* Project Table for Client  */}
           {clientProjectTableError ||
-            clientProjectTableLoading ||
-            clientProjectTableData === "" ||
-            clientProjectTableData.length <= 0 ? (
+          clientProjectTableLoading ||
+          clientProjectTableData === "" ||
+          clientProjectTableData.length <= 0 ? (
             <div>
               <div></div>
               <div className="text-xl font-bold text-center p-4 ">
@@ -421,9 +447,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                  (clientProjectTableData &&
-                    (clientProjectTableData === "" ||
-                      clientProjectTableData.length <= 0)) ? (
+                (clientProjectTableData &&
+                  (clientProjectTableData === "" ||
+                    clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -571,33 +597,35 @@ const ProjectTable = ({
           )}
         </>
       )}
-      {ProjectData && <div>
-        {!(
-          clientProjectTableError ||
-          clientProjectTableLoading ||
-          clientProjectTableData === "" ||
-          clientProjectTableData.length <= 0
-        ) && projectTableforClient ? (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleConfirmSelection()}
-            disabled={projectId.length === 0}
-            sx={{
-              backgroundColor: "#d9a990",
-              borderRadius: "20px",
-              ":hover": {
-                backgroundColor: "#4a6180",
-              },
-              position: "absolute",
-              bottom: "20px",
-              right: "60px",
-            }}
-          >
-            View Invoice...
-          </Button>
-        ) : null}
-      </div>}
+      {ProjectData && (
+        <div>
+          {!(
+            clientProjectTableError ||
+            clientProjectTableLoading ||
+            clientProjectTableData === "" ||
+            clientProjectTableData.length <= 0
+          ) && projectTableforClient ? (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleConfirmSelection()}
+              disabled={projectId.length === 0}
+              sx={{
+                backgroundColor: "#d9a990",
+                borderRadius: "20px",
+                ":hover": {
+                  backgroundColor: "#4a6180",
+                },
+                position: "absolute",
+                bottom: "20px",
+                right: "60px",
+              }}
+            >
+              Genrate Invoice
+            </Button>
+          ) : null}
+        </div>
+      )}
     </section>
   );
 };
