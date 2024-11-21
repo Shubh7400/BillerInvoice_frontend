@@ -113,7 +113,7 @@ function AddProjectPage({
     conversionRate: 1,
     paymentStatus: false,
     adminId: "",
-    clientId: "",
+    clientId: clientId || "",
   });
   const fetchExchangeRate = async () => {
     setLoadingRate(true);
@@ -151,7 +151,7 @@ function AddProjectPage({
     const value = e.target.value;
     setCurrencyType(value);
     if (value === "rupees") {
-      setConversionRate(1); 
+      setConversionRate(1);
     }
   };
   const navigate = useNavigate();
@@ -166,6 +166,16 @@ function AddProjectPage({
       }, 0);
     }
   }, [dispatch, adminId, adminLoding]);
+
+  React.useEffect(() => {
+    if (clientId && clientAddProject) {
+      console.log("alksdjiaohduoasdu", clientId);
+      setProjectData({
+        ...projectData,
+        clientId: clientId,
+      });
+    }
+  }, [clientId]);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -241,9 +251,7 @@ function AddProjectPage({
       | React.FormEvent<HTMLFormElement>
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    console.log("Project Data: ",projectData);
     e.preventDefault();
-
     if (areAllRequiredFieldsFilled(projectData)) {
       setLoading(true);
       addProjectMutation.mutate(projectData, {
@@ -252,31 +260,24 @@ function AddProjectPage({
           queryClient.refetchQueries(["projects", clientId]);
           setLoading(false);
           handleClose();
-        //  Success message after adding project
+          //  Success message after adding project
           enqueueSnackbar("Project added successfully.", {
             variant: "success",
           });
+          navigate(-1);
         },
-        
+
         onError(error) {
           setLoading(false);
           setIncompleteError("Add request error, add again.");
-        // Error message if there is a failure
           enqueueSnackbar("Error in adding project. Try again!", {
             variant: "error",
           });
         },
-       
       });
     } else {
       setIncompleteError("Incomplete fields");
     }
-    // if (!formError && !incompleteError  ) {
-    //           setTimeout(() => {
-    //             navigate(-1);
-    //           }, 600);
-    //         }
-    
   };
 
   const UpdateProjectMutationHandler = useUpdateProject(
@@ -356,9 +357,11 @@ function AddProjectPage({
         {/* <Dialog open={open} onClose={handleClose}> */}
         <div className="flex gap-3 items-center mb-4 ">
           <button
-            onClick={() => setTimeout(() => {
-              navigate(-1);
-            }, 600)} // Use navigate(-1) to go back
+            onClick={() =>
+              setTimeout(() => {
+                navigate(-1);
+              }, 600)
+            } // Use navigate(-1) to go back
             className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
           >
             <IoChevronBackSharp />
