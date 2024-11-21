@@ -61,6 +61,7 @@ function AddProjectPage({
     data: clients,
     error: clientsError,
   } = useSelector((state: RootState) => state.allClientsState);
+  
   const dispatch = useDispatch<AppDispatch>();
 
   const clientsArr: ClientType[] = clients.map((client) => ({
