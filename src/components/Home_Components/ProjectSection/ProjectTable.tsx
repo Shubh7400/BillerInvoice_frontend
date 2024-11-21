@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Styles from "./ProjectTable.module.css";
 import CompoAddProject from "./CompoAddProject";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../states/redux/store";
+import { AppDispatch, RootState } from "../../../states/redux/store";
 import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
 import {
   useDeleteProject,
@@ -36,6 +36,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useNavigate } from "react-router-dom";
 import ClientInfoSection from "../../Client_Component/ClientInfoSection";
+import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates/allClientSlice";
 
 const ProjectTable = ({
   projectTableforClient,
@@ -43,7 +44,7 @@ const ProjectTable = ({
   projectTableforClient: boolean;
 }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { enqueueSnackbar } = useSnackbar();
   const materialTheme = useTheme();
   const [isHovered, setIsHovered] = useState(false);
@@ -69,6 +70,33 @@ const ProjectTable = ({
   const DeleteProjectMutationHandler = useDeleteProject(
     selectedClientState.data._id
   );
+
+  const {
+    loading: adminLoding,
+    data: adminData,
+    error: adminError,
+  } = useSelector((state: RootState) => state.adminState);
+
+  const {
+    loading: clientsLoading,
+    data: clients,
+    error: clientsError,
+  } = useSelector((state: RootState) => state.allClientsState);
+
+  React.useEffect(() => {
+    if (adminId && adminLoding === "idle") {
+      let timer = setTimeout(() => {
+        dispatch(getAllClientsByAdminIdAction(adminId));
+        return () => {
+          clearTimeout(timer);
+        };
+      }, 0);
+    }
+  }, [dispatch, adminId, adminLoding]);
+  const getClientName = (clientId: string) => {
+    const selectData = clients.find((item) => item._id === clientId);
+    return selectData?.clientName || ""
+  };
 
   useEffect(() => {
     if (projectTableforClient && clientProjectTableData) {
@@ -235,7 +263,6 @@ const ProjectTable = ({
           {/* Project Table for all  */}
           {isError || isLoading || (data === "" && data.length <= 0) ? (
             <div>
-              <div></div>
               <div className="text-xl font-bold text-center p-4 ">
                 <h3>PROJECT DETAILS</h3>
                 {isError || clientProjectTableError ? (
@@ -275,11 +302,11 @@ const ProjectTable = ({
                       >
                         Client Name
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Project Period
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
@@ -328,6 +355,9 @@ const ProjectTable = ({
                           </TableCell>
                           <TableCell style={{ padding: "0" }}>
                             {project.projectName}
+                          </TableCell>
+                          <TableCell style={{ padding: "0" }}>
+                          {getClientName(project.clientId)}
                           </TableCell>
                           <TableCell style={{ padding: "0" }}>
                             {project.rate}(
@@ -588,7 +618,7 @@ const ProjectTable = ({
                 right: "60px",
               }}
             >
-              View Invoice
+              Genrate Invoice
             </Button>
           ) : null}
         </div>
