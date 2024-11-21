@@ -38,6 +38,8 @@ interface CompoAddProjectProps {
   searchProjectName?: string;
   projectTableforClient?: boolean;
   setSearchProjectName?: (data: string) => void;
+  searchDetailProjectName?: string | undefined;
+  setSearchDetailProjectName?: (data: string) => void;
 }
 
 export default function CompoAddProject({
@@ -48,6 +50,9 @@ export default function CompoAddProject({
   searchProjectName,
   projectTableforClient,
   setSearchProjectName,
+  searchDetailProjectName,
+  setSearchDetailProjectName,
+
 }: CompoAddProjectProps) {
   // -----------------------------------------------------
   const [toEdit, setToEdit] = useState<boolean>(false);
@@ -90,20 +95,35 @@ export default function CompoAddProject({
             </Typography>
           </div>
           <div className={Styles.search_input}>
-            <TextField
-              label="Search by Project name"
-              type="text"
-              variant="outlined"
-              value={searchProjectName || ""}
-              onChange={(e) =>
-                setSearchProjectName && setSearchProjectName(e.target.value)
-              }
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "50px",
-                },
-              }}
-            />
+
+            {!projectTableforClient ? (
+              <TextField
+                label="Search by Project name"
+                type="text"
+                variant="outlined"
+                value={searchProjectName || ""} // Ensure no undefined
+                onChange={(e) => setSearchProjectName?.(e.target.value)} // Safely invoke
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "50px",
+                  },
+                }}
+              />
+            ) : (
+              <TextField
+                label="Search by Project name"
+                type="text"
+                variant="outlined"
+                value={searchDetailProjectName || ""} // Ensure no undefined
+                onChange={(e) => setSearchDetailProjectName?.(e.target.value)} // Safely invoke
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "50px",
+                  },
+                }}
+              />
+            )}
+
             <Button
               disabled={!adminId}
               variant="contained"

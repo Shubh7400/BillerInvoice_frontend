@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Styles from "./ProjectTable.module.css";
 import CompoAddProject from "./CompoAddProject";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../states/redux/store";
+import { RootState, AppDispatch } from "../../../states/redux/store";
 import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
 import {
   useDeleteProject,
@@ -36,6 +36,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useNavigate } from "react-router-dom";
 import ClientInfoSection from "../../Client_Component/ClientInfoSection";
+import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates/allClientSlice";
 
 const ProjectTable = ({
   projectTableforClient,
@@ -43,7 +44,8 @@ const ProjectTable = ({
   projectTableforClient: boolean;
 }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const materialTheme = useTheme();
   const [isHovered, setIsHovered] = useState(false);
@@ -56,6 +58,7 @@ const ProjectTable = ({
 
   const [ProjectData, setProjectData] = useState<ProjectType[]>([]);
   const [searchProjectName, setSearchProjectName] = useState("");
+  const [searchDetailProjectName, setSearchDetailProjectName] = useState("");
   const { isLoading, data, isError } = useFetchAllProjectsByAdminId(
     adminId,
     projectTableforClient
@@ -69,12 +72,16 @@ const ProjectTable = ({
   const DeleteProjectMutationHandler = useDeleteProject(
     selectedClientState.data._id
   );
+  const clients = useSelector((state: RootState) => state.allClientsState);
 
   useEffect(() => {
     if (projectTableforClient && clientProjectTableData) {
       setProjectData(clientProjectTableData);
     } else if (data) {
       setProjectData(data);
+    }
+    if (adminId && !clients?.data?.length) {
+      dispatch(getAllClientsByAdminIdAction(adminId));
     }
     return () => {
       setProjectData([]);
@@ -87,20 +94,19 @@ const ProjectTable = ({
     clientProjectTableData,
     clientProjectTableError,
     projectTableforClient,
+    clients?.data,
+    adminId,
   ]);
   // -----------------------------------------------------
   const [allChecked, setAllChecked] = useState<boolean>();
   type CheckboxRefType = Array<HTMLInputElement | null>;
   const checkboxesRefs = useRef<CheckboxRefType>([]);
-  const [selectedProjectId, setSelectedProjectId] = React.useState<
-    string | undefined
-  >("");
+  const [selectedProjectId, setSelectedProjectId] = React.useState<string | undefined>("");
   const [projectDetails, setProjectDetails] = useState<ProjectType[]>([]);
   const [projectId, setProjectId] = React.useState<any>([]);
   const { projectsForInvoice } = useSelector(
     (state: RootState) => state.projectsForInvoiceState
   );
-
   useEffect(() => {
     if (projectsForInvoice.length !== 0) {
       setProjectId(projectsForInvoice.map((project) => project._id));
@@ -164,7 +170,10 @@ const ProjectTable = ({
   //   }
   // };
   const handleSearchProjectName = (data: string) => {
-    setSearchProjectName(data);
+    setSearchProjectName?.(data); // Safely call only if defined
+  };
+  const handleSearchDetailProjectName = (data: string) => {
+    setSearchDetailProjectName?.(data);
   };
   const handleSingleCheckboxChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -219,10 +228,12 @@ const ProjectTable = ({
           projectTableforClient={projectTableforClient}
           setSearchProjectName={handleSearchProjectName}
           searchProjectName={searchProjectName}
+          searchDetailProjectName={searchDetailProjectName} // Default empty string
+          setSearchDetailProjectName={handleSearchDetailProjectName} // Fallback to no-op function
         />
         {clientObj &&
-        selectedClientState.loading !== "idle" &&
-        projectTableforClient ? (
+          selectedClientState.loading !== "idle" &&
+          projectTableforClient ? (
           <ClientInfoSection />
         ) : null}
       </div>
@@ -242,9 +253,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                (clientProjectTableData &&
-                  (clientProjectTableData === "" ||
-                    clientProjectTableData.length <= 0)) ? (
+                  (clientProjectTableData &&
+                    (clientProjectTableData === "" ||
+                      clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -350,6 +361,13 @@ const ProjectTable = ({
                         <TableCell style={{ padding: "0" }}>
                           {project.projectName}
                         </TableCell>
+
+                        <TableCell style={{ padding: "0" }}>
+                          {
+                            clients?.data?.find((client: ClientType) => client._id === project.clientId)?.clientName || "Unknown Client"
+                          }
+                        </TableCell>
+
                         <TableCell style={{ padding: "0" }}>
                           {project.rate}(
                           {project.currencyType === "rupees" ? (
@@ -426,9 +444,9 @@ const ProjectTable = ({
         <>
           {/* Project Table for Client  */}
           {clientProjectTableError ||
-          clientProjectTableLoading ||
-          clientProjectTableData === "" ||
-          clientProjectTableData.length <= 0 ? (
+            clientProjectTableLoading ||
+            clientProjectTableData === "" ||
+            clientProjectTableData.length <= 0 ? (
             <div>
               <div></div>
               <div className="text-xl font-bold text-center p-4 ">
@@ -441,9 +459,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                (clientProjectTableData &&
-                  (clientProjectTableData === "" ||
-                    clientProjectTableData.length <= 0)) ? (
+                  (clientProjectTableData &&
+                    (clientProjectTableData === "" ||
+                      clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -510,7 +528,12 @@ const ProjectTable = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {ProjectData?.map((project: ProjectType, index: number) => (
+                    {ProjectData.filter((project) => {
+                      if (searchDetailProjectName.length <= 0) return true;
+                      return project.projectName
+                        .toLowerCase()
+                        .startsWith(searchDetailProjectName.toLowerCase());
+                    }).map((project: ProjectType, index: number) => (
                       <TableRow key={project._id} className="p-3">
                         <TableCell
                           style={{
