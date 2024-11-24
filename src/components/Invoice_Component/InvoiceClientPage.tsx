@@ -6,7 +6,7 @@ import ClientInfoSection from "../Client_Component/ClientInfoSection";
 import { Button, TextField, useTheme } from "@mui/material";
 import Styles from "./invoive.module.css";
 import { removeProjectFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
-import BillAmount from "../../components/Home_Components/InvoiceSection/BillAmount";
+import BillAmount from "./BillAmount";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -68,7 +68,8 @@ function InvoiceClientPage() {
           </Typography>
         </div>
         <div className="text-black mr-5">
-          <strong>Invoice Number: </strong>{invoiceObject.invoiceNo}
+          <strong>Invoice Number: </strong>
+          {invoiceObject.invoiceNo}
         </div>
       </div>
 
@@ -82,24 +83,12 @@ function InvoiceClientPage() {
           <Table>
             <TableHead className={Styles.animated}>
               <TableRow>
-                <TableCell>
-                  Project Name
-                </TableCell>
-                <TableCell>
-                  Rate
-                </TableCell>
-                <TableCell>
-                  Working Time
-                </TableCell>
-                <TableCell className="w-[175px]">
-                  Conversion Rate
-                </TableCell>
-                <TableCell className="w-[110px]">
-                  Amount
-                </TableCell>
-                <TableCell className="w-[110px]">
-                  Remove
-                </TableCell>
+                <TableCell>Project Name</TableCell>
+                <TableCell>Rate</TableCell>
+                <TableCell>Working Time</TableCell>
+                <TableCell className="w-[175px]">Conversion Rate</TableCell>
+                <TableCell className="w-[110px]">Amount</TableCell>
+                <TableCell className="w-[110px]">Remove</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -142,7 +131,7 @@ function InvoiceClientPage() {
                       autoFocus
                       onChange={(e) =>
                         handleInputChange(
-                          project._id?? "",
+                          project._id ?? "",
                           "workingPeriod",
                           e.target.value
                         )

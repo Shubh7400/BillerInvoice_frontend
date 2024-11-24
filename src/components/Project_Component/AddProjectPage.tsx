@@ -29,7 +29,7 @@ import { AppDispatch, RootState } from "../../states/redux/store";
 import Select from "react-select";
 import { InputActionMeta } from "react-select";
 import axios from "axios";
-import CompoLoadingProjects from "../Home_Components/ProjectSection/CompoLoadingProjects";
+import CompoLoadingProjects from "./CompoLoadingProjects";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { log } from "node:console";
 function AddProjectPage({
@@ -61,7 +61,7 @@ function AddProjectPage({
     data: clients,
     error: clientsError,
   } = useSelector((state: RootState) => state.allClientsState);
-  
+
   const dispatch = useDispatch<AppDispatch>();
 
   const clientsArr: ClientType[] = clients.map((client) => ({

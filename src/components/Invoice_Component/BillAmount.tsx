@@ -11,25 +11,25 @@ import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState, store } from "../../../states/redux/store";
+import { AppDispatch, RootState, store } from "../../states/redux/store";
 import { useSnackbar } from "notistack";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { updateInvoiceObjectStateAction } from "../../../states/redux/InvoiceProjectState/invoiceObjectState";
-import { useAddInvoiceMutation } from "../../../states/query/Invoice_queries/invoiceQueries";
-import { getAdminByIdAction } from "../../../states/redux/AdminStates/adminSlice";
+import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
+import { useAddInvoiceMutation } from "../../states/query/Invoice_queries/invoiceQueries";
+import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
 import generatePDF, { Margin, usePDF } from "react-to-pdf";
 import { RxCross1 } from "react-icons/rx";
-import DownloadPreview from "../DownloadSection/DownloadPreview";
+import DownloadPreview from "./DownloadPreview";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
-import { ThemeContext } from "../../../states/context/ThemeContext/ThemeContext";
+import { ThemeContext } from "../../states/context/ThemeContext/ThemeContext";
 import { AppBar, Dialog, IconButton, Toolbar } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
-import Styles from "./billi.module.css"
+import Styles from "./billi.module.css";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 // import CloseIcon from "@mui/icons-material/Close";
@@ -79,7 +79,7 @@ export default function InvoiceDrawer() {
 
   React.useEffect(() => {
     dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
-    toggleDrawer(true)
+    toggleDrawer(true);
   }, [invoiceNo, projectsForInvoice, showPreview]);
 
   React.useEffect(() => {
@@ -355,8 +355,8 @@ export default function InvoiceDrawer() {
           height: "40%",
         }}
       > */}
-        {/*Drawer header*/}
-        {/* <Box
+      {/*Drawer header*/}
+      {/* <Box
           sx={{
             // position: "absolute",
             top: -drawerBleeding,
@@ -395,120 +395,120 @@ export default function InvoiceDrawer() {
             <span className="mr-8 text-sm">Invoice no.{invoiceNo}</span>
           </Box>
         </Box> */}
-        {/*Drawer body*/}
+      {/*Drawer body*/}
+      <Box
+        sx={{
+          px: 2,
+          // pb: 2,
+          height: "100%",
+          overflow: "auto",
+          bgcolor: bgColorBodyStyledBox,
+          borderRadius: "20px",
+        }}
+      >
+        {/*Date and Bill*/}
         <Box
           sx={{
-            px: 2,
-            // pb: 2,
-            height: "100%",
-            overflow: "auto",
-            bgcolor: bgColorBodyStyledBox,
-            borderRadius: "20px"
+            display: { xs: "block", sm: "flex", md: "flex" },
+            pt: "10px",
+            px: "20px",
+            justifyContent: "space-between",
           }}
         >
-          {/*Date and Bill*/}
+          {/*Date picker*/}
           <Box
             sx={{
-              display: { xs: "block", sm: "flex", md: "flex" },
+              width: "270px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
               pt: "10px",
-              px: "20px",
-              justifyContent: "space-between",
+              color: "whitesmoke",
             }}
           >
-            {/*Date picker*/}
-            <Box
-              sx={{
-                width: "270px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "10px",
-                pt: "10px",
-                color: "whitesmoke",
-              }}
-            >
-              {windowWidth && windowWidth > 768 ? (
+            {windowWidth && windowWidth > 768 ? (
+              <>
+                <DemoItem>
+                  <label style={{ color: textColor }}>Invoice date</label>
+                  <DesktopDatePicker
+                    defaultValue={invoiceDate}
+                    onChange={(newDate) => handleInvoiceDateChange(newDate)}
+                    format="DD/MM/YYYY"
+                    // label="Invoice date"
+                    sx={{ backgroundColor: "#cecece" }}
+                  />
+                </DemoItem>
+                <DemoItem>
+                  <label style={{ color: textColor }}>Due date</label>
+                  <DesktopDatePicker
+                    defaultValue={dueDate}
+                    onChange={(newDate) => handleDueDateChange(newDate)}
+                    format="DD/MM/YYYY"
+                    sx={{ backgroundColor: "#cecece" }}
+                  />
+                </DemoItem>
+              </>
+            ) : (
+              <>
+                <DemoItem>
+                  <label style={{ color: textColor }}>Invoice date</label>
+                  <MobileDatePicker
+                    defaultValue={invoiceDate}
+                    onChange={(newDate) => handleInvoiceDateChange(newDate)}
+                    format="DD/MM/YYYY"
+                  />
+                </DemoItem>
+                <DemoItem>
+                  <label style={{ color: textColor }}>Due date</label>
+                  <MobileDatePicker
+                    defaultValue={dueDate}
+                    onChange={(newDate) => handleDueDateChange(newDate)}
+                    format="DD/MM/YYYY"
+                  />
+                </DemoItem>
+              </>
+            )}
+          </Box>
+          {/*Bill section*/}
+          <Box
+            sx={{
+              minWidth: { xs: "100px", sm: "250px", md: "300px" },
+              padding: "5px",
+              mr: "15px",
+              pb: { xs: "40px", sm: "15px" },
+              color: textColor,
+            }}
+          >
+            <p className=" text-xl md:text-2xl border-b-2 border-slate-800 border-opacity-70 mb-3 mt-3 md:mt-1 ">
+              Bill Total
+            </p>
+            <div className="flex justify-between text-lg md:text-lg">
+              Subtotal:<span>{amountWithoutTax} &#8377; </span>
+            </div>
+            <Box sx={{ mt: "6px" }}>
+              {clientSameState ? (
                 <>
-                  <DemoItem>
-                    <label style={{ color: textColor }}>Invoice date</label>
-                    <DesktopDatePicker
-                      defaultValue={invoiceDate}
-                      onChange={(newDate) => handleInvoiceDateChange(newDate)}
-                      format="DD/MM/YYYY"
-                      // label="Invoice date"
-                      sx={{ backgroundColor: "#cecece"}}
-                    />
-                  </DemoItem>
-                  <DemoItem>
-                    <label style={{ color: textColor }}>Due date</label>
-                    <DesktopDatePicker
-                      defaultValue={dueDate}
-                      onChange={(newDate) => handleDueDateChange(newDate)}
-                      format="DD/MM/YYYY"
-                      sx={{ backgroundColor: "#cecece" }}
-                    />
-                  </DemoItem>
+                  <div className="flex justify-between ">
+                    SGST:(9%)<span>{taxAmount / 2}</span>
+                  </div>
+                  <div className="flex justify-between ">
+                    CGST:(9%)<span>{taxAmount / 2}</span>
+                  </div>
                 </>
               ) : (
-                <>
-                  <DemoItem>
-                    <label style={{ color: textColor }}>Invoice date</label>
-                    <MobileDatePicker
-                      defaultValue={invoiceDate}
-                      onChange={(newDate) => handleInvoiceDateChange(newDate)}
-                      format="DD/MM/YYYY"
-                    />
-                  </DemoItem>
-                  <DemoItem>
-                    <label style={{ color: textColor }}>Due date</label>
-                    <MobileDatePicker
-                      defaultValue={dueDate}
-                      onChange={(newDate) => handleDueDateChange(newDate)}
-                      format="DD/MM/YYYY"
-                    />
-                  </DemoItem>
-                </>
+                <div className="flex justify-between ">
+                  CGST:(18%)<span>{taxAmount}</span>
+                </div>
               )}
             </Box>
-            {/*Bill section*/}
-            <Box
-              sx={{
-                minWidth: { xs: "100px", sm: "250px", md: "300px" },
-                padding: "5px",
-                mr: "15px",
-                pb: { xs: "40px", sm: "15px" },
-                color: textColor,
-              }}
-            >
-              <p className=" text-xl md:text-2xl border-b-2 border-slate-800 border-opacity-70 mb-3 mt-3 md:mt-1 ">
-                Bill Total
-              </p>
-              <div className="flex justify-between text-lg md:text-lg">
-                Subtotal:<span>{amountWithoutTax} &#8377; </span>
-              </div>
-              <Box sx={{ mt: "6px" }}>
-                {clientSameState ? (
-                  <>
-                    <div className="flex justify-between ">
-                      SGST:(9%)<span>{taxAmount / 2}</span>
-                    </div>
-                    <div className="flex justify-between ">
-                      CGST:(9%)<span>{taxAmount / 2}</span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex justify-between ">
-                    CGST:(18%)<span>{taxAmount}</span>
-                  </div>
-                )}
-              </Box>
-              <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-4">
-                Amount:
-                <span className=" ">{amountAfterTax} &#8377; </span>
-              </div>
-            </Box>
+            <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-4">
+              Amount:
+              <span className=" ">{amountAfterTax} &#8377; </span>
+            </div>
           </Box>
-          {/*Download and Preview buttons*/}
-          {/* <Box
+        </Box>
+        {/*Download and Preview buttons*/}
+        {/* <Box
             sx={{
               display: "flex",
               justifyContent: {
@@ -526,65 +526,63 @@ export default function InvoiceDrawer() {
           >
            
           </Box> */}
-          
-        </Box>
-        <Global
-  styles={{
-    ".MuiDrawer-root > .MuiPaper-root": {
-      height: `calc(52% - ${drawerBleeding}px)`,
-      overflow: "visible",
-    },
-    ".MuiInputBase-root": {
-      background: "transparent !important",
-      borderRadius: "50px !important",
-      
-    },
-    ".MuiInputBase-input":{
-      height: "0.4375em !important",
-    },
-    ".MuiFormControl-root": {
-      background: "transparent !important",
-    }
-  }}
-/>
-        <div className="mt-3 flex gap-3 justify-end">
-          <Button
-              sx={{
-                backgroundColor: "#d9a990",
-                borderRadius: "20px",
-                ":hover": {
-                  backgroundColor: "#4a6180",
-                },
-                // position: "absolute",
-                // bottom: "50px",
-                // right: "40px",
-                color: "#fff"
-              }}
-                onClick={(timer) => {
-                  handleInvoiceDownload(timer);
-                }}
-                disabled={!allowDownload}
-              >
-                Download
-          </Button>
-          <Button
-            sx={{
-              backgroundColor: "#d9a990",
-              borderRadius: "20px",
-              ":hover": {
-                backgroundColor: "#4a6180",
-              },
-              // position: "absolute",
-              // bottom: "50px",
-              // right: "40px",
-              color: "#fff"
-            }}
-            disabled={!previewAllowed}
-            onClick={() => previewExecution(true)}
-          >
-            Preview
-          </Button>
-        </div>
+      </Box>
+      <Global
+        styles={{
+          ".MuiDrawer-root > .MuiPaper-root": {
+            height: `calc(52% - ${drawerBleeding}px)`,
+            overflow: "visible",
+          },
+          ".MuiInputBase-root": {
+            background: "transparent !important",
+            borderRadius: "50px !important",
+          },
+          ".MuiInputBase-input": {
+            height: "0.4375em !important",
+          },
+          ".MuiFormControl-root": {
+            background: "transparent !important",
+          },
+        }}
+      />
+      <div className="mt-3 flex gap-3 justify-end">
+        <Button
+          sx={{
+            backgroundColor: "#d9a990",
+            borderRadius: "20px",
+            ":hover": {
+              backgroundColor: "#4a6180",
+            },
+            // position: "absolute",
+            // bottom: "50px",
+            // right: "40px",
+            color: "#fff",
+          }}
+          onClick={(timer) => {
+            handleInvoiceDownload(timer);
+          }}
+          disabled={!allowDownload}
+        >
+          Download
+        </Button>
+        <Button
+          sx={{
+            backgroundColor: "#d9a990",
+            borderRadius: "20px",
+            ":hover": {
+              backgroundColor: "#4a6180",
+            },
+            // position: "absolute",
+            // bottom: "50px",
+            // right: "40px",
+            color: "#fff",
+          }}
+          disabled={!previewAllowed}
+          onClick={() => previewExecution(true)}
+        >
+          Preview
+        </Button>
+      </div>
       {/* </SwipeableDrawer> */}
 
       {showPreview ? (
@@ -598,9 +596,7 @@ export default function InvoiceDrawer() {
           <div className="m-auto w-full h-auto flex justify-center items-start pt-0 mt-[15%] sm:mt-[5%] ">
             {tempImgData.length > 0 ? (
               <img src={tempImgData} alt="invoice" />
-            ) : (
-              null
-            )}
+            ) : null}
           </div>
         </div>
       ) : null}

@@ -11,23 +11,23 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getClientByIdAction,
   makeStateNeutralOfSelectedClient,
-} from "../../../states/redux/ClientStates/selectedClientSlice";
-import { AppDispatch, RootState } from "../../../states/redux/store";
-import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates/allClientSlice";
+} from "../../states/redux/ClientStates/selectedClientSlice";
+import { AppDispatch, RootState } from "../../states/redux/store";
+import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { CircularProgress, useTheme } from "@mui/material";
 import {
   deleteClientAction,
   makeStateLoadingNeutralInDeleteClient,
-} from "../../../states/redux/ClientStates/deleteClientSlice";
+} from "../../states/redux/ClientStates/deleteClientSlice";
 import { enqueueSnackbar } from "notistack";
 import CompoLoading from "./Compo-Loding";
-import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
+import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import CompoAddClient from "./Compo_AddClient";
-import ActionConfirmer from "../../SideBar/ActionConfirmer";
+import ActionConfirmer from "../SideBar/ActionConfirmer";
 import { useNavigate } from "react-router-dom";
-import { ClientType } from "../../../types/types";
+import { ClientType } from "../../types/types";
 import Styles from "./client.module.css";
-import { removeAllProjectsFromInvoiceAction } from "../../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 
 type ClientSelectionTableProps = {
   clientsLoading: string;

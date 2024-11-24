@@ -6,9 +6,9 @@ import {
   CityInfoType,
   CountryInfoType,
   StateInfoType,
-} from "../../../types/types";
+} from "../../types/types";
 
-export default function  SelectCountryStateCity({
+export default function SelectCountryStateCity({
   selectedCountry,
   selectedState,
   selectedCity,
@@ -31,7 +31,7 @@ export default function  SelectCountryStateCity({
   stateString: string;
   cityString: string | undefined;
 }) {
-  console.log(stateString , " <<<<<>>>>>>>>" , cityString)
+  console.log(stateString, " <<<<<>>>>>>>>", cityString);
   const countriesArr: CountryInfoType[] = Country.getAllCountries().map(
     (country) => ({
       name: country.name,
@@ -90,8 +90,6 @@ export default function  SelectCountryStateCity({
     selectedCity,
     citiesArr,
   ]);
-
-  
 
   return (
     <div className="my-2 flex flex-col">

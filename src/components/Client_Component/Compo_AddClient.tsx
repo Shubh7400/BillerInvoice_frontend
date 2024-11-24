@@ -12,29 +12,29 @@ import { useDispatch, useSelector } from "react-redux"; // Assuming you're using
 import {
   addNewClientAction,
   makeStateLoadingNeutralInAddClient,
-} from "../../../states/redux/ClientStates/addClientSlice";
-import { AppDispatch, RootState } from "../../../states/redux/store";
+} from "../../states/redux/ClientStates/addClientSlice";
+import { AppDispatch, RootState } from "../../states/redux/store";
 import {
   CityInfoType,
   ClientType,
   CountryInfoType,
   StateInfoType,
-} from "../../../types/types";
+} from "../../types/types";
 import SelectCountryStateCity from "./Compo_CountrySelect";
 import { Alert, LinearProgress, Typography, useTheme } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
+import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import { CiEdit } from "react-icons/ci";
 import {
   editClientAction,
   makeStateLoadingNeutralInEditClient,
-} from "../../../states/redux/ClientStates/editClientSlice";
-import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates/allClientSlice";
-import { getClientByIdAction } from "../../../states/redux/ClientStates/selectedClientSlice";
+} from "../../states/redux/ClientStates/editClientSlice";
+import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
+import { getClientByIdAction } from "../../states/redux/ClientStates/selectedClientSlice";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import { E164Number } from "libphonenumber-js/core";
-import "../../../styles/addClient.css";
+import "../../styles/addClient.css";
 import { Navigate, useNavigate } from "react-router-dom";
 
 export default function CompoAddClient({
@@ -52,12 +52,12 @@ export default function CompoAddClient({
     useState(false);
   //--------------------------------------------------------
   const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleClickOpen = () => {
     if (clientToEdit && clientToEdit?._id) {
       dispatch(getClientByIdAction(clientToEdit._id));
-      navigate("/edit-client")
+      navigate("/edit-client");
     }
   };
 
@@ -77,7 +77,7 @@ export default function CompoAddClient({
   const [selectedCity, setSelectedCity] = useState<CityInfoType>(
     {} as CityInfoType
   );
-  
+
   const [incompleteError, setIncompleteError] = useState("");
   const [formError, setFormError] = useState("");
 
@@ -93,7 +93,7 @@ export default function CompoAddClient({
   const { data } = useSelector((state: RootState) => state.selectedClientState);
   const [clientData, setClientData] = useState<ClientType>({
     clientName: "",
-    email:[""],
+    email: [""],
     pancardNo: "",
     gistin: "",
     address: {
@@ -102,7 +102,6 @@ export default function CompoAddClient({
       state: selectedState.name,
       country: selectedCity.name,
       postalCode: "",
-  
     },
     user: "",
   });

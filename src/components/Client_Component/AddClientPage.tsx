@@ -16,7 +16,7 @@ import {
   CountryInfoType,
   StateInfoType,
 } from "../../types/types";
-import SelectCountryStateCity from "../Home_Components/ClientSection/Compo_CountrySelect";
+import SelectCountryStateCity from "./Compo_CountrySelect";
 import { Alert, LinearProgress, Typography, useTheme } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
@@ -170,12 +170,11 @@ export default function AddClientPage({
     }));
   }, [selectedCountry, selectedState, selectedCity]);
 
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-  
+
     if (name === "street") {
       // Update nested field for address.street
       setClientData((prevData) => ({
@@ -200,8 +199,7 @@ export default function AddClientPage({
           postalCode: value,
         },
       }));
-    }
-    else if (name === "pancardNo") {
+    } else if (name === "pancardNo") {
       const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
       if (value === "" || panRegex.test(value)) {
         setPanNumberError(null); // No error if value is empty or matches regex
@@ -231,11 +229,10 @@ export default function AddClientPage({
         [name]: value,
       });
     }
-  
+
     setFormError("");
     setIncompleteError("");
   };
-  
 
   const handleAddEmail = () => {
     if (inputEmail && emailRegex.test(inputEmail)) {
