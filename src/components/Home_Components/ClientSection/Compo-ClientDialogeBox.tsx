@@ -27,6 +27,7 @@ import ActionConfirmer from "../../SideBar/ActionConfirmer";
 import { useNavigate } from "react-router-dom";
 import { ClientType } from "../../../types/types";
 import Styles from "./client.module.css";
+import { removeAllProjectsFromInvoiceAction } from "../../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 
 type ClientSelectionTableProps = {
   clientsLoading: string;
@@ -71,12 +72,16 @@ export default function ClientSelectionTable({
     }
   }, [adminId, dispatch]);
 
+  React.useEffect(() => {
+    dispatch(removeAllProjectsFromInvoiceAction());
+  }, []);
+
   const handleDeleteClient = (clientId: string) => {
     if (clientId) {
       setDeletingClientIdString(clientId);
       dispatch(deleteClientAction(clientId));
     }
-  }
+  };
 
   const handleConfirmSelection = (clientId: string) => {
     if (clientId) {
@@ -122,14 +127,18 @@ export default function ClientSelectionTable({
                 })
                 .map((client: ClientType, index: number) => (
                   <TableRow key={client._id} className="p-3">
-                    <TableCell sx={{ paddingX: '10px',textAlign:'center'}}>{index + 1}</TableCell>
-                    <TableCell sx={{ padding: '0' }}>{client.clientName}</TableCell>
+                    <TableCell sx={{ paddingX: "10px", textAlign: "center" }}>
+                      {index + 1}
+                    </TableCell>
+                    <TableCell sx={{ padding: "0" }}>
+                      {client.clientName}
+                    </TableCell>
                     {/* <TableCell sx={{ padding: '0' }}>{client.email}</TableCell> */}
                     <TableCell sx={{ padding: "0" }}>
                       {client.email[0] || "No email provided"}{" "}
                       {/* Display only the first email */}
                     </TableCell>
-                    <TableCell sx={{ padding: '0' }}>{client.gistin}</TableCell>
+                    <TableCell sx={{ padding: "0" }}>{client.gistin}</TableCell>
                     <TableCell sx={{ padding: "0" }}>
                       <div className="flex">
                         <div className={Styles.editButton}>
