@@ -1,9 +1,9 @@
-import SelectClient from "../Home_Components/ClientSection/SelectClient";
+import ClientPageHeader from "./ClientPageHeader";
 
 const ClientPage = () => {
   return (
     <>
-      <SelectClient />
+      <ClientPageHeader />
     </>
   );
 };

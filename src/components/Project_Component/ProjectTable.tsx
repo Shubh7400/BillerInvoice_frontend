@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Styles from "./ProjectTable.module.css";
 import CompoAddProject from "./CompoAddProject";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../states/redux/store";
-import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
+import { AppDispatch, RootState } from "../../states/redux/store";
+import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import {
   useDeleteProject,
   useFetchAllProjectsByAdminId,
   useFetchAllProjectsByClientId,
-} from "../../../states/query/Project_queries/projectQueries";
+} from "../../states/query/Project_queries/projectQueries";
 import {
   Alert,
   Button,
@@ -17,17 +17,17 @@ import {
   useTheme,
 } from "@mui/material";
 import { RiDeleteBin7Line } from "react-icons/ri";
-import { queryClient } from "../../..";
+import { queryClient } from "../..";
 import { useSnackbar } from "notistack";
-import { ClientType, ProjectType } from "../../../types/types";
+import { ClientType, ProjectType } from "../../types/types";
 import {
   addAllProjectsForInvoiceAction,
   addProjectForInvoiceAction,
   removeAllProjectsFromInvoiceAction,
   removeProjectFromInvoiceAction,
-} from "../../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
-import ActionConfirmer from "../../SideBar/ActionConfirmer";
-import BillAmount from "../InvoiceSection/BillAmount";
+} from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+import ActionConfirmer from "../SideBar/ActionConfirmer";
+import BillAmount from "../Invoice_Component/BillAmount";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -35,9 +35,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useNavigate } from "react-router-dom";
-import ClientInfoSection from "../../Client_Component/ClientInfoSection";
-import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates/allClientSlice";
-import { getClientByIdAction } from "../../../states/redux/ClientStates/selectedClientSlice";
+import ClientInfoSection from "../Client_Component/ClientInfoSection";
+import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
+import { getClientByIdAction } from "../../states/redux/ClientStates/selectedClientSlice";
 
 const ProjectTable = ({
   projectTableforClient,

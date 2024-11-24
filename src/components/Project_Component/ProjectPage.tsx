@@ -4,16 +4,14 @@ import { AppDispatch, RootState } from "../../states/redux/store";
 import { ClientType } from "../../types/types";
 import { Button, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import ProjectTable from "../Home_Components/ProjectSection/ProjectTable";
-import error from "../assets/select_client.png"
+import ProjectTable from "./ProjectTable";
+import error from "../assets/select_client.png";
 
-const ProjectPage = (
-  {
-    projectTableforClient
-  }:
-    {
-      projectTableforClient: boolean
-    }) => {
+const ProjectPage = ({
+  projectTableforClient,
+}: {
+  projectTableforClient: boolean;
+}) => {
   const clients = useSelector((state: RootState) => state.allClientsState);
   const selectedClient = useSelector(
     (state: RootState) => state.selectedClientState
