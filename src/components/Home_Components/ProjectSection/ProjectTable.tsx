@@ -37,6 +37,7 @@ import TableRow from "@mui/material/TableRow";
 import { useNavigate } from "react-router-dom";
 import ClientInfoSection from "../../Client_Component/ClientInfoSection";
 import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates/allClientSlice";
+import { getClientByIdAction } from "../../../states/redux/ClientStates/selectedClientSlice";
 
 const ProjectTable = ({
   projectTableforClient,
@@ -95,7 +96,7 @@ const ProjectTable = ({
   }, [dispatch, adminId, adminLoding]);
   const getClientName = (clientId: string) => {
     const selectData = clients.find((item) => item._id === clientId);
-    return selectData?.clientName || ""
+    return selectData?.clientName || "";
   };
 
   useEffect(() => {
@@ -116,6 +117,10 @@ const ProjectTable = ({
     clientProjectTableError,
     projectTableforClient,
   ]);
+
+  useEffect(() => {
+    dispatch(removeAllProjectsFromInvoiceAction());
+  }, []);
   // -----------------------------------------------------
   const [allChecked, setAllChecked] = useState<boolean>();
   type CheckboxRefType = Array<HTMLInputElement | null>;
@@ -227,6 +232,9 @@ const ProjectTable = ({
   };
 
   const handleConfirmSelection = (selectedProject?: ProjectType) => {
+    if (selectedProject && selectedProject.clientId) {
+      dispatch(getClientByIdAction(selectedProject.clientId));
+    }
     if (projectDetails) {
       if (projectTableforClient) {
         projectDetails.forEach((project: ProjectType) => {
@@ -357,7 +365,7 @@ const ProjectTable = ({
                             {project.projectName}
                           </TableCell>
                           <TableCell style={{ padding: "0" }}>
-                          {getClientName(project.clientId)}
+                            {getClientName(project.clientId)}
                           </TableCell>
                           <TableCell style={{ padding: "0" }}>
                             {project.rate}(
