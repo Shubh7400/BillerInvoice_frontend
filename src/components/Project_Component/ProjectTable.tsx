@@ -19,7 +19,11 @@ import {
 import { RiDeleteBin7Line } from "react-icons/ri";
 import { queryClient } from "../..";
 import { useSnackbar } from "notistack";
-import { ClientType, ProjectType } from "../../types/types";
+import {
+  ClientType,
+  ProjectType,
+  UpdateProjectDataType,
+} from "../../types/types";
 import {
   addAllProjectsForInvoiceAction,
   addProjectForInvoiceAction,
@@ -38,6 +42,8 @@ import { useNavigate } from "react-router-dom";
 import ClientInfoSection from "../Client_Component/ClientInfoSection";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { getClientByIdAction } from "../../states/redux/ClientStates/selectedClientSlice";
+import { CiEdit } from "react-icons/ci";
+import { getProjectByIdAction } from "../../states/redux/ProjectState/selectedProjectSlice";
 
 const ProjectTable = ({
   projectTableforClient,
@@ -249,6 +255,13 @@ const ProjectTable = ({
     }
   };
 
+  const handleEditProject = (project: ProjectType) => {
+    if (project && project?._id) {
+      dispatch(getProjectByIdAction(project._id));
+    }
+    navigate("/edit-project");
+  };
+
   return (
     <section>
       <div>
@@ -391,12 +404,32 @@ const ProjectTable = ({
                           <TableCell style={{ padding: "0" }}>
                             <div className="flex">
                               <div className={Styles.editButton}>
-                                <CompoAddProject
-                                  clientId={selectedClientState.data._id}
-                                  adminId={adminId}
-                                  forAddProject={false}
-                                  projectToEdit={project}
-                                />
+                                <div className="">
+                                  <Button
+                                    disabled={!adminId}
+                                    variant="outlined"
+                                    sx={{
+                                      color: materialTheme.palette.primary.main,
+                                      borderColor:
+                                        materialTheme.palette.primary.main,
+                                      ":hover": {
+                                        borderColor:
+                                          materialTheme.palette.secondary.main,
+                                        backgroundColor:
+                                          materialTheme.palette.secondary.main,
+                                        color: "white",
+                                      },
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() => {
+                                      if (project) {
+                                        handleEditProject(project);
+                                      }
+                                    }}
+                                  >
+                                    <CiEdit size={25} />
+                                  </Button>
+                                </div>
                               </div>
                               <div className={Styles.editButton}>
                                 <ActionConfirmer

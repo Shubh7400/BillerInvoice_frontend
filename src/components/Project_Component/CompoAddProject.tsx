@@ -73,7 +73,7 @@ export default function CompoAddProject({
   const handleBackButtonClick = () => {
     navigate(-1);
   };
-
+  // console.log(projectToEdit, " <<<<<<<<< >>>>");
   return (
     <>
       {forAddProject ? (
