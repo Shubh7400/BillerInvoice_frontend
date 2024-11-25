@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ClientType, ProjectType } from "../../types/types";
 import { RootState } from "../../states/redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,12 +33,19 @@ function InvoiceClientPage() {
   const { projectsForInvoice } = useSelector(
     (state: RootState) => state.projectsForInvoiceState
   );
+  const { loading:adminLoading, data:adminData, error:adminError } = useSelector(
+    (state: RootState) => state.adminState
+  );
 
   const handleRemoveProject = (project: ProjectType) => {
     if (project && project._id) {
       dispatch(removeProjectFromInvoiceAction(project._id));
     }
   };
+
+  // useEffect(() => {
+  //   setInvoiceNo(+adminState.data.invoiceNo + 1);
+  // });
 
   const navigate = useNavigate();
   const [editableProjects, setEditableProjects] = useState(projectsForInvoice);

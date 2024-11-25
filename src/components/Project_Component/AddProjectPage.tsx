@@ -32,6 +32,7 @@ import axios from "axios";
 import CompoLoadingProjects from "./CompoLoadingProjects";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { log } from "node:console";
+import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 function AddProjectPage({
   adminId,
   clientId,
@@ -116,6 +117,28 @@ function AddProjectPage({
     adminId: "",
     clientId: clientId || "",
   });
+
+  const {
+    loading: selectedProjectLoading,
+    data: selectedProjectData,
+    error: selectedProjectError,
+  } = useSelector((state: RootState) => state.selectedProjectState);
+
+  React.useEffect(() => {
+    if (selectedProjectLoading === "succeeded" && selectedProjectData) {
+      setProjectData({
+        adminId: selectedProjectData.adminId,
+        clientId: selectedProjectData.clientId,
+        projectName: selectedProjectData.projectName,
+        rate: selectedProjectData.rate,
+        workingPeriodType: selectedProjectData.workingPeriodType,
+        currencyType: selectedProjectData.currencyType,
+        conversionRate: selectedProjectData.conversionRate,
+        paymentStatus: selectedProjectData.paymentStatus,
+      });
+    }
+  }, [selectedProjectLoading, selectedProjectData, selectedProjectError]);
+
   const fetchExchangeRate = async () => {
     setLoadingRate(true);
     setRateError("");
@@ -156,6 +179,8 @@ function AddProjectPage({
     }
   };
   const navigate = useNavigate();
+
+  React.useEffect(() => {});
 
   React.useEffect(() => {
     if (adminId && adminLoding === "idle") {
@@ -362,7 +387,7 @@ function AddProjectPage({
               setTimeout(() => {
                 navigate(-1);
               }, 600)
-            } // Use navigate(-1) to go back
+            }
             className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
           >
             <IoChevronBackSharp />
