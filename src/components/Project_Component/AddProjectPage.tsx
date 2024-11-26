@@ -126,6 +126,7 @@ function AddProjectPage({
 
   React.useEffect(() => {
     if (selectedProjectLoading === "succeeded" && selectedProjectData) {
+      console.log(selectedProjectData, "<<<<<<");
       setProjectData({
         adminId: selectedProjectData.adminId,
         clientId: selectedProjectData.clientId,
