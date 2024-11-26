@@ -254,7 +254,7 @@ function AddProjectPage({
       setWorkPeriodType(value);
     }
   }
-
+  
   function areAllRequiredFieldsFilled(obj: any) {
     setFormError("");
     if (obj.projectName === "") {
@@ -348,7 +348,7 @@ function AddProjectPage({
       setIncompleteError("Incomplete fields");
     }
   };
-
+  
   React.useEffect(() => {
     if (forAddProject && toEdit) {
       setProjectData({
@@ -377,6 +377,7 @@ function AddProjectPage({
       setProjectData({ ...projectData, adminId });
     }
   }, [clientId, adminId]);
+
 
   return (
     <>
@@ -414,8 +415,9 @@ function AddProjectPage({
                   </label>
                   <Autocomplete
                     options={clientsArr}
-                    getOptionLabel={(option) => option.clientName}
-                    value={selectClient?.clientName ? selectClient : null}
+                    getOptionLabel={(option) => option.clientName || ""}
+                    value={clientsArr.find((client) => client._id === projectData.clientId) || null}
+
                     onChange={(event, newValue) => {
                       if (newValue && newValue._id) {
                         setFormError("");
@@ -618,7 +620,7 @@ function AddProjectPage({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          {!toEdit ? (
+          { forAddProject && !toEdit ?  (
             <Button
               onClick={(e) => handleAddSubmit(e)}
               style={{
