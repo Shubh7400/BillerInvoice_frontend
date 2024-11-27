@@ -22,7 +22,7 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-
+import { makeStateNeutralOfSelectedClient } from "../../states/redux/ClientStates/selectedClientSlice";
 function InvoiceClientPage() {
   const materialTheme = useTheme();
   const dispatch = useDispatch();
@@ -60,12 +60,17 @@ function InvoiceClientPage() {
   const invoiceObject = useSelector(
     (state: RootState) => state.invoiceObjectState
   );
+  const handleBackButton = ()=>{
+    dispatch(makeStateNeutralOfSelectedClient());
+    navigate(-1);
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center gap-2">
         <div className="flex items-center gap-2">
           <button
-            onClick={() => navigate(-1)}
+            onClick={handleBackButton}
             className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
           >
             <IoIosArrowBack />

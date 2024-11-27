@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useDispatch } from "react-redux";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -28,6 +29,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import Styles from "./ProjectTable.module.css";
+import { makeStateNeutralOfSelectedClient } from "../../states/redux/ClientStates/selectedClientSlice";
 
 interface CompoAddProjectProps {
   clientId: string | undefined;
@@ -46,7 +48,7 @@ export default function CompoAddProject({
   clientId,
   forAddProject,
   projectToEdit,
-  handleProjectEdit, 
+  handleProjectEdit,
   searchProjectName,
   projectTableforClient,
   setSearchProjectName,
@@ -72,10 +74,20 @@ export default function CompoAddProject({
   const [formError, setFormError] = useState("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleBackButtonClick = () => {
+    dispatch(makeStateNeutralOfSelectedClient());
     navigate(-1);
   };
- 
+  const handleAddProjectClick = () => {
+    dispatch(makeStateNeutralOfSelectedClient());
+    navigate(
+      !projectTableforClient
+        ? "/add-project"
+        : "/client/add-project"
+    );
+  }
+
   return (
     <>
       {forAddProject ? (
@@ -116,14 +128,7 @@ export default function CompoAddProject({
                   backgroundColor: "#4a6180",
                 },
               }}
-              onClick={() => {
-                // handleAddProjectClick();
-                navigate(
-                  !projectTableforClient
-                    ? "/add-project"
-                    : "/client/add-project"
-                );
-              }}
+                onClick={ handleAddProjectClick}
             >
               Add Project
             </Button>

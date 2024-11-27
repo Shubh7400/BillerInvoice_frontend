@@ -33,6 +33,7 @@ import CompoLoadingProjects from "./CompoLoadingProjects";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { log } from "node:console";
 import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+import { makeStateNeutralOfSelectedClient } from "../../states/redux/ClientStates/selectedClientSlice";
 function AddProjectPage({
   adminId,
   clientId,
@@ -351,7 +352,7 @@ function AddProjectPage({
       setIncompleteError("Incomplete fields");
     }
   };
- 
+
   React.useEffect(() => {
     if (forAddProject && toEdit) {
       setProjectData({
@@ -364,7 +365,7 @@ function AddProjectPage({
         paymentStatus: false,
         adminId: adminId ? adminId : "",
         clientId: clientId ? clientId : "",
-      });
+      }); 
     }
     if (!forAddProject && !toEdit && projectToEdit && projectToEdit._id) {
       let newProjectToEdit = { ...projectToEdit };
@@ -385,7 +386,6 @@ function AddProjectPage({
       setProjectData({ ...projectData, adminId });
     }
   }, [clientId, adminId]);
-
 
   return (
     <>
@@ -424,8 +424,7 @@ function AddProjectPage({
                   <Autocomplete
                     options={clientsArr}
                     getOptionLabel={(option) => option.clientName || ""}
-                    value={clientsArr.find((client) => client._id === projectData.clientId) || null}
-
+                    value={ clientsArr.find((client) => client._id === projectData.clientId) || null}
                     onChange={(event, newValue) => {
                       if (newValue && newValue._id) {
                         setFormError("");
@@ -435,7 +434,7 @@ function AddProjectPage({
                           clientId: newValue._id,
                         });
                       }
-                    }}
+                    }}                  
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -456,7 +455,7 @@ function AddProjectPage({
                     getOptionLabel={(option) => option.clientName}
                     value={
                       clientsArr.find((client) => client._id === clientId) ||
-                      null
+                      null 
                     }
                     disabled
                     renderInput={(params) => (
