@@ -148,7 +148,6 @@ function InvoiceClientPage() {
                     <TextField
                       variant="outlined"
                       size="small"
-                      autoFocus
                       onChange={(e) =>
                         handleInputChange(
                           project._id ?? "",
