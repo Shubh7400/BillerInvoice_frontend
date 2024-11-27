@@ -76,7 +76,6 @@ export default function CompoAddProject({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleBackButtonClick = () => {
-    dispatch(makeStateNeutralOfSelectedClient());
     navigate(-1);
   };
   const handleAddProjectClick = () => {

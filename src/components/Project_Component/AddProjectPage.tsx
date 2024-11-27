@@ -33,7 +33,6 @@ import CompoLoadingProjects from "./CompoLoadingProjects";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { log } from "node:console";
 import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
-import { makeStateNeutralOfSelectedClient } from "../../states/redux/ClientStates/selectedClientSlice";
 function AddProjectPage({
   adminId,
   clientId,
