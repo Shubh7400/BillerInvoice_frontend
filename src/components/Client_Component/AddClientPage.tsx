@@ -16,7 +16,7 @@ import {
   CountryInfoType,
   StateInfoType,
 } from "../../types/types";
-import SelectCountryStateCity from "../Home_Components/ClientSection/Compo_CountrySelect";
+import SelectCountryStateCity from "./Compo_CountrySelect";
 import { Alert, LinearProgress, Typography, useTheme } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
@@ -34,7 +34,6 @@ import "../../styles/addClient.css";
 import { Link } from "react-router-dom";
 import { Outlet, useNavigate } from "react-router-dom";
 import { IoChevronBackSharp } from "react-icons/io5";
-import SelectClient from "../Home_Components/ClientSection/SelectClient";
 
 export default function AddClientPage({
   forEditClient,
@@ -60,11 +59,9 @@ export default function AddClientPage({
   const [selectedCity, setSelectedCity] = useState<CityInfoType>(
     {} as CityInfoType
   );
-
   const [incompleteError, setIncompleteError] = useState("");
   const [formError, setFormError] = useState("");
   const navigate = useNavigate();
-  const navigateBack = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -87,7 +84,7 @@ export default function AddClientPage({
       city: selectedCountry.name,
       state: selectedState.name,
       country: selectedCity.name,
-      postalCode: "",
+      postalCode: "N/A",
     },
     user: "",
   });
@@ -203,7 +200,7 @@ export default function AddClientPage({
         },
       }));
     } else if (name === "pancardNo") {
-      const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/ || "";
+      const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
       if (value === "" || panRegex.test(value)) {
         setPanNumberError(null); // No error if value is empty or matches regex
       } else {
@@ -280,6 +277,11 @@ export default function AddClientPage({
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
+      // Skip the pancardNo field
+      if (key === "pancardNo") {
+        continue;
+      }
+
       if (typeof obj[key] === "object" && obj[key] !== null) {
         if (Array.isArray(obj[key])) {
           if (key === "email" && obj[key].length === 0) {
@@ -495,6 +497,8 @@ export default function AddClientPage({
             color: "#fff ",
             marginTop: "10px",
           }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           {forEditClient ? "Edit Client" : "Add Client"}
         </Button>

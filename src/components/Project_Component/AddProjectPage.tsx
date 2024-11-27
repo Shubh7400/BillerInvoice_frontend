@@ -29,9 +29,10 @@ import { AppDispatch, RootState } from "../../states/redux/store";
 import Select from "react-select";
 import { InputActionMeta } from "react-select";
 import axios from "axios";
-import CompoLoadingProjects from "../Home_Components/ProjectSection/CompoLoadingProjects";
+import CompoLoadingProjects from "./CompoLoadingProjects";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { log } from "node:console";
+import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 function AddProjectPage({
   adminId,
   clientId,
@@ -61,6 +62,7 @@ function AddProjectPage({
     data: clients,
     error: clientsError,
   } = useSelector((state: RootState) => state.allClientsState);
+
   const dispatch = useDispatch<AppDispatch>();
 
   const clientsArr: ClientType[] = clients.map((client) => ({
@@ -106,6 +108,7 @@ function AddProjectPage({
   const [loadingRate, setLoadingRate] = useState(false);
   const [rateError, setRateError] = useState("");
   const [projectData, setProjectData] = useState<ProjectType>({
+    _id:"",
     projectName: "",
     rate: 0,
     workingPeriodType: "hours",
@@ -113,8 +116,31 @@ function AddProjectPage({
     conversionRate: 1,
     paymentStatus: false,
     adminId: "",
-    clientId: "",
+    clientId: clientId || "",
   });
+  
+  const {
+    loading: selectedProjectLoading,
+    data: selectedProjectData,
+    error: selectedProjectError,
+  } = useSelector((state: RootState) => state.selectedProjectState);
+
+  React.useEffect(() => {
+    if (selectedProjectLoading === "succeeded" && selectedProjectData) {
+      setProjectData({
+        _id: selectedProjectData._id || "", 
+        adminId: selectedProjectData.adminId,
+        clientId: selectedProjectData.clientId,
+        projectName: selectedProjectData.projectName,
+        rate: selectedProjectData.rate,
+        workingPeriodType: selectedProjectData.workingPeriodType,
+        currencyType: selectedProjectData.currencyType,
+        conversionRate: selectedProjectData.conversionRate,
+        paymentStatus: selectedProjectData.paymentStatus,
+      });
+    }
+  }, [selectedProjectLoading, selectedProjectData, selectedProjectError]);
+
   const fetchExchangeRate = async () => {
     setLoadingRate(true);
     setRateError("");
@@ -151,10 +177,12 @@ function AddProjectPage({
     const value = e.target.value;
     setCurrencyType(value);
     if (value === "rupees") {
-      setConversionRate(1); // Default for INR
+      setConversionRate(1);
     }
   };
   const navigate = useNavigate();
+
+  React.useEffect(() => {});
 
   React.useEffect(() => {
     if (adminId && adminLoding === "idle") {
@@ -166,6 +194,16 @@ function AddProjectPage({
       }, 0);
     }
   }, [dispatch, adminId, adminLoding]);
+
+  React.useEffect(() => {
+    if (clientId && clientAddProject) {
+      console.log("alksdjiaohduoasdu", clientId);
+      setProjectData({
+        ...projectData,
+        clientId: clientId,
+      });
+    }
+  }, [clientId]);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -217,7 +255,7 @@ function AddProjectPage({
       setWorkPeriodType(value);
     }
   }
-
+  
   function areAllRequiredFieldsFilled(obj: any) {
     setFormError("");
     if (obj.projectName === "") {
@@ -242,7 +280,6 @@ function AddProjectPage({
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-
     if (areAllRequiredFieldsFilled(projectData)) {
       setLoading(true);
       addProjectMutation.mutate(projectData, {
@@ -251,10 +288,19 @@ function AddProjectPage({
           queryClient.refetchQueries(["projects", clientId]);
           setLoading(false);
           handleClose();
+          //  Success message after adding project
+          enqueueSnackbar("Project added successfully.", {
+            variant: "success",
+          });
+          navigate(-1);
         },
+
         onError(error) {
           setLoading(false);
           setIncompleteError("Add request error, add again.");
+          enqueueSnackbar("Error in adding project. Try again!", {
+            variant: "error",
+          });
         },
       });
     } else {
@@ -266,8 +312,7 @@ function AddProjectPage({
     projectData._id,
     projectData.clientId
   );
-
-  const handleEditSubmit = (
+    const handleEditSubmit = (
     e:
       | React.FormEvent<HTMLFormElement>
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -289,6 +334,9 @@ function AddProjectPage({
             });
 
             handleClose();
+            setTimeout(() => {
+              navigate(-1);
+            }, 600)
           },
           onError(error) {
             setLoading(false);
@@ -303,10 +351,11 @@ function AddProjectPage({
       setIncompleteError("Incomplete fields");
     }
   };
-
+ 
   React.useEffect(() => {
     if (forAddProject && toEdit) {
       setProjectData({
+        _id:"",
         projectName: "",
         rate: 0,
         workingPeriodType: "hours",
@@ -317,10 +366,14 @@ function AddProjectPage({
         clientId: clientId ? clientId : "",
       });
     }
-    if (!forAddProject && !toEdit && projectToEdit) {
+    if (!forAddProject && !toEdit && projectToEdit && projectToEdit._id) {
       let newProjectToEdit = { ...projectToEdit };
       delete newProjectToEdit.amount;
-      setProjectData(newProjectToEdit);
+      setProjectData((prevData) => ({
+        ...prevData,
+        _id: projectToEdit._id,
+      }));
+
     }
   }, [toEdit, forAddProject, projectToEdit, clientId, adminId]);
 
@@ -333,13 +386,18 @@ function AddProjectPage({
     }
   }, [clientId, adminId]);
 
+
   return (
     <>
       <div>
         {/* <Dialog open={open} onClose={handleClose}> */}
         <div className="flex gap-3 items-center mb-4 ">
           <button
-            onClick={() => navigate(-1)} // Use navigate(-1) to go back
+            onClick={() =>
+              setTimeout(() => {
+                navigate(-1);
+              }, 600)
+            }
             className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
           >
             <IoChevronBackSharp />
@@ -365,8 +423,9 @@ function AddProjectPage({
                   </label>
                   <Autocomplete
                     options={clientsArr}
-                    getOptionLabel={(option) => option.clientName}
-                    value={selectClient?.clientName ? selectClient : null}
+                    getOptionLabel={(option) => option.clientName || ""}
+                    value={clientsArr.find((client) => client._id === projectData.clientId) || null}
+
                     onChange={(event, newValue) => {
                       if (newValue && newValue._id) {
                         setFormError("");
@@ -569,7 +628,7 @@ function AddProjectPage({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          {!toEdit ? (
+          { forAddProject && !toEdit ?  (
             <Button
               onClick={(e) => handleAddSubmit(e)}
               style={{

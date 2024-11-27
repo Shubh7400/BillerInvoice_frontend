@@ -50,14 +50,11 @@ export interface ProjectType {
   amount?: number | null;
 }
 export interface UpdateProjectDataType {
-  _id: string;
+  _id?: string;
   projectName?: string;
-  projectManager?: string;
-  rate?: number;
-  projectPeriod?: number;
-  workingPeriod?: string | null;
-  workingPeriodType?: "hours" | "months";
-  currencyType?: "rupees" | "dollars" | "pounds";
+  rate?: number | null;
+  workingPeriodType: "hours" | "days" | "fixed";
+  currencyType: "rupees" | "dollars" | "pounds";
   conversionRate?: number;
   paymentStatus?: boolean;
   adminId: string;

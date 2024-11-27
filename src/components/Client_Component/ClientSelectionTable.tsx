@@ -11,22 +11,23 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getClientByIdAction,
   makeStateNeutralOfSelectedClient,
-} from "../../../states/redux/ClientStates/selectedClientSlice";
-import { AppDispatch, RootState } from "../../../states/redux/store";
-import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates/allClientSlice";
+} from "../../states/redux/ClientStates/selectedClientSlice";
+import { AppDispatch, RootState } from "../../states/redux/store";
+import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { CircularProgress, useTheme } from "@mui/material";
 import {
   deleteClientAction,
   makeStateLoadingNeutralInDeleteClient,
-} from "../../../states/redux/ClientStates/deleteClientSlice";
+} from "../../states/redux/ClientStates/deleteClientSlice";
 import { enqueueSnackbar } from "notistack";
 import CompoLoading from "./Compo-Loding";
-import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
+import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import CompoAddClient from "./Compo_AddClient";
-import ActionConfirmer from "../../SideBar/ActionConfirmer";
+import ActionConfirmer from "../SideBar/ActionConfirmer";
 import { useNavigate } from "react-router-dom";
-import { ClientType } from "../../../types/types";
+import { ClientType } from "../../types/types";
 import Styles from "./client.module.css";
+import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 
 type ClientSelectionTableProps = {
   clientsLoading: string;
@@ -71,12 +72,16 @@ export default function ClientSelectionTable({
     }
   }, [adminId, dispatch]);
 
+  React.useEffect(() => {
+    dispatch(removeAllProjectsFromInvoiceAction());
+  }, []);
+
   const handleDeleteClient = (clientId: string) => {
     if (clientId) {
       setDeletingClientIdString(clientId);
       dispatch(deleteClientAction(clientId));
     }
-  }
+  };
 
   const handleConfirmSelection = (clientId: string) => {
     if (clientId) {
@@ -122,14 +127,18 @@ export default function ClientSelectionTable({
                 })
                 .map((client: ClientType, index: number) => (
                   <TableRow key={client._id} className="p-3">
-                    <TableCell sx={{ paddingX: '10px',textAlign:'center'}}>{index + 1}</TableCell>
-                    <TableCell sx={{ padding: '0' }}>{client.clientName}</TableCell>
+                    <TableCell sx={{ paddingX: "10px", textAlign: "center" }}>
+                      {index + 1}
+                    </TableCell>
+                    <TableCell sx={{ padding: "0" }}>
+                      {client.clientName}
+                    </TableCell>
                     {/* <TableCell sx={{ padding: '0' }}>{client.email}</TableCell> */}
                     <TableCell sx={{ padding: "0" }}>
                       {client.email[0] || "No email provided"}{" "}
                       {/* Display only the first email */}
                     </TableCell>
-                    <TableCell sx={{ padding: '0' }}>{client.gistin}</TableCell>
+                    <TableCell sx={{ padding: "0" }}>{client.gistin}</TableCell>
                     <TableCell sx={{ padding: "0" }}>
                       <div className="flex">
                         <div className={Styles.editButton}>

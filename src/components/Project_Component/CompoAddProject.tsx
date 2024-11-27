@@ -8,11 +8,11 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { Alert, LinearProgress, MenuItem, useTheme } from "@mui/material";
-import { ProjectType, UpdateProjectDataType } from "../../../types/types";
+import { ProjectType, UpdateProjectDataType } from "../../types/types";
 import {
   useAddNewProject,
   useUpdateProject,
-} from "../../../states/query/Project_queries/projectQueries";
+} from "../../states/query/Project_queries/projectQueries";
 import {
   Grid,
   Typography,
@@ -21,7 +21,7 @@ import {
   styled,
   SelectChangeEvent,
 } from "@mui/material";
-import { queryClient } from "../../..";
+import { queryClient } from "../..";
 import { CiEdit } from "react-icons/ci";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
@@ -35,6 +35,7 @@ interface CompoAddProjectProps {
   forAddProject: boolean;
   projectId?: string | undefined;
   projectToEdit?: ProjectType;
+  handleProjectEdit: (projectToEdit: ProjectType) => void;
   searchProjectName?: string;
   projectTableforClient?: boolean;
   setSearchProjectName?: (data: string) => void;
@@ -47,6 +48,7 @@ export default function CompoAddProject({
   clientId,
   forAddProject,
   projectToEdit,
+  handleProjectEdit, 
   searchProjectName,
   projectTableforClient,
   setSearchProjectName,
@@ -78,7 +80,7 @@ export default function CompoAddProject({
   const handleBackButtonClick = () => {
     navigate(-1);
   };
-
+ 
   return (
     <>
       {forAddProject ? (
@@ -163,7 +165,9 @@ export default function CompoAddProject({
               cursor: "pointer",
             }}
             onClick={() => {
-              navigate("/edit-project");
+              if (projectToEdit) {
+                handleProjectEdit(projectToEdit);
+              }
             }}
           >
             <CiEdit size={25} />

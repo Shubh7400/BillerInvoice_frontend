@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ClientType, ProjectType } from "../../types/types";
 import { RootState } from "../../states/redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import ClientInfoSection from "../Client_Component/ClientInfoSection";
 import { Button, TextField, useTheme } from "@mui/material";
 import Styles from "./invoive.module.css";
 import { removeProjectFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
-import BillAmount from "../../components/Home_Components/InvoiceSection/BillAmount";
+import BillAmount from "./BillAmount";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -33,12 +33,19 @@ function InvoiceClientPage() {
   const { projectsForInvoice } = useSelector(
     (state: RootState) => state.projectsForInvoiceState
   );
+  const { loading:adminLoading, data:adminData, error:adminError } = useSelector(
+    (state: RootState) => state.adminState
+  );
 
   const handleRemoveProject = (project: ProjectType) => {
     if (project && project._id) {
       dispatch(removeProjectFromInvoiceAction(project._id));
     }
   };
+
+  // useEffect(() => {
+  //   setInvoiceNo(+adminState.data.invoiceNo + 1);
+  // });
 
   const navigate = useNavigate();
   const [editableProjects, setEditableProjects] = useState(projectsForInvoice);
@@ -50,20 +57,29 @@ function InvoiceClientPage() {
       )
     );
   };
-
+  const invoiceObject = useSelector(
+    (state: RootState) => state.invoiceObjectState
+  );
   return (
     <div>
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
-        >
-          <IoIosArrowBack />
-        </button>
-        <Typography variant="h5" component="h2" className="text-center">
-          CLIENT INFORMATION
-        </Typography>
+      <div className="flex justify-between items-center gap-2">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate(-1)}
+            className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
+          >
+            <IoIosArrowBack />
+          </button>
+          <Typography variant="h5" component="h2" className="text-center">
+            CLIENT INFORMATION
+          </Typography>
+        </div>
+        <div className="text-black mr-5">
+          <strong>Invoice Number: </strong>
+          {invoiceObject.invoiceNo}
+        </div>
       </div>
+
       <div>
         {clientObj && selectedClientState.loading !== "idle" ? (
           <ClientInfoSection />
@@ -74,24 +90,12 @@ function InvoiceClientPage() {
           <Table>
             <TableHead className={Styles.animated}>
               <TableRow>
-                <TableCell>
-                  <strong>Project Name</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Rate</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Working Time</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Conversion Rate</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Amount</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Remove</strong>
-                </TableCell>
+                <TableCell>Project Name</TableCell>
+                <TableCell>Rate</TableCell>
+                <TableCell>Working Time</TableCell>
+                <TableCell className="w-[175px]">Conversion Rate</TableCell>
+                <TableCell className="w-[110px]">Amount</TableCell>
+                <TableCell className="w-[110px]">Remove</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -100,7 +104,7 @@ function InvoiceClientPage() {
                   <TableCell className="text-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
                     {project.projectName}
                   </TableCell>
-                  <TableCell className="text-[13px]">
+                  <TableCell className="text-[13px] w-[150px]">
                     <TextField
                       variant="outlined"
                       size="small"
@@ -127,7 +131,21 @@ function InvoiceClientPage() {
                       }}
                     />
                   </TableCell>
-                  <TableCell className="text-[13px]">
+                  <TableCell className="text-[13px] w-[150px]">
+                    <TextField
+                      variant="outlined"
+                      size="small"
+                      autoFocus
+                      onChange={(e) =>
+                        handleInputChange(
+                          project._id ?? "",
+                          "workingPeriod",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell className="text-[13px] w-[150px]">
                     <TextField
                       variant="outlined"
                       size="small"
@@ -154,10 +172,10 @@ function InvoiceClientPage() {
                       }}
                     />
                   </TableCell>
-                  <TableCell className="text-[13px]">
+                  <TableCell className="text-[13px]w-[110px]">
                     &#x20B9; {project.amount ? project.amount : 0}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="w-[110px]">
                     <Button
                       onClick={() => handleRemoveProject(project)}
                       className={Styles.removeButton}

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState,useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Grid,
@@ -9,22 +9,22 @@ import {
   styled,
   SelectChangeEvent,
 } from "@mui/material";
-import { AppDispatch, RootState } from "../../../states/redux/store";
-import { AuthContext } from "../../../states/context/AuthContext/AuthContext";
-import { getAdminByIdAction } from "../../../states/redux/AdminStates/adminSlice";
-import { getAllClientsByAdminIdAction } from "../../../states/redux/ClientStates/allClientSlice";
-import ConfirmationDialog from "./Compo-ClientDialogeBox";
-import { ClientType } from "../../../types/types";
+import { AppDispatch, RootState } from "../../states/redux/store";
+import { AuthContext } from "../../states/context/AuthContext/AuthContext";
+import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
+import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
+import ClientSelectionTable from "./ClientSelectionTable";
+import { ClientType } from "../../types/types";
 import CompoLoading from "./Compo-Loding";
-import cubexoLogo from "../../../utils/images/cubexoLogo.webp";
-import gamaedgeLogo from "../../../utils/images/gammaedgeLogo.png";
+import cubexoLogo from "../../utils/images/cubexoLogo.webp";
+import gamaedgeLogo from "../../utils/images/gammaedgeLogo.png";
 import { useNavigate } from "react-router-dom";
 import { Button, TextField, useTheme } from "@mui/material";
 import { FaRegUser } from "react-icons/fa";
 import Styles from "./client.module.css";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
-const SelectClient = () => {
+const ClientPageHeader = () => {
   const { isAuth, adminId } = useContext(AuthContext);
   const navigate = useNavigate();
   const materialTheme = useTheme();
@@ -72,7 +72,7 @@ const SelectClient = () => {
   useEffect(() => {
     if (adminId && loading === "succeeded") {
       let timer = setTimeout(() => {
-      dispatch(getAllClientsByAdminIdAction(adminId));
+        dispatch(getAllClientsByAdminIdAction(adminId));
         return () => {
           clearTimeout(timer);
         };
@@ -97,7 +97,7 @@ const SelectClient = () => {
       window.location.reload();
     }
   }, [error, adminId, selectedClient.error]);
- 
+
   if (
     loading === "pending" ||
     // clients.loading === "pending" ||
@@ -125,7 +125,6 @@ const SelectClient = () => {
   return (
     <section>
       <div className="flex justify-between mb-4 items-center">
-
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}
@@ -171,7 +170,7 @@ const SelectClient = () => {
       </div>
       <div className="  top-2  z-10 ">
         <div>
-          <ConfirmationDialog
+          <ClientSelectionTable
             clientsLoading={clientsLoading}
             clients={clients}
             searchClientName={searchClientName}
@@ -182,4 +181,4 @@ const SelectClient = () => {
   );
 };
 
-export default SelectClient;
+export default ClientPageHeader;
