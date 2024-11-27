@@ -32,6 +32,7 @@ import { TransitionProps } from "@mui/material/transitions";
 import Styles from "./billi.module.css";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
+import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 // import CloseIcon from "@mui/icons-material/Close";
 const drawerBleeding = 56;
 let windowWidth: number | undefined = window.innerWidth;
@@ -71,7 +72,9 @@ export default function InvoiceDrawer() {
   );
 
   React.useEffect(() => {
-    setInvoiceNo(+adminState.data.invoiceNo + 1);
+    if (adminState.loading === "succeeded" && adminState.data) {
+      setInvoiceNo(+adminState.data.invoiceNo + 1);
+    }
     if (selectedClientState.data.sameState) {
       setClientSameState(selectedClientState.data.sameState);
     }
@@ -96,11 +99,8 @@ export default function InvoiceDrawer() {
 
   const generateAndDownloadPDF = async () => {
     const doc = new jsPDF();
-
-    // Define the content for your PDF
-    // Create a div to render your component
     const div = document.createElement("div");
-    div.style.width = "1050px"; /*put 793 for a4 size*/
+    div.style.width = "1050px";
     div.style.height = "1124px";
     document.body.appendChild(div);
 

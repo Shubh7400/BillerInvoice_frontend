@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ClientType, ProjectType } from "../../types/types";
-import { RootState } from "../../states/redux/store";
+import { AppDispatch, RootState } from "../../states/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import ClientInfoSection from "../Client_Component/ClientInfoSection";
 import { Button, TextField, useTheme } from "@mui/material";
@@ -22,10 +22,13 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import { AuthContext } from "../../states/context/AuthContext/AuthContext";
+import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
 
 function InvoiceClientPage() {
+  const { isAuth, adminId } = React.useContext(AuthContext);
   const materialTheme = useTheme();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const selectedClientState = useSelector(
     (state: RootState) => state.selectedClientState
   );
@@ -33,19 +36,12 @@ function InvoiceClientPage() {
   const { projectsForInvoice } = useSelector(
     (state: RootState) => state.projectsForInvoiceState
   );
-  const { loading:adminLoading, data:adminData, error:adminError } = useSelector(
-    (state: RootState) => state.adminState
-  );
 
   const handleRemoveProject = (project: ProjectType) => {
     if (project && project._id) {
       dispatch(removeProjectFromInvoiceAction(project._id));
     }
   };
-
-  // useEffect(() => {
-  //   setInvoiceNo(+adminState.data.invoiceNo + 1);
-  // });
 
   const navigate = useNavigate();
   const [editableProjects, setEditableProjects] = useState(projectsForInvoice);
@@ -57,6 +53,13 @@ function InvoiceClientPage() {
       )
     );
   };
+
+  React.useEffect(() => {
+    if (isAuth && adminId) {
+      dispatch(getAdminByIdAction(adminId));
+    }
+  }, [isAuth, adminId, dispatch]);
+
   const invoiceObject = useSelector(
     (state: RootState) => state.invoiceObjectState
   );
@@ -76,7 +79,13 @@ function InvoiceClientPage() {
         </div>
         <div className="text-black mr-5">
           <strong>Invoice Number: </strong>
-          {invoiceObject.invoiceNo}
+
+          <TextField
+            variant="outlined"
+            size="small"
+            value={invoiceObject.invoiceNo}
+            // onChange={(e) =>}
+          />
         </div>
       </div>
 
@@ -135,7 +144,6 @@ function InvoiceClientPage() {
                     <TextField
                       variant="outlined"
                       size="small"
-                      autoFocus
                       onChange={(e) =>
                         handleInputChange(
                           project._id ?? "",

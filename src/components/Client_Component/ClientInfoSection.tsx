@@ -32,24 +32,16 @@ function ClientInfoSection() {
                   {clientData.clientName}
                 </h2>
               </div>
-              <div className="flex items-center justify-between w-full">
-                <div>
-                  <p className="mt-2">
-                    <b>Gstin: </b>
-                    {clientData.gistin}
-                  </p>
-                  <p className="mb-2">
-                    <b>Address: </b>
-                    {fullAddress}
-                  </p>
-                </div>
-                <div className="text-black opacity-70 flex flex-col justify-start gap-1">
-                  <p className="overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden">
-                    <b>Email: </b>
-                    {firstEmail}
-                  </p>
-                </div>
+              <div>
+                <p className="overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden">
+                  <b>Email: </b>
+                  {firstEmail}
+                </p>
               </div>
+              <p className="mb-2">
+                <b>Address: </b>
+                {fullAddress}
+              </p>
             </div>
           </div>
         </div>
