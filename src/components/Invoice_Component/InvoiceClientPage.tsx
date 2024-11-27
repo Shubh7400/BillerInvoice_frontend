@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
-
+import { makeStateNeutralOfSelectedClient } from "../../states/redux/ClientStates/selectedClientSlice";
 function InvoiceClientPage() {
   const { isAuth, adminId } = React.useContext(AuthContext);
   const materialTheme = useTheme();
@@ -63,12 +63,16 @@ function InvoiceClientPage() {
   const invoiceObject = useSelector(
     (state: RootState) => state.invoiceObjectState
   );
+  const handleBackButton = ()=>{
+    navigate(-1);
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center gap-2">
         <div className="flex items-center gap-2">
           <button
-            onClick={() => navigate(-1)}
+            onClick={handleBackButton}
             className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
           >
             <IoIosArrowBack />
