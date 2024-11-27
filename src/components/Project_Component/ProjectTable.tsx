@@ -272,6 +272,8 @@ const ProjectTable = ({
           projectTableforClient={projectTableforClient}
           setSearchProjectName={handleSearchProjectName}
           searchProjectName={searchProjectName}
+          handleProjectEdit={handleEditProject}
+          
         />
         {clientObj &&
         selectedClientState.loading !== "idle" &&
@@ -615,6 +617,7 @@ const ProjectTable = ({
                                 adminId={adminId}
                                 forAddProject={false}
                                 projectToEdit={project}
+                                handleProjectEdit={handleEditProject} 
                               />
                             </div>
                             <div className={Styles.editButton}>
