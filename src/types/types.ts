@@ -50,7 +50,7 @@ export interface ProjectType {
   amount?: number | null;
 }
 export interface UpdateProjectDataType {
-  _id: string;
+  _id?: string;
   projectName?: string;
   rate?: number | null;
   workingPeriodType: "hours" | "days" | "fixed";

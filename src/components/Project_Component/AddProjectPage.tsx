@@ -108,6 +108,7 @@ function AddProjectPage({
   const [loadingRate, setLoadingRate] = useState(false);
   const [rateError, setRateError] = useState("");
   const [projectData, setProjectData] = useState<ProjectType>({
+    _id:"",
     projectName: "",
     rate: 0,
     workingPeriodType: "hours",
@@ -117,7 +118,7 @@ function AddProjectPage({
     adminId: "",
     clientId: clientId || "",
   });
-
+  
   const {
     loading: selectedProjectLoading,
     data: selectedProjectData,
@@ -126,8 +127,8 @@ function AddProjectPage({
 
   React.useEffect(() => {
     if (selectedProjectLoading === "succeeded" && selectedProjectData) {
-      console.log(selectedProjectData, "<<<<<<");
       setProjectData({
+        _id: selectedProjectData._id || "", 
         adminId: selectedProjectData.adminId,
         clientId: selectedProjectData.clientId,
         projectName: selectedProjectData.projectName,
@@ -311,8 +312,7 @@ function AddProjectPage({
     projectData._id,
     projectData.clientId
   );
-
-  const handleEditSubmit = (
+    const handleEditSubmit = (
     e:
       | React.FormEvent<HTMLFormElement>
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -334,6 +334,9 @@ function AddProjectPage({
             });
 
             handleClose();
+            setTimeout(() => {
+              navigate(-1);
+            }, 600)
           },
           onError(error) {
             setLoading(false);
@@ -348,10 +351,11 @@ function AddProjectPage({
       setIncompleteError("Incomplete fields");
     }
   };
-  
+ 
   React.useEffect(() => {
     if (forAddProject && toEdit) {
       setProjectData({
+        _id:"",
         projectName: "",
         rate: 0,
         workingPeriodType: "hours",
@@ -362,10 +366,14 @@ function AddProjectPage({
         clientId: clientId ? clientId : "",
       });
     }
-    if (!forAddProject && !toEdit && projectToEdit) {
+    if (!forAddProject && !toEdit && projectToEdit && projectToEdit._id) {
       let newProjectToEdit = { ...projectToEdit };
       delete newProjectToEdit.amount;
-      setProjectData(newProjectToEdit);
+      setProjectData((prevData) => ({
+        ...prevData,
+        _id: projectToEdit._id,
+      }));
+
     }
   }, [toEdit, forAddProject, projectToEdit, clientId, adminId]);
 

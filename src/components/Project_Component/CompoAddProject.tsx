@@ -35,6 +35,7 @@ interface CompoAddProjectProps {
   forAddProject: boolean;
   projectId?: string | undefined;
   projectToEdit?: ProjectType;
+  handleProjectEdit: (projectToEdit: ProjectType) => void;
   searchProjectName?: string;
   projectTableforClient?: boolean;
   setSearchProjectName?: (data: string) => void;
@@ -45,6 +46,7 @@ export default function CompoAddProject({
   clientId,
   forAddProject,
   projectToEdit,
+  handleProjectEdit, 
   searchProjectName,
   projectTableforClient,
   setSearchProjectName,
@@ -73,7 +75,7 @@ export default function CompoAddProject({
   const handleBackButtonClick = () => {
     navigate(-1);
   };
-  // console.log(projectToEdit, " <<<<<<<<< >>>>");
+ 
   return (
     <>
       {forAddProject ? (
@@ -143,7 +145,9 @@ export default function CompoAddProject({
               cursor: "pointer",
             }}
             onClick={() => {
-              navigate("/edit-project");
+              if (projectToEdit) {
+                handleProjectEdit(projectToEdit);
+              }
             }}
           >
             <CiEdit size={25} />
