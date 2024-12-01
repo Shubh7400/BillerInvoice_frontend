@@ -64,6 +64,7 @@ const ProjectTable = ({
 
   const [ProjectData, setProjectData] = useState<ProjectType[]>([]);
   const [searchProjectName, setSearchProjectName] = useState("");
+  const [searchDetailProjectName, setSearchDetailProjectName] = useState("");
   const { isLoading, data, isError } = useFetchAllProjectsByAdminId(
     adminId,
     projectTableforClient
@@ -122,6 +123,7 @@ const ProjectTable = ({
     clientProjectTableData,
     clientProjectTableError,
     projectTableforClient,
+    adminId,
   ]);
 
   useEffect(() => {
@@ -131,9 +133,7 @@ const ProjectTable = ({
   const [allChecked, setAllChecked] = useState<boolean>();
   type CheckboxRefType = Array<HTMLInputElement | null>;
   const checkboxesRefs = useRef<CheckboxRefType>([]);
-  const [selectedProjectId, setSelectedProjectId] = React.useState<
-    string | undefined
-  >("");
+  const [selectedProjectId, setSelectedProjectId] = React.useState<string | undefined>("");
   const [projectDetails, setProjectDetails] = useState<ProjectType[]>([]);
   const [projectId, setProjectId] = React.useState<any>([]);
   const { projectsForInvoice } = useSelector(
@@ -207,7 +207,10 @@ const ProjectTable = ({
   //   }
   // };
   const handleSearchProjectName = (data: string) => {
-    setSearchProjectName(data);
+    setSearchProjectName?.(data); // Safely call only if defined
+  };
+  const handleSearchDetailProjectName = (data: string) => {
+    setSearchDetailProjectName?.(data);
   };
   const handleSingleCheckboxChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -276,8 +279,8 @@ const ProjectTable = ({
           
         />
         {clientObj &&
-        selectedClientState.loading !== "idle" &&
-        projectTableforClient ? (
+          selectedClientState.loading !== "idle" &&
+          projectTableforClient ? (
           <ClientInfoSection />
         ) : null}
       </div>
@@ -296,9 +299,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                (clientProjectTableData &&
-                  (clientProjectTableData === "" ||
-                    clientProjectTableData.length <= 0)) ? (
+                  (clientProjectTableData &&
+                    (clientProjectTableData === "" ||
+                      clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -472,9 +475,9 @@ const ProjectTable = ({
         <>
           {/* Project Table for Client  */}
           {clientProjectTableError ||
-          clientProjectTableLoading ||
-          clientProjectTableData === "" ||
-          clientProjectTableData.length <= 0 ? (
+            clientProjectTableLoading ||
+            clientProjectTableData === "" ||
+            clientProjectTableData.length <= 0 ? (
             <div>
               <div></div>
               <div className="text-xl font-bold text-center p-4 ">
@@ -487,9 +490,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                (clientProjectTableData &&
-                  (clientProjectTableData === "" ||
-                    clientProjectTableData.length <= 0)) ? (
+                  (clientProjectTableData &&
+                    (clientProjectTableData === "" ||
+                      clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -556,7 +559,12 @@ const ProjectTable = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {ProjectData?.map((project: ProjectType, index: number) => (
+                    {ProjectData.filter((project) => {
+                      if (searchDetailProjectName.length <= 0) return true;
+                      return project.projectName
+                        .toLowerCase()
+                        .startsWith(searchDetailProjectName.toLowerCase());
+                    }).map((project: ProjectType, index: number) => (
                       <TableRow key={project._id} className="p-3">
                         <TableCell
                           style={{
