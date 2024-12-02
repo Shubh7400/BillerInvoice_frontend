@@ -13,8 +13,6 @@ import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState, store } from "../../states/redux/store";
 import { useSnackbar } from "notistack";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
@@ -176,43 +174,7 @@ export default function InvoiceDrawer() {
     }, 100);
   };
 
-  const handleInvoiceDateChange = (newDate: dayjs.Dayjs | null) => {
-    if (!newDate) {
-      enqueueSnackbar("Invalid date select again", {
-        variant: "error",
-      });
-      dispatch(updateInvoiceObjectStateAction({ billDate: "" }));
-      return;
-    }
-
-    if (newDate) {
-      setInvoiceDate(newDate);
-      const iso8601InvoiceDate = newDate.toISOString();
-      dispatch(
-        updateInvoiceObjectStateAction({ billDate: iso8601InvoiceDate })
-      );
-    }
-  };
-  const handleDueDateChange = (newDate: dayjs.Dayjs | null) => {
-    if (!newDate) {
-      dispatch(updateInvoiceObjectStateAction({ dueDate: "" }));
-      setAllowDownload(false);
-      return;
-    }
-    if (newDate.isBefore(invoiceDate)) {
-      enqueueSnackbar("Due date cannot be before invoice date.", {
-        variant: "error",
-      });
-      setAllowDownload(false);
-      dispatch(updateInvoiceObjectStateAction({ dueDate: "" }));
-      return;
-    } else {
-      setDueDate(newDate);
-      setAllowDownload(true);
-      const iso8601DueDate = newDate.toISOString();
-      dispatch(updateInvoiceObjectStateAction({ dueDate: iso8601DueDate }));
-    }
-  };
+  
 
   const toggleDrawer = (newOpen: boolean) => {
     if (projectsForInvoice && projectsForInvoice.length > 0) {
@@ -230,7 +192,7 @@ export default function InvoiceDrawer() {
           amountPreTax += project.amount;
           amountPreTax = +amountPreTax.toFixed(2);
         }
-      });
+      });   
       let tax = (amountPreTax * 18) / 100;
       let amountPostTax = +(amountPreTax + tax).toFixed(2);
       setAmountWithoutTax(amountPreTax);
@@ -426,48 +388,6 @@ export default function InvoiceDrawer() {
               color: "whitesmoke",
             }}
           >
-            {windowWidth && windowWidth > 768 ? (
-              <>
-                <DemoItem>
-                  <label style={{ color: textColor }}>Invoice date</label>
-                  <DesktopDatePicker
-                    defaultValue={invoiceDate}
-                    onChange={(newDate) => handleInvoiceDateChange(newDate)}
-                    format="DD/MM/YYYY"
-                    // label="Invoice date"
-                    sx={{ backgroundColor: "#cecece" }}
-                  />
-                </DemoItem>
-                <DemoItem>
-                  <label style={{ color: textColor }}>Due date</label>
-                  <DesktopDatePicker
-                    defaultValue={dueDate}
-                    onChange={(newDate) => handleDueDateChange(newDate)}
-                    format="DD/MM/YYYY"
-                    sx={{ backgroundColor: "#cecece" }}
-                  />
-                </DemoItem>
-              </>
-            ) : (
-              <>
-                <DemoItem>
-                  <label style={{ color: textColor }}>Invoice date</label>
-                  <MobileDatePicker
-                    defaultValue={invoiceDate}
-                    onChange={(newDate) => handleInvoiceDateChange(newDate)}
-                    format="DD/MM/YYYY"
-                  />
-                </DemoItem>
-                <DemoItem>
-                  <label style={{ color: textColor }}>Due date</label>
-                  <MobileDatePicker
-                    defaultValue={dueDate}
-                    onChange={(newDate) => handleDueDateChange(newDate)}
-                    format="DD/MM/YYYY"
-                  />
-                </DemoItem>
-              </>
-            )}
           </Box>
           {/*Bill section*/}
           <Box
@@ -489,15 +409,15 @@ export default function InvoiceDrawer() {
               {clientSameState ? (
                 <>
                   <div className="flex justify-between ">
-                    SGST:(9%)<span>{taxAmount / 2}</span>
+                    SGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between ">
-                    CGST:(9%)<span>{taxAmount / 2}</span>
+                    CGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
                   </div>
                 </>
               ) : (
                 <div className="flex justify-between ">
-                  CGST:(18%)<span>{taxAmount}</span>
+                  CGST:(18%)<span>{taxAmount.toFixed(2)}</span>
                 </div>
               )}
             </Box>

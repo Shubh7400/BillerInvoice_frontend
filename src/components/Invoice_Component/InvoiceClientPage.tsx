@@ -25,6 +25,14 @@ import {
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
 import { makeStateNeutralOfSelectedClient } from "../../states/redux/ClientStates/selectedClientSlice";
+
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import dayjs, { Dayjs } from "dayjs";
+import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
+import { useSnackbar } from "notistack";
+let windowWidth: number | undefined = window.innerWidth;
 function InvoiceClientPage() {
   const { isAuth, adminId } = React.useContext(AuthContext);
   const materialTheme = useTheme();
@@ -49,11 +57,49 @@ function InvoiceClientPage() {
   const handleInputChange = (id: string, field: string, value: any) => {
     setEditableProjects((prevProjects) =>
       prevProjects.map((project) =>
-        project._id === id ? { ...project, [field]: value } : project
+       {
+        if (project._id === id) {
+          const updatedProject = { ...project, [field]: value };
+  
+          // Perform amount calculation if rate and workingPeriodType are present
+          if (updatedProject.rate && updatedProject.workingPeriodType) {
+            if (updatedProject.workingPeriodType === "hours") {
+              updatedProject.amount = updatedProject.rate * 8; // Assuming 8 hours in a workday
+            } else if (updatedProject.workingPeriodType === "days") {
+              updatedProject.amount = updatedProject.rate * 30; // Assuming 30 days in a month
+            } else {
+              updatedProject.amount = updatedProject.rate; // For "fixed", use the rate directly
+            }
+          }
+  
+          return updatedProject;
+        }
+        return project;
+      }
       )
     );
   };
-
+ 
+  useEffect(() => {
+    const updatedProjects = projectsForInvoice.map((project) => {
+     
+      let amount = 0;
+      if (project.rate && project.workingPeriodType) {
+        if (project.workingPeriodType === "hours") {
+          amount = project.rate * 8; 
+        } else if (project.workingPeriodType === "days") {
+          amount = project.rate * 30; 
+        } else if (project.workingPeriodType === "fixed") {
+          amount = project.rate; 
+        }
+      }
+      
+      return { ...project, amount };
+    });
+  
+    setEditableProjects(updatedProjects); 
+  }, [projectsForInvoice]); 
+  
   React.useEffect(() => {
     if (isAuth && adminId) {
       dispatch(getAdminByIdAction(adminId));
@@ -66,6 +112,51 @@ function InvoiceClientPage() {
   const handleBackButton = ()=>{
     navigate(-1);
   }
+
+ 
+  const [invoiceDate, setInvoiceDate] = React.useState(dayjs());
+  const [dueDate, setDueDate] = React.useState(dayjs());
+  const [textColor, setTextColor] = React.useState("black");
+  const [allowDownload, setAllowDownload] = React.useState(true);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleInvoiceDateChange = (newDate: dayjs.Dayjs | null) => {
+    if (!newDate) {
+      enqueueSnackbar("Invalid date select again", {
+        variant: "error",
+      });
+      dispatch(updateInvoiceObjectStateAction({ billDate: "" }));
+      return;
+    }
+
+    if (newDate) {
+      setInvoiceDate(newDate);
+      const iso8601InvoiceDate = newDate.toISOString();
+      dispatch(
+        updateInvoiceObjectStateAction({ billDate: iso8601InvoiceDate })
+      );
+    }
+  };
+  const handleDueDateChange = (newDate: dayjs.Dayjs | null) => {
+    if (!newDate) {
+      dispatch(updateInvoiceObjectStateAction({ dueDate: "" }));
+      setAllowDownload(false);
+      return;
+    }
+    if (newDate.isBefore(invoiceDate)) {
+      enqueueSnackbar("Due date cannot be before invoice date.", {
+        variant: "error",
+      });
+      setAllowDownload(false);
+      dispatch(updateInvoiceObjectStateAction({ dueDate: "" }));
+      return;
+    } else {
+      setDueDate(newDate);
+      setAllowDownload(true);
+      const iso8601DueDate = newDate.toISOString();
+      dispatch(updateInvoiceObjectStateAction({ dueDate: iso8601DueDate }));
+    }
+  };
 
   return (
     <div>
@@ -81,7 +172,8 @@ function InvoiceClientPage() {
             CLIENT INFORMATION
           </Typography>
         </div>
-        <div className="text-black mr-5">
+       <div>
+       <div className="text-black mr-5">
           <strong>Invoice Number: </strong>
 
           <TextField
@@ -91,7 +183,52 @@ function InvoiceClientPage() {
             // onChange={(e) =>}
           />
         </div>
+        <div>
+      {windowWidth && windowWidth > 768 ? (
+              <>
+                <DemoItem>
+                  <label style={{ color: textColor }}>Invoice date</label>
+                  <DesktopDatePicker
+                    defaultValue={invoiceDate}
+                    onChange={(newDate) => handleInvoiceDateChange(newDate)}
+                    format="DD/MM/YYYY"
+                    // label="Invoice date"
+                    sx={{ backgroundColor: "#cecece" }}
+                  />
+                </DemoItem>
+                <DemoItem>
+                  <label style={{ color: textColor }}>Due date</label>
+                  <DesktopDatePicker
+                    defaultValue={dueDate}
+                    onChange={(newDate) => handleDueDateChange(newDate)}
+                    format="DD/MM/YYYY"
+                    sx={{ backgroundColor: "#cecece" }}
+                  />
+                </DemoItem>
+              </>
+            ) : (
+              <>
+                <DemoItem>
+                  <label style={{ color: textColor }}>Invoice date</label>
+                  <MobileDatePicker
+                    defaultValue={invoiceDate}
+                    onChange={(newDate) => handleInvoiceDateChange(newDate)}
+                    format="DD/MM/YYYY"
+                  />
+                </DemoItem>
+                <DemoItem>
+                  <label style={{ color: textColor }}>Due date</label>
+                  <MobileDatePicker
+                    defaultValue={dueDate}
+                    onChange={(newDate) => handleDueDateChange(newDate)}
+                    format="DD/MM/YYYY"
+                  />
+                </DemoItem>
+              </>
+            )}
       </div>
+       </div>
+      </div>    
 
       <div>
         {clientObj && selectedClientState.loading !== "idle" ? (
@@ -148,6 +285,7 @@ function InvoiceClientPage() {
                     <TextField
                       variant="outlined"
                       size="small"
+                      value={project.workingPeriodType || ""}
                       onChange={(e) =>
                         handleInputChange(
                           project._id ?? "",
@@ -156,7 +294,7 @@ function InvoiceClientPage() {
                         )
                       }
                     />
-                  </TableCell>
+                  </TableCell>                 
                   <TableCell className="text-[13px] w-[150px]">
                     <TextField
                       variant="outlined"
@@ -185,7 +323,7 @@ function InvoiceClientPage() {
                     />
                   </TableCell>
                   <TableCell className="text-[13px]w-[110px]">
-                    &#x20B9; {project.amount ? project.amount : 0}
+                    &#x20B9;{project.amount ? project.amount.toFixed(2) : 0}
                   </TableCell>
                   <TableCell className="w-[110px]">
                     <Button

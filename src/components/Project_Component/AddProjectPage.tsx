@@ -182,7 +182,6 @@ function AddProjectPage({
   };
   const navigate = useNavigate();
 
-  React.useEffect(() => {});
 
   React.useEffect(() => {
     if (adminId && adminLoding === "idle") {

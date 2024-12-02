@@ -79,7 +79,10 @@ export default function CompoAddProject({
     navigate(-1);
   };
   const handleAddProjectClick = () => {
-    dispatch(makeStateNeutralOfSelectedClient());
+   
+    if(!projectTableforClient){
+      dispatch(makeStateNeutralOfSelectedClient());
+    }
     navigate(
       !projectTableforClient
         ? "/add-project"
