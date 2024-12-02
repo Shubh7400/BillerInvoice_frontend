@@ -29,8 +29,10 @@ import { makeStateNeutralOfSelectedClient } from "../../states/redux/ClientState
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import MenuItem from "@mui/material/MenuItem";
 import dayjs, { Dayjs } from "dayjs";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
+import { updateProjectForInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import { useSnackbar } from "notistack";
 let windowWidth: number | undefined = window.innerWidth;
 function InvoiceClientPage() {
@@ -56,22 +58,22 @@ function InvoiceClientPage() {
 
   const handleInputChange = (id: string, field: string, value: any) => {
     setEditableProjects((prevProjects) =>
-      prevProjects.map((project) =>
-       {
+      prevProjects.map((project) => {
         if (project._id === id) {
           const updatedProject = { ...project, [field]: value };
-  
           // Perform amount calculation if rate and workingPeriodType are present
           if (updatedProject.rate && updatedProject.workingPeriodType) {
             if (updatedProject.workingPeriodType === "hours") {
-              updatedProject.amount = updatedProject.rate * 8; // Assuming 8 hours in a workday
+              updatedProject.amount = updatedProject.rate * 8 * updatedProject.conversionRate; // Assuming 8 hours in a workday
             } else if (updatedProject.workingPeriodType === "days") {
-              updatedProject.amount = updatedProject.rate * 30; // Assuming 30 days in a month
+              updatedProject.amount = updatedProject.rate * 30 * updatedProject.conversionRate; // Assuming 30 days in a month
             } else {
-              updatedProject.amount = updatedProject.rate; // For "fixed", use the rate directly
+              updatedProject.amount = updatedProject.rate * updatedProject.conversionRate; // For "fixed", use the rate directly
             }
           }
-  
+           // Dispatch the update action
+        dispatch(updateProjectForInvoiceAction(updatedProject));
+        // dispatch( updateInvoiceObjectStateAction(updatedProject));
           return updatedProject;
         }
         return project;
@@ -79,27 +81,27 @@ function InvoiceClientPage() {
       )
     );
   };
- 
+
   useEffect(() => {
     const updatedProjects = projectsForInvoice.map((project) => {
-     
+
       let amount = 0;
       if (project.rate && project.workingPeriodType) {
         if (project.workingPeriodType === "hours") {
-          amount = project.rate * 8; 
+          amount = project.rate * 8 * project.conversionRate;
         } else if (project.workingPeriodType === "days") {
-          amount = project.rate * 30; 
+          amount = project.rate * 30 * project.conversionRate;
         } else if (project.workingPeriodType === "fixed") {
-          amount = project.rate; 
+          amount = project.rate * project.conversionRate;
         }
       }
-      
+
       return { ...project, amount };
     });
-  
-    setEditableProjects(updatedProjects); 
-  }, [projectsForInvoice]); 
-  
+
+    setEditableProjects(updatedProjects);
+  }, [projectsForInvoice]);
+
   React.useEffect(() => {
     if (isAuth && adminId) {
       dispatch(getAdminByIdAction(adminId));
@@ -109,11 +111,11 @@ function InvoiceClientPage() {
   const invoiceObject = useSelector(
     (state: RootState) => state.invoiceObjectState
   );
-  const handleBackButton = ()=>{
+  const handleBackButton = () => {
     navigate(-1);
   }
 
- 
+
   const [invoiceDate, setInvoiceDate] = React.useState(dayjs());
   const [dueDate, setDueDate] = React.useState(dayjs());
   const [textColor, setTextColor] = React.useState("black");
@@ -172,19 +174,19 @@ function InvoiceClientPage() {
             CLIENT INFORMATION
           </Typography>
         </div>
-       <div>
-       <div className="text-black mr-5">
-          <strong>Invoice Number: </strong>
-
-          <TextField
-            variant="outlined"
-            size="small"
-            value={invoiceObject.invoiceNo}
-            // onChange={(e) =>}
-          />
-        </div>
         <div>
-      {windowWidth && windowWidth > 768 ? (
+          <div className="text-black mr-5">
+            <strong>Invoice Number: </strong>
+
+            <TextField
+              variant="outlined"
+              size="small"
+              value={invoiceObject.invoiceNo}
+            // onChange={(e) =>}
+            />
+          </div>
+          <div>
+            {windowWidth && windowWidth > 768 ? (
               <>
                 <DemoItem>
                   <label style={{ color: textColor }}>Invoice date</label>
@@ -226,15 +228,17 @@ function InvoiceClientPage() {
                 </DemoItem>
               </>
             )}
+          </div>
+        </div>
       </div>
-       </div>
-      </div>    
 
       <div>
         {clientObj && selectedClientState.loading !== "idle" ? (
           <ClientInfoSection />
         ) : null}
       </div>
+      
+      {projectsForInvoice.length > 0 ? (
       <div className="rounded-[20px]">
         <TableContainer component={Paper} className={`${Styles.table_scroll}`}>
           <Table>
@@ -272,10 +276,10 @@ function InvoiceClientPage() {
                             {project.currencyType === "rupees"
                               ? "₹"
                               : project.currencyType === "dollars"
-                              ? "$"
-                              : project.currencyType === "pounds"
-                              ? "£"
-                              : ""}
+                                ? "$"
+                                : project.currencyType === "pounds"
+                                  ? "£"
+                                  : ""}
                           </span>
                         ),
                       }}
@@ -283,18 +287,25 @@ function InvoiceClientPage() {
                   </TableCell>
                   <TableCell className="text-[13px] w-[150px]">
                     <TextField
+                      select
                       variant="outlined"
                       size="small"
                       value={project.workingPeriodType || ""}
                       onChange={(e) =>
                         handleInputChange(
                           project._id ?? "",
-                          "workingPeriod",
+                          "workingPeriodType",
                           e.target.value
                         )
                       }
-                    />
-                  </TableCell>                 
+                    >
+
+                      <MenuItem value="hours">Hours</MenuItem>
+                      <MenuItem value="days">Months</MenuItem>
+                      <MenuItem value="fixed">Fixed</MenuItem>
+                    </TextField>
+
+                  </TableCell>
                   <TableCell className="text-[13px] w-[150px]">
                     <TextField
                       variant="outlined"
@@ -313,10 +324,10 @@ function InvoiceClientPage() {
                             {project.currencyType === "rupees"
                               ? "₹"
                               : project.currencyType === "dollars"
-                              ? "$"
-                              : project.currencyType === "pounds"
-                              ? "£"
-                              : ""}
+                                ? "$"
+                                : project.currencyType === "pounds"
+                                  ? "£"
+                                  : ""}
                           </span>
                         ),
                       }}
@@ -338,17 +349,18 @@ function InvoiceClientPage() {
             </TableBody>
           </Table>
         </TableContainer>
+        <BillAmount />
       </div>
-      <div>
-        {projectsForInvoice.length > 0 ? (
-          <BillAmount />
-        ) : (
+      
+      ) 
+      :(<div>
           <div className="flex flex-col h-[60vh] justify-center items-center ">
             <img src={error} alt="No project selected" className="w-[300px]" />
             <p>No Project Selected</p>
           </div>
-        )}
       </div>
+      )}
+    
     </div>
   );
 }
