@@ -41,3 +41,23 @@ export async function getAllInvoice() {
     );
   }
 }
+
+export async function getInvoiceCounts(year: string, user: string) {
+  let token = localStorage.getItem("billAppAuthToken");
+  if (token) {
+    token = token.substring(1, token.length - 1);
+  }
+
+  try {
+    const response = await axios.get(`${config.apiUrlInvoice}/monthly-count`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: { year, user },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch invoice counts: ${error.message || error}`);
+  }
+};

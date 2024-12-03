@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Grid, Typography, Select, MenuItem, FormControl, styled, SelectChangeEvent } from '@mui/material';
 import Styles from './invoive.module.css';
 import one from '../assets/001.gif';
@@ -11,6 +11,13 @@ import { IoIosArrowBack } from "react-icons/io";
 import { FaArrowRight } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { Button } from '@mui/material';
+import { RootState } from "../../states/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchInvoiceCounts } from '../../states/redux/InvoiceProjectState/invoiceCountSlice';
+import { AppDispatch } from '../../states/redux/store';
+import { useContext } from "react";
+import { AuthContext } from '../../states/context/AuthContext/AuthContext';
+
 const tabsContent: YearContent[] = [
   {
     label: '2022',
@@ -127,20 +134,23 @@ interface YearContent {
 
 const TabPillsComponent: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const currentYear = new Date().getFullYear();
+  const invoiceCounts = useSelector((state: RootState) => state.InvoiceCountState);
+  const { adminId } = useContext(AuthContext);
 
-  // Find the index of the current year in tabsContent
-  const currentYearIndex = tabsContent.findIndex(tab => tab.label === currentYear.toString());
-
-  // Initialize dropdownIndex with the current year index
-  const [dropdownIndex, setDropdownIndex] = useState<number>(currentYearIndex >= 0 ? currentYearIndex : 0);
-  const [tabIndex, setTabIndex] = useState<number>(dropdownIndex);
+  const [dropdownIndex, setDropdownIndex] = useState<number>(0);
+  useEffect(() => {
+    if (adminId) {
+      const selectedYear = tabsContent[dropdownIndex].label;
+      dispatch(fetchInvoiceCounts({ year: selectedYear, user: adminId }));
+    }
+  }, [dropdownIndex, adminId, dispatch]);
 
   const handleDropdownChange = (event: SelectChangeEvent<unknown>) => {
     const newIndex = Number(event.target.value as string);
     setDropdownIndex(newIndex);
-    setTabIndex(newIndex);
-  };
+    };
 
   const monthNames = Object.keys(tabsContent[dropdownIndex].content);
 
@@ -177,10 +187,14 @@ const TabPillsComponent: React.FC = () => {
 
       {/* Dropdown Content */}
       <Grid container spacing={2}>
-        {monthNames.map((month, index) => {
+        {monthNames.map((month: string, index: number) => {
+          const apiMonthData = invoiceCounts.data.find(
+            (data) => data.month === index + 1
+          );
+        
           const isCurrentYear = tabsContent[dropdownIndex].label === currentYear.toString();
           const isUpcomingMonth = isCurrentYear && index > new Date().getMonth();
-          const displayData = isUpcomingMonth ? 'N/A' : tabsContent[dropdownIndex].content[month];
+          const displayData = isUpcomingMonth ? 'N/A' : apiMonthData?.count ?? '0';
 
           // Get the image path for the month
           const imagePath = monthImages[month];
