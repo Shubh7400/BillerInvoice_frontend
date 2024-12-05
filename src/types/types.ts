@@ -48,6 +48,9 @@ export interface ProjectType {
   adminId: string;
   clientId: string;
   amount?: number | null;
+  workingTime?: number | null;
+  workingDays?:number | null;
+  ratePerDay?: number |null;
 }
 export interface UpdateProjectDataType {
   _id?: string;

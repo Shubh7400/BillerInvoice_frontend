@@ -601,7 +601,6 @@ function AddProjectPage({
                       }}
                       fullWidth
                     />
-
                     <Button
                       onClick={fetchExchangeRate}
                       disabled={loadingRate}

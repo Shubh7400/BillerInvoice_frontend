@@ -24,6 +24,7 @@ import DownloadPreview from "./DownloadPreview";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { ThemeContext } from "../../states/context/ThemeContext/ThemeContext";
+import TextField from '@mui/material/TextField';
 import { AppBar, Dialog, IconButton, Toolbar } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
@@ -35,7 +36,11 @@ import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 const drawerBleeding = 56;
 let windowWidth: number | undefined = window.innerWidth;
 
-export default function InvoiceDrawer() {
+
+interface billAmountProps {
+  workingFixed?: boolean;
+}
+export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const materialTheme = useTheme();
   const { visibility } = React.useContext(ThemeContext);
   const adminState = useSelector((state: RootState) => state.adminState);
@@ -174,7 +179,17 @@ export default function InvoiceDrawer() {
     }, 100);
   };
 
+  const [advanceAmount, setAdvanceAmount] = React.useState<number | "">(0);
+  const [grandTotal, setGrandTotal] = React.useState<number>(amountAfterTax);
+  const handleAdvanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value === "" ? "" : parseFloat(e.target.value);
+    setAdvanceAmount(value);
+  };
   
+  React.useEffect(() => {
+    const advance = typeof advanceAmount === "number" ? advanceAmount : 0;
+    setGrandTotal(amountAfterTax - advance);
+  }, [amountAfterTax, advanceAmount]);
 
   const toggleDrawer = (newOpen: boolean) => {
     if (projectsForInvoice && projectsForInvoice.length > 0) {
@@ -192,7 +207,7 @@ export default function InvoiceDrawer() {
           amountPreTax += project.amount;
           amountPreTax = +amountPreTax.toFixed(2);
         }
-      });   
+      });
       let tax = (amountPreTax * 18) / 100;
       let amountPostTax = +(amountPreTax + tax).toFixed(2);
       setAmountWithoutTax(amountPreTax);
@@ -274,6 +289,8 @@ export default function InvoiceDrawer() {
     if (value) setOpen(false);
     setShowPreview(value);
   };
+
+
 
   return (
     <Box>
@@ -417,7 +434,7 @@ export default function InvoiceDrawer() {
                 </>
               ) : (
                 <div className="flex justify-between ">
-                  CGST:(18%)<span>{taxAmount.toFixed(2)}</span>
+                  GST:(18%)<span>{taxAmount.toFixed(2)}</span>
                 </div>
               )}
             </Box>
@@ -425,6 +442,27 @@ export default function InvoiceDrawer() {
               Amount:
               <span className=" ">{amountAfterTax} &#8377; </span>
             </div>
+            {workingFixed &&
+              <>
+                <div className="flex justify-between items-center border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-4">
+                <span>Advance:</span>
+                  <TextField
+                    label="Advance Amount"
+                    variant="outlined"
+                    // type="number"
+                    value={advanceAmount}
+                    onChange={handleAdvanceChange}
+                    size="small"
+                    sx={{ ml: 2, minWidth: "200px" }}
+                  />
+                  
+                </div>
+
+                <div>
+                    <strong>Grand Total: </strong>₹{grandTotal.toFixed(2)}
+                  </div>
+              </>
+            }
           </Box>
         </Box>
         {/*Download and Preview buttons*/}
