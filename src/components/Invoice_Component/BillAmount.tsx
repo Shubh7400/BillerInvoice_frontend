@@ -13,8 +13,6 @@ import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState, store } from "../../states/redux/store";
 import { useSnackbar } from "notistack";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
@@ -26,6 +24,7 @@ import DownloadPreview from "./DownloadPreview";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { ThemeContext } from "../../states/context/ThemeContext/ThemeContext";
+import TextField from '@mui/material/TextField';
 import { AppBar, Dialog, IconButton, Toolbar } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
@@ -37,7 +36,11 @@ import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 const drawerBleeding = 56;
 let windowWidth: number | undefined = window.innerWidth;
 
-export default function InvoiceDrawer() {
+
+interface billAmountProps {
+  workingFixed?: boolean;
+}
+export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const materialTheme = useTheme();
   const { visibility } = React.useContext(ThemeContext);
   const adminState = useSelector((state: RootState) => state.adminState);
@@ -176,43 +179,17 @@ export default function InvoiceDrawer() {
     }, 100);
   };
 
-  const handleInvoiceDateChange = (newDate: dayjs.Dayjs | null) => {
-    if (!newDate) {
-      enqueueSnackbar("Invalid date select again", {
-        variant: "error",
-      });
-      dispatch(updateInvoiceObjectStateAction({ billDate: "" }));
-      return;
-    }
-
-    if (newDate) {
-      setInvoiceDate(newDate);
-      const iso8601InvoiceDate = newDate.toISOString();
-      dispatch(
-        updateInvoiceObjectStateAction({ billDate: iso8601InvoiceDate })
-      );
-    }
+  const [advanceAmount, setAdvanceAmount] = React.useState<number | "">(0);
+  const [grandTotal, setGrandTotal] = React.useState<number>(amountAfterTax);
+  const handleAdvanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value === "" ? "" : parseFloat(e.target.value);
+    setAdvanceAmount(value);
   };
-  const handleDueDateChange = (newDate: dayjs.Dayjs | null) => {
-    if (!newDate) {
-      dispatch(updateInvoiceObjectStateAction({ dueDate: "" }));
-      setAllowDownload(false);
-      return;
-    }
-    if (newDate.isBefore(invoiceDate)) {
-      enqueueSnackbar("Due date cannot be before invoice date.", {
-        variant: "error",
-      });
-      setAllowDownload(false);
-      dispatch(updateInvoiceObjectStateAction({ dueDate: "" }));
-      return;
-    } else {
-      setDueDate(newDate);
-      setAllowDownload(true);
-      const iso8601DueDate = newDate.toISOString();
-      dispatch(updateInvoiceObjectStateAction({ dueDate: iso8601DueDate }));
-    }
-  };
+  
+  React.useEffect(() => {
+    const advance = typeof advanceAmount === "number" ? advanceAmount : 0;
+    setGrandTotal(amountAfterTax - advance);
+  }, [amountAfterTax, advanceAmount]);
 
   const toggleDrawer = (newOpen: boolean) => {
     if (projectsForInvoice && projectsForInvoice.length > 0) {
@@ -312,6 +289,8 @@ export default function InvoiceDrawer() {
     if (value) setOpen(false);
     setShowPreview(value);
   };
+
+
 
   return (
     <Box>
@@ -426,48 +405,6 @@ export default function InvoiceDrawer() {
               color: "whitesmoke",
             }}
           >
-            {windowWidth && windowWidth > 768 ? (
-              <>
-                <DemoItem>
-                  <label style={{ color: textColor }}>Invoice date</label>
-                  <DesktopDatePicker
-                    defaultValue={invoiceDate}
-                    onChange={(newDate) => handleInvoiceDateChange(newDate)}
-                    format="DD/MM/YYYY"
-                    // label="Invoice date"
-                    sx={{ backgroundColor: "#cecece" }}
-                  />
-                </DemoItem>
-                <DemoItem>
-                  <label style={{ color: textColor }}>Due date</label>
-                  <DesktopDatePicker
-                    defaultValue={dueDate}
-                    onChange={(newDate) => handleDueDateChange(newDate)}
-                    format="DD/MM/YYYY"
-                    sx={{ backgroundColor: "#cecece" }}
-                  />
-                </DemoItem>
-              </>
-            ) : (
-              <>
-                <DemoItem>
-                  <label style={{ color: textColor }}>Invoice date</label>
-                  <MobileDatePicker
-                    defaultValue={invoiceDate}
-                    onChange={(newDate) => handleInvoiceDateChange(newDate)}
-                    format="DD/MM/YYYY"
-                  />
-                </DemoItem>
-                <DemoItem>
-                  <label style={{ color: textColor }}>Due date</label>
-                  <MobileDatePicker
-                    defaultValue={dueDate}
-                    onChange={(newDate) => handleDueDateChange(newDate)}
-                    format="DD/MM/YYYY"
-                  />
-                </DemoItem>
-              </>
-            )}
           </Box>
           {/*Bill section*/}
           <Box
@@ -489,15 +426,15 @@ export default function InvoiceDrawer() {
               {clientSameState ? (
                 <>
                   <div className="flex justify-between ">
-                    SGST:(9%)<span>{taxAmount / 2}</span>
+                    SGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between ">
-                    CGST:(9%)<span>{taxAmount / 2}</span>
+                    CGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
                   </div>
                 </>
               ) : (
                 <div className="flex justify-between ">
-                  CGST:(18%)<span>{taxAmount}</span>
+                  GST:(18%)<span>{taxAmount.toFixed(2)}</span>
                 </div>
               )}
             </Box>
@@ -505,6 +442,27 @@ export default function InvoiceDrawer() {
               Amount:
               <span className=" ">{amountAfterTax} &#8377; </span>
             </div>
+            {workingFixed &&
+              <>
+                <div className="flex justify-between items-center border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-4">
+                <span>Advance:</span>
+                  <TextField
+                    label="Advance Amount"
+                    variant="outlined"
+                    // type="number"
+                    value={advanceAmount}
+                    onChange={handleAdvanceChange}
+                    size="small"
+                    sx={{ ml: 2, minWidth: "200px" }}
+                  />
+                  
+                </div>
+
+                <div>
+                    <strong>Grand Total: </strong>₹{grandTotal.toFixed(2)}
+                  </div>
+              </>
+            }
           </Box>
         </Box>
         {/*Download and Preview buttons*/}
