@@ -32,7 +32,8 @@ import axios from "axios";
 import CompoLoadingProjects from "./CompoLoadingProjects";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { log } from "node:console";
-import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+import { addProjectForInvoiceAction, removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
 function AddProjectPage({
   adminId,
   clientId,
@@ -108,7 +109,7 @@ function AddProjectPage({
   const [loadingRate, setLoadingRate] = useState(false);
   const [rateError, setRateError] = useState("");
   const [projectData, setProjectData] = useState<ProjectType>({
-    _id:"",
+    _id: "",
     projectName: "",
     rate: 0,
     workingPeriodType: "hours",
@@ -117,8 +118,9 @@ function AddProjectPage({
     paymentStatus: false,
     adminId: "",
     clientId: clientId || "",
+    advanceAmount: 0,
   });
-  
+
   const {
     loading: selectedProjectLoading,
     data: selectedProjectData,
@@ -128,7 +130,7 @@ function AddProjectPage({
   React.useEffect(() => {
     if (selectedProjectLoading === "succeeded" && selectedProjectData) {
       setProjectData({
-        _id: selectedProjectData._id || "", 
+        _id: selectedProjectData._id || "",
         adminId: selectedProjectData.adminId,
         clientId: selectedProjectData.clientId,
         projectName: selectedProjectData.projectName,
@@ -137,6 +139,7 @@ function AddProjectPage({
         currencyType: selectedProjectData.currencyType,
         conversionRate: selectedProjectData.conversionRate,
         paymentStatus: selectedProjectData.paymentStatus,
+        advanceAmount: selectedProjectData.advanceAmount,
       });
     }
   }, [selectedProjectLoading, selectedProjectData, selectedProjectError]);
@@ -214,6 +217,15 @@ function AddProjectPage({
     if (workPeriodType === "days" && parseInt(value) < 0) {
       value = "0";
     }
+    if (name === "advanceAmount") {
+      let numVal = +value;
+      setProjectData((prevData) => ({
+        ...prevData,
+        // advanceAmount: parseFloat(value) || 0,
+        [name]: numVal,
+      }));
+      return;
+    }
     if (name === "rate" || name === "conversionRate") {
       let numVal = +value;
       if (numVal < 0) numVal = 1;
@@ -254,7 +266,7 @@ function AddProjectPage({
       setWorkPeriodType(value);
     }
   }
-  
+
   function areAllRequiredFieldsFilled(obj: any) {
     setFormError("");
     if (obj.projectName === "") {
@@ -291,6 +303,9 @@ function AddProjectPage({
           enqueueSnackbar("Project added successfully.", {
             variant: "success",
           });
+          console.log("----------", projectData);
+          dispatch(updateInvoiceObjectStateAction(projectData));
+          dispatch(addProjectForInvoiceAction(projectData));
           navigate(-1);
         },
 
@@ -311,7 +326,7 @@ function AddProjectPage({
     projectData._id,
     projectData.clientId
   );
-    const handleEditSubmit = (
+  const handleEditSubmit = (
     e:
       | React.FormEvent<HTMLFormElement>
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -354,7 +369,7 @@ function AddProjectPage({
   React.useEffect(() => {
     if (forAddProject && toEdit) {
       setProjectData({
-        _id:"",
+        _id: "",
         projectName: "",
         rate: 0,
         workingPeriodType: "hours",
@@ -363,7 +378,8 @@ function AddProjectPage({
         paymentStatus: false,
         adminId: adminId ? adminId : "",
         clientId: clientId ? clientId : "",
-      }); 
+        advanceAmount: 0,
+      });
     }
     if (!forAddProject && !toEdit && projectToEdit && projectToEdit._id) {
       let newProjectToEdit = { ...projectToEdit };
@@ -422,7 +438,7 @@ function AddProjectPage({
                   <Autocomplete
                     options={clientsArr}
                     getOptionLabel={(option) => option.clientName || ""}
-                    value={ clientsArr.find((client) => client._id === projectData.clientId) || null}
+                    value={clientsArr.find((client) => client._id === projectData.clientId) || null}
                     onChange={(event, newValue) => {
                       if (newValue && newValue._id) {
                         setFormError("");
@@ -432,7 +448,7 @@ function AddProjectPage({
                           clientId: newValue._id,
                         });
                       }
-                    }}                  
+                    }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -453,7 +469,7 @@ function AddProjectPage({
                     getOptionLabel={(option) => option.clientName}
                     value={
                       clientsArr.find((client) => client._id === clientId) ||
-                      null 
+                      null
                     }
                     disabled
                     renderInput={(params) => (
@@ -519,9 +535,8 @@ function AddProjectPage({
               label={
                 workPeriodType === "fixed"
                   ? "Enter Fixed Amount"
-                  : `Rate (${currencyType}/${
-                      workPeriodType === "days" ? "months" : "hours"
-                    })`
+                  : `Rate (${currencyType}/${workPeriodType === "days" ? "months" : "hours"
+                  })`
               }
               type="number"
               fullWidth
@@ -530,6 +545,20 @@ function AddProjectPage({
               value={projectData.rate === 0 ? "" : projectData.rate}
               onChange={handleChange}
             />
+
+            {workPeriodType === "fixed" &&
+              <TextField
+                margin="dense"
+                id="workingPeriodType"
+                label="Advance Amount"
+                type="number"
+                fullWidth
+                variant="outlined"
+                name="advanceAmount"
+                value={projectData.advanceAmount || ""}
+                onChange={handleChange}
+              />
+            }
             {/* {workPeriodType === "days" ? (
               <TextField
                 margin="dense"
@@ -601,6 +630,7 @@ function AddProjectPage({
                       }}
                       fullWidth
                     />
+
                     <Button
                       onClick={fetchExchangeRate}
                       disabled={loadingRate}
@@ -624,7 +654,7 @@ function AddProjectPage({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          { forAddProject && !toEdit ?  (
+          {forAddProject && !toEdit ? (
             <Button
               onClick={(e) => handleAddSubmit(e)}
               style={{

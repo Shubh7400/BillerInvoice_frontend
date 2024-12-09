@@ -48,6 +48,7 @@ export interface ProjectType {
   adminId: string;
   clientId: string;
   amount?: number | null;
+  advanceAmount?: number | null;
   workingTime?: number | null;
   workingDays?:number | null;
   ratePerDay?: number |null;
@@ -63,6 +64,7 @@ export interface UpdateProjectDataType {
   adminId: string;
   clientId: string;
   amount?: number | null;
+  advanceAmount?: number | null
 }
 export interface InvoiceType {
   _id?: string;
@@ -74,6 +76,8 @@ export interface InvoiceType {
   clientId: string;
   adminId: string;
   projectsId: string[];
+  taxType: string;
+  advanceAmount?: number | null;
 }
 
 export interface LoginDataType {

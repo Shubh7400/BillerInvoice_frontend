@@ -34,9 +34,7 @@ import MenuItem from "@mui/material/MenuItem";
 import dayjs, { Dayjs } from "dayjs";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
 import { updateProjectForInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
-// import AddIcon from '@mui/icons-material/Add';
 import ReplayIcon from "@mui/icons-material/Replay";
-
 import { useSnackbar } from "notistack";
 let windowWidth: number | undefined = window.innerWidth;
 function InvoiceClientPage() {
@@ -59,10 +57,9 @@ function InvoiceClientPage() {
 
   const navigate = useNavigate();
   const [editableProjects, setEditableProjects] = useState(projectsForInvoice);
-
   const [loadingRate, setLoadingRate] = useState(false);
   const [rateError, setRateError] = useState("");
-  const [currencyType, setCurrencyType] = useState("dollars"); 
+  const [currencyType, setCurrencyType] = useState("dollars");
 
   const [invoiceDate, setInvoiceDate] = React.useState(dayjs());
   const [dueDate, setDueDate] = React.useState(dayjs());
@@ -108,8 +105,6 @@ function InvoiceClientPage() {
     }
   };
 
-
-
   const handleInputChange = (id: string, field: string, value: any) => {
     const newValue = value === "" ? "" : value;
     setEditableProjects((prevProjects) =>
@@ -126,10 +121,10 @@ function InvoiceClientPage() {
               updatedProject.ratePerDay = parseFloat(value) / daysInPrevMonth;
             }
           }
-          console.log("rate per day : ",updatedProject.ratePerDay);
+          console.log("rate per day : ", updatedProject.ratePerDay);
           // Perform amount calculation if rate and workingPeriodType are present
-          
-          if (updatedProject.rate && updatedProject.workingPeriodType ) {
+
+          if (updatedProject.rate && updatedProject.workingPeriodType) {
             if (updatedProject.workingPeriodType === "hours" && updatedProject.workingTime) {
               updatedProject.amount = updatedProject.rate * (updatedProject.workingTime || 1) * updatedProject.conversionRate;
             } else if (updatedProject.workingPeriodType === "days" && updatedProject.ratePerDay && updatedProject.workingDays) {
@@ -146,12 +141,13 @@ function InvoiceClientPage() {
       )
     );
   };
-const [workingFixed,setWorkingFixed] = useState(false);
+
+  const [workingFixed, setWorkingFixed] = useState(false);
   useEffect(() => {
     const updatedProjects = projectsForInvoice.map((project) => {
       const updatedProject = { ...project };
 
-      if(project.workingPeriodType === "fixed"){
+      if (project.workingPeriodType === "fixed") {
         setWorkingFixed(true);
       }
       // Calculate ratePerDay on component mount
@@ -162,25 +158,31 @@ const [workingFixed,setWorkingFixed] = useState(false);
           updatedProject.ratePerDay = project.rate / daysInPrevMonth;
         }
       }
-    
+
+      // Set default workingDays to 1 if workingPeriodType is "days"
+      if (project.workingPeriodType === "days") {
+        updatedProject.workingDays = project.workingDays || 1;
+      }
+
+      // Calculate the amount based on the workingPeriodType
       let amount = 0;
-     
       if (project.rate && project.workingPeriodType) {
         if (project.workingPeriodType === "hours") {
           amount = project.rate * (project.workingTime || 1) * project.conversionRate;
-        } else if (project.workingPeriodType === "days" && project.ratePerDay && project.workingDays) {
-          amount = project.ratePerDay  * (project.workingDays || 1) * project.conversionRate;
+        } else if (project.workingPeriodType === "days" && updatedProject.ratePerDay) {
+          amount = updatedProject.ratePerDay * (updatedProject.workingDays || 1) * project.conversionRate;
         } else if (project.workingPeriodType === "fixed") {
           amount = project.rate * project.conversionRate;
         }
       }
 
-      // return { ...project, amount };
+      updatedProject.amount = amount;
+
       return updatedProject;
     });
 
     setEditableProjects(updatedProjects);
-  }, [projectsForInvoice,invoiceDate,workingFixed]);
+  }, [projectsForInvoice, invoiceDate, workingFixed]);
 
   React.useEffect(() => {
     if (isAuth && adminId) {
@@ -254,15 +256,12 @@ const [workingFixed,setWorkingFixed] = useState(false);
             <TextField
               variant="outlined"
               size="small"
-              // value={invoiceNumber}
-              // onChange={handleInvoiceNumberChange}
               value={invoiceObject.invoiceNo}
               onChange={(e) =>
                 dispatch(
                   updateInvoiceObjectStateAction({ invoiceNo: e.target.value })
                 )
               } // Update Redux store with the new value
-            // onChange={(e) =>}
             />
           </div>
         </div>
@@ -306,7 +305,6 @@ const [workingFixed,setWorkingFixed] = useState(false);
                 </DemoItem>
               </div>
             </>
-
           ) : (
             <>
               <div className="flex flex-col items-end">
@@ -355,16 +353,10 @@ const [workingFixed,setWorkingFixed] = useState(false);
                   {editableProjects.map((project: ProjectType) => (
                     <>
                       {project.workingPeriodType === "days" && <TableCell>Rate/day</TableCell>}
-                      <TableCell>
-                        {project.workingPeriodType === "fixed"
-                          ? "Working Fixed"
-                          : project.workingPeriodType === "hours"
-                            ? "Working Time"
-                            : "Working Days"}
-                      </TableCell>
+                     
                     </>
                   ))}
-
+                  <TableCell className="w-[175px]">Working Period</TableCell>
                   <TableCell className="w-[175px]">Conversion Rate</TableCell>
                   <TableCell className="w-[110px]">Subtotal</TableCell>
                   <TableCell className="w-[110px]">Remove</TableCell>
@@ -405,21 +397,22 @@ const [workingFixed,setWorkingFixed] = useState(false);
                         }}
                       />
                     </TableCell>
-                    {project.workingPeriodType === "days" &&
-                      <TableCell>
-                        <TextField
-                          variant="outlined"
-                          size="small"
-                          value={project.ratePerDay || ""}
-                        />
-                      </TableCell>}
+                    {project.workingPeriodType==="days" &&
+                       <TableCell>
+                       <TextField
+                         variant="outlined"
+                         size="small"
+                         value={project.ratePerDay || "NA"}
+                       />
+                     </TableCell>
+                    } 
+                     
                     <TableCell className="text-[13px] w-[150px]">
                       {project.workingPeriodType === 'hours' ? (
                         <TextField
                           variant="outlined"
                           size="small"
-                          // value={project.workingPeriodType || ""}
-                          value={project.workingTime || 1}
+                          value={project.workingTime || 1 || "NA"}
                           onChange={(e) =>
                             handleInputChange(
                               project._id ?? "",
@@ -427,22 +420,34 @@ const [workingFixed,setWorkingFixed] = useState(false);
                               e.target.value
                             )
                           }
-                        />) :
+                          InputProps={{
+                            endAdornment: (
+                              <span>
+                                {project.workingPeriodType}
+                              </span>
+                            ),
+                          }}
+                        />) : project.workingPeriodType ==="days" ? 
 
                         (<TextField
                           variant="outlined"
                           size="small"
-                          value={project.workingDays || 1}
+                          value={project.workingDays || 1 || "NA"}
                           onChange={(e) =>
                             handleInputChange(
                               project._id ?? "",
                               "workingDays",
-                              // parseFloat(e.target.value)
                               e.target.value
                             )
                           }
-                        />)}
-
+                        />) :
+                         (<TextField
+                          variant="outlined"
+                          size="small"
+                          value={"NA"}
+                          
+                        />)
+                        }
                     </TableCell>
                     <TableCell className="text-[13px] w-[150px]">
                       <TextField
@@ -476,11 +481,8 @@ const [workingFixed,setWorkingFixed] = useState(false);
                             onClick={() => fetchExchangeRate(project._id!)} // Non-null assertion
                             disabled={loadingRate}
                           >
-                            {/* <AddIcon /> */}
                             <ReplayIcon />
                           </Button>
-
-
                           {rateError && <p>{rateError}</p>}
                         </>
                       ) : null}
@@ -502,9 +504,8 @@ const [workingFixed,setWorkingFixed] = useState(false);
               </TableBody>
             </Table>
           </TableContainer>
-          <BillAmount workingFixed={workingFixed}/> 
-        </div> 
-
+          <BillAmount workingFixed={workingFixed} />
+        </div>
       )
         : (<div>
           <div className="flex flex-col h-[60vh] justify-center items-center ">
@@ -513,9 +514,7 @@ const [workingFixed,setWorkingFixed] = useState(false);
           </div>
         </div>
         )}
-
     </div>
   );
 }
-
 export default InvoiceClientPage;

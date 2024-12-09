@@ -11,6 +11,9 @@ const initialState: InvoiceType = {
   clientId: "",
   adminId: "",
   projectsId: [],
+  taxType: "",
+  advanceAmount: 0,
+  
 };
 
 const invoiceObjectSlice = createSlice({
@@ -23,6 +26,7 @@ const invoiceObjectSlice = createSlice({
         for (const key in action.payload) {
           temp[key] = action.payload[key];
         }
+        
         return temp
       });
     },
