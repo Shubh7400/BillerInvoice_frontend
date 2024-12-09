@@ -132,8 +132,13 @@ const DownloadPreview = () => {
                     {project.projectName}
                   </td>
                   <td className="border px-2 pb-4 text-center">
-                    {project.rate} / {project.workingPeriodType}
                   </td>
+                  <td className="border px-2 pb-4 text-center">
+                    {project.rate}
+                  </td>
+                  <td className="border px-2 pb-4 text-center">
+                    { project.workingTime || project.workingDays || 1}
+                    </td>
                   <td className="border px-2 pb-4 text-center">
                     {project.conversionRate}
                   </td>

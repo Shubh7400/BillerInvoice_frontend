@@ -48,7 +48,7 @@ export default function CompoAddProject({
   clientId,
   forAddProject,
   projectToEdit,
-  handleProjectEdit,
+  handleProjectEdit, 
   searchProjectName,
   projectTableforClient,
   setSearchProjectName,
@@ -79,10 +79,7 @@ export default function CompoAddProject({
     navigate(-1);
   };
   const handleAddProjectClick = () => {
-   
-    if(!projectTableforClient){
-      dispatch(makeStateNeutralOfSelectedClient());
-    }
+    dispatch(makeStateNeutralOfSelectedClient());
     navigate(
       !projectTableforClient
         ? "/add-project"
@@ -130,7 +127,14 @@ export default function CompoAddProject({
                   backgroundColor: "#4a6180",
                 },
               }}
-                onClick={ handleAddProjectClick}
+              onClick={() => {
+                // handleAddProjectClick();
+                navigate(
+                  !projectTableforClient
+                    ? "/add-project"
+                    : "/client/add-project"
+                );
+              }}
             >
               Add Project
             </Button>

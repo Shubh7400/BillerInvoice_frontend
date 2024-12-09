@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Grid, Typography, Select, MenuItem, FormControl, styled, SelectChangeEvent } from '@mui/material';
+import React, { useState,useEffect } from 'react';
+import { Grid, Typography, Select, MenuItem, FormControl, styled, SelectChangeEvent,Dialog, DialogTitle, DialogContent} from '@mui/material';
 import Styles from './invoive.module.css';
 import one from '../assets/001.gif';
 import two from '../assets/002.gif';
@@ -11,41 +11,14 @@ import { IoIosArrowBack } from "react-icons/io";
 import { FaArrowRight } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { Button } from '@mui/material';
+import { RootState } from "../../states/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchInvoiceCounts } from '../../states/redux/InvoiceProjectState/invoiceCountSlice';
+import { AppDispatch } from '../../states/redux/store';
+import { useContext } from "react";
+import { AuthContext } from '../../states/context/AuthContext/AuthContext';
+
 const tabsContent: YearContent[] = [
-  {
-    label: '2022',
-    content: {
-      January: '100',
-      February: '101',
-      March: '102',
-      April: '102',
-      May: '104',
-      June: '105',
-      July: '106',
-      August: '107',
-      September: '108',
-      October: '109',
-      November: '110',
-      December: '111',
-    },
-  },
-  {
-    label: '2023',
-    content: {
-      January: '200',
-      February: '201',
-      March: '202',
-      April: '202',
-      May: '204',
-      June: '205',
-      July: '206',
-      August: '207',
-      September: '208',
-      October: '209',
-      November: '210',
-      December: '211',
-    },
-  },
   {
     label: '2024',
     content: {
@@ -127,19 +100,33 @@ interface YearContent {
 
 const TabPillsComponent: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const currentYear = new Date().getFullYear();
+  const invoiceCounts = useSelector((state: RootState) => state.InvoiceCountState);
+  const { adminId } = useContext(AuthContext);
 
-  // Find the index of the current year in tabsContent
-  const currentYearIndex = tabsContent.findIndex(tab => tab.label === currentYear.toString());
+  const [isFilterPopupOpen, setFilterPopupOpen] = useState<boolean>(false); 
+  const [fromMonth, setFromMonth] = useState<string>('January');
+  const [fromYear, setFromYear] = useState<string>(tabsContent[0].label);
+  const [toMonth, setToMonth] = useState<string>('December');
+  const [toYear, setToYear] = useState<string>(tabsContent[0].label);
 
-  // Initialize dropdownIndex with the current year index
-  const [dropdownIndex, setDropdownIndex] = useState<number>(currentYearIndex >= 0 ? currentYearIndex : 0);
-  const [tabIndex, setTabIndex] = useState<number>(dropdownIndex);
+  const [dropdownIndex, setDropdownIndex] = useState<number>(0);
+  useEffect(() => {
+    if (adminId) {
+      const selectedYear = tabsContent[dropdownIndex].label;
+      dispatch(fetchInvoiceCounts({ year: selectedYear, user: adminId }));
+    }
+  }, [dropdownIndex, adminId, dispatch]);
 
   const handleDropdownChange = (event: SelectChangeEvent<unknown>) => {
     const newIndex = Number(event.target.value as string);
     setDropdownIndex(newIndex);
-    setTabIndex(newIndex);
+    };
+
+    const handleFilterApply = () => {
+    console.log(`Filter from ${fromMonth} ${fromYear} to ${toMonth} ${toYear}`);
+    setFilterPopupOpen(false); 
   };
 
   const monthNames = Object.keys(tabsContent[dropdownIndex].content);
@@ -158,6 +145,7 @@ const TabPillsComponent: React.FC = () => {
             INVOICE
           </Typography>
         </div>
+        <div>
         <FormControl>
           <StyledSelect
             labelId="tab-dropdown"
@@ -173,14 +161,97 @@ const TabPillsComponent: React.FC = () => {
             ))}
           </StyledSelect>
         </FormControl>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setFilterPopupOpen(true)} 
+        >
+          Invoice Filter
+        </Button>
+        </div>
       </div>
+
+      {/* Popup Dialog */}
+      <Dialog open={isFilterPopupOpen} onClose={() => setFilterPopupOpen(false)}>
+        <DialogTitle>Invoice Filter</DialogTitle>
+        <DialogContent>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <div>
+              <Typography variant="subtitle1">From</Typography>
+              <FormControl style={{ marginRight: '8px' }}>
+                <Select
+                  value={fromMonth}
+                  onChange={(e) => setFromMonth(e.target.value as string)}
+                >
+                  {monthNames.map((month) => (
+                    <MenuItem key={month} value={month}>
+                      {month}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl>
+                <Select
+                  value={fromYear}
+                  onChange={(e) => setFromYear(e.target.value as string)}
+                >
+                  {tabsContent.map((tab) => (
+                    <MenuItem key={tab.label} value={tab.label}>
+                      {tab.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+            <div>
+              <Typography variant="subtitle1">To</Typography>
+              <FormControl style={{ marginRight: '8px' }}>
+                <Select
+                  value={toMonth}
+                  onChange={(e) => setToMonth(e.target.value as string)}
+                >
+                  {monthNames.map((month) => (
+                    <MenuItem key={month} value={month}>
+                      {month}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl>
+                <Select
+                  value={toYear}
+                  onChange={(e) => setToYear(e.target.value as string)}
+                >
+                  {tabsContent.map((tab) => (
+                    <MenuItem key={tab.label} value={tab.label}>
+                      {tab.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+          </div>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleFilterApply} 
+          >
+            Apply Filter
+          </Button>
+        </DialogContent>
+      </Dialog>
+
 
       {/* Dropdown Content */}
       <Grid container spacing={2}>
-        {monthNames.map((month, index) => {
+        {monthNames.map((month: string, index: number) => {
+          const apiMonthData = invoiceCounts.data.find(
+            (data) => data.month === index + 1
+          );
+        
           const isCurrentYear = tabsContent[dropdownIndex].label === currentYear.toString();
           const isUpcomingMonth = isCurrentYear && index > new Date().getMonth();
-          const displayData = isUpcomingMonth ? 'N/A' : tabsContent[dropdownIndex].content[month];
+          const displayData = isUpcomingMonth ? 'N/A' : apiMonthData?.count ?? '0';
 
           // Get the image path for the month
           const imagePath = monthImages[month];

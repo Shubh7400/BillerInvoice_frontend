@@ -365,7 +365,7 @@ function AddProjectPage({
       setIncompleteError("Incomplete fields");
     }
   };
-
+ 
   React.useEffect(() => {
     if (forAddProject && toEdit) {
       setProjectData({
@@ -378,7 +378,10 @@ function AddProjectPage({
         paymentStatus: false,
         adminId: adminId ? adminId : "",
         clientId: clientId ? clientId : "",
+<<<<<<< HEAD
         advanceAmount: 0,
+=======
+>>>>>>> 1a9684eabb8d48e86c19b303f9bc04cbf35b7a77
       });
     }
     if (!forAddProject && !toEdit && projectToEdit && projectToEdit._id) {
@@ -400,6 +403,7 @@ function AddProjectPage({
       setProjectData({ ...projectData, adminId });
     }
   }, [clientId, adminId]);
+
 
   return (
     <>
@@ -439,6 +443,10 @@ function AddProjectPage({
                     options={clientsArr}
                     getOptionLabel={(option) => option.clientName || ""}
                     value={clientsArr.find((client) => client._id === projectData.clientId) || null}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1a9684eabb8d48e86c19b303f9bc04cbf35b7a77
                     onChange={(event, newValue) => {
                       if (newValue && newValue._id) {
                         setFormError("");
