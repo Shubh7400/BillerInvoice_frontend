@@ -187,25 +187,6 @@ const ProjectTable = ({
     }
   };
 
-  // const handleSingleCheckboxChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   index: number,
-  //   project: ProjectType
-  // ) => {
-  //   const isChecked = e.target.checked;
-  //   const areAllChecked = checkboxesRefs.current.every(
-  //     (checkboxRef) => checkboxRef?.checked === true
-  //   );
-  //   if (isChecked) {
-  //     setAllChecked(areAllChecked);
-  //     setSelectedProjectId(project?._id);
-  //     setProjectDetails(project);
-  //   } else if (!isChecked && project._id) {
-  //     // dispatch(removeProjectFromInvoiceAction(project._id));
-  //     setSelectedProjectId("");
-  //     setAllChecked(false);
-  //   }
-  // };
   const handleSearchProjectName = (data: string) => {
     setSearchProjectName(data);
   };
@@ -215,27 +196,50 @@ const ProjectTable = ({
     project: ProjectType
   ) => {
     const isChecked = e.target.checked;
-    const newProjectId = [...projectId];
-    let newProjectDetails = [...projectDetails];
-
+  
     if (isChecked) {
-      if (!newProjectId.includes(project._id)) {
-        newProjectId.push(project._id);
-        setSelectedProjectId(project?._id);
-        newProjectDetails.push(project);
-        setProjectDetails(newProjectDetails);
-      }
+      // When a checkbox is checked, deselect all other projects and select this one
+      setProjectId([project._id]); // Set only the current project ID
+      setSelectedProjectId(project._id); // Set as selected
+      setProjectDetails([project]); // Set project details with only the selected project
+      setAllChecked(false); // Reset "Select All" state
     } else {
-      setSelectedProjectId("");
-      setAllChecked(false);
-      const indexToRemove = newProjectId.indexOf(project._id);
-      if (indexToRemove > -1) {
-        newProjectId.splice(indexToRemove, 1);
-      }
+      // When the checkbox is unchecked, clear all selections
+      setProjectId([]); // Clear all project IDs
+      setSelectedProjectId(""); // Clear selected ID
+      setProjectDetails([]); // Clear project details
+      setAllChecked(false); // Reset "Select All" state
     }
-    setProjectId(newProjectId);
-    setAllChecked(newProjectId.length === projectsForInvoice.length); // Update "Select All" state
   };
+  
+
+  // const handleSingleCheckboxChange = (
+  //   e: React.ChangeEvent<HTMLInputElement>,
+  //   index: number,
+  //   project: ProjectType
+  // ) => {
+  //   const isChecked = e.target.checked;
+
+  //   if (isChecked) {
+  //     // Add project if not already selected
+  //     if (!projectId.includes(project._id)) {
+  //       setProjectId([...projectId, project._id]); // Immutable update
+  //       setSelectedProjectId(project._id);
+  //       setProjectDetails([...projectDetails, project]); // Add to details
+  //     }
+  //   } else {
+  //     // Remove project when deselected
+  //     const updatedProjectId = projectId.filter((id:any) => id !== project._id);
+  //     const updatedProjectDetails = projectDetails.filter(
+  //       (detail) => detail._id !== project._id
+  //     );
+
+  //     setProjectId(updatedProjectId); // Immutable update
+  //     setSelectedProjectId(""); // Clear selected ID
+  //     setProjectDetails(updatedProjectDetails); // Remove from details
+  //     setAllChecked(updatedProjectId.length === projectsForInvoice.length); // Update "Select All" state
+  //   }
+  // };
 
   const handleConfirmSelection = (selectedProject?: ProjectType) => {
     if (selectedProject && selectedProject.clientId) {
@@ -261,7 +265,6 @@ const ProjectTable = ({
     }
     navigate("/edit-project");
   };
-
   return (
     <section>
       <div>
@@ -273,11 +276,11 @@ const ProjectTable = ({
           setSearchProjectName={handleSearchProjectName}
           searchProjectName={searchProjectName}
           handleProjectEdit={handleEditProject}
-          
+
         />
         {clientObj &&
-        selectedClientState.loading !== "idle" &&
-        projectTableforClient ? (
+          selectedClientState.loading !== "idle" &&
+          projectTableforClient ? (
           <ClientInfoSection />
         ) : null}
       </div>
@@ -296,9 +299,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                (clientProjectTableData &&
-                  (clientProjectTableData === "" ||
-                    clientProjectTableData.length <= 0)) ? (
+                  (clientProjectTableData &&
+                    (clientProjectTableData === "" ||
+                      clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -472,9 +475,9 @@ const ProjectTable = ({
         <>
           {/* Project Table for Client  */}
           {clientProjectTableError ||
-          clientProjectTableLoading ||
-          clientProjectTableData === "" ||
-          clientProjectTableData.length <= 0 ? (
+            clientProjectTableLoading ||
+            clientProjectTableData === "" ||
+            clientProjectTableData.length <= 0 ? (
             <div>
               <div></div>
               <div className="text-xl font-bold text-center p-4 ">
@@ -487,9 +490,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                (clientProjectTableData &&
-                  (clientProjectTableData === "" ||
-                    clientProjectTableData.length <= 0)) ? (
+                  (clientProjectTableData &&
+                    (clientProjectTableData === "" ||
+                      clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -518,11 +521,11 @@ const ProjectTable = ({
                       >
                         Manager
                       </TableCell> */}
-                      <TableCell
+                      {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Project Period
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
@@ -599,9 +602,9 @@ const ProjectTable = ({
                           ) : null}
                           /{project.workingPeriodType})
                         </TableCell>
-                        <TableCell style={{ padding: "0" }}>
+                        {/* <TableCell style={{ padding: "0" }}>
                           ({project.workingPeriodType})
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell style={{ padding: "0" }}>
                           <span>&#x20B9; </span>
                           {project.conversionRate}
@@ -617,7 +620,7 @@ const ProjectTable = ({
                                 adminId={adminId}
                                 forAddProject={false}
                                 projectToEdit={project}
-                                handleProjectEdit={handleEditProject} 
+                                handleProjectEdit={handleEditProject}
                               />
                             </div>
                             <div className={Styles.editButton}>

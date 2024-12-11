@@ -14,7 +14,6 @@ const addProjectForInvoiceSlice = createSlice({
   name: "addProjectForInvoiceSlice",
   initialState,
   reducers: {
-
     addProjectForInvoiceAction: (state, action: PayloadAction<ProjectType>) => {
       return produce(state, (draftState: InitialStateType) => {
         const {
@@ -24,9 +23,8 @@ const addProjectForInvoiceSlice = createSlice({
           ratePerDay,
           workingPeriodType,
           conversionRate,
-          workingTime,
-          workingDays,
-          advanceAmount
+          workingPeriod,
+          advanceAmount,
         } = action.payload;
 
         if (
@@ -35,30 +33,27 @@ const addProjectForInvoiceSlice = createSlice({
         ) {
           draftState.projectsForInvoice = [];
         }
-
         const existingProject = draftState.projectsForInvoice.find(
           (project) => project._id === _id
         );
-
         if (!existingProject) {
           let amount = 0;
-
           if (rate && workingPeriodType) {
             if (workingPeriodType === "hours") {
-              amount = rate * (workingTime || 1) * conversionRate;
-            } else if (workingPeriodType === "days") {
-              const effectiveWorkingDays = workingDays || 1; // Default to 1 if not provided
-              amount = (ratePerDay || 0) * effectiveWorkingDays * conversionRate;
+              amount = rate * (workingPeriod || 1) * conversionRate;
+            } else if (workingPeriodType === "months") {
+              const effectiveWorkingDays = workingPeriod || 1; // Default to 1 if not provided
+              amount = (ratePerDay || 1) * effectiveWorkingDays * conversionRate;
             } else if (workingPeriodType === "fixed") {
               amount = rate * conversionRate;
             }
           }
-
           draftState.projectsForInvoice.push({
             ...action.payload,
-            workingDays: workingDays || 1, // Ensure default value
+            workingPeriod: workingPeriod || 1, // Ensure default value
             amount , 
             advanceAmount: advanceAmount || 0, 
+            ratePerDay,
           });
         }
       });
@@ -71,24 +66,23 @@ const addProjectForInvoiceSlice = createSlice({
     ) => {
       return produce(state, (draftState: InitialStateType) => {
         draftState.projectsForInvoice = action.payload.map((project) => {
-          const { rate, ratePerDay, workingPeriodType, conversionRate, workingTime, workingDays , advanceAmount} = project;
+          const { rate, ratePerDay, workingPeriodType, conversionRate, workingPeriod,
+             advanceAmount} = project;
 
           let amount = 0;
-
           if (rate && workingPeriodType) {
             if (workingPeriodType === "hours") {
-              amount = rate * (workingTime || 1) * conversionRate;
-            } else if (workingPeriodType === "days") {
-              const effectiveWorkingDays = workingDays || 1; // Default to 1 if not provided
-              amount = (ratePerDay || 0) * effectiveWorkingDays * conversionRate;
+              amount = rate * (workingPeriod || 1) * conversionRate;
+            } else if (workingPeriodType === "months") {
+              const effectiveWorkingDays = workingPeriod || 1; // Default to 1 if not provided
+              amount = (ratePerDay || 1) * effectiveWorkingDays * conversionRate;
             } else if (workingPeriodType === "fixed") {
               amount = rate * conversionRate;
             }
           }
-
           return {
             ...project,
-            workingDays: workingDays || 1, // Ensure default value
+            workingPeriod: workingPeriod || 1, // Ensure default value
             amount,advanceAmount,
           };
         });
@@ -102,7 +96,9 @@ const addProjectForInvoiceSlice = createSlice({
     ) => {
       return produce(state, (draftState: InitialStateType) => {
         const updatedProject = action.payload;
-        const { _id, rate, ratePerDay, workingPeriodType, conversionRate, workingTime, workingDays , advanceAmount} = updatedProject;
+        const { _id, rate, ratePerDay, workingPeriodType, conversionRate, workingPeriod, 
+      
+          advanceAmount} = updatedProject;
 
         const projectIndex = draftState.projectsForInvoice.findIndex(
           (project) => project._id === _id
@@ -110,13 +106,12 @@ const addProjectForInvoiceSlice = createSlice({
 
         if (projectIndex !== -1) {
           let amount = 0;
-
           if (rate && workingPeriodType) {
             if (workingPeriodType === "hours") {
-              amount = rate * (workingTime || 1) * conversionRate;
-            } else if (workingPeriodType === "days") {
-              const effectiveWorkingDays = workingDays || 1; // Default to 1 if not provided
-              amount = (ratePerDay || 0) * effectiveWorkingDays * conversionRate;
+              amount = rate * (workingPeriod || 1) * conversionRate;
+            } else if (workingPeriodType === "months") {
+              const effectiveWorkingDays = workingPeriod || 1; // Default to 1 if not provided
+              amount = (ratePerDay || 1) * effectiveWorkingDays * conversionRate;
             } else if (workingPeriodType === "fixed") {
               amount = rate * conversionRate;
             }
@@ -125,7 +120,7 @@ const addProjectForInvoiceSlice = createSlice({
           draftState.projectsForInvoice[projectIndex] = {
             ...draftState.projectsForInvoice[projectIndex],
             ...updatedProject,
-            workingDays: workingDays || 1, // Ensure default value
+            workingPeriod: workingPeriod || 1, // Ensure default value
             amount, advanceAmount,
           };
         }

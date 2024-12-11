@@ -116,12 +116,18 @@ const DownloadPreview = () => {
             <thead className="bg-[#94b9ff] text-white ">
               <tr>
                 <th className="px-2 pb-4">Sr.no.</th>
-                <th className="px-2 pb-4">Project</th>
-                <th className="px-2 pb-4">Project Period</th>
+                <th className="px-2 pb-4">Project Name</th>
+                {/* <th className="px-2 pb-4">Project Period</th> */}
                 <th className="px-2 pb-4">Rate</th>
+                {projectsForInvoice?.map((project, index) => (
+                  project.workingPeriodType === "months" && (
+                    <th key={index} className="px-2 pb-4">Rate/day</th>
+                  )
+                ))}
+
                 <th className="px-2 pb-4">Working Period</th>
                 <th className="px-2 pb-4">Conversion Rate</th>
-                <th className="px-2 pb-4">Amount</th>
+                <th className="px-2 pb-4">Subtotal</th>
               </tr>
             </thead>
             <tbody>
@@ -131,19 +137,31 @@ const DownloadPreview = () => {
                   <td className="border px-2 pb-4 text-center">
                     {project.projectName}
                   </td>
+                  {/* <td className="border px-2 pb-4 text-center">
+                  </td> */}
                   <td className="border px-2 pb-4 text-center">
+                    {`${project.rate}/${project.workingPeriodType}`}
                   </td>
-                  <td className="border px-2 pb-4 text-center">
-                    {project.rate}
+                  
+                  {project.workingPeriodType === "months" && (
+                    <td className="border px-2 pb-4 text-center">
+                    {project.ratePerDay?.toFixed(2)}
                   </td>
-                  <td className="border px-2 pb-4 text-center">
-                    { project.workingTime || project.workingDays || 1}
-                    </td>
+                  )}
+                    {project.workingPeriodType === "fixed" ?(
+                      <td className="border px-2 pb-4 text-center">
+                      NA
+                      </td>
+                    ):
+                    <td className="border px-2 pb-4 text-center">
+                    {project.workingPeriod || 1}
+                  </td>
+                    }
                   <td className="border px-2 pb-4 text-center">
                     {project.conversionRate}
                   </td>
                   <td className="border px-2 pb-4 text-center">
-                    &#x20B9; {project.amount}
+                    &#x20B9; {project.amount?.toFixed(2)}
                   </td>
                 </tr>
               ))}
@@ -176,7 +194,7 @@ const DownloadPreview = () => {
               ) : (
                 <div className="flex justify-between mb-[30px]">
                   IGST @ 18%: <span>{taxAmount}</span>
-                </div>
+                </div>             
               )}
               <div className="text-[20px] justify-between flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
                 Total: <span>&#8377; {invoiceObject.amountAfterTax}</span>

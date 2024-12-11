@@ -14,6 +14,18 @@ export const useAddInvoiceMutation = () => {
   );
   return AddInvoiceMutationHandler;
 };
+// export const useUpdateInvoiceMutation = () => {
+//   const UpdateInvoiceMutationHandler = useMutation(
+//     (updatedInvoice: { id: string; data: InvoiceType }) => updatedInvoice(updatedInvoice.id, updatedInvoice.data),
+//     {
+//       onSettled: () => {
+//         queryClient.invalidateQueries(["allInvoices"]);
+//       },
+//     }
+//   );
+//   return UpdateInvoiceMutationHandler;
+// };
+
 export const useGetAllInvoicesQuery = () => {
   return useQuery(["allInvoices"], () => getAllInvoice());
 };

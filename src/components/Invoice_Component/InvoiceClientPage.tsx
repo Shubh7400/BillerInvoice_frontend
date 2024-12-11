@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ClientInfoSection from "../Client_Component/ClientInfoSection";
 import { Button, TextField, useTheme } from "@mui/material";
 import Styles from "./invoive.module.css";
-import { removeProjectFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+import { addProjectForInvoiceAction, removeProjectFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import BillAmount from "./BillAmount";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
@@ -26,7 +26,11 @@ import {
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
 import { makeStateNeutralOfSelectedClient } from "../../states/redux/ClientStates/selectedClientSlice";
-
+import {
+  useAddNewProject,
+  useUpdateProject,
+} from "../../states/query/Project_queries/projectQueries";
+import { queryClient } from "./../../index";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
@@ -34,6 +38,8 @@ import MenuItem from "@mui/material/MenuItem";
 import dayjs, { Dayjs } from "dayjs";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
 import { updateProjectForInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+
 import ReplayIcon from "@mui/icons-material/Replay";
 import { useSnackbar } from "notistack";
 let windowWidth: number | undefined = window.innerWidth;
@@ -104,54 +110,128 @@ function InvoiceClientPage() {
       setLoadingRate(false);
     }
   };
+  const [id, setId] = React.useState<string | undefined>(undefined);
+
+  React.useEffect(() => {
+    const project = projectsForInvoice.find(
+      (project) => project.clientId === clientObj._id
+    );
+    if (project) {
+      setId(project._id);
+    }
+  }, [projectsForInvoice, clientObj._id]); 
+  console.log("id",id);
+  const UpdateProjectMutationHandler = useUpdateProject(id, clientObj._id);
+
 
   const handleInputChange = (id: string, field: string, value: any) => {
-    const newValue = value === "" ? "" : value;
+    const newValue = value === "" ? null : value; // Use null instead of empty string
     setEditableProjects((prevProjects) =>
       prevProjects.map((project) => {
         if (project._id === id) {
           const updatedProject = { ...project, [field]: newValue };
-
-          // Calculate the rate per day if rate per month is provided
-          if (field === "rate" && project.workingPeriodType === "days") {
-            if (invoiceDate) {
-              // Get the previous month from the invoice date
-              const prevMonth = invoiceDate.subtract(1, "month");
-              const daysInPrevMonth = prevMonth.daysInMonth(); // Day.js method to get days in month
-              updatedProject.ratePerDay = parseFloat(value) / daysInPrevMonth;
-            }
+  
+          // Calculate rate per day if rate per month is provided
+          if (field === "rate" && project.workingPeriodType === "months" && invoiceDate) {
+            const prevMonth = invoiceDate.subtract(1, "month");
+            const daysInPrevMonth = prevMonth.daysInMonth();
+            updatedProject.ratePerDay = parseFloat(value) / daysInPrevMonth;
           }
-          console.log("rate per day : ", updatedProject.ratePerDay);
-          // Perform amount calculation if rate and workingPeriodType are present
-
+  
+          // Perform amount calculation based on workingPeriodType
           if (updatedProject.rate && updatedProject.workingPeriodType) {
-            if (updatedProject.workingPeriodType === "hours" && updatedProject.workingTime) {
-              updatedProject.amount = updatedProject.rate * (updatedProject.workingTime || 1) * updatedProject.conversionRate;
-            } else if (updatedProject.workingPeriodType === "days" && updatedProject.ratePerDay && updatedProject.workingDays) {
-              updatedProject.amount = updatedProject.ratePerDay * (updatedProject.workingDays || 1) * updatedProject.conversionRate;
+            if (updatedProject.workingPeriodType === "hours" && updatedProject.workingPeriod) {
+              updatedProject.amount = updatedProject.rate * (updatedProject.workingPeriod || 1) * updatedProject.conversionRate;
+            } else if (updatedProject.workingPeriodType === "months" && updatedProject.ratePerDay && updatedProject.workingPeriod) {
+              updatedProject.amount = updatedProject.ratePerDay * (updatedProject.workingPeriod || 1) * updatedProject.conversionRate;
             } else {
               updatedProject.amount = updatedProject.rate * updatedProject.conversionRate;
             }
           }
-          dispatch(updateProjectForInvoiceAction(updatedProject));
+  
+          // Prepare mutation data
+          if (updatedProject._id) {
+            const mutationData = {
+              projectId: updatedProject._id, // Ensure _id is used as projectId
+              updatedProjectData: {
+                projectName: updatedProject.projectName,
+                rate: updatedProject.rate,
+                workingPeriodType: updatedProject.workingPeriodType,
+                currencyType: updatedProject.currencyType,
+                conversionRate: updatedProject.conversionRate,
+                paymentStatus: updatedProject.paymentStatus,
+                adminId: updatedProject.adminId,
+                clientId: updatedProject.clientId,
+                workingPeriod: updatedProject.workingPeriod,
+                amount: updatedProject.amount,
+                advanceAmount: updatedProject.advanceAmount,
+                ratePerDay: updatedProject.ratePerDay,
+              },
+            };
+  
+            UpdateProjectMutationHandler.mutate(mutationData, {
+              onSuccess: () => {
+                dispatch(updateProjectForInvoiceAction(updatedProject));
+                enqueueSnackbar("Project updated successfully.", { variant: "success" });
+              },
+              onError: (error) => {
+                enqueueSnackbar("Error updating project. Please try again.", { variant: "error" });
+                console.error(error);
+              },
+            });
+          } 
           return updatedProject;
         }
         return project;
-      }
-      )
+      })
     );
   };
+  
+  // const handleInputChange = (id: string, field: string, value: any) => {
+  //   const newValue = value === "" ? "" : value;
+  //   setEditableProjects((prevProjects) =>
+  //     prevProjects.map((project) => {
+  //       if (project._id === id) {
+  //         const updatedProject = { ...project, [field]: newValue };
 
+  //         // Calculate the rate per day if rate per month is provided
+  //         if (field === "rate" && project.workingPeriodType === "months") {
+  //           if (invoiceDate) {
+  //             // Get the previous month from the invoice date
+  //             const prevMonth = invoiceDate.subtract(1, "month");
+  //             const daysInPrevMonth = prevMonth.daysInMonth(); // Day.js method to get days in month
+  //             updatedProject.ratePerDay = parseFloat(value) / daysInPrevMonth;
+  //           }
+  //         }
+  //         // Perform amount calculation if rate and workingPeriodType are present
+
+  //         if (updatedProject.rate && updatedProject.workingPeriodType) {
+  //           if (updatedProject.workingPeriodType === "hours" && updatedProject.workingPeriod) {
+  //             updatedProject.amount = updatedProject.rate * (updatedProject.workingPeriod || 1) * updatedProject.conversionRate;
+  //           } else if (updatedProject.workingPeriodType === "months" && updatedProject.ratePerDay && updatedProject.workingPeriod) {
+  //             updatedProject.amount = updatedProject.ratePerDay * (updatedProject.workingPeriod || 1) * updatedProject.conversionRate;
+  //           } else {
+  //             updatedProject.amount = updatedProject.rate * updatedProject.conversionRate;
+  //           }
+  //         }
+  //         dispatch(updateProjectForInvoiceAction(updatedProject));
+  //         return updatedProject;
+  //       }
+  //       return project;
+  //     }
+  //     )
+  //   );
+  // };
   const [workingFixed, setWorkingFixed] = useState(false);
   useEffect(() => {
     const updatedProjects = projectsForInvoice.map((project) => {
       const updatedProject = { ...project };
 
-      if (project.workingPeriodType === "fixed") {
+      if(project.workingPeriodType === "fixed"){
         setWorkingFixed(true);
       }
       // Calculate ratePerDay on component mount
-      if (project.workingPeriodType === "days" && project.rate) {
+      if (project.workingPeriodType === "months" && project.rate) {
         if (invoiceDate) {
           const prevMonth = invoiceDate.subtract(1, "month");
           const daysInPrevMonth = prevMonth.daysInMonth();
@@ -159,26 +239,26 @@ function InvoiceClientPage() {
         }
       }
 
-      // Set default workingDays to 1 if workingPeriodType is "days"
-      if (project.workingPeriodType === "days") {
-        updatedProject.workingDays = project.workingDays || 1;
+      // Set default workingPeriod to 1 if workingPeriodType is "days"
+      if (project.workingPeriodType === "months") {
+        updatedProject.workingPeriod = project.workingPeriod || 1;
       }
 
       // Calculate the amount based on the workingPeriodType
       let amount = 0;
       if (project.rate && project.workingPeriodType) {
         if (project.workingPeriodType === "hours") {
-          amount = project.rate * (project.workingTime || 1) * project.conversionRate;
-        } else if (project.workingPeriodType === "days" && updatedProject.ratePerDay) {
-          amount = updatedProject.ratePerDay * (updatedProject.workingDays || 1) * project.conversionRate;
+          amount = project.rate * (project.workingPeriod || 1) * project.conversionRate;
+        } else if (project.workingPeriodType === "months" && updatedProject.ratePerDay) {
+          amount = updatedProject.ratePerDay * (updatedProject.workingPeriod || 1) * project.conversionRate;
         } else if (project.workingPeriodType === "fixed") {
           amount = project.rate * project.conversionRate;
         }
       }
 
       updatedProject.amount = amount;
-
-      return updatedProject;
+      
+            return updatedProject;
     });
 
     setEditableProjects(updatedProjects);
@@ -352,7 +432,7 @@ function InvoiceClientPage() {
                   <TableCell>Rate</TableCell>
                   {editableProjects.map((project: ProjectType) => (
                     <>
-                      {project.workingPeriodType === "days" && <TableCell>Rate/day</TableCell>}
+                      {project.workingPeriodType === "months" && <TableCell>Rate/day</TableCell>}
                      
                     </>
                   ))}
@@ -385,7 +465,7 @@ function InvoiceClientPage() {
                             <span>
                               {project.currencyType === "rupees" ? project.workingPeriodType === "fixed"
                                 ? "₹/fixed" : `₹/${project.workingPeriodType === "hours" ? "hours" : "months"}`
-                                : project.currencyType === "dollars" ? project.workingPeriodType === "fixed"
+                                : project.currencyType === "dollars" ? project.workingPeriodType === "fixed"                                                          
                                   ? "$/fixed" :
                                   `$/${project.workingPeriodType === "hours" ? "hours" : "months"}`
                                   : project.currencyType === "pounds" ? project.workingPeriodType === "fixed"
@@ -397,26 +477,26 @@ function InvoiceClientPage() {
                         }}
                       />
                     </TableCell>
-                    {project.workingPeriodType==="days" &&
+                    {project.workingPeriodType==="months" &&
                        <TableCell>
                        <TextField
                          variant="outlined"
                          size="small"
-                         value={project.ratePerDay || "NA"}
+                         value={project.ratePerDay?.toFixed(2) || "NA"}
                        />
                      </TableCell>
-                    } 
-                     
+                    }                   
                     <TableCell className="text-[13px] w-[150px]">
                       {project.workingPeriodType === 'hours' ? (
                         <TextField
                           variant="outlined"
                           size="small"
-                          value={project.workingTime || 1 || "NA"}
+                          type="number"
+                          value={project.workingPeriod || 1}
                           onChange={(e) =>
                             handleInputChange(
                               project._id ?? "",
-                              "workingTime",
+                              "workingPeriod",
                               e.target.value
                             )
                           }
@@ -427,16 +507,17 @@ function InvoiceClientPage() {
                               </span>
                             ),
                           }}
-                        />) : project.workingPeriodType ==="days" ? 
+                        />) : project.workingPeriodType ==="months" ? 
 
                         (<TextField
                           variant="outlined"
                           size="small"
-                          value={project.workingDays || 1 || "NA"}
+                          type="number"
+                          value={project.workingPeriod || 1 }
                           onChange={(e) =>
                             handleInputChange(
                               project._id ?? "",
-                              "workingDays",
+                              "workingPeriod",
                               e.target.value
                             )
                           }

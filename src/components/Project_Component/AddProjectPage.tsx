@@ -109,7 +109,7 @@ function AddProjectPage({
   const [loadingRate, setLoadingRate] = useState(false);
   const [rateError, setRateError] = useState("");
   const [projectData, setProjectData] = useState<ProjectType>({
-    _id: "",
+    _id:"",
     projectName: "",
     rate: 0,
     workingPeriodType: "hours",
@@ -206,7 +206,7 @@ function AddProjectPage({
       });
     }
   }, [clientId]);
-
+ 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void {
@@ -214,7 +214,7 @@ function AddProjectPage({
     setFormError("");
     setIncompleteError("");
 
-    if (workPeriodType === "days" && parseInt(value) < 0) {
+    if (workPeriodType === "months" && parseInt(value) < 0) {
       value = "0";
     }
     if (name === "advanceAmount") {
@@ -297,15 +297,13 @@ function AddProjectPage({
         onSuccess: () => {
           queryClient.invalidateQueries(["projects", clientId]);
           queryClient.refetchQueries(["projects", clientId]);
+          dispatch(addProjectForInvoiceAction(projectData));
           setLoading(false);
           handleClose();
           //  Success message after adding project
           enqueueSnackbar("Project added successfully.", {
             variant: "success",
           });
-          console.log("----------", projectData);
-          dispatch(updateInvoiceObjectStateAction(projectData));
-          dispatch(addProjectForInvoiceAction(projectData));
           navigate(-1);
         },
 
@@ -365,7 +363,7 @@ function AddProjectPage({
       setIncompleteError("Incomplete fields");
     }
   };
- 
+
   React.useEffect(() => {
     if (forAddProject && toEdit) {
       setProjectData({
@@ -378,10 +376,7 @@ function AddProjectPage({
         paymentStatus: false,
         adminId: adminId ? adminId : "",
         clientId: clientId ? clientId : "",
-<<<<<<< HEAD
         advanceAmount: 0,
-=======
->>>>>>> 1a9684eabb8d48e86c19b303f9bc04cbf35b7a77
       });
     }
     if (!forAddProject && !toEdit && projectToEdit && projectToEdit._id) {
@@ -403,7 +398,6 @@ function AddProjectPage({
       setProjectData({ ...projectData, adminId });
     }
   }, [clientId, adminId]);
-
 
   return (
     <>
@@ -443,10 +437,6 @@ function AddProjectPage({
                     options={clientsArr}
                     getOptionLabel={(option) => option.clientName || ""}
                     value={clientsArr.find((client) => client._id === projectData.clientId) || null}
-<<<<<<< HEAD
-=======
-
->>>>>>> 1a9684eabb8d48e86c19b303f9bc04cbf35b7a77
                     onChange={(event, newValue) => {
                       if (newValue && newValue._id) {
                         setFormError("");
@@ -533,7 +523,7 @@ function AddProjectPage({
                 onChange={handleChange}
               >
                 <MenuItem value="hours">Hours</MenuItem>
-                <MenuItem value="days">Months</MenuItem>
+                <MenuItem value="months">Months</MenuItem>
                 <MenuItem value="fixed">Fixed</MenuItem>
               </TextField>
             </div>
@@ -543,7 +533,7 @@ function AddProjectPage({
               label={
                 workPeriodType === "fixed"
                   ? "Enter Fixed Amount"
-                  : `Rate (${currencyType}/${workPeriodType === "days" ? "months" : "hours"
+                  : `Rate (${currencyType}/${workPeriodType === "months" ? "months" : "hours"
                   })`
               }
               type="number"

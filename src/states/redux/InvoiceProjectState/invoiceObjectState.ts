@@ -3,6 +3,7 @@ import { InvoiceType } from "../../../types/types";
 import { produce } from "immer";
 
 const initialState: InvoiceType = {
+  _id: "",
   invoiceNo: 0,
   billDate: "",
   dueDate: "",
@@ -12,7 +13,7 @@ const initialState: InvoiceType = {
   adminId: "",
   projectsId: [],
   taxType: "",
-  advanceAmount: 0,
+  // advanceAmount: 0,
   
 };
 
@@ -25,8 +26,7 @@ const invoiceObjectSlice = createSlice({
         let temp = { ...draftState };
         for (const key in action.payload) {
           temp[key] = action.payload[key];
-        }
-        
+        }       
         return temp
       });
     },

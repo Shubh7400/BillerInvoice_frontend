@@ -35,7 +35,7 @@ function InvoiceListPage() {
       _id: "2",
       projectName: "Project Beta",
       rate: 200,
-      workingPeriodType: "days",
+      workingPeriodType: "months",
       currencyType: "rupees",
       conversionRate: 74.5,
       paymentStatus: false,
