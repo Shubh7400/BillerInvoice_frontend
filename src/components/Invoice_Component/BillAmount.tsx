@@ -110,7 +110,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     await root.render(
       <div>
         <Provider store={store}>
-          <DownloadPreview />
+          <DownloadPreview grandTotal={grandTotal} advanceAmount={advanceAmount}/>
         </Provider>
       </div>
     );
@@ -157,7 +157,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     await root.render(
       <div>
         <Provider store={store}>
-          <DownloadPreview />
+          <DownloadPreview grandTotal={grandTotal} advanceAmount={advanceAmount}/>
         </Provider>
       </div>
     );
@@ -242,7 +242,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       setInvoiceNo(+adminState.data.invoiceNo + 1);
 
       dispatch(
-        updateInvoiceObjectStateAction({         
+        updateInvoiceObjectStateAction({   
+          _id:invoiceObject._id,      
           invoiceNo: invoiceNo,
           projectsId: projectsIdArr,
           clientId,
@@ -482,7 +483,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                 <span>{taxAmount.toFixed(2)} &#8377;</span>
               </div>
             </Box> */}
-            <Box sx={{
+             <Box sx={{
               mt: "6px",
               '& .MuiFormControl-root': {
                 '& .MuiOutlinedInput-root': {
@@ -612,7 +613,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                   <span className="font-semibold text-gray-800">{taxAmount.toFixed(2)} &#8377;</span>
                 </div>
               </div>
-            </Box>
+            </Box> 
             <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-4">
               Amount:
               <span className=" ">{amountAfterTax.toFixed(2)} &#8377; </span>

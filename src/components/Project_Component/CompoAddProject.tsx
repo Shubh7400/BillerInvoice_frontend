@@ -78,14 +78,26 @@ export default function CompoAddProject({
   const handleBackButtonClick = () => {
     navigate(-1);
   };
+  // const handleAddProjectClick = () => {
+  //   dispatch(makeStateNeutralOfSelectedClient());
+  //   navigate(
+  //     !projectTableforClient
+  //       ? "/add-project"
+  //       : "/client/add-project"
+  //   );
+  // }
   const handleAddProjectClick = () => {
-    // dispatch(makeStateNeutralOfSelectedClient());
+    if (!projectTableforClient) {
+      dispatch(makeStateNeutralOfSelectedClient());
+    }
     navigate(
       !projectTableforClient
         ? "/add-project"
         : "/client/add-project"
     );
-  }
+  };
+  
+  
 
   return (
     <>
@@ -128,12 +140,12 @@ export default function CompoAddProject({
                 },
               }}
               onClick={() => {
-                // handleAddProjectClick();
-                navigate(
-                  !projectTableforClient
-                    ? "/add-project"
-                    : "/client/add-project"
-                );
+                handleAddProjectClick();
+                // navigate(
+                //   !projectTableforClient
+                //     ? "/add-project"
+                //     : "/client/add-project"
+                // );
               }}
             >
               Add Project

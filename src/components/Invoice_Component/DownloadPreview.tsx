@@ -9,7 +9,11 @@ import gammaedgeLogo from "../../utils/images/gammaedgeLogo.png";
 import billbg from "../assets/invoice_bg.png";
 import { TbBorderRadius } from "react-icons/tb";
 
-const DownloadPreview = () => {
+interface DownloadPreviewProps {
+  grandTotal: number;
+  advanceAmount: number;
+}
+const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) => {
   const { data } = useSelector((state: RootState) => state.adminState);
   const selectedClient = useSelector(
     (state: RootState) => state.selectedClientState
@@ -142,21 +146,21 @@ const DownloadPreview = () => {
                   <td className="border px-2 pb-4 text-center">
                     {`${project.rate}/${project.workingPeriodType}`}
                   </td>
-                  
+
                   {project.workingPeriodType === "months" && (
                     <td className="border px-2 pb-4 text-center">
-                    {project.ratePerDay?.toFixed(2)}
-                  </td>
+                      {project.ratePerDay?.toFixed(2)}
+                    </td>
                   )}
-                    {project.workingPeriodType === "fixed" ?(
-                      <td className="border px-2 pb-4 text-center">
-                      NA
-                      </td>
-                    ):
+                  {project.workingPeriodType === "fixed" ? (
                     <td className="border px-2 pb-4 text-center">
-                    {project.workingPeriod || 1}
-                  </td>
-                    }
+                      NA
+                    </td>
+                  ) :
+                    <td className="border px-2 pb-4 text-center">
+                      {project.workingPeriod || 1}
+                    </td>
+                  }
                   <td className="border px-2 pb-4 text-center">
                     {project.conversionRate}
                   </td>
@@ -194,11 +198,28 @@ const DownloadPreview = () => {
               ) : (
                 <div className="flex justify-between mb-[30px]">
                   IGST @ 18%: <span>{taxAmount}</span>
-                </div>             
+                </div>
               )}
-              <div className="text-[20px] justify-between flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
-                Total: <span>&#8377; {invoiceObject.amountAfterTax}</span>
-              </div>
+
+              {advanceAmount > 0 ?
+                (<>
+                  
+                  <div className="flex justify-between mb-[30px]">
+                    Advance: <span>{advanceAmount}</span>
+                  </div>
+                  <div className="text-[20px] justify-between flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
+                    GrandTotal: <span>{grandTotal}</span>
+                  </div>
+
+                </>) :
+                (
+                  <>
+                    <div className="text-[20px] justify-between flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
+                      Total: <span>&#8377; {invoiceObject.amountAfterTax}</span>
+                    </div>
+                  </>
+                )
+              }
             </div>
           </div>
         </div>
