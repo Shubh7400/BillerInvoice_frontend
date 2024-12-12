@@ -61,3 +61,24 @@ export async function getInvoiceCounts(year: string, user: string) {
     throw new Error(`Failed to fetch invoice counts: ${error.message || error}`);
   }
 };
+
+export async function fetchInvoiceProjects(year: string, month: string) {
+  let token = localStorage.getItem('billAppAuthToken');
+  if (token) {
+    token = token.substring(1, token.length - 1);
+  }
+
+  try {
+    const res = await axios.get(`${config.apiUrlInvoice}/projects-by-month`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: { year, month },
+    });
+    return res.data.data; // Return the projects
+  } catch (error) {
+    console.error('Error fetching invoice projects:', error);
+    throw new Error('Error fetching invoice projects');
+  }
+}
+

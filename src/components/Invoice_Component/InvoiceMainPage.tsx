@@ -36,6 +36,23 @@ const tabsContent: YearContent[] = [
       December: '311',
     },
   },
+  {
+    label: '2023',
+    content: {
+      January: '300',
+      February: '301',
+      March: '302',
+      April: '302',
+      May: '304',
+      June: '305',
+      July: '306',
+      August: '307',
+      September: '308',
+      October: '309',
+      November: '310',
+      December: '311',
+    },
+  },
 ];
 
 const monthImages: { [key: string]: string } = {
@@ -128,6 +145,15 @@ const TabPillsComponent: React.FC = () => {
     console.log(`Filter from ${fromMonth} ${fromYear} to ${toMonth} ${toYear}`);
     setFilterPopupOpen(false); 
   };
+
+const getMonthNumber = (monthName: string): number => {
+  return new Date(`${monthName} 1`).getMonth() + 1;
+};
+
+const handleMonthClick = (year: string, month: string) => {
+  const numericMonth = getMonthNumber(month);
+  navigate(`/invoice/details?year=${year}&month=${numericMonth}`);
+};
 
   const monthNames = Object.keys(tabsContent[dropdownIndex].content);
 
@@ -285,6 +311,7 @@ const TabPillsComponent: React.FC = () => {
                 variant="h6"
                 className='absolute bottom-[16px] right-[25%] uppercase'
                 style={{ fontSize: '20px', color: '#000', fontWeight: '500' }}
+                onClick={() => handleMonthClick(tabsContent[dropdownIndex]?.label, month)}
               >
                 {month}
               </Typography>
@@ -296,7 +323,7 @@ const TabPillsComponent: React.FC = () => {
                 style={{
                   backgroundColor: buttonColor, // Apply dynamic color here
                 }}
-              >
+              >          
                 <FaArrowRight className={Styles.arrow} />
               </Link>
             </Grid>
