@@ -24,7 +24,7 @@ function ClientInfoSection() {
   return (
     <div>
       {clientData && loadingState !== "idle" ? (
-        <div className="w-[80vw] flex flex-col justify-end items-start">
+        <div className="flex flex-col justify-end items-start">
           <div className="text-black ">
             <div className="text-black overflow-hidden overflow-ellipsis">
               <div className="flex items-center justify-between w-full">

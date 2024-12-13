@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ClientInfoSection from "../Client_Component/ClientInfoSection";
 import { Button, TextField, useTheme } from "@mui/material";
 import Styles from "./invoive.module.css";
-import { removeProjectFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+import { addProjectForInvoiceAction, removeProjectFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import BillAmount from "./BillAmount";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
@@ -26,7 +26,11 @@ import {
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
 import { makeStateNeutralOfSelectedClient } from "../../states/redux/ClientStates/selectedClientSlice";
-
+import {
+  useAddNewProject,
+  useUpdateProject,
+} from "../../states/query/Project_queries/projectQueries";
+import { queryClient } from "./../../index";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
@@ -34,9 +38,10 @@ import MenuItem from "@mui/material/MenuItem";
 import dayjs, { Dayjs } from "dayjs";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
 import { updateProjectForInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
-// import AddIcon from '@mui/icons-material/Add';
+import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+import { useUpdateInvoiceMutation } from "../../states/query/Invoice_queries/invoiceQueries";
+import { InvoiceType } from "../../types/types";
 import ReplayIcon from "@mui/icons-material/Replay";
-
 import { useSnackbar } from "notistack";
 let windowWidth: number | undefined = window.innerWidth;
 function InvoiceClientPage() {
@@ -59,10 +64,9 @@ function InvoiceClientPage() {
 
   const navigate = useNavigate();
   const [editableProjects, setEditableProjects] = useState(projectsForInvoice);
-
   const [loadingRate, setLoadingRate] = useState(false);
   const [rateError, setRateError] = useState("");
-  const [currencyType, setCurrencyType] = useState("dollars"); 
+  const [currencyType, setCurrencyType] = useState("dollars");
 
   const [invoiceDate, setInvoiceDate] = React.useState(dayjs());
   const [dueDate, setDueDate] = React.useState(dayjs());
@@ -70,23 +74,36 @@ function InvoiceClientPage() {
   const [allowDownload, setAllowDownload] = React.useState(true);
   const { enqueueSnackbar } = useSnackbar();
 
-  // Fetch the exchange rate from the API
+  
   const fetchExchangeRate = async (projectId: string) => {
     setLoadingRate(true);
     setRateError("");
 
     try {
+      // Fetch the latest exchange rates
       const response = await axios.get(`https://api.exchangerate-api.com/v4/latest/USD`);
       const rates = response.data.rates;
 
-      let newRate = 1;
-      if (currencyType === "dollars") {
-        newRate = rates.INR;
-      } else if (currencyType === "pounds") {
-        newRate = rates.INR / rates.GBP;
+      // Identify the specific project
+      const targetProject = editableProjects.find((project) => project._id === projectId);
+
+      if (!targetProject) {
+        throw new Error("Project not found.");
       }
 
-      // Find the project to update
+      // Ensure the currencyType is taken from the project
+      const { currencyType, workingPeriodType, adminId, clientId } = targetProject;
+
+      let newRate = 1;
+      if (currencyType === "dollars") {
+        newRate = rates.INR; // USD to INR
+      } else if (currencyType === "pounds") {
+        newRate = rates.INR / rates.GBP; // GBP to INR
+      } else {
+        throw new Error("Unsupported currency type.");
+      }
+
+      // Update the project's conversion rate locally
       const updatedProjects = editableProjects.map((project) =>
         project._id === projectId ? { ...project, conversionRate: newRate } : project
       );
@@ -94,11 +111,35 @@ function InvoiceClientPage() {
       const updatedProject = updatedProjects.find((project) => project._id === projectId);
 
       if (updatedProject) {
-        // Update the editableProjects state
         setEditableProjects(updatedProjects);
 
         // Dispatch the updated project to Redux
         dispatch(updateProjectForInvoiceAction(updatedProject));
+
+        // Construct the mutation data
+        const mutationData = {
+          projectId,
+          updatedProjectData: {
+            conversionRate: newRate,
+            workingPeriodType,
+            currencyType,
+            adminId,
+            clientId,
+          },
+        };
+
+        // Save the updated conversion rate to the database
+        UpdateProjectMutationHandler.mutate(mutationData, {
+          onSuccess: () => {
+            // Optionally show a success notification
+            // enqueueSnackbar("Conversion rate updated successfully.", { variant: "success" });
+          },
+          onError: (error) => {
+            // Handle error and show notification
+            setRateError("Failed to save conversion rate. Try again.");
+            console.error("Error updating conversion rate:", error);
+          },
+        });
       }
     } catch (error) {
       setRateError("Failed to fetch exchange rates. Try again.");
@@ -107,80 +148,230 @@ function InvoiceClientPage() {
       setLoadingRate(false);
     }
   };
+  const [id, setId] = React.useState<string | undefined>(undefined);
 
+  React.useEffect(() => {
+    const project = projectsForInvoice.find(
+      (project) => project.clientId === clientObj._id
+    );
+    if (project) {
+      setId(project._id);
+    }
+  }, [projectsForInvoice, clientObj._id]);
+  console.log("id", id);
+  const UpdateProjectMutationHandler = useUpdateProject(id, clientObj._id);
 
 
   const handleInputChange = (id: string, field: string, value: any) => {
-    const newValue = value === "" ? "" : value;
+    const newValue = value === "" ? null : value; // Use null instead of empty string
     setEditableProjects((prevProjects) =>
       prevProjects.map((project) => {
         if (project._id === id) {
           const updatedProject = { ...project, [field]: newValue };
 
-          // Calculate the rate per day if rate per month is provided
-          if (field === "rate" && project.workingPeriodType === "days") {
-            if (invoiceDate) {
-              // Get the previous month from the invoice date
-              const prevMonth = invoiceDate.subtract(1, "month");
-              const daysInPrevMonth = prevMonth.daysInMonth(); // Day.js method to get days in month
-              updatedProject.ratePerDay = parseFloat(value) / daysInPrevMonth;
-            }
+          // Calculate rate per day if rate per month is provided
+          if (field === "rate" && project.workingPeriodType === "months" && invoiceDate) {
+            const prevMonth = invoiceDate.subtract(1, "month");
+            const daysInPrevMonth = prevMonth.daysInMonth();
+            updatedProject.ratePerDay = parseFloat(value) / daysInPrevMonth;
           }
-          console.log("rate per day : ",updatedProject.ratePerDay);
-          // Perform amount calculation if rate and workingPeriodType are present
-          
-          if (updatedProject.rate && updatedProject.workingPeriodType ) {
-            if (updatedProject.workingPeriodType === "hours" && updatedProject.workingTime) {
-              updatedProject.amount = updatedProject.rate * (updatedProject.workingTime || 1) * updatedProject.conversionRate;
-            } else if (updatedProject.workingPeriodType === "days" && updatedProject.ratePerDay && updatedProject.workingDays) {
-              updatedProject.amount = updatedProject.ratePerDay * (updatedProject.workingDays || 1) * updatedProject.conversionRate;
+
+          // Perform amount calculation based on workingPeriodType
+          if (updatedProject.rate && updatedProject.workingPeriodType) {
+            if (updatedProject.workingPeriodType === "hours" && updatedProject.workingPeriod) {
+              updatedProject.amount = updatedProject.rate * (updatedProject.workingPeriod || 1) * updatedProject.conversionRate;
+            } else if (updatedProject.workingPeriodType === "months" && updatedProject.ratePerDay && updatedProject.workingPeriod) {
+              updatedProject.amount = updatedProject.ratePerDay * (updatedProject.workingPeriod || 1) * updatedProject.conversionRate;
             } else {
               updatedProject.amount = updatedProject.rate * updatedProject.conversionRate;
             }
           }
-          dispatch(updateProjectForInvoiceAction(updatedProject));
+
+          // Prepare mutation data
+          if (updatedProject._id) {
+            const mutationData = {
+              projectId: updatedProject._id, // Ensure _id is used as projectId
+              updatedProjectData: {
+                projectName: updatedProject.projectName,
+                rate: updatedProject.rate,
+                workingPeriodType: updatedProject.workingPeriodType,
+                currencyType: updatedProject.currencyType,
+                conversionRate: updatedProject.conversionRate,
+                paymentStatus: updatedProject.paymentStatus,
+                adminId: updatedProject.adminId,
+                clientId: updatedProject.clientId,
+                workingPeriod: updatedProject.workingPeriod,
+                amount: updatedProject.amount,
+                advanceAmount: updatedProject.advanceAmount,
+                ratePerDay: updatedProject.ratePerDay,
+              },
+            };
+
+            UpdateProjectMutationHandler.mutate(mutationData, {
+              onSuccess: () => {
+                dispatch(updateProjectForInvoiceAction(updatedProject));
+                // enqueueSnackbar("Project updated successfully.", { variant: "success" });
+              },
+              onError: (error) => {
+                // enqueueSnackbar("Error updating project. Please try again.", { variant: "error" });
+                console.error(error);
+              },
+            });
+          }
           return updatedProject;
         }
         return project;
-      }
-      )
+      })
     );
   };
-const [workingFixed,setWorkingFixed] = useState(false);
+
+  // const handleInputChange = (id: string, field: string, value: any) => {
+  //   const newValue = value === "" ? "" : value;
+  //   setEditableProjects((prevProjects) =>
+  //     prevProjects.map((project) => {
+  //       if (project._id === id) {
+  //         const updatedProject = { ...project, [field]: newValue };
+
+  //         // Calculate the rate per day if rate per month is provided
+  //         if (field === "rate" && project.workingPeriodType === "months") {
+  //           if (invoiceDate) {
+  //             // Get the previous month from the invoice date
+  //             const prevMonth = invoiceDate.subtract(1, "month");
+  //             const daysInPrevMonth = prevMonth.daysInMonth(); // Day.js method to get days in month
+  //             updatedProject.ratePerDay = parseFloat(value) / daysInPrevMonth;
+  //           }
+  //         }
+  //         // Perform amount calculation if rate and workingPeriodType are present
+
+  //         if (updatedProject.rate && updatedProject.workingPeriodType) {
+  //           if (updatedProject.workingPeriodType === "hours" && updatedProject.workingPeriod) {
+  //             updatedProject.amount = updatedProject.rate * (updatedProject.workingPeriod || 1) * updatedProject.conversionRate;
+  //           } else if (updatedProject.workingPeriodType === "months" && updatedProject.ratePerDay && updatedProject.workingPeriod) {
+  //             updatedProject.amount = updatedProject.ratePerDay * (updatedProject.workingPeriod || 1) * updatedProject.conversionRate;
+  //           } else {
+  //             updatedProject.amount = updatedProject.rate * updatedProject.conversionRate;
+  //           }
+  //         }
+  //         dispatch(updateProjectForInvoiceAction(updatedProject));
+  //         return updatedProject;
+  //       }
+  //       return project;
+  //     }
+  //     )
+  //   );
+  // };
+  const [workingFixed, setWorkingFixed] = useState(false);
+  // useEffect(() => {
+  //   const updatedProjects = projectsForInvoice.map((project) => {
+  //     const updatedProject = { ...project };
+
+  //     if (project.workingPeriodType === "fixed") {
+  //       setWorkingFixed(true);
+  //     }
+  //     // Calculate ratePerDay on component mount
+  //     if (project.workingPeriodType === "months" && project.rate) {
+  //       if (invoiceDate) {
+  //         const prevMonth = invoiceDate.subtract(1, "month");
+  //         const daysInPrevMonth = prevMonth.daysInMonth();
+  //         updatedProject.ratePerDay = project.rate / daysInPrevMonth;
+  //       }
+  //     }
+
+  //     // Set default workingPeriod to 1 if workingPeriodType is "days"
+  //     if (project.workingPeriodType === "months") {
+  //       updatedProject.workingPeriod = project.workingPeriod || 1;
+  //     }
+
+  //     // Calculate the amount based on the workingPeriodType
+  //     let amount = 0;
+  //     if (project.rate && project.workingPeriodType) {
+  //       if (project.workingPeriodType === "hours") {
+  //         amount = project.rate * (project.workingPeriod || 1) * project.conversionRate;
+  //       } else if (project.workingPeriodType === "months" && updatedProject.ratePerDay) {
+  //         amount = updatedProject.ratePerDay * (updatedProject.workingPeriod || 1) * project.conversionRate;
+  //       } else if (project.workingPeriodType === "fixed") {
+  //         amount = project.rate * project.conversionRate;
+  //       }
+  //     }
+
+  //     updatedProject.amount = amount;
+
+  //     return updatedProject;
+  //   });
+
+  //   setEditableProjects(updatedProjects);
+  // }, [projectsForInvoice, invoiceDate, workingFixed]);
+
   useEffect(() => {
     const updatedProjects = projectsForInvoice.map((project) => {
       const updatedProject = { ...project };
 
-      if(project.workingPeriodType === "fixed"){
+      if (project.workingPeriodType === "fixed") {
         setWorkingFixed(true);
       }
+
       // Calculate ratePerDay on component mount
-      if (project.workingPeriodType === "days" && project.rate) {
+      if (project.workingPeriodType === "months" && project.rate) {
         if (invoiceDate) {
           const prevMonth = invoiceDate.subtract(1, "month");
           const daysInPrevMonth = prevMonth.daysInMonth();
           updatedProject.ratePerDay = project.rate / daysInPrevMonth;
         }
       }
-    
+
+      // Set default workingPeriod to 1 if workingPeriodType is "months"
+      if (project.workingPeriodType === "months") {
+        updatedProject.workingPeriod = project.workingPeriod || 1;
+      }
+
+      // Calculate the amount based on the workingPeriodType
       let amount = 0;
-     
       if (project.rate && project.workingPeriodType) {
         if (project.workingPeriodType === "hours") {
-          amount = project.rate * (project.workingTime || 1) * project.conversionRate;
-        } else if (project.workingPeriodType === "days" && project.ratePerDay && project.workingDays) {
-          amount = project.ratePerDay  * (project.workingDays || 1) * project.conversionRate;
+          amount = project.rate * (project.workingPeriod || 1) * project.conversionRate;
+        } else if (project.workingPeriodType === "months" && updatedProject.ratePerDay) {
+          amount = updatedProject.ratePerDay * (updatedProject.workingPeriod || 1) * project.conversionRate;
         } else if (project.workingPeriodType === "fixed") {
           amount = project.rate * project.conversionRate;
         }
       }
 
-      // return { ...project, amount };
+      updatedProject.amount = amount;
+
+      // Save updated ratePerDay to the database
+      if (updatedProject.ratePerDay !== project.ratePerDay) {
+        const projectId = updatedProject._id;
+        if (!projectId) {
+          console.error("Project ID is undefined, cannot save ratePerDay.");
+          return updatedProject; // Skip mutation if projectId is undefined
+        }
+
+        const mutationData = {
+          projectId,
+          updatedProjectData: {
+            ratePerDay: updatedProject.ratePerDay ?? 0, // Default to 0 if null or undefined
+            workingPeriodType: updatedProject.workingPeriodType,
+            currencyType: updatedProject.currencyType,
+            adminId: updatedProject.adminId,
+            clientId: updatedProject.clientId,
+          },
+        };
+
+        UpdateProjectMutationHandler.mutate(mutationData, {
+          onSuccess: () => {
+            console.log(`RatePerDay updated successfully for project ${projectId}`);
+          },
+          onError: (error) => {
+            console.error(`Failed to update ratePerDay for project ${projectId}`, error);
+          },
+        });
+      }
+
       return updatedProject;
     });
 
     setEditableProjects(updatedProjects);
-  }, [projectsForInvoice,invoiceDate,workingFixed]);
+  }, [projectsForInvoice, invoiceDate, workingFixed]);
 
   React.useEffect(() => {
     if (isAuth && adminId) {
@@ -233,6 +424,7 @@ const [workingFixed,setWorkingFixed] = useState(false);
     }
   };
 
+  
   return (
     <div>
       <div className="flex justify-between items-center gap-2">
@@ -254,15 +446,12 @@ const [workingFixed,setWorkingFixed] = useState(false);
             <TextField
               variant="outlined"
               size="small"
-              // value={invoiceNumber}
-              // onChange={handleInvoiceNumberChange}
               value={invoiceObject.invoiceNo}
               onChange={(e) =>
                 dispatch(
                   updateInvoiceObjectStateAction({ invoiceNo: e.target.value })
                 )
               } // Update Redux store with the new value
-            // onChange={(e) =>}
             />
           </div>
         </div>
@@ -306,7 +495,6 @@ const [workingFixed,setWorkingFixed] = useState(false);
                 </DemoItem>
               </div>
             </>
-
           ) : (
             <>
               <div className="flex flex-col items-end">
@@ -354,17 +542,11 @@ const [workingFixed,setWorkingFixed] = useState(false);
                   <TableCell>Rate</TableCell>
                   {editableProjects.map((project: ProjectType) => (
                     <>
-                      {project.workingPeriodType === "days" && <TableCell>Rate/day</TableCell>}
-                      <TableCell>
-                        {project.workingPeriodType === "fixed"
-                          ? "Working Fixed"
-                          : project.workingPeriodType === "hours"
-                            ? "Working Time"
-                            : "Working Days"}
-                      </TableCell>
+                      {project.workingPeriodType === "months" && <TableCell>Rate/day</TableCell>}
+
                     </>
                   ))}
-
+                  <TableCell className="w-[175px]">Working Period</TableCell>
                   <TableCell className="w-[175px]">Conversion Rate</TableCell>
                   <TableCell className="w-[110px]">Subtotal</TableCell>
                   <TableCell className="w-[110px]">Remove</TableCell>
@@ -376,7 +558,7 @@ const [workingFixed,setWorkingFixed] = useState(false);
                     <TableCell className="text-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
                       {project.projectName}
                     </TableCell>
-                    <TableCell className="text-[13px] w-[150px]">
+                    {/* <TableCell className="text-[13px] w-[150px]">
                       <TextField
                         variant="outlined"
                         size="small"
@@ -393,7 +575,7 @@ const [workingFixed,setWorkingFixed] = useState(false);
                             <span>
                               {project.currencyType === "rupees" ? project.workingPeriodType === "fixed"
                                 ? "₹/fixed" : `₹/${project.workingPeriodType === "hours" ? "hours" : "months"}`
-                                : project.currencyType === "dollars" ? project.workingPeriodType === "fixed"
+                                : project.currencyType === "dollars" ? project.workingPeriodType === "fixed"                                                          
                                   ? "$/fixed" :
                                   `$/${project.workingPeriodType === "hours" ? "hours" : "months"}`
                                   : project.currencyType === "pounds" ? project.workingPeriodType === "fixed"
@@ -404,57 +586,85 @@ const [workingFixed,setWorkingFixed] = useState(false);
                           ),
                         }}
                       />
+                    </TableCell> */}
+                    <TableCell className="text-[13px] w-[150px]">
+                      <Typography variant="body2">
+                        {project.rate ? `${project.rate} ` : ""}
+                        {project.currencyType === "rupees"
+                          ? project.workingPeriodType === "fixed"
+                            ? "₹/fixed"
+                            : `₹/${project.workingPeriodType === "hours" ? "hours" : "months"}`
+                          : project.currencyType === "dollars"
+                            ? project.workingPeriodType === "fixed"
+                              ? "$/fixed"
+                              : `$/${project.workingPeriodType === "hours" ? "hours" : "months"}`
+                            : project.currencyType === "pounds"
+                              ? project.workingPeriodType === "fixed"
+                                ? "£/fixed"
+                                : `£/${project.workingPeriodType === "hours" ? "hours" : "months"}`
+                              : ""}
+                      </Typography>
                     </TableCell>
-                    {project.workingPeriodType === "days" &&
+
+                   
+                    {project.workingPeriodType === "months" && (
                       <TableCell>
-                        <TextField
-                          variant="outlined"
-                          size="small"
-                          value={project.ratePerDay || ""}
-                        />
-                      </TableCell>}
+                        <Typography variant="body2">
+                          {project.ratePerDay?.toFixed(2) || "NA"}
+                        </Typography>
+                      </TableCell>
+                    )}
                     <TableCell className="text-[13px] w-[150px]">
                       {project.workingPeriodType === 'hours' ? (
                         <TextField
                           variant="outlined"
                           size="small"
-                          // value={project.workingPeriodType || ""}
-                          value={project.workingTime || 1}
+                          type="number"
+                          value={project.workingPeriod || 1}
                           onChange={(e) =>
                             handleInputChange(
                               project._id ?? "",
-                              "workingTime",
+                              "workingPeriod",
                               e.target.value
                             )
                           }
-                        />) :
+                          InputProps={{
+                            endAdornment: (
+                              <span>
+                                {project.workingPeriodType}
+                              </span>
+                            ),
+                          }}
+                        />) : project.workingPeriodType === "months" ?
 
                         (<TextField
                           variant="outlined"
                           size="small"
-                          value={project.workingDays || 1}
+                          type="number"
+                          value={project.workingPeriod || 1}
                           onChange={(e) =>
                             handleInputChange(
                               project._id ?? "",
-                              "workingDays",
-                              // parseFloat(e.target.value)
+                              "workingPeriod",
                               e.target.value
                             )
                           }
-                        />)}
+                        />) :
+                        (<TextField
+                          variant="outlined"
+                          size="small"
+                          value={"NA"}
 
+                        />)
+                      }
                     </TableCell>
                     <TableCell className="text-[13px] w-[150px]">
                       <TextField
                         variant="outlined"
                         size="small"
                         value={project.conversionRate}
-                        onChange={(e) =>
-                          handleInputChange(
-                            project._id ?? "",
-                            "conversionRate",
-                            e.target.value
-                          )
+                        onChange={(e) =>                     
+                          fetchExchangeRate(project._id ?? "")
                         }
                         InputProps={{
                           startAdornment: (
@@ -476,11 +686,8 @@ const [workingFixed,setWorkingFixed] = useState(false);
                             onClick={() => fetchExchangeRate(project._id!)} // Non-null assertion
                             disabled={loadingRate}
                           >
-                            {/* <AddIcon /> */}
                             <ReplayIcon />
                           </Button>
-
-
                           {rateError && <p>{rateError}</p>}
                         </>
                       ) : null}
@@ -502,9 +709,8 @@ const [workingFixed,setWorkingFixed] = useState(false);
               </TableBody>
             </Table>
           </TableContainer>
-          <BillAmount workingFixed={workingFixed}/> 
-        </div> 
-
+          <BillAmount workingFixed={workingFixed} />
+        </div>
       )
         : (<div>
           <div className="flex flex-col h-[60vh] justify-center items-center ">
@@ -513,9 +719,7 @@ const [workingFixed,setWorkingFixed] = useState(false);
           </div>
         </div>
         )}
-
     </div>
   );
 }
-
 export default InvoiceClientPage;

@@ -41,28 +41,30 @@ export interface ProjectType {
   _id?: string;
   projectName: string;
   rate?: number | null;
-  workingPeriodType: "hours" | "days" | "fixed";
+  workingPeriodType: "hours" | "months" | "fixed";
   currencyType: "rupees" | "dollars" | "pounds";
   conversionRate: number;
   paymentStatus: boolean;
   adminId: string;
   clientId: string;
   amount?: number | null;
-  workingTime?: number | null;
-  workingDays?:number | null;
-  ratePerDay?: number |null;
+  advanceAmount?: number | null;
+  workingPeriod?: number | null;
+  ratePerDay?: number |null;  
 }
 export interface UpdateProjectDataType {
   _id?: string;
   projectName?: string;
   rate?: number | null;
-  workingPeriodType: "hours" | "days" | "fixed";
+  workingPeriodType: "hours" | "months" | "fixed";
   currencyType: "rupees" | "dollars" | "pounds";
   conversionRate?: number;
   paymentStatus?: boolean;
   adminId: string;
   clientId: string;
+  workingPeriod?:number| null;
   amount?: number | null;
+  advanceAmount?: number | null
 }
 export interface InvoiceType {
   _id?: string;
@@ -74,6 +76,8 @@ export interface InvoiceType {
   clientId: string;
   adminId: string;
   projectsId: string[];
+  taxType: string;
+  advanceAmount?: number | null;
 }
 
 export interface LoginDataType {
