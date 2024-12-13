@@ -67,7 +67,6 @@ export interface UpdateProjectDataType {
   advanceAmount?: number | null
 }
 export interface InvoiceType {
-  _id?: string;
   invoiceNo: number;
   billDate: string;
   dueDate: string;
