@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { fetchInvoiceProjects } from '../../../api/invoice_requests'; 
 import { getProjectById } from '../../../api/project_requests'; 
+import { fetchInvoicesByDate } from '../../../api/invoice_requests';
 
 interface Invoice {
   _id: string;
@@ -44,6 +45,15 @@ export const fetchInvoicesThunk = createAsyncThunk(
   }
 );
 
+// Thunk to fetch invoices by date range
+export const fetchInvoicesByDateRange = createAsyncThunk(
+  'invoice/fetchInvoicesByDateRange',
+  async ({ fromYear, fromMonth, toYear, toMonth }: { fromYear: number, fromMonth: number, toYear: number, toMonth: number }, { rejectWithValue }) => {
+    const response = await fetchInvoicesByDate({ fromYear, fromMonth, toYear, toMonth });
+    return response.data; 
+  }
+);
+
 const invoiceListSlice = createSlice({
   name: 'invoice',
   initialState,
@@ -68,6 +78,17 @@ const invoiceListSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+      .addCase(fetchInvoicesByDateRange.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchInvoicesByDateRange.fulfilled, (state, action) => {
+        state.loading = false;
+        state.invoices = action.payload||[];
+      })
+      .addCase(fetchInvoicesByDateRange.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 export const { clearInvoices } = invoiceListSlice.actions;
