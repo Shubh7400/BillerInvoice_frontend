@@ -3,7 +3,6 @@ import { InvoiceType } from "../../../types/types";
 import { produce } from "immer";
 
 const initialState: InvoiceType = {
-  _id: "",
   invoiceNo: 0,
   billDate: "",
   dueDate: "",

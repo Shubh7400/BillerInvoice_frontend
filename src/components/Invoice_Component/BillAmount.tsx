@@ -49,6 +49,10 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const selectedClientState = useSelector(
     (state: RootState) => state.selectedClientState
   );
+  const invoiceObject = useSelector(
+    (state: RootState) => state.invoiceObjectState
+  );
+
   const [invoiceNo, setInvoiceNo] = React.useState(0);
   const [clientSameState, setClientSameState] = React.useState(false);
   const [invoiceDate, setInvoiceDate] = React.useState(dayjs());
@@ -69,10 +73,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const { projectsForInvoice } = useSelector(
     (state: RootState) => state.projectsForInvoiceState
   );
-  const invoiceObject = useSelector(
-    (state: RootState) => state.invoiceObjectState
-  );
-
+  
   React.useEffect(() => {
     if (adminState.loading === "succeeded" && adminState.data) {
       setInvoiceNo(+adminState.data.invoiceNo + 1);
@@ -83,9 +84,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   }, [adminState, selectedClientState]);
 
   React.useEffect(() => {
-    dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
+    // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
     toggleDrawer(true, gstType);
-  }, [invoiceNo, projectsForInvoice, showPreview]);
+  }, [ projectsForInvoice, showPreview]);
 
   React.useEffect(() => {
     if (visibility) {
@@ -189,6 +190,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   // Handle GST type selection
   const handleGstChange = (event: SelectChangeEvent<string>) => {
     setGstType(event.target.value);
+    // dispatch(updateInvoiceObjectStateAction(gstType));
   };
 
   React.useEffect(() => {
@@ -242,18 +244,16 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       setInvoiceNo(+adminState.data.invoiceNo + 1);
 
       dispatch(
-        updateInvoiceObjectStateAction({   
-          _id:invoiceObject._id,      
-          invoiceNo: invoiceNo,
+        updateInvoiceObjectStateAction({    
+          ...invoiceObject,
+          // invoiceNo:invoiceNo,
           projectsId: projectsIdArr,
           clientId,
           adminId,
           amountWithoutTax: amountPreTax,
           amountAfterTax: amountPostTax,
-          billDate: invoiceDate.toISOString(),
-          dueDate: dueDate.toISOString(),
-          advanceAmount: advanceAmount, // Include advanceAmount
-          taxType: gstType, // Add the chosen GST type for reference
+          advanceAmount: advanceAmount, 
+          taxType: gstType,
         })
       );
     } else {
@@ -264,6 +264,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   };
 
   function allInvoiceFieldsAvailable(obj: any) {
+    console.log(obj ,' <<<<<<');
+    
     for (const key in obj) {
       if (obj[key] === "" || obj[key].length <= 0) {
         return false;
@@ -284,6 +286,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     }
     timer = setTimeout(() => {
       if (invoiceObject && allInvoiceFieldsAvailable(invoiceObject)) {
+        console.log(invoiceObject, 'invoice Object');
         AddInvoiceMutationHandler.mutate(invoiceObject, {
           onSuccess: () => {
             enqueueSnackbar("Download successfull", { variant: "success" });
@@ -327,78 +330,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           },
         }}
       />
-      {/* <Box
-          sx={{
-            position: "fixed",
-            bottom: "8%",
-            right: "12%",
-            maxWidth: "100px",project 
-            height: "40px",
-            zIndex: 600,
-            color: "white",
-          }}
-        >
-          <Button variant="contained" onClick={toggleDrawer(true)}>
-            Invoice
-          </Button>
-        </Box> */}
-
-      {/* <SwipeableDrawer
-        anchor="bottom"
-        open={open}
-        onClose={toggleDrawer(false)}
-        onOpen={toggleDrawer(true)}
-        swipeAreaWidth={drawerBleeding}
-        disableSwipeToOpen={false}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        sx={{
-          width: "100%",
-          height: "40%",
-        }}
-      > */}
-      {/*Drawer header*/}
-      {/* <Box
-          sx={{
-            // position: "absolute",
-            top: -drawerBleeding,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            visibility: "visible",
-            right: 0,
-            left: 0,
-            bgcolor: '#cfa184cf',
-          }}
-        >
-          <Box
-            sx={{
-              width: 30,
-              height: 6,
-              backgroundColor: grey[100],
-              borderRadius: 3,
-              position: "absolute",
-              top: 8,
-              left: "calc(50% - 15px)",
-            }}
-          ></Box>
-          <Box
-            sx={{
-              p: 2,
-              color: "white",
-              fontWeight: "semibold",
-              fontSize: "20px",
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              justifyContent: { xs: "flex-start", sm: "space-between" },
-              width: "100%",
-            }}
-          >
-            Fill invoice required details.
-            <span className="mr-8 text-sm">Invoice no.{invoiceNo}</span>
-          </Box>
-        </Box> */}
-      {/*Drawer body*/}
+     
       <Box
         sx={{
           px: 2,
@@ -685,7 +617,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           onClick={(timer) => {
             handleInvoiceDownload(timer);
           }}
-          disabled={!allowDownload}
+          // disabled={!allowDownload}
         >
           Download
         </Button>
