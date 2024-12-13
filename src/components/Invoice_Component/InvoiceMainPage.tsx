@@ -311,21 +311,18 @@ const handleMonthClick = (year: string, month: string) => {
                 variant="h6"
                 className='absolute bottom-[16px] right-[25%] uppercase'
                 style={{ fontSize: '20px', color: '#000', fontWeight: '500' }}
-                onClick={() => handleMonthClick(tabsContent[dropdownIndex]?.label, month)}
               >
                 {month}
               </Typography>
 
-              {/* Apply dynamic color to the button */}
-              <Link
-                to="/invoice/details"
-                className={`text-gray-700 text-[20px] absolute bottom-[-5px] right-[-9px] bg-[#d1d1d194] w-[20%] h-[30%] flex justify-center items-center rounded-[50%] hover:border ${isUpcomingMonth ? 'pointer-events-none opacity-50' : ''}`}
+              <Typography className={`text-gray-700 text-[20px] absolute bottom-[-5px] right-[-9px] bg-[#d1d1d194] w-[20%] h-[30%] flex justify-center items-center rounded-[50%] hover:border ${isUpcomingMonth ? 'pointer-events-none opacity-50' : ''}`}
                 style={{
                   backgroundColor: buttonColor, // Apply dynamic color here
-                }}
-              >          
+                }} 
+                onClick={() => handleMonthClick(tabsContent[dropdownIndex]?.label, month)}>
+                  
                 <FaArrowRight className={Styles.arrow} />
-              </Link>
+              </Typography>
             </Grid>
           );
         })}
