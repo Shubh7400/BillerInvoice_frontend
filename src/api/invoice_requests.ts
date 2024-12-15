@@ -91,18 +91,44 @@ export async function fetchInvoiceProjects(year: string, month: string) {
   if (token) {
     token = token.substring(1, token.length - 1);
   }
-
+   const formattedMonth = month.padStart(2, '0');
   try {
     const res = await axios.get(`${config.apiUrlInvoice}/projects-by-month`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      params: { year, month },
+      params: { year, month: formattedMonth }, 
+
     });
     return res.data.data; // Return the projects
   } catch (error) {
     console.error('Error fetching invoice projects:', error);
     throw new Error('Error fetching invoice projects');
+  }
+
+}
+// Function to fetch invoices by date range
+export async function fetchInvoicesByDate({ fromYear, fromMonth, toYear, toMonth }: { fromYear: number; fromMonth: number; toYear: number; toMonth: number }) {
+  let token = localStorage.getItem('billAppAuthToken');
+  if (token) {
+    token = token.substring(1, token.length - 1);
+  }
+  try {
+    const response = await axios.get(`${config.apiUrlInvoice}/invoices-by-date-range`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        fromYear,
+        fromMonth,
+        toYear,
+        toMonth
+      }
+    });
+    return response;  // Return the API response
+  } catch (error) {
+    console.error('Error fetching invoices:', error);
+    throw error;
   }
 }
 

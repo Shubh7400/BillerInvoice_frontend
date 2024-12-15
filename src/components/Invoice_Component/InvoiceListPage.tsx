@@ -143,7 +143,7 @@ function InvoiceListPage() {
                       style={{ textAlign: "center", padding: "20px" }}
                     >
                       <Typography variant="body1" sx={{ color: "#666" }}>
-                        There is no invoice for this month.
+                        No Invoices available.
                       </Typography>
                     </TableCell>
                   </TableRow>
