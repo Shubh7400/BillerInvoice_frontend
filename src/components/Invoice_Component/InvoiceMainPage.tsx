@@ -17,6 +17,7 @@ import { fetchInvoiceCounts } from '../../states/redux/InvoiceProjectState/invoi
 import { AppDispatch } from '../../states/redux/store';
 import { useContext } from "react";
 import { AuthContext } from '../../states/context/AuthContext/AuthContext';
+import { fetchInvoicesByDateRange } from '../../states/redux/InvoiceProjectState/invoiceListSlice';
 
 const tabsContent: YearContent[] = [
   {
@@ -142,9 +143,22 @@ const TabPillsComponent: React.FC = () => {
     };
 
     const handleFilterApply = () => {
-    console.log(`Filter from ${fromMonth} ${fromYear} to ${toMonth} ${toYear}`);
-    setFilterPopupOpen(false); 
-  };
+      dispatch(fetchInvoicesByDateRange({
+        fromYear: Number(fromYear), 
+        fromMonth: getMonthNumber(fromMonth),
+        toYear: Number(toYear), 
+        toMonth: getMonthNumber(toMonth), 
+      }))
+      .then(() => {
+        navigate(
+          `/invoice/details?fromYear=${fromYear}&fromMonth=${fromMonth}&toYear=${toYear}&toMonth=${toMonth}`
+        );
+    })
+    .catch((error) => {
+      console.error("Error applying filter:", error);
+    });
+
+    };
 
 const getMonthNumber = (monthName: string): number => {
   return new Date(`${monthName} 1`).getMonth() + 1;
@@ -260,7 +274,7 @@ const handleMonthClick = (year: string, month: string) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleFilterApply} 
+            onClick={handleFilterApply}
           >
             Apply Filter
           </Button>
