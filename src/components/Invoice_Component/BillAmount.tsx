@@ -49,7 +49,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const selectedClientState = useSelector(
     (state: RootState) => state.selectedClientState
   );
-  const invoiceObject = useSelector(
+  const { data: invoiceObject } = useSelector(
     (state: RootState) => state.invoiceObjectState
   );
 
@@ -77,6 +77,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   React.useEffect(() => {
     if (adminState.loading === "succeeded" && adminState.data) {
       setInvoiceNo(+adminState.data.invoiceNo + 1);
+    dispatch(updateInvoiceObjectStateAction({invoiceNo: +adminState.data.invoiceNo + 1 ,billDate: invoiceDate.toISOString() ,dueDate:dueDate.toISOString()}));
     }
     if (selectedClientState.data.sameState) {
       setClientSameState(selectedClientState.data.sameState);
@@ -86,7 +87,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   React.useEffect(() => {
     // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
     toggleDrawer(true, gstType);
-  }, [projectsForInvoice, showPreview]);
+  }, [projectsForInvoice,showPreview]);
 
   React.useEffect(() => {
     if (visibility) {
@@ -190,7 +191,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   // Handle GST type selection
   const handleGstChange = (event: SelectChangeEvent<string>) => {
     setGstType(event.target.value);
-    
+
   };
 
   React.useEffect(() => {
@@ -241,12 +242,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
       const clientId = projectsForInvoice[0].clientId;
       const adminId = projectsForInvoice[0].adminId;
-      setInvoiceNo(+adminState.data.invoiceNo + 1);
 
       dispatch(
         updateInvoiceObjectStateAction({
-          // ...invoiceObject,
-          // invoiceNo:invoiceNo,
           projectsId: projectsIdArr,
           clientId,
           adminId,
@@ -393,27 +391,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                   GST:(18%)<span>{taxAmount.toFixed(2)}</span>
                 </div>
               )}
-            </Box> */}
-
-            {/* <Box sx={{ mt: "6px" }}>
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel id="gst-type-label">GST Type</InputLabel>
-                <Select
-                  labelId="gst-type-label"
-                  value={gstType}
-                  onChange={handleGstChange}
-                  label="GST Type"
-                >
-                  <MenuItem value="sgst">SGST (9%)</MenuItem>
-                  <MenuItem value="cgst">CGST (9%)</MenuItem>
-                  <MenuItem value="gst">GST (18%)</MenuItem>
-                </Select>
-              </FormControl>
-
-              <div className="flex justify-between">
-                {gstType.toUpperCase()}:
-                <span>{taxAmount.toFixed(2)} &#8377;</span>
-              </div>
             </Box> */}
             <Box sx={{
               mt: "6px",
@@ -617,7 +594,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             // right: "40px",
             color: "#fff",
           }}
-          disabled={!previewAllowed}
+          // disabled={!previewAllowed}
           onClick={() => previewExecution(true)}
         >
           Preview

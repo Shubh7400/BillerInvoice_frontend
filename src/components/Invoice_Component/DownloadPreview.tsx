@@ -21,7 +21,7 @@ const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) =>
   const { projectsForInvoice } = useSelector(
     (state: RootState) => state.projectsForInvoiceState
   );
-  const invoiceObject = useSelector(
+  const {data:invoiceObject} = useSelector(
     (state: RootState) => state.invoiceObjectState
   );
 
