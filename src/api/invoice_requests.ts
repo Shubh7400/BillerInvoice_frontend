@@ -91,13 +91,14 @@ export async function fetchInvoiceProjects(year: string, month: string) {
   if (token) {
     token = token.substring(1, token.length - 1);
   }
-
+   const formattedMonth = month.padStart(2, '0');
   try {
     const res = await axios.get(`${config.apiUrlInvoice}/projects-by-month`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      params: { year, month },
+      params: { year, month: formattedMonth }, 
+
     });
     return res.data.data; // Return the projects
   } catch (error) {
