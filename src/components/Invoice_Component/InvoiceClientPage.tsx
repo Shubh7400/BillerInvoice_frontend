@@ -306,7 +306,6 @@ function InvoiceClientPage() {
   const [workingFixed, setWorkingFixed] = useState(false);
 
 
-
   useEffect(() => {
     const updatedProjects = projectsForInvoice.map((project) => {
       const updatedProject = { ...project };
@@ -651,8 +650,10 @@ function InvoiceClientPage() {
                         </Typography>
                       </TableCell>
                     )}
+
                     {project.workingPeriodType !== 'fixed' &&
                       <TableCell className="text-[13px] w-[150px]">
+
                         <TextField
                           variant="outlined"
                           size="small"
@@ -664,17 +665,22 @@ function InvoiceClientPage() {
                               "workingPeriod",
                               e.target.value
                             )
+
                           }></TextField>
                       </TableCell>
                     }
+
+ 
                     <TableCell className="text-[13px] w-[150px]">
                       <TextField
                         variant="outlined"
                         size="small"
+
                         value={project.conversionRate.toFixed(2)}
                         onChange={(e) =>
                           fetchExchangeRate(project._id ?? "")
                         }
+
                         InputProps={{
                           startAdornment: (
                             <span>

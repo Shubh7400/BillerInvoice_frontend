@@ -273,6 +273,7 @@ export default function InvoiceDrawer({ workingFixed}: billAmountProps) {
   };
 
   function allInvoiceFieldsAvailable(obj: any) {
+
     for (const key in obj) {
       if (obj[key] === "" || obj[key].length <= 0) {
         return false;
@@ -293,6 +294,7 @@ export default function InvoiceDrawer({ workingFixed}: billAmountProps) {
     }
     timer = setTimeout(() => {
       if (invoiceObject && allInvoiceFieldsAvailable(invoiceObject)) {
+
         AddInvoiceMutationHandler.mutate(invoiceObject, {
           onSuccess: () => {
             enqueueSnackbar("Download successfull", { variant: "success" });

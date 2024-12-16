@@ -140,7 +140,7 @@ function InvoiceListPage() {
                             ) : null}
                             /{invoice.workingPeriodType})</TableCell>
                         <TableCell>&#x20B9; {invoice.conversionRate}</TableCell>
-                        <TableCell>&#x20B9; {invoice.amountAfterTax}</TableCell>
+
                       </TableRow>
                     );
                   })
