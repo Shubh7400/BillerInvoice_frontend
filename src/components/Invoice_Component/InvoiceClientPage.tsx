@@ -64,7 +64,7 @@ function InvoiceClientPage() {
       dispatch(removeProjectFromInvoiceAction(project._id));
     }
   };
-
+ 
   const navigate = useNavigate();
   const [editableProjects, setEditableProjects] = useState(projectsForInvoice);
   const [loadingRate, setLoadingRate] = useState(false);
@@ -304,6 +304,7 @@ function InvoiceClientPage() {
   };
 
   const [workingFixed, setWorkingFixed] = useState(false);
+
 
   useEffect(() => {
     const updatedProjects = projectsForInvoice.map((project) => {
@@ -592,7 +593,12 @@ function InvoiceClientPage() {
                       )}
                     </>
                   ))}
-                  <TableCell className="w-[175px]">Working Period</TableCell>
+                  {editableProjects.map((project: ProjectType) => (
+                    <>
+                      {project.workingPeriodType !== "fixed" && <TableCell className="w-[175px]">Working Period</TableCell>}
+
+                    </>
+                  ))}
                   <TableCell className="w-[175px]">Conversion Rate</TableCell>
                   <TableCell className="w-[110px]">Subtotal</TableCell>
                   <TableCell className="w-[110px]">Remove</TableCell>
@@ -645,8 +651,10 @@ function InvoiceClientPage() {
                         </Typography>
                       </TableCell>
                     )}
-                    <TableCell className="text-[13px] w-[150px]">
-                      {project.workingPeriodType === "hours" ? (
+
+                    {project.workingPeriodType !== 'fixed' &&
+                      <TableCell className="text-[13px] w-[150px]">
+
                         <TextField
                           variant="outlined"
                           size="small"
@@ -658,41 +666,22 @@ function InvoiceClientPage() {
                               "workingPeriod",
                               e.target.value
                             )
-                          }
-                          InputProps={{
-                            endAdornment: (
-                              <span>{project.workingPeriodType}</span>
-                            ),
-                          }}
-                        />
-                      ) : project.workingPeriodType === "months" ? (
-                        <TextField
-                          variant="outlined"
-                          size="small"
-                          type="number"
-                          value={project.workingPeriod || 1}
-                          onChange={(e) =>
-                            handleInputChange(
-                              project._id ?? "",
-                              "workingPeriod",
-                              e.target.value
-                            )
-                          }
-                        />
-                      ) : (
-                        <TextField
-                          variant="outlined"
-                          size="small"
-                          value={"NA"}
-                        />
-                      )}
-                    </TableCell>
+
+                          }></TextField>
+                      </TableCell>
+                    }
+
+ 
                     <TableCell className="text-[13px] w-[150px]">
                       <TextField
                         variant="outlined"
                         size="small"
-                        value={project.conversionRate}
-                        onChange={(e) => fetchExchangeRate(project._id ?? "")}
+
+                        value={project.conversionRate.toFixed(2)}
+                        onChange={(e) =>
+                          fetchExchangeRate(project._id ?? "")
+                        }
+
                         InputProps={{
                           startAdornment: (
                             <span>
@@ -735,7 +724,7 @@ function InvoiceClientPage() {
               </TableBody>
             </Table>
           </TableContainer>
-          <BillAmount workingFixed={workingFixed} />
+          <BillAmount workingFixed={workingFixed}/>
         </div>
       ) : (
         <div>

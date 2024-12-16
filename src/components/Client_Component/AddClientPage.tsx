@@ -84,7 +84,7 @@ export default function AddClientPage({
       city: selectedCountry.name,
       state: selectedState.name,
       country: selectedCity.name,
-      postalCode: "N/A",
+      postalCode: "",
     },
     user: "",
   });

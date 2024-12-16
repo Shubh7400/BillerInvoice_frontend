@@ -196,7 +196,7 @@ const ProjectTable = ({
     project: ProjectType
   ) => {
     const isChecked = e.target.checked;
-  
+
     if (isChecked) {
       // When a checkbox is checked, deselect all other projects and select this one
       setProjectId([project._id]); // Set only the current project ID
@@ -211,7 +211,7 @@ const ProjectTable = ({
       setAllChecked(false); // Reset "Select All" state
     }
   };
-  
+
 
   // const handleSingleCheckboxChange = (
   //   e: React.ChangeEvent<HTMLInputElement>,
@@ -401,7 +401,7 @@ const ProjectTable = ({
                         </TableCell> */}
                           <TableCell style={{ padding: "0" }}>
                             <span>&#x20B9; </span>
-                            {project.conversionRate}
+                            {project.conversionRate.toFixed(2)}
                           </TableCell>
                           {/* <TableCell style={{ padding: "0" }}>
                           &#x20B9; {project.amount ? project.amount : 0}
@@ -559,82 +559,82 @@ const ProjectTable = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {ProjectData?.map((project: ProjectType, index: number) => (
-                      <TableRow key={project._id} className="p-3">
-                        <TableCell
-                          style={{
-                            paddingTop: "0",
-                            paddingBottom: "0",
-                            paddingLeft: "20px",
-                          }}
-                        >
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={projectId.includes(project._id)}
-                                // checked={allChecked ? allChecked : false}
-                                sx={{
-                                  color: materialTheme.palette.primary.main,
-                                  "&.Mui-checked": {
+                    {ProjectData &&
+                      ProjectData.filter((project) => {
+                        // Apply the same filter condition as ProjectTable 1
+                        if (searchProjectName.length <= 0) return true;
+                        return project.projectName
+                          .toLowerCase()
+                          .startsWith(searchProjectName.toLowerCase());
+                      }).map((project: ProjectType, index: number) => (
+                        <TableRow key={project._id} className="p-3">
+                          <TableCell
+                            style={{
+                              paddingTop: "0",
+                              paddingBottom: "0",
+                              paddingLeft: "20px",
+                            }}
+                          >
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={projectId.includes(project._id)}
+                                  sx={{
                                     color: materialTheme.palette.primary.main,
-                                  },
-                                }}
-                                onChange={(e) =>
-                                  handleSingleCheckboxChange(e, index, project)
-                                }
-                              />
-                            }
-                            label=""
-                          />
-                        </TableCell>
-                        {/* <TableCell style={{ padding: "0" }}>{index + 1}</TableCell> */}
-                        <TableCell style={{ padding: "0" }}>
-                          {project.projectName}
-                        </TableCell>
-                        <TableCell style={{ padding: "0" }}>
-                          {project.rate}(
-                          {project.currencyType === "rupees" ? (
-                            <span>&#x20B9;</span>
-                          ) : project.currencyType === "dollars" ? (
-                            <span>$</span>
-                          ) : project.currencyType === "pounds" ? (
-                            <span>&#163;</span>
-                          ) : null}
-                          /{project.workingPeriodType})
-                        </TableCell>
-                        {/* <TableCell style={{ padding: "0" }}>
-                          ({project.workingPeriodType})
-                        </TableCell> */}
-                        <TableCell style={{ padding: "0" }}>
-                          <span>&#x20B9; </span>
-                          {project.conversionRate}
-                        </TableCell>
-                        {/* <TableCell style={{ padding: "0" }}>
-                          &#x20B9; {project.amount ? project.amount : 0}
-                        </TableCell> */}
-                        <TableCell style={{ padding: "0" }}>
-                          <div className="flex">
-                            <div className={Styles.editButton}>
-                              <CompoAddProject
-                                clientId={selectedClientState.data._id}
-                                adminId={adminId}
-                                forAddProject={false}
-                                projectToEdit={project}
-                                handleProjectEdit={handleEditProject}
-                              />
+                                    "&.Mui-checked": {
+                                      color: materialTheme.palette.primary.main,
+                                    },
+                                  }}
+                                  onChange={(e) =>
+                                    handleSingleCheckboxChange(e, index, project)
+                                  }
+                                />
+                              }
+                              label=""
+                            />
+                          </TableCell>
+                          <TableCell style={{ padding: "0" }}>
+                            {project.projectName}
+                          </TableCell>
+                          <TableCell style={{ padding: "0" }}>
+                            {project.rate}(
+                            {project.currencyType === "rupees" ? (
+                              <span>&#x20B9;</span>
+                            ) : project.currencyType === "dollars" ? (
+                              <span>$</span>
+                            ) : project.currencyType === "pounds" ? (
+                              <span>&#163;</span>
+                            ) : null}
+                            /{project.workingPeriodType})
+                          </TableCell>
+                          <TableCell style={{ padding: "0" }}>
+                            <span>&#x20B9; </span>
+                            {project.conversionRate.toFixed(2)}
+                          </TableCell>
+                          <TableCell style={{ padding: "0" }}>
+                            <div className="flex">
+                              <div className={Styles.editButton}>
+                                <CompoAddProject
+                                  clientId={selectedClientState.data._id}
+                                  adminId={adminId}
+                                  forAddProject={false}
+                                  projectToEdit={project}
+                                  handleProjectEdit={handleEditProject}
+                                />
+                              </div>
+                              <div className={Styles.editButton}>
+                                <ActionConfirmer
+                                  actionTag="Delete"
+                                  actionFunction={handleProjectDelete}
+                                  parameter={project._id}
+                                />
+                              </div>
                             </div>
-                            <div className={Styles.editButton}>
-                              <ActionConfirmer
-                                actionTag="Delete"
-                                actionFunction={handleProjectDelete}
-                                parameter={project._id}
-                              />
-                            </div>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                          </TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
+
                 </Table>
               </TableContainer>
             </div>
