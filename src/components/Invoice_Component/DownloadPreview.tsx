@@ -21,7 +21,7 @@ const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) =>
   const { projectsForInvoice } = useSelector(
     (state: RootState) => state.projectsForInvoiceState
   );
-  const {data:invoiceObject} = useSelector(
+  const { data: invoiceObject } = useSelector(
     (state: RootState) => state.invoiceObjectState
   );
 
@@ -126,12 +126,18 @@ const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) =>
                 {/* <th className="px-2 pb-4">Project Period</th> */}
                 <th className="px-2 pb-4">Rate</th>
                 {projectsForInvoice?.map((project, index) => (
-                  project.workingPeriodType === "months" && (
+                  <>
+                    {project.workingPeriodType === "months" && (
                     <th key={index} className="px-2 pb-4">Rate/day</th>
-                  )
+                    )}
+                   { project.workingPeriodType !== "fixed" && (
+                    <th className="px-2 pb-4">Working Period</th>)}
+                  </>
+
+
                 ))}
 
-                <th className="px-2 pb-4">Working Period</th>
+
                 <th className="px-2 pb-4">Conversion Rate</th>
                 <th className="px-2 pb-4">Subtotal</th>
               </tr>
@@ -154,17 +160,13 @@ const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) =>
                       {project.ratePerDay?.toFixed(2)}
                     </td>
                   )}
-                  {project.workingPeriodType === "fixed" ? (
-                    <td className="border px-2 pb-4 text-center">
-                      NA
-                    </td>
-                  ) :
+                  {project.workingPeriodType !== "fixed" &&
                     <td className="border px-2 pb-4 text-center">
                       {project.workingPeriod || 1}
                     </td>
                   }
                   <td className="border px-2 pb-4 text-center">
-                    {project.conversionRate}
+                    {project.conversionRate.toFixed(2)}
                   </td>
                   <td className="border px-2 pb-4 text-center">
                     &#x20B9; {project.amount?.toFixed(2)}
@@ -203,7 +205,7 @@ const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) =>
                 </div>
               )} */}
               <div className="flex justify-between mb-[30px]">
-                {invoiceObject.taxType === 'igst' ? (<span>IGST</span>): (<span>SGST+CGST</span>)} <span>{taxAmount}</span>
+                {invoiceObject.taxType === 'igst' ? (<span>IGST</span>) : (<span>SGST+CGST</span>)} <span>{taxAmount}</span>
               </div>
 
               {advanceAmount > 0 ?

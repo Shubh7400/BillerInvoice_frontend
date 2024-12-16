@@ -199,7 +199,6 @@ function AddProjectPage({
 
   React.useEffect(() => {
     if (clientId && clientAddProject) {
-      console.log("alksdjiaohduoasdu", clientId);
       setProjectData({
         ...projectData,
         clientId: clientId,
@@ -544,7 +543,7 @@ function AddProjectPage({
               onChange={handleChange}
             />
 
-            {workPeriodType === "fixed" &&
+            {projectData.workingPeriodType=== "fixed" &&
               <TextField
                 margin="dense"
                 id="workingPeriodType"
