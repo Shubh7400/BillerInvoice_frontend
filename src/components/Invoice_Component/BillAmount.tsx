@@ -41,8 +41,9 @@ let windowWidth: number | undefined = window.innerWidth;
 
 interface billAmountProps {
   workingFixed?: boolean;
+  tableForInvoice?:boolean;
 }
-export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
+export default function InvoiceDrawer({ workingFixed,tableForInvoice }: billAmountProps) {
   const materialTheme = useTheme();
   const { visibility } = React.useContext(ThemeContext);
   const adminState = useSelector((state: RootState) => state.adminState);
@@ -86,6 +87,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
   React.useEffect(() => {
     // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
+    if(tableForInvoice===true){
+      setShowPreview(true);
+    }
     toggleDrawer(true, gstType);
   }, [projectsForInvoice,showPreview]);
 
@@ -262,8 +266,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   };
 
   function allInvoiceFieldsAvailable(obj: any) {
-    console.log(obj, ' <<<<<<');
-
     for (const key in obj) {
       if (obj[key] === "" || obj[key].length <= 0) {
         return false;
@@ -284,7 +286,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     }
     timer = setTimeout(() => {
       if (invoiceObject && allInvoiceFieldsAvailable(invoiceObject)) {
-        console.log(invoiceObject, 'invoice Object');
+
         AddInvoiceMutationHandler.mutate(invoiceObject, {
           onSuccess: () => {
             enqueueSnackbar("Download successfull", { variant: "success" });

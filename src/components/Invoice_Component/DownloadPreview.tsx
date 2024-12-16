@@ -29,7 +29,7 @@ const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) =>
   const taxAmount = +(
     invoiceObject.amountAfterTax - invoiceObject.amountWithoutTax
   ).toFixed(2);
-  console.log(invoiceObject, ' <<<');
+
 
 
   return (

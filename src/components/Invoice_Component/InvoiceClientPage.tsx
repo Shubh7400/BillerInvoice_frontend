@@ -44,7 +44,10 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import { useSnackbar } from "notistack";
 import { log } from "console";
 let windowWidth: number | undefined = window.innerWidth;
-function InvoiceClientPage() {
+interface invoiceClientProps {
+  tableForInvoice?: boolean;
+}
+function InvoiceClientPage({ tableForInvoice}: invoiceClientProps) {
   const { isAuth, adminId } = React.useContext(AuthContext);
   const materialTheme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
@@ -61,7 +64,7 @@ function InvoiceClientPage() {
       dispatch(removeProjectFromInvoiceAction(project._id));
     }
   };
-
+ 
   const navigate = useNavigate();
   const [editableProjects, setEditableProjects] = useState(projectsForInvoice);
   const [loadingRate, setLoadingRate] = useState(false);
@@ -653,7 +656,7 @@ function InvoiceClientPage() {
               </TableBody>
             </Table>
           </TableContainer>
-          <BillAmount workingFixed={workingFixed} />
+          <BillAmount workingFixed={workingFixed} tableForInvoice={tableForInvoice}/>
         </div>
       )
         : (<div>

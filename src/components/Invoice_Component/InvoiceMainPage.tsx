@@ -18,7 +18,6 @@ import { AppDispatch } from '../../states/redux/store';
 import { useContext } from "react";
 import { AuthContext } from '../../states/context/AuthContext/AuthContext';
 import { fetchInvoicesByDateRange } from '../../states/redux/InvoiceProjectState/invoiceListSlice';
-
 const tabsContent: YearContent[] = [
   {
     label: '2024',
@@ -136,7 +135,6 @@ const TabPillsComponent: React.FC = () => {
       dispatch(fetchInvoiceCounts({ year: selectedYear, user: adminId }));
     }
   }, [dropdownIndex, adminId, dispatch]);
-
   const handleDropdownChange = (event: SelectChangeEvent<unknown>) => {
     const newIndex = Number(event.target.value as string);
     setDropdownIndex(newIndex);
