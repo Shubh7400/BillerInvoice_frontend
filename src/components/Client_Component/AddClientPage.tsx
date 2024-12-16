@@ -307,7 +307,6 @@ export default function AddClientPage({
   }
 
   const handleAddClientSubmit = () => {
-    console.log(panNumberError, " <<<<<");
     if (
       areAllFieldsFilled(clientData) &&
       areEntriesValid(clientData) &&
@@ -371,7 +370,7 @@ export default function AddClientPage({
 
         <TextField
           fullWidth
-          label="Enter email"
+          label="Enter email and press enter"
           value={inputEmail}
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
