@@ -21,7 +21,7 @@ const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) =>
   const { projectsForInvoice } = useSelector(
     (state: RootState) => state.projectsForInvoiceState
   );
-  const invoiceObject = useSelector(
+  const {data:invoiceObject} = useSelector(
     (state: RootState) => state.invoiceObjectState
   );
 
@@ -29,8 +29,8 @@ const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) =>
   const taxAmount = +(
     invoiceObject.amountAfterTax - invoiceObject.amountWithoutTax
   ).toFixed(2);
-  console.log(invoiceObject , ' <<<');
-  
+  console.log(invoiceObject, ' <<<');
+
 
   return (
     <div className="relative w-full h-[297mm] flex items-center justify-center  ">
@@ -188,7 +188,7 @@ const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) =>
               <div className="flex justify-between mb-2">
                 SUBTOTAL: <span>&#8377; {invoiceObject.amountWithoutTax}</span>
               </div>
-              {clientObj.sameState ? (
+              {/* {clientObj.sameState ? (
                 <>
                   <div className="flex justify-between">
                     SGST @ 9%: <span>{taxAmount / 2}</span>
@@ -201,11 +201,14 @@ const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) =>
                 <div className="flex justify-between mb-[30px]">
                   IGST @ 18%: <span>{taxAmount}</span>
                 </div>
-              )}
+              )} */}
+              <div className="flex justify-between mb-[30px]">
+                {invoiceObject.taxType === 'igst' ? (<span>IGST</span>): (<span>SGST+CGST</span>)} <span>{taxAmount}</span>
+              </div>
 
               {advanceAmount > 0 ?
                 (<>
-                  
+
                   <div className="flex justify-between mb-[30px]">
                     Advance: <span>{advanceAmount}</span>
                   </div>
