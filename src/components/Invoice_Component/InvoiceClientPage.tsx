@@ -44,10 +44,7 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import { useSnackbar } from "notistack";
 import { log } from "console";
 let windowWidth: number | undefined = window.innerWidth;
-interface invoiceClientProps {
-  tableForInvoice?: boolean;
-}
-function InvoiceClientPage({ tableForInvoice}: invoiceClientProps) {
+function InvoiceClientPage() {
   const { isAuth, adminId } = React.useContext(AuthContext);
   const materialTheme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
@@ -656,7 +653,7 @@ function InvoiceClientPage({ tableForInvoice}: invoiceClientProps) {
               </TableBody>
             </Table>
           </TableContainer>
-          <BillAmount workingFixed={workingFixed} tableForInvoice={tableForInvoice}/>
+          <BillAmount workingFixed={workingFixed}/>
         </div>
       )
         : (<div>

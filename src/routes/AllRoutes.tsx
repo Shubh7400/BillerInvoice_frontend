@@ -90,7 +90,7 @@ const AllRoutes = () => {
           path="/client/invoices"
           element={
             <PrivateRoute>
-              <InvoiceClientPage tableForInvoice={true}/>
+              <InvoiceClientPage />
             </PrivateRoute>
           }
         />

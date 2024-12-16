@@ -31,7 +31,6 @@ const DownloadPreview = ({ grandTotal, advanceAmount }: DownloadPreviewProps) =>
   ).toFixed(2);
 
 
-
   return (
     <div className="relative w-full h-[297mm] flex items-center justify-center  ">
       <div

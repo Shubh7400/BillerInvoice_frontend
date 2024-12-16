@@ -41,9 +41,8 @@ let windowWidth: number | undefined = window.innerWidth;
 
 interface billAmountProps {
   workingFixed?: boolean;
-  tableForInvoice?:boolean;
 }
-export default function InvoiceDrawer({ workingFixed,tableForInvoice }: billAmountProps) {
+export default function InvoiceDrawer({ workingFixed}: billAmountProps) {
   const materialTheme = useTheme();
   const { visibility } = React.useContext(ThemeContext);
   const adminState = useSelector((state: RootState) => state.adminState);
@@ -87,9 +86,6 @@ export default function InvoiceDrawer({ workingFixed,tableForInvoice }: billAmou
 
   React.useEffect(() => {
     // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
-    if(tableForInvoice===true){
-      setShowPreview(true);
-    }
     toggleDrawer(true, gstType);
   }, [projectsForInvoice,showPreview]);
 
@@ -286,7 +282,6 @@ export default function InvoiceDrawer({ workingFixed,tableForInvoice }: billAmou
     }
     timer = setTimeout(() => {
       if (invoiceObject && allInvoiceFieldsAvailable(invoiceObject)) {
-
         AddInvoiceMutationHandler.mutate(invoiceObject, {
           onSuccess: () => {
             enqueueSnackbar("Download successfull", { variant: "success" });
