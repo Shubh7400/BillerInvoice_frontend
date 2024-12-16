@@ -41,7 +41,7 @@ import { updateProjectForInvoiceAction } from "../../states/redux/InvoiceProject
 import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import { useUpdateInvoiceMutation } from "../../states/query/Invoice_queries/invoiceQueries";
 import { InvoiceType } from "../../types/types";
-import ReplayIcon from "@mui/icons-material/Replay";
+import { MdOutlineReplay } from "react-icons/md";
 import { useSnackbar } from "notistack";
 let windowWidth: number | undefined = window.innerWidth;
 function InvoiceClientPage() {
@@ -686,7 +686,7 @@ function InvoiceClientPage() {
                             onClick={() => fetchExchangeRate(project._id!)} // Non-null assertion
                             disabled={loadingRate}
                           >
-                            <ReplayIcon />
+                            <MdOutlineReplay />
                           </Button>
                           {rateError && <p>{rateError}</p>}
                         </>
