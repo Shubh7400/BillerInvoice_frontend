@@ -88,13 +88,13 @@ function InvoiceListPage() {
       ) : (
         <div className="  rounded-[20px] mt-5">
           <TableContainer className={Styles.table_scroll}>
-            <Table sx={{ width: "100vw" }}>
+            <Table >
               <TableHead className={Styles.animated}>
                 <TableRow>
                   <TableCell sx={{ paddingX: "10px", width: "50px" }}>
                     Sr.No.
                   </TableCell>
-                  <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  <TableCell style={{ paddingLeft: "0", paddingRight: "0" ,width: "150px" }}>
                     Invoice No
                   </TableCell>
                   <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
@@ -106,7 +106,7 @@ function InvoiceListPage() {
                   <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                     Rate
                   </TableCell>
-                  <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  <TableCell style={{ paddingLeft: "0", paddingRight: "0",width: "170px" }}>
                     Conversion Rate
                   </TableCell>
                   <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
@@ -125,14 +125,14 @@ function InvoiceListPage() {
                     return (
                       <TableRow key={invoice._id}>
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>{invoice.invoiceNo}</TableCell>
-                        <TableCell>
+                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>{invoice.invoiceNo}</TableCell>
+                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                           {invoice.projectName || "Unnamed Project"}
                         </TableCell>
-                        <TableCell>{clientName}</TableCell>
-                        <TableCell>{invoice.rate}</TableCell>
-                        <TableCell>{invoice.conversionRate}</TableCell>
-                        <TableCell>{invoice.amountAfterTax}</TableCell>
+                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>{clientName}</TableCell>
+                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>{invoice.rate}</TableCell>
+                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" ,width: "170px"}}>{invoice.conversionRate}</TableCell>
+                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>{invoice.amountAfterTax}</TableCell>
                       </TableRow>
                     );
                   })
