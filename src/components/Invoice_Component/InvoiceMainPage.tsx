@@ -122,7 +122,7 @@ const TabPillsComponent: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const invoiceCounts = useSelector((state: RootState) => state.InvoiceCountState);
   const { adminId } = useContext(AuthContext);
-
+  const [isHovered, setIsHovered] = useState(false);
   const [isFilterPopupOpen, setFilterPopupOpen] = useState<boolean>(false); 
   const [fromMonth, setFromMonth] = useState<string>('January');
   const [fromYear, setFromYear] = useState<string>(tabsContent[0].label);
@@ -185,7 +185,7 @@ const handleMonthClick = (year: string, month: string) => {
             INVOICE
           </Typography>
         </div>
-        <div>
+        <div className='flex items-center'>
         <FormControl>
           <StyledSelect
             labelId="tab-dropdown"
@@ -205,6 +205,14 @@ const handleMonthClick = (year: string, month: string) => {
           variant="contained"
           color="primary"
           onClick={() => setFilterPopupOpen(true)} 
+          className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
+          style={{
+            backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+            borderRadius: "20px",
+            padding: "5px 15px",
+            color: "#fff ",
+           
+          }}
         >
           Invoice Filter
         </Button>
@@ -216,7 +224,7 @@ const handleMonthClick = (year: string, month: string) => {
         <DialogTitle>Invoice Filter</DialogTitle>
         <DialogContent>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <div>
+            <div className='mr-2'>
               <Typography variant="subtitle1">From</Typography>
               <FormControl style={{ marginRight: '8px' }}>
                 <Select
@@ -275,6 +283,14 @@ const handleMonthClick = (year: string, month: string) => {
             variant="contained"
             color="primary"
             onClick={handleFilterApply}
+            className=" text-[16px] flex items-center gap-[10px] text-[#fff]"
+          style={{
+            backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+            borderRadius: "20px",
+            padding: "5px 15px",
+            color: "#fff ",
+           
+          }}
           >
             Apply Filter
           </Button>
@@ -329,6 +345,7 @@ const handleMonthClick = (year: string, month: string) => {
                 {month}
               </Typography>
 
+              <div className={Styles.annimated_btn}>
               <Typography className={`text-gray-700 text-[20px] absolute bottom-[-5px] right-[-9px] bg-[#d1d1d194] w-[20%] h-[30%] flex justify-center items-center rounded-[50%] hover:border ${isUpcomingMonth ? 'pointer-events-none opacity-50' : ''}`}
                 style={{
                   backgroundColor: buttonColor, // Apply dynamic color here
@@ -337,6 +354,7 @@ const handleMonthClick = (year: string, month: string) => {
                   
                 <FaArrowRight className={Styles.arrow} />
               </Typography>
+              </div>
             </Grid>
           );
         })}

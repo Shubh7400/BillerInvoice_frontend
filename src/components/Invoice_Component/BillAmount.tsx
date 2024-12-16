@@ -7,7 +7,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { deepPurple, grey, purple } from "@mui/material/colors";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import { SelectChangeEvent } from '@mui/material/Select';
+import { SelectChangeEvent } from "@mui/material/Select";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
@@ -25,7 +25,7 @@ import DownloadPreview from "./DownloadPreview";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { ThemeContext } from "../../states/context/ThemeContext/ThemeContext";
-import TextField from '@mui/material/TextField';
+import TextField from "@mui/material/TextField";
 import { AppBar, Dialog, IconButton, Toolbar } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
@@ -77,7 +77,13 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   React.useEffect(() => {
     if (adminState.loading === "succeeded" && adminState.data) {
       setInvoiceNo(+adminState.data.invoiceNo + 1);
-    dispatch(updateInvoiceObjectStateAction({invoiceNo: +adminState.data.invoiceNo + 1 ,billDate: invoiceDate.toISOString() ,dueDate:dueDate.toISOString()}));
+      dispatch(
+        updateInvoiceObjectStateAction({
+          invoiceNo: +adminState.data.invoiceNo + 1,
+          billDate: invoiceDate.toISOString(),
+          dueDate: dueDate.toISOString(),
+        })
+      );
     }
     if (selectedClientState.data.sameState) {
       setClientSameState(selectedClientState.data.sameState);
@@ -87,7 +93,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   React.useEffect(() => {
     // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
     toggleDrawer(true, gstType);
-  }, [projectsForInvoice,showPreview]);
+  }, [projectsForInvoice, showPreview]);
 
   React.useEffect(() => {
     if (visibility) {
@@ -112,7 +118,10 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     await root.render(
       <div>
         <Provider store={store}>
-          <DownloadPreview grandTotal={grandTotal} advanceAmount={advanceAmount} />
+          <DownloadPreview
+            grandTotal={grandTotal}
+            advanceAmount={advanceAmount}
+          />
         </Provider>
       </div>
     );
@@ -159,7 +168,10 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     await root.render(
       <div>
         <Provider store={store}>
-          <DownloadPreview grandTotal={grandTotal} advanceAmount={advanceAmount} />
+          <DownloadPreview
+            grandTotal={grandTotal}
+            advanceAmount={advanceAmount}
+          />
         </Provider>
       </div>
     );
@@ -191,7 +203,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   // Handle GST type selection
   const handleGstChange = (event: SelectChangeEvent<string>) => {
     setGstType(event.target.value);
-
   };
 
   React.useEffect(() => {
@@ -201,8 +212,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
     setTaxAmount(tax);
     setAmountAfterTax(total);
-    setGrandTotal(total - (typeof advanceAmount === "number" ? advanceAmount : 0));
-
+    setGrandTotal(
+      total - (typeof advanceAmount === "number" ? advanceAmount : 0)
+    );
   }, [gstType, amountWithoutTax, advanceAmount]);
 
   const toggleDrawer = (newOpen: boolean, gstType: string) => {
@@ -222,7 +234,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           amountPreTax = +amountPreTax.toFixed(2);
         }
         if (project.advanceAmount) {
-
           setAdvanceAmount(project.advanceAmount * project.conversionRate);
         }
       });
@@ -262,7 +273,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   };
 
   function allInvoiceFieldsAvailable(obj: any) {
-    console.log(obj, ' <<<<<<');
+    console.log(obj, " <<<<<<");
 
     for (const key in obj) {
       if (obj[key] === "" || obj[key].length <= 0) {
@@ -284,7 +295,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     }
     timer = setTimeout(() => {
       if (invoiceObject && allInvoiceFieldsAvailable(invoiceObject)) {
-        console.log(invoiceObject, 'invoice Object');
+        console.log(invoiceObject, "invoice Object");
         AddInvoiceMutationHandler.mutate(invoiceObject, {
           onSuccess: () => {
             enqueueSnackbar("Download successfull", { variant: "success" });
@@ -335,7 +346,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           // pb: 2,
           height: "100%",
           overflow: "auto",
-          bgcolor: bgColorBodyStyledBox,
+          // bgcolor: bgColorBodyStyledBox,
           borderRadius: "20px",
         }}
       >
@@ -358,8 +369,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
               pt: "10px",
               color: "whitesmoke",
             }}
-          >
-          </Box>
+          ></Box>
           {/*Bill section*/}
           <Box
             sx={{
@@ -370,9 +380,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
               color: textColor,
             }}
           >
-            <p className=" text-xl md:text-2xl border-b-2 border-slate-800 border-opacity-70 mb-3 mt-3 md:mt-1 ">
+            {/* <p className=" text-xl md:text-2xl border-b-2 border-slate-800 border-opacity-70 mb-3 mt-3 md:mt-1 ">
               Bill Total
-            </p>
+            </p> */}
             <div className="flex justify-between text-lg md:text-lg">
               Subtotal:<span>{amountWithoutTax} &#8377; </span>
             </div>
@@ -392,70 +402,80 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                 </div>
               )}
             </Box> */}
-            <Box sx={{
-              mt: "6px",
-              '& .MuiFormControl-root': {
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '12px', // Soft rounded corners
-                  backgroundColor: 'rgba(255,255,255,0.9)', // Slight transparency
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.08)', // Subtle elevation
-                  transition: 'all 0.3s ease',
-                  '& .MuiSelect-select': {
-                    paddingY: '14px', // Increased padding
-                    paddingX: '16px', // Increased padding
-                    fontWeight: 500, // Medium font weight
-                    color: 'rgba(0,0,0,0.87)', // Slightly softer black
+            <Box
+              sx={{
+                mt: "6px",
+                "& .MuiFormControl-root": {
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px", // Soft rounded corners
+                    backgroundColor: "rgba(255,255,255,0.9)", // Slight transparency
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)", // Subtle elevation
+                    transition: "all 0.3s ease",
+                    "& .MuiSelect-select": {
+                      paddingY: "14px", // Increased padding
+                      paddingX: "16px", // Increased padding
+                      fontWeight: 500, // Medium font weight
+                      color: "rgba(0,0,0,0.87)", // Slightly softer black
+                    },
+                    "& fieldset": {
+                      borderColor: "rgba(0,0,0,0.23)", // Soft border
+                      borderWidth: 1,
+                      transition: "all 0.3s ease",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "primary.main", // Highlight on hover
+                      borderWidth: 2,
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "primary.main", // Strong focus state
+                      borderWidth: 2,
+                      boxShadow: "0 0 0 4px rgba(25,118,210,0.1)", // Soft focus glow
+                    },
                   },
-                  '& fieldset': {
-                    borderColor: 'rgba(0,0,0,0.23)', // Soft border
-                    borderWidth: 1,
-                    transition: 'all 0.3s ease',
+                  "& .MuiInputLabel-outlined": {
+                    transform: "translate(14px, 14px) scale(1)",
+                    fontSize: "0.95rem",
+                    color: "rgba(0,0,0,0.54)",
+                    transition: "all 0.3s ease",
                   },
-                  '&:hover fieldset': {
-                    borderColor: 'primary.main', // Highlight on hover
-                    borderWidth: 2,
+                  "& .MuiInputLabel-shrink": {
+                    transform: "translate(14px, -6px) scale(0.75)",
+                    color: "primary.main",
+                    fontWeight: 600,
                   },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'primary.main', // Strong focus state
-                    borderWidth: 2,
-                    boxShadow: '0 0 0 4px rgba(25,118,210,0.1)', // Soft focus glow
-                  }
                 },
-                '& .MuiInputLabel-outlined': {
-                  transform: 'translate(14px, 14px) scale(1)',
-                  fontSize: '0.95rem',
-                  color: 'rgba(0,0,0,0.54)',
-                  transition: 'all 0.3s ease',
-                },
-                '& .MuiInputLabel-shrink': {
-                  transform: 'translate(14px, -6px) scale(0.75)',
-                  color: 'primary.main',
-                  fontWeight: 600,
-                }
-              }
-            }}>
+              }}
+            >
               <div className="flex items-center space-x-4">
                 <FormControl sx={{ flex: 1 }}>
-                  <InputLabel id="gst-type-label">GST Type</InputLabel>
+                  {/* <InputLabel id="gst-type-label">GST Type</InputLabel> */}
                   <Select
                     labelId="gst-type-label"
                     value={gstType}
                     onChange={handleGstChange}
                     label="GST Type"
                     fullWidth
-                    MenuProps={{
-                      PaperProps: {
-                        sx: {
-                          borderRadius: "12px", // Rounded menu
-                          boxShadow: "0 8px 24px rgba(0,0,0,0.12)", // Pronounced shadow
-                          marginTop: "8px",
-                          overflow: "hidden",
-                          border: "1px solid rgba(0,0,0,0.12)", // Soft border
-                        },
+                    sx={{
+                      padding: 0,
+                      width: "180px",
+                      ".MuiOutlinedInput-notchedOutline": {
+                        border: "none", 
+                      },
+                      "& .MuiSelect-select": {
+                        paddingLeft: "5px !important", 
+                        paddingTop: "0 !important",  
+                        paddingBottom: "0 !important", 
+                      },
+                      "& .MuiSelect-icon": {
+                        right: "8px", 
+                      },
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0 !important", 
+                        borderBottom: "1px solid #000",
+                        paddingLeft: "0 !important", 
                       },
                     }}
                   >
-                    {/* Option 1: SGST + CGST */}
                     <MenuItem
                       value="sgst_cgst"
                       sx={{
@@ -477,7 +497,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                       SGST/CGST (18%)
                     </MenuItem>
 
-                    {/* Option 2: IGST */}
                     <MenuItem
                       value="igst"
                       sx={{
@@ -501,9 +520,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                   </Select>
                 </FormControl>
 
-
-                <div className="flex items-center text-sm text-gray-700 bg-gray-50 p-3 rounded-lg min-w-[120px] justify-end shadow-sm transition-all duration-300 hover:bg-gray-100">
-                  <span className="font-semibold text-gray-800">{taxAmount.toFixed(2)} &#8377;</span>
+                <div className="flex items-center text-lg  min-w-[120px] justify-end  ">
+                  <span className=" ">{taxAmount.toFixed(2)} &#8377;</span>
                 </div>
               </div>
             </Box>
@@ -578,7 +596,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           onClick={(timer) => {
             handleInvoiceDownload(timer);
           }}
-        // disabled={!allowDownload}
+          // disabled={!allowDownload}
         >
           Download
         </Button>
