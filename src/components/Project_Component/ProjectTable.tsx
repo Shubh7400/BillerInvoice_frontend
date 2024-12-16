@@ -311,7 +311,7 @@ const ProjectTable = ({
           ) : (
             <div className="  rounded-[20px]">
               <TableContainer className={Styles.table_scroll}>
-                <Table sx={{ width: "100vw" }}>
+                <Table >
                   <TableHead className={Styles.animated}>
                     <TableRow>
                       {/* <TableCell style={{ paddingRight: "0" }}>Select</TableCell> */}
@@ -319,7 +319,7 @@ const ProjectTable = ({
                         Sr.No.
                       </TableCell>
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
+                        style={{ paddingLeft: "0", paddingRight: "0", width:"200px" }}
                       >
                         Project
                       </TableCell>
@@ -334,7 +334,7 @@ const ProjectTable = ({
                         Project Period
                       </TableCell> */}
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
+                        style={{ paddingLeft: "0", paddingRight: "0",width:"150px" }}
                       >
                         Rate
                       </TableCell>
@@ -344,7 +344,7 @@ const ProjectTable = ({
                         Working Period
                       </TableCell> */}
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
+                        style={{ paddingLeft: "0", paddingRight: "0", width:"170px" }}
                       >
                         Conversion Rate
                       </TableCell>
@@ -354,12 +354,12 @@ const ProjectTable = ({
                         Amount
                       </TableCell> */}
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
+                        style={{ paddingLeft: "0", paddingRight: "0",width:"100px" }}
                       >
                         Action
                       </TableCell>
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
+                        style={{ paddingLeft: "0", paddingRight: "0",width:"100px" }}
                       >
                         selection
                       </TableCell>
@@ -445,7 +445,7 @@ const ProjectTable = ({
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell sx={{ paddingY: "8px" }}>
+                          <TableCell sx={{ paddingY: "8px",paddingX:"0" }}>
                             <div>
                               <Button
                                 variant="contained"

@@ -88,13 +88,13 @@ function InvoiceListPage() {
       ) : (
         <div className="  rounded-[20px] mt-5">
           <TableContainer className={Styles.table_scroll}>
-            <Table sx={{ width: "100vw" }}>
+            <Table >
               <TableHead className={Styles.animated}>
                 <TableRow>
                   <TableCell sx={{ paddingX: "10px", width: "50px" }}>
                     Sr.No.
                   </TableCell>
-                  <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  <TableCell style={{ paddingLeft: "0", paddingRight: "0" ,width: "150px" }}>
                     Invoice No
                   </TableCell>
                   <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
@@ -106,7 +106,7 @@ function InvoiceListPage() {
                   <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                     Rate
                   </TableCell>
-                  <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                  <TableCell style={{ paddingLeft: "0", paddingRight: "0",width: "170px" }}>
                     Conversion Rate
                   </TableCell>
                   <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
@@ -125,8 +125,8 @@ function InvoiceListPage() {
                     return (
                       <TableRow key={invoice._id}>
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>{invoice.invoiceNo}</TableCell>
-                        <TableCell>
+                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>{invoice.invoiceNo}</TableCell>
+                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                           {invoice.projectName || "Unnamed Project"}
                         </TableCell>
                         <TableCell>{clientName}</TableCell>
@@ -140,7 +140,7 @@ function InvoiceListPage() {
                             ) : null}
                             /{invoice.workingPeriodType})</TableCell>
                         <TableCell>&#x20B9; {invoice.conversionRate}</TableCell>
-                        <TableCell>&#x20B9; {invoice.amountAfterTax}</TableCell>
+
                       </TableRow>
                     );
                   })

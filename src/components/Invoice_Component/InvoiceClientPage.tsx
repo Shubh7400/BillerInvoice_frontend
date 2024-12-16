@@ -6,7 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import ClientInfoSection from "../Client_Component/ClientInfoSection";
 import { Button, TextField, useTheme } from "@mui/material";
 import Styles from "./invoive.module.css";
-import { addProjectForInvoiceAction, removeProjectFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+import {
+  addProjectForInvoiceAction,
+  removeProjectFromInvoiceAction,
+} from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import BillAmount from "./BillAmount";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
@@ -40,7 +43,7 @@ import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjec
 import { updateProjectForInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import { InvoiceType } from "../../types/types";
-import ReplayIcon from "@mui/icons-material/Replay";
+import { MdOutlineReplay } from "react-icons/md";
 import { useSnackbar } from "notistack";
 import { log } from "console";
 let windowWidth: number | undefined = window.innerWidth;
@@ -74,25 +77,29 @@ function InvoiceClientPage() {
   const [allowDownload, setAllowDownload] = React.useState(true);
   const { enqueueSnackbar } = useSnackbar();
 
-
   const fetchExchangeRate = async (projectId: string) => {
     setLoadingRate(true);
     setRateError("");
 
     try {
       // Fetch the latest exchange rates
-      const response = await axios.get(`https://api.exchangerate-api.com/v4/latest/USD`);
+      const response = await axios.get(
+        `https://api.exchangerate-api.com/v4/latest/USD`
+      );
       const rates = response.data.rates;
 
       // Identify the specific project
-      const targetProject = editableProjects.find((project) => project._id === projectId);
+      const targetProject = editableProjects.find(
+        (project) => project._id === projectId
+      );
 
       if (!targetProject) {
         throw new Error("Project not found.");
       }
 
       // Ensure the currencyType is taken from the project
-      const { currencyType, workingPeriodType, adminId, clientId } = targetProject;
+      const { currencyType, workingPeriodType, adminId, clientId } =
+        targetProject;
 
       let newRate = 1;
       if (currencyType === "dollars") {
@@ -105,10 +112,14 @@ function InvoiceClientPage() {
 
       // Update the project's conversion rate locally
       const updatedProjects = editableProjects.map((project) =>
-        project._id === projectId ? { ...project, conversionRate: newRate } : project
+        project._id === projectId
+          ? { ...project, conversionRate: newRate }
+          : project
       );
 
-      const updatedProject = updatedProjects.find((project) => project._id === projectId);
+      const updatedProject = updatedProjects.find(
+        (project) => project._id === projectId
+      );
 
       if (updatedProject) {
         setEditableProjects(updatedProjects);
@@ -160,7 +171,6 @@ function InvoiceClientPage() {
   }, [projectsForInvoice, clientObj._id]);
   console.log("id", id);
   const UpdateProjectMutationHandler = useUpdateProject(id, clientObj._id);
-
 
   // const handleInputChange = (id: string, field: string, value: any) => {
   //   const newValue = value === "" ? null : value; // Use null instead of empty string
@@ -225,7 +235,6 @@ function InvoiceClientPage() {
   //   );
   // };
 
-
   const handleInputChange = (id: string, field: string, value: any) => {
     const newValue = value === "" ? null : value; // Use null instead of empty string
     setEditableProjects((prevProjects) =>
@@ -234,7 +243,10 @@ function InvoiceClientPage() {
           const updatedProject = { ...project, [field]: newValue };
 
           // Perform amount calculation based on workingPeriodType
-          if (updatedProject.workingPeriodType && updatedProject.workingPeriod) {
+          if (
+            updatedProject.workingPeriodType &&
+            updatedProject.workingPeriod
+          ) {
             if (updatedProject.workingPeriodType === "hours") {
               updatedProject.amount =
                 (updatedProject.rate || 0) *
@@ -250,7 +262,8 @@ function InvoiceClientPage() {
                 (updatedProject.conversionRate || 1);
             } else {
               updatedProject.amount =
-                (updatedProject.rate || 0) * (updatedProject.conversionRate || 1);
+                (updatedProject.rate || 0) *
+                (updatedProject.conversionRate || 1);
             }
           }
 
@@ -293,7 +306,6 @@ function InvoiceClientPage() {
   const [workingFixed, setWorkingFixed] = useState(false);
 
 
-
   useEffect(() => {
     const updatedProjects = projectsForInvoice.map((project) => {
       const updatedProject = { ...project };
@@ -320,9 +332,18 @@ function InvoiceClientPage() {
       let amount = 0;
       if (project.rate && project.workingPeriodType) {
         if (project.workingPeriodType === "hours") {
-          amount = project.rate * (project.workingPeriod || 1) * project.conversionRate;
-        } else if (project.workingPeriodType === "months" && updatedProject.ratePerDay) {
-          amount = updatedProject.ratePerDay * (updatedProject.workingPeriod || 1) * project.conversionRate;
+          amount =
+            project.rate *
+            (project.workingPeriod || 1) *
+            project.conversionRate;
+        } else if (
+          project.workingPeriodType === "months" &&
+          updatedProject.ratePerDay
+        ) {
+          amount =
+            updatedProject.ratePerDay *
+            (updatedProject.workingPeriod || 1) *
+            project.conversionRate;
         } else if (project.workingPeriodType === "fixed") {
           amount = project.rate * project.conversionRate;
         }
@@ -351,11 +372,16 @@ function InvoiceClientPage() {
 
         UpdateProjectMutationHandler.mutate(mutationData, {
           onSuccess: () => {
-            console.log(`RatePerDay updated successfully for project ${projectId}`);
+            console.log(
+              `RatePerDay updated successfully for project ${projectId}`
+            );
             dispatch(updateProjectForInvoiceAction(updatedProject));
           },
           onError: (error) => {
-            console.error(`Failed to update ratePerDay for project ${projectId}`, error);
+            console.error(
+              `Failed to update ratePerDay for project ${projectId}`,
+              error
+            );
           },
         });
       }
@@ -365,8 +391,6 @@ function InvoiceClientPage() {
 
     setEditableProjects(updatedProjects);
   }, [projectsForInvoice, invoiceDate, workingFixed]);
-
-
 
   React.useEffect(() => {
     if (isAuth && adminId) {
@@ -379,7 +403,7 @@ function InvoiceClientPage() {
   );
   const handleBackButton = () => {
     navigate(-1);
-  }
+  };
 
   const handleInvoiceDateChange = (newDate: dayjs.Dayjs | null) => {
     if (!newDate) {
@@ -420,7 +444,6 @@ function InvoiceClientPage() {
   };
 
   const handleInvoiceNoChange = (newInvoiceNo: string) => {
-
     dispatch(updateInvoiceObjectStateAction({ invoiceNo: newInvoiceNo }));
   };
 
@@ -438,19 +461,7 @@ function InvoiceClientPage() {
             CLIENT INFORMATION
           </Typography>
         </div>
-        <div>
-          <div className="text-black mr-5">
-            <strong>Invoice Number: </strong>
-
-            <TextField
-              variant="outlined"
-              size="small"
-              value={invoiceObject.invoiceNo}
-              onChange={(e) => handleInvoiceNoChange(e.target.value)}
-            />
-
-          </div>
-        </div>
+        <div></div>
       </div>
       <div className="flex justify-between items-start gap-2">
         {clientObj && selectedClientState.loading !== "idle" ? (
@@ -459,36 +470,65 @@ function InvoiceClientPage() {
         <div className="w-full flex justify-end">
           {windowWidth && windowWidth > 768 ? (
             <>
-              <div className="flex flex-col items-end">
-                <DemoItem>
-                  <label style={{ color: textColor }}>Invoice date</label>
-                  <DesktopDatePicker
-                    defaultValue={invoiceDate}
-                    onChange={(newDate) => handleInvoiceDateChange(newDate)}
-                    format="DD/MM/YYYY"
-                    // label="Invoice date"
+              <div className="flex flex-col items-end mb-3">
+                <div className="flex items-center gap-[20px] mb-1">
+                  <label className="w-[130px]">
+                    <strong>Invoice Number: </strong>{" "}
+                  </label>
+
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    value={invoiceObject.invoiceNo}
+                    onChange={(e) => handleInvoiceNoChange(e.target.value)}
+                    className="w-[150px] "
                     sx={{
-                      backgroundColor: "#cecece", width: '250px',  // Explicitly set a wider width
-                      '& .MuiOutlinedInput-root': {
-                        width: '100%'
-                      }
+                      "& .MuiOutlinedInput-root": {
+                        padding: "5px 0",
+                      },
                     }}
                   />
-                </DemoItem>
-                <DemoItem>
-                  <label style={{ color: textColor }}>Due date</label>
-                  <DesktopDatePicker
-                    defaultValue={dueDate}
-                    onChange={(newDate) => handleDueDateChange(newDate)}
-                    format="DD/MM/YYYY"
-                    sx={{
-                      backgroundColor: "#cecece", width: '250px',  // Explicitly set a wider width
-                      '& .MuiOutlinedInput-root': {
-                        width: '100%'
-                      }
-                    }}
-                  />
-                </DemoItem>
+                </div>
+
+                <div className="flex items-center gap-[20px] mb-1">
+                  <label style={{ color: textColor }} className="w-[130px]">
+                    <strong>Invoice date: </strong>
+                  </label>
+                  <DemoItem>
+                    <DesktopDatePicker
+                      defaultValue={invoiceDate}
+                      onChange={(newDate) => handleInvoiceDateChange(newDate)}
+                      format="DD/MM/YYYY"
+                      className="w-[150px]"
+                      // label="Invoice date"
+                      sx={{
+                        backgroundColor: "#cecece",
+                        "& .MuiOutlinedInput-root": {
+                          width: "100%",
+                        },
+                      }}
+                    />
+                  </DemoItem>
+                </div>
+                <div className="flex text-start items-center gap-[20px] ">
+                  <label style={{ color: textColor }} className="w-[130px]">
+                    <strong>Due date: </strong>
+                  </label>
+                  <DemoItem>
+                    <DesktopDatePicker
+                      defaultValue={dueDate}
+                      onChange={(newDate) => handleDueDateChange(newDate)}
+                      format="DD/MM/YYYY"
+                      className="w-[150px]"
+                      sx={{
+                        backgroundColor: "#cecece",
+                        "& .MuiOutlinedInput-root": {
+                          width: "100%",
+                        },
+                      }}
+                    />
+                  </DemoItem>
+                </div>
               </div>
             </>
           ) : (
@@ -501,10 +541,10 @@ function InvoiceClientPage() {
                     onChange={(newDate) => handleInvoiceDateChange(newDate)}
                     format="DD/MM/YYYY"
                     sx={{
-                      width: '250px',  // Explicitly set a wider width
-                      '& .MuiOutlinedInput-root': {
-                        width: '100%'
-                      }
+                      width: "250px", // Explicitly set a wider width
+                      "& .MuiOutlinedInput-root": {
+                        width: "100%",
+                      },
                     }}
                   />
                 </DemoItem>
@@ -515,31 +555,42 @@ function InvoiceClientPage() {
                     onChange={(newDate) => handleDueDateChange(newDate)}
                     format="DD/MM/YYYY"
                     sx={{
-                      width: '250px',  // Explicitly set a wider width
-                      '& .MuiOutlinedInput-root': {
-                        width: '100%'
-                      }
+                      width: "250px", // Explicitly set a wider width
+                      "& .MuiOutlinedInput-root": {
+                        width: "100%",
+                      },
                     }}
                   />
                 </DemoItem>
               </div>
-
             </>
           )}
         </div>
       </div>
       {projectsForInvoice.length > 0 ? (
         <div className="rounded-[20px]">
-          <TableContainer component={Paper} className={`${Styles.table_scroll}`}>
-            <Table>
+          <TableContainer
+            component={Paper}
+            className={`${Styles.table_scroll}`}
+          >
+            <Table
+              sx={{
+                borderRadius: "20px !important",
+                width: "100%",
+                "& .MuiTable-root": {
+                  borderRadius: "20px !important", // Applied to the table root
+                },
+              }}
+            >
               <TableHead className={Styles.animated}>
                 <TableRow>
                   <TableCell>Project Name</TableCell>
                   <TableCell>Rate</TableCell>
                   {editableProjects.map((project: ProjectType) => (
                     <>
-                      {project.workingPeriodType === "months" && <TableCell>Rate/day</TableCell>}
-
+                      {project.workingPeriodType === "months" && (
+                        <TableCell>Rate/day</TableCell>
+                      )}
                     </>
                   ))}
                   {editableProjects.map((project: ProjectType) => (
@@ -555,7 +606,10 @@ function InvoiceClientPage() {
               </TableHead>
               <TableBody>
                 {editableProjects.map((project: ProjectType) => (
-                  <TableRow key={project._id} className={`${Styles.project_row}`}>
+                  <TableRow
+                    key={project._id}
+                    className={`${Styles.project_row}`}
+                  >
                     <TableCell className="text-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
                       {project.projectName}
                     </TableCell>
@@ -565,19 +619,30 @@ function InvoiceClientPage() {
                         {project.currencyType === "rupees"
                           ? project.workingPeriodType === "fixed"
                             ? "₹/fixed"
-                            : `₹/${project.workingPeriodType === "hours" ? "hours" : "months"}`
+                            : `₹/${
+                                project.workingPeriodType === "hours"
+                                  ? "hours"
+                                  : "months"
+                              }`
                           : project.currencyType === "dollars"
-                            ? project.workingPeriodType === "fixed"
-                              ? "$/fixed"
-                              : `$/${project.workingPeriodType === "hours" ? "hours" : "months"}`
-                            : project.currencyType === "pounds"
-                              ? project.workingPeriodType === "fixed"
-                                ? "£/fixed"
-                                : `£/${project.workingPeriodType === "hours" ? "hours" : "months"}`
-                              : ""}
+                          ? project.workingPeriodType === "fixed"
+                            ? "$/fixed"
+                            : `$/${
+                                project.workingPeriodType === "hours"
+                                  ? "hours"
+                                  : "months"
+                              }`
+                          : project.currencyType === "pounds"
+                          ? project.workingPeriodType === "fixed"
+                            ? "£/fixed"
+                            : `£/${
+                                project.workingPeriodType === "hours"
+                                  ? "hours"
+                                  : "months"
+                              }`
+                          : ""}
                       </Typography>
                     </TableCell>
-
 
                     {project.workingPeriodType === "months" && (
                       <TableCell className="text-[13px] w-[150px]">
@@ -586,8 +651,10 @@ function InvoiceClientPage() {
                         </Typography>
                       </TableCell>
                     )}
+
                     {project.workingPeriodType !== 'fixed' &&
                       <TableCell className="text-[13px] w-[150px]">
+
                         <TextField
                           variant="outlined"
                           size="small"
@@ -599,27 +666,32 @@ function InvoiceClientPage() {
                               "workingPeriod",
                               e.target.value
                             )
+
                           }></TextField>
                       </TableCell>
                     }
+
+ 
                     <TableCell className="text-[13px] w-[150px]">
                       <TextField
                         variant="outlined"
                         size="small"
+
                         value={project.conversionRate.toFixed(2)}
                         onChange={(e) =>
                           fetchExchangeRate(project._id ?? "")
                         }
+
                         InputProps={{
                           startAdornment: (
                             <span>
                               {project.currencyType === "rupees"
                                 ? "₹"
                                 : project.currencyType === "dollars"
-                                  ? "$"
-                                  : project.currencyType === "pounds"
-                                    ? "£"
-                                    : ""}
+                                ? "$"
+                                : project.currencyType === "pounds"
+                                ? "£"
+                                : ""}
                             </span>
                           ),
                         }}
@@ -630,12 +702,11 @@ function InvoiceClientPage() {
                             onClick={() => fetchExchangeRate(project._id!)} // Non-null assertion
                             disabled={loadingRate}
                           >
-                            <ReplayIcon />
+                            <MdOutlineReplay />
                           </Button>
                           {rateError && <p>{rateError}</p>}
                         </>
                       ) : null}
-
                     </TableCell>
                     <TableCell className="text-[13px]w-[110px]">
                       &#x20B9;{project.amount ? project.amount.toFixed(2) : 0}
@@ -655,14 +726,14 @@ function InvoiceClientPage() {
           </TableContainer>
           <BillAmount workingFixed={workingFixed}/>
         </div>
-      )
-        : (<div>
+      ) : (
+        <div>
           <div className="flex flex-col h-[60vh] justify-center items-center ">
             <img src={error} alt="No project selected" className="w-[300px]" />
             <p>No Project Selected</p>
           </div>
         </div>
-        )}
+      )}
     </div>
   );
 }
