@@ -40,6 +40,9 @@ import { useSnackbar } from "notistack";
 import html2canvas from "html2canvas";
 // import DownloadPreview from "./DownloadPreview";
 import { RxCross1 } from "react-icons/rx";
+import TextField from "@mui/material/TextField";
+
+import { ChangeEvent } from "react";
 function InvoiceListPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -78,7 +81,7 @@ function InvoiceListPage() {
   }, [dispatch, adminId]);
   const [showPreview, setShowPreview] = useState(false);
   const [tempImgData, setTempImgData] = useState("");
-
+  const [searchInvoiceProject,setSearchInvoiceProject] = useState("");
   const ViewAndPreviewPDF = async (invoice: Invoice) => {
     setShowPreview(true);
 
@@ -137,7 +140,24 @@ function InvoiceListPage() {
             INVOICE LIST
           </Typography>
         </div>
+        <div className={Styles.search_input}>
+            <TextField
+              label="Search by Project name"
+              type="text"
+              variant="outlined"
+              value={searchInvoiceProject || ""}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setSearchInvoiceProject(e.target.value)
+              }
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "50px",
+                },
+              }}
+            />
+        </div>
       </div>
+     
 
       {/* Preview Section */}
       {showPreview ? (
@@ -187,7 +207,13 @@ function InvoiceListPage() {
                   </TableHead>
                   <TableBody>
                     {Array.isArray(invoices) && invoices.length > 0 ? (
-                      invoices.map((invoice, index) => {
+                      invoices.filter((invoice) => {
+                        if (searchInvoiceProject.length <= 0) return true;
+                      
+                        return invoice.projectName?.toLowerCase().startsWith(searchInvoiceProject.toLowerCase()) || false;
+                      })
+                      
+                      .map((invoice, index) => {
                         if (!invoice) return null;
                         const clientName = getClientNameForInvoice(invoice.clientId);
 

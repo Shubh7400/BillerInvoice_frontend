@@ -593,10 +593,13 @@ function InvoiceClientPage() {
                   ))}
                   {editableProjects.map((project: ProjectType) => (
                     <>
-                      {project.workingPeriodType !== "fixed" && (
-                        <TableCell className="w-[175px]">
-                          Working Period
-                        </TableCell>
+                      {project.workingPeriodType !== "fixed" && ( 
+                        project.workingPeriodType === "months" ? (
+                          <TableCell className="w-[175px]">Working Days</TableCell>
+                        ):
+                        (
+                          <TableCell className="w-[175px]">Working Hours</TableCell>
+                        )
                       )}
                     </>
                   ))}
@@ -659,7 +662,7 @@ function InvoiceClientPage() {
                           variant="outlined"
                           size="small"
                           type="number"
-                          value={project.workingPeriod || 1}
+                          value={project.workingPeriod }
                           onChange={(e) =>
                             handleInputChange(
                               project._id ?? "",
