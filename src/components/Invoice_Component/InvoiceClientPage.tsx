@@ -39,7 +39,6 @@ import dayjs, { Dayjs } from "dayjs";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
 import { updateProjectForInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
-import { useUpdateInvoiceMutation } from "../../states/query/Invoice_queries/invoiceQueries";
 import { InvoiceType } from "../../types/types";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { useSnackbar } from "notistack";

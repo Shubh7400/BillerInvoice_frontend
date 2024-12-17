@@ -22,30 +22,6 @@ export async function addNewInvoice(invoiceObject: InvoiceType) {
   }
 }
 
-export async function updateInvoice(invoiceObject: InvoiceType) {
-  let token = localStorage.getItem("billAppAuthToken");
-  if (token) {
-    token = token.substring(1, token.length - 1);
-  }
-
-  try {
-    const res = await axios.patch(
-      `${config.apiUrlInvoice}/${invoiceObject._id}`,
-      invoiceObject,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    console.log("Res after updating invoice-", res.data);
-    return res.data;
-  } catch (error: any) {
-    console.log("Error after updating invoice-", error);
-    return new Error(`Network error in updating invoice: ${error.message || error}`);
-  }
-}
-
 export async function getAllInvoice() {
   let token = localStorage.getItem("billAppAuthToken");
   if (token) {

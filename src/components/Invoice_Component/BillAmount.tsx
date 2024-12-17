@@ -242,8 +242,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       setInvoiceNo(+adminState.data.invoiceNo + 1);
 
       dispatch(
-        updateInvoiceObjectStateAction({   
-          _id:invoiceObject._id,      
+        updateInvoiceObjectStateAction({     
           invoiceNo: invoiceNo,
           projectsId: projectsIdArr,
           clientId,
@@ -327,78 +326,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           },
         }}
       />
-      {/* <Box
-          sx={{
-            position: "fixed",
-            bottom: "8%",
-            right: "12%",
-            maxWidth: "100px",project 
-            height: "40px",
-            zIndex: 600,
-            color: "white",
-          }}
-        >
-          <Button variant="contained" onClick={toggleDrawer(true)}>
-            Invoice
-          </Button>
-        </Box> */}
-
-      {/* <SwipeableDrawer
-        anchor="bottom"
-        open={open}
-        onClose={toggleDrawer(false)}
-        onOpen={toggleDrawer(true)}
-        swipeAreaWidth={drawerBleeding}
-        disableSwipeToOpen={false}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        sx={{
-          width: "100%",
-          height: "40%",
-        }}
-      > */}
-      {/*Drawer header*/}
-      {/* <Box
-          sx={{
-            // position: "absolute",
-            top: -drawerBleeding,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            visibility: "visible",
-            right: 0,
-            left: 0,
-            bgcolor: '#cfa184cf',
-          }}
-        >
-          <Box
-            sx={{
-              width: 30,
-              height: 6,
-              backgroundColor: grey[100],
-              borderRadius: 3,
-              position: "absolute",
-              top: 8,
-              left: "calc(50% - 15px)",
-            }}
-          ></Box>
-          <Box
-            sx={{
-              p: 2,
-              color: "white",
-              fontWeight: "semibold",
-              fontSize: "20px",
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              justifyContent: { xs: "flex-start", sm: "space-between" },
-              width: "100%",
-            }}
-          >
-            Fill invoice required details.
-            <span className="mr-8 text-sm">Invoice no.{invoiceNo}</span>
-          </Box>
-        </Box> */}
-      {/*Drawer body*/}
       <Box
         sx={{
           px: 2,
@@ -461,27 +388,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                   GST:(18%)<span>{taxAmount.toFixed(2)}</span>
                 </div>
               )}
-            </Box> */}
-
-            {/* <Box sx={{ mt: "6px" }}>
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel id="gst-type-label">GST Type</InputLabel>
-                <Select
-                  labelId="gst-type-label"
-                  value={gstType}
-                  onChange={handleGstChange}
-                  label="GST Type"
-                >
-                  <MenuItem value="sgst">SGST (9%)</MenuItem>
-                  <MenuItem value="cgst">CGST (9%)</MenuItem>
-                  <MenuItem value="gst">GST (18%)</MenuItem>
-                </Select>
-              </FormControl>
-
-              <div className="flex justify-between">
-                {gstType.toUpperCase()}:
-                <span>{taxAmount.toFixed(2)} &#8377;</span>
-              </div>
             </Box> */}
              <Box sx={{
               mt: "6px",
@@ -631,25 +537,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             )}
           </Box>
         </Box>
-        {/*Download and Preview buttons*/}
-        {/* <Box
-            sx={{
-              display: "flex",
-              justifyContent: {
-                xs: "space-between",
-                sm: "flex-end",
-                md: "flex-end",
-              },
-              width: { xs: "100%", sm: "100%" },
-              mt: "20px",
-              px: { xs: "0px", sm: "35px", md: "38px" },
-              position: { xs: "fixed", sm: "static" },
-              bottom: "0%",
-              left: "1%",
-            }}
-          >
-           
-          </Box> */}
+       
       </Box>
       <Global
         styles={{
