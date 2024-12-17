@@ -3,7 +3,7 @@ import { fetchInvoiceProjects } from '../../../api/invoice_requests';
 import { getProjectById } from '../../../api/project_requests'; 
 import { fetchInvoicesByDate } from '../../../api/invoice_requests';
 
-interface Invoice {
+export interface Invoice {
   _id: string;
   invoiceNo: number;
   billDate: string;
@@ -11,6 +11,7 @@ interface Invoice {
   projectsId: string[];
   amountWithoutTax: number;
   amountAfterTax: number;
+  taxType:string;
   projectName: string;
   rate: number;
   adminId: string;
@@ -20,7 +21,43 @@ interface Invoice {
   clientId: string;
   currencyType: "rupees" | "dollars" | "pounds"; 
   paymentStatus: boolean;
+  ratePerDay:number;
+  advanceAmount:number;
+  amount:number;
+  // User details
+  userEmail: string;
+  companyName: string;
+  gistin: string;
+  contactNo: string;
+  pancardNo: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  invoiceNoUser: number;
+  companyLogo: string;
+  accountNo: string;
+  ifsc: string;
+  bank: string;
+
+  // client detail
+  clientName: string;
+  clientGstin: string;
+  clientPanCard: string;
+  clientAddress: {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  sameState: boolean;
+  clientEmails: string[];
 }
+
 
 interface InvoiceListState {
   invoices: Invoice[];
