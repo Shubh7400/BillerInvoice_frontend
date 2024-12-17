@@ -16,7 +16,6 @@ import {
   FormControlLabel,
   useTheme,
 } from "@mui/material";
-import { RiDeleteBin7Line } from "react-icons/ri";
 import { queryClient } from "../..";
 import { useSnackbar } from "notistack";
 import {
@@ -28,10 +27,8 @@ import {
   addAllProjectsForInvoiceAction,
   addProjectForInvoiceAction,
   removeAllProjectsFromInvoiceAction,
-  removeProjectFromInvoiceAction,
 } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import ActionConfirmer from "../SideBar/ActionConfirmer";
-import BillAmount from "../Invoice_Component/BillAmount";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
