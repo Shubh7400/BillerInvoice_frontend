@@ -11,7 +11,7 @@ export interface Invoice {
   projectsId: string[];
   amountWithoutTax: number;
   amountAfterTax: number;
-  taxType:string;
+  taxType: "igst" | "sgst_cgst";
   projectName: string;
   rate: number;
   adminId: string;
