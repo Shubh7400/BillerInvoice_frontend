@@ -16,7 +16,7 @@
       transform: rotate(-45deg);
     }
     
-    a:hover .arrow {
+    .annimated_btn:hover .arrow {
       transition: 3s;
       -webkit-transition: 0.70s;
       -moz-transition: 0.70s;

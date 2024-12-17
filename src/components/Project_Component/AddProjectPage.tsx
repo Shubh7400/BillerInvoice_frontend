@@ -199,7 +199,6 @@ function AddProjectPage({
 
   React.useEffect(() => {
     if (clientId && clientAddProject) {
-      console.log("alksdjiaohduoasdu", clientId);
       setProjectData({
         ...projectData,
         clientId: clientId,
@@ -429,34 +428,35 @@ function AddProjectPage({
           <form onSubmit={handleAddSubmit}>
             <div>
               {!clientAddProject ? (
-                <div>
-                  <label className="text-xs py-1 opacity-60">
-                    Select Client
-                  </label>
-                  <Autocomplete
-                    options={clientsArr}
-                    getOptionLabel={(option) => option.clientName || ""}
-                    value={clientsArr.find((client) => client._id === projectData.clientId) || null}
-                    onChange={(event, newValue) => {
-                      if (newValue && newValue._id) {
-                        setFormError("");
-                        setSelectClient(newValue);
-                        setProjectData({
-                          ...projectData,
-                          clientId: newValue._id,
-                        });
-                      }
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        size="small"
-                        placeholder="Select Client"
-                      />
-                    )}
+                <Autocomplete
+                options={clientsArr}
+                getOptionLabel={(option) => option.clientName || ""}
+                value={
+                  clientsArr.find((client) => client._id === projectData.clientId) || null
+                }
+                onChange={(event, newValue) => {
+                  if (newValue && newValue._id) {
+                    setFormError("");
+                    setSelectClient(newValue);
+                    setProjectData({
+                      ...projectData,
+                      clientId: newValue._id,
+                    });
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    margin="dense"
+                    id="clientSelect"
+                    label="Select Client"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    required
                   />
-                </div>
+                )}
+              />
               ) : (
                 <div>
                   <label className="text-xs py-1 opacity-60">
@@ -544,7 +544,7 @@ function AddProjectPage({
               onChange={handleChange}
             />
 
-            {workPeriodType === "fixed" &&
+            {projectData.workingPeriodType=== "fixed" &&
               <TextField
                 margin="dense"
                 id="workingPeriodType"
@@ -651,7 +651,7 @@ function AddProjectPage({
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          {/* <Button onClick={handleClose}>Cancel</Button> */}
           {forAddProject && !toEdit ? (
             <Button
               onClick={(e) => handleAddSubmit(e)}

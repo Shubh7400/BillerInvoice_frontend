@@ -1,11 +1,8 @@
-import { Button } from "@mui/material";
 import BillAmount from "./BillAmount";
 import { useNavigate } from "react-router-dom";
-import error from "../assets/select_client.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../states/redux/store";
 import { ClientType } from "../../types/types";
-import projectError from "../assets/project_error.png";
 
 const InvoicePage = () => {
   const navigate = useNavigate();

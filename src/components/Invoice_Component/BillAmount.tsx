@@ -7,7 +7,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { deepPurple, grey, purple } from "@mui/material/colors";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import { SelectChangeEvent } from '@mui/material/Select';
+import { SelectChangeEvent } from "@mui/material/Select";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
@@ -25,7 +25,7 @@ import DownloadPreview from "./DownloadPreview";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { ThemeContext } from "../../states/context/ThemeContext/ThemeContext";
-import TextField from '@mui/material/TextField';
+import TextField from "@mui/material/TextField";
 import { AppBar, Dialog, IconButton, Toolbar } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
@@ -49,6 +49,10 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const selectedClientState = useSelector(
     (state: RootState) => state.selectedClientState
   );
+  const { data: invoiceObject } = useSelector(
+    (state: RootState) => state.invoiceObjectState
+  );
+
   const [invoiceNo, setInvoiceNo] = React.useState(0);
   const [clientSameState, setClientSameState] = React.useState(false);
   const [invoiceDate, setInvoiceDate] = React.useState(dayjs());
@@ -69,13 +73,17 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const { projectsForInvoice } = useSelector(
     (state: RootState) => state.projectsForInvoiceState
   );
-  const invoiceObject = useSelector(
-    (state: RootState) => state.invoiceObjectState
-  );
 
   React.useEffect(() => {
     if (adminState.loading === "succeeded" && adminState.data) {
       setInvoiceNo(+adminState.data.invoiceNo + 1);
+      dispatch(
+        updateInvoiceObjectStateAction({
+          invoiceNo: +adminState.data.invoiceNo + 1,
+          billDate: invoiceDate.toISOString(),
+          dueDate: dueDate.toISOString(),
+        })
+      );
     }
     if (selectedClientState.data.sameState) {
       setClientSameState(selectedClientState.data.sameState);
@@ -83,9 +91,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   }, [adminState, selectedClientState]);
 
   React.useEffect(() => {
-    dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
-    toggleDrawer(true, gstType);
-  }, [invoiceNo, projectsForInvoice, showPreview]);
+    // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
+    toggleDrawer(true, gstType,taxAmount,grandTotal);
+  }, [projectsForInvoice, showPreview]);
 
   React.useEffect(() => {
     if (visibility) {
@@ -110,7 +118,10 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     await root.render(
       <div>
         <Provider store={store}>
-          <DownloadPreview grandTotal={grandTotal} advanceAmount={advanceAmount}/>
+          <DownloadPreview
+            grandTotal={grandTotal}
+            advanceAmount={advanceAmount}
+          />
         </Provider>
       </div>
     );
@@ -146,8 +157,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   };
 
   const generateAndPreviewPDF = async () => {
-    // Define the content for your PDF
-    // Create a div to render your component
     const div = document.createElement("div");
     div.style.width = "1050px";
     div.style.height = "1124px";
@@ -157,7 +166,10 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     await root.render(
       <div>
         <Provider store={store}>
-          <DownloadPreview grandTotal={grandTotal} advanceAmount={advanceAmount}/>
+          <DownloadPreview
+            grandTotal={grandTotal}
+            advanceAmount={advanceAmount}
+          />
         </Provider>
       </div>
     );
@@ -172,37 +184,35 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           variant: "error",
         });
       } finally {
-        // Remove the temporary div
         document.body.removeChild(div);
       }
     }, 100);
   };
 
-  const [gstType, setGstType] = React.useState("sgst");
+  const [gstType, setGstType] = React.useState("igst");
   const [amountWithoutTax, setAmountWithoutTax] = React.useState(0);
   const [taxAmount, setTaxAmount] = React.useState(0);
   const [amountAfterTax, setAmountAfterTax] = React.useState(0);
   const [advanceAmount, setAdvanceAmount] = React.useState(0);
 
   const [grandTotal, setGrandTotal] = React.useState(0);
-
-  // Handle GST type selection
   const handleGstChange = (event: SelectChangeEvent<string>) => {
     setGstType(event.target.value);
   };
 
   React.useEffect(() => {
-    const taxPercentage = gstType === "gst" ? 18 : 9; // SGST/CGST: 9%, GST: 18%
+    const taxPercentage = gstType === "igst" ? 18 : 18; 
     const tax = (amountWithoutTax * taxPercentage) / 100;
     const total = amountWithoutTax + tax;
 
     setTaxAmount(tax);
     setAmountAfterTax(total);
-    setGrandTotal(total - (typeof advanceAmount === "number" ? advanceAmount : 0));
-
+    setGrandTotal(
+      total - (typeof advanceAmount === "number" ? advanceAmount : 0)
+    );
   }, [gstType, amountWithoutTax, advanceAmount]);
 
-  const toggleDrawer = (newOpen: boolean, gstType: string) => {
+  const toggleDrawer = (newOpen: boolean, gstType: string,taxAmount:number,grandTotal:number) => {
     if (projectsForInvoice && projectsForInvoice.length > 0) {
       if (showPreview) {
         generateAndPreviewPDF();
@@ -218,17 +228,15 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           amountPreTax += project.amount;
           amountPreTax = +amountPreTax.toFixed(2);
         }
-        if(project.advanceAmount){
-          
-          setAdvanceAmount(project.advanceAmount*project.conversionRate);
+        if (project.advanceAmount) {
+          setAdvanceAmount(project.advanceAmount * project.conversionRate);
         }
       });
-      // Calculate tax based on GST type
       let taxPercentage = 0;
-      if (gstType === "sgst" || gstType === "cgst") {
-        taxPercentage = 9; // SGST or CGST
-      } else if (gstType === "gst") {
-        taxPercentage = 18; // GST
+      if (gstType === "sgst_cgst") {
+        taxPercentage = 18; 
+      } else if (gstType === "igst") {
+        taxPercentage = 18; 
       }
 
       let tax = (amountPreTax * taxPercentage) / 100;
@@ -239,20 +247,18 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
       const clientId = projectsForInvoice[0].clientId;
       const adminId = projectsForInvoice[0].adminId;
-      setInvoiceNo(+adminState.data.invoiceNo + 1);
 
       dispatch(
-        updateInvoiceObjectStateAction({     
-          invoiceNo: invoiceNo,
+        updateInvoiceObjectStateAction({
           projectsId: projectsIdArr,
           clientId,
           adminId,
           amountWithoutTax: amountPreTax,
           amountAfterTax: amountPostTax,
-          billDate: invoiceDate.toISOString(),
-          dueDate: dueDate.toISOString(),
-          advanceAmount: advanceAmount, // Include advanceAmount
-          taxType: gstType, // Add the chosen GST type for reference
+          advanceAmount: advanceAmount,
+          taxType: gstType,
+          taxAmount:taxAmount,
+          grandTotal:grandTotal,
         })
       );
     } else {
@@ -326,17 +332,15 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           },
         }}
       />
+
       <Box
         sx={{
           px: 2,
-          // pb: 2,
           height: "100%",
           overflow: "auto",
-          bgcolor: bgColorBodyStyledBox,
           borderRadius: "20px",
         }}
       >
-        {/*Date and Bill*/}
         <Box
           sx={{
             display: { xs: "block", sm: "flex", md: "flex" },
@@ -345,7 +349,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             justifyContent: "space-between",
           }}
         >
-          {/*Date picker*/}
           <Box
             sx={{
               width: "270px",
@@ -355,9 +358,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
               pt: "10px",
               color: "whitesmoke",
             }}
-          >
-          </Box>
-          {/*Bill section*/}
+          ></Box>
           <Box
             sx={{
               minWidth: { xs: "100px", sm: "250px", md: "300px" },
@@ -367,11 +368,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
               color: textColor,
             }}
           >
-            <p className=" text-xl md:text-2xl border-b-2 border-slate-800 border-opacity-70 mb-3 mt-3 md:mt-1 ">
-              Bill Total
-            </p>
             <div className="flex justify-between text-lg md:text-lg">
-              Subtotal:<span>{amountWithoutTax} &#8377; </span>
+              Subtotal:<span> &#8377;{amountWithoutTax} </span>
             </div>
             {/* <Box sx={{ mt: "6px" }}>
               {clientSameState ? (
@@ -389,145 +387,138 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                 </div>
               )}
             </Box> */}
-             <Box sx={{
-              mt: "6px",
-              '& .MuiFormControl-root': {
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '12px', // Soft rounded corners
-                  backgroundColor: 'rgba(255,255,255,0.9)', // Slight transparency
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.08)', // Subtle elevation
-                  transition: 'all 0.3s ease',
-                  '& .MuiSelect-select': {
-                    paddingY: '14px', // Increased padding
-                    paddingX: '16px', // Increased padding
-                    fontWeight: 500, // Medium font weight
-                    color: 'rgba(0,0,0,0.87)', // Slightly softer black
+            <Box
+              sx={{
+                mt: "6px",
+                "& .MuiFormControl-root": {
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px", 
+                    backgroundColor: "rgba(255,255,255,0.9)", 
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)", 
+                    transition: "all 0.3s ease",
+                    "& .MuiSelect-select": {
+                      paddingY: "14px", 
+                      paddingX: "16px", 
+                      fontWeight: 500, 
+                      color: "rgba(0,0,0,0.87)", 
+                    },
+                    "& fieldset": {
+                      borderColor: "rgba(0,0,0,0.23)", 
+                      borderWidth: 1,
+                      transition: "all 0.3s ease",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "primary.main",
+                      borderWidth: 2,
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "primary.main", 
+                      borderWidth: 2,
+                      boxShadow: "0 0 0 4px rgba(25,118,210,0.1)", 
+                    },
                   },
-                  '& fieldset': {
-                    borderColor: 'rgba(0,0,0,0.23)', // Soft border
-                    borderWidth: 1,
-                    transition: 'all 0.3s ease',
+                  "& .MuiInputLabel-outlined": {
+                    transform: "translate(14px, 14px) scale(1)",
+                    fontSize: "0.95rem",
+                    color: "rgba(0,0,0,0.54)",
+                    transition: "all 0.3s ease",
                   },
-                  '&:hover fieldset': {
-                    borderColor: 'primary.main', // Highlight on hover
-                    borderWidth: 2,
+                  "& .MuiInputLabel-shrink": {
+                    transform: "translate(14px, -6px) scale(0.75)",
+                    color: "primary.main",
+                    fontWeight: 600,
                   },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'primary.main', // Strong focus state
-                    borderWidth: 2,
-                    boxShadow: '0 0 0 4px rgba(25,118,210,0.1)', // Soft focus glow
-                  }
                 },
-                '& .MuiInputLabel-outlined': {
-                  transform: 'translate(14px, 14px) scale(1)',
-                  fontSize: '0.95rem',
-                  color: 'rgba(0,0,0,0.54)',
-                  transition: 'all 0.3s ease',
-                },
-                '& .MuiInputLabel-shrink': {
-                  transform: 'translate(14px, -6px) scale(0.75)',
-                  color: 'primary.main',
-                  fontWeight: 600,
-                }
-              }
-            }}>
+              }}
+            >
               <div className="flex items-center space-x-4">
                 <FormControl sx={{ flex: 1 }}>
-                  <InputLabel id="gst-type-label">GST Type</InputLabel>
                   <Select
                     labelId="gst-type-label"
                     value={gstType}
                     onChange={handleGstChange}
                     label="GST Type"
                     fullWidth
-                    MenuProps={{
-                      PaperProps: {
-                        sx: {
-                          borderRadius: '12px', // Rounded menu
-                          boxShadow: '0 8px 24px rgba(0,0,0,0.12)', // Pronounced shadow
-                          marginTop: '8px',
-                          overflow: 'hidden',
-                          border: '1px solid rgba(0,0,0,0.12)', // Soft border
-                        }
-                      }
+                    sx={{
+                      padding: 0,
+                      width: "180px",
+                      ".MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "& .MuiSelect-select": {
+                        paddingLeft: "5px !important",
+                        paddingTop: "0 !important",
+                        paddingBottom: "0 !important",
+                      },
+                      "& .MuiSelect-icon": {
+                        right: "8px",
+                      },
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0 !important",
+                        borderBottom: "1px solid #000",
+                        paddingLeft: "0 !important",
+                      },
                     }}
                   >
                     <MenuItem
-                      value="sgst"
+                      value="sgst_cgst"
                       sx={{
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: 'rgba(25,118,210,0.08)',
-                          color: 'primary.main',
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: "rgba(25,118,210,0.08)",
+                          color: "primary.main",
                         },
-                        '&.Mui-selected': {
-                          backgroundColor: 'rgba(25,118,210,0.16)',
-                          color: 'primary.main',
+                        "&.Mui-selected": {
+                          backgroundColor: "rgba(25,118,210,0.16)",
+                          color: "primary.main",
                           fontWeight: 600,
-                          '&:hover': {
-                            backgroundColor: 'rgba(25,118,210,0.24)',
-                          }
-                        }
+                          "&:hover": {
+                            backgroundColor: "rgba(25,118,210,0.24)",
+                          },
+                        },
                       }}
                     >
-                      SGST (9%)
+                      SGST/CGST (18%)
                     </MenuItem>
+
                     <MenuItem
-                      value="cgst"
+                      value="igst"
                       sx={{
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: 'rgba(25,118,210,0.08)',
-                          color: 'primary.main',
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: "rgba(25,118,210,0.08)",
+                          color: "primary.main",
                         },
-                        '&.Mui-selected': {
-                          backgroundColor: 'rgba(25,118,210,0.16)',
-                          color: 'primary.main',
+                        "&.Mui-selected": {
+                          backgroundColor: "rgba(25,118,210,0.16)",
+                          color: "primary.main",
                           fontWeight: 600,
-                          '&:hover': {
-                            backgroundColor: 'rgba(25,118,210,0.24)',
-                          }
-                        }
+                          "&:hover": {
+                            backgroundColor: "rgba(25,118,210,0.24)",
+                          },
+                        },
                       }}
                     >
-                      CGST (9%)
-                    </MenuItem>
-                    <MenuItem
-                      value="gst"
-                      sx={{
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: 'rgba(25,118,210,0.08)',
-                          color: 'primary.main',
-                        },
-                        '&.Mui-selected': {
-                          backgroundColor: 'rgba(25,118,210,0.16)',
-                          color: 'primary.main',
-                          fontWeight: 600,
-                          '&:hover': {
-                            backgroundColor: 'rgba(25,118,210,0.24)',
-                          }
-                        }
-                      }}
-                    >
-                      GST (18%)
+                      IGST (18%)
                     </MenuItem>
                   </Select>
                 </FormControl>
-
-                <div className="flex items-center text-sm text-gray-700 bg-gray-50 p-3 rounded-lg min-w-[120px] justify-end shadow-sm transition-all duration-300 hover:bg-gray-100">
-                  <span className="font-semibold text-gray-800">{taxAmount.toFixed(2)} &#8377;</span>
+                <div className="flex items-center text-sm text-gray-700 p-3 rounded-lg min-w-[120px] justify-end  transition-all duration-300 hover:bg-gray-100">
+                  <span className="font-semibold text-gray-800">
+                    {" "}
+                    &#8377;{taxAmount.toFixed(2)}
+                  </span>
                 </div>
               </div>
-            </Box> 
+            </Box>
             <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-4">
               Amount:
-              <span className=" ">{amountAfterTax.toFixed(2)} &#8377; </span>
+              <span className=" "> &#8377;{amountAfterTax.toFixed(2)}</span>
             </div>
             {workingFixed && Number(advanceAmount) > 0 && (
               <>
                 <div className="flex justify-between text-lg md:text-lg">
-                  Advance:<span>{advanceAmount} &#8377;</span>
+                  Advance:<span> &#8377;{advanceAmount}</span>
                 </div>
 
                 <div>
@@ -573,7 +564,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           onClick={(timer) => {
             handleInvoiceDownload(timer);
           }}
-          disabled={!allowDownload}
+          // disabled={!allowDownload}
         >
           Download
         </Button>
@@ -589,7 +580,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             // right: "40px",
             color: "#fff",
           }}
-          disabled={!previewAllowed}
+          // disabled={!previewAllowed}
           onClick={() => previewExecution(true)}
         >
           Preview
