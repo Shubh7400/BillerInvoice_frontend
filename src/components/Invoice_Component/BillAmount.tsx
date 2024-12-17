@@ -42,7 +42,7 @@ let windowWidth: number | undefined = window.innerWidth;
 interface billAmountProps {
   workingFixed?: boolean;
 }
-export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
+export default function InvoiceDrawer({ workingFixed}: billAmountProps) {
   const materialTheme = useTheme();
   const { visibility } = React.useContext(ThemeContext);
   const adminState = useSelector((state: RootState) => state.adminState);
@@ -273,7 +273,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   };
 
   function allInvoiceFieldsAvailable(obj: any) {
-    console.log(obj, " <<<<<<");
 
     for (const key in obj) {
       if (obj[key] === "" || obj[key].length <= 0) {
@@ -295,7 +294,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     }
     timer = setTimeout(() => {
       if (invoiceObject && allInvoiceFieldsAvailable(invoiceObject)) {
-        console.log(invoiceObject, "invoice Object");
+
         AddInvoiceMutationHandler.mutate(invoiceObject, {
           onSuccess: () => {
             enqueueSnackbar("Download successfull", { variant: "success" });
@@ -384,7 +383,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
               Bill Total
             </p> */}
             <div className="flex justify-between text-lg md:text-lg">
-              Subtotal:<span>{amountWithoutTax} &#8377; </span>
+              Subtotal:<span> &#8377;{amountWithoutTax} </span>
             </div>
             {/* <Box sx={{ mt: "6px" }}>
               {clientSameState ? (
@@ -517,22 +516,25 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                     >
                       IGST (18%)
                     </MenuItem>
-                  </Select>
+                  </Select> 
                 </FormControl>
 
-                <div className="flex items-center text-lg  min-w-[120px] justify-end  ">
-                  <span className=" ">{taxAmount.toFixed(2)} &#8377;</span>
+<
+
+                <div className="flex items-center text-sm text-gray-700 p-3 rounded-lg min-w-[120px] justify-end  transition-all duration-300 hover:bg-gray-100">
+                  <span className="font-semibold text-gray-800">  &#8377;{taxAmount.toFixed(2)}</span>
+
                 </div>
-              </div>
+              </div>  
             </Box>
             <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-4">
               Amount:
-              <span className=" ">{amountAfterTax.toFixed(2)} &#8377; </span>
+              <span className=" "> &#8377;{amountAfterTax.toFixed(2)}</span>
             </div>
             {workingFixed && Number(advanceAmount) > 0 && (
               <>
                 <div className="flex justify-between text-lg md:text-lg">
-                  Advance:<span>{advanceAmount} &#8377;</span>
+                  Advance:<span> &#8377;{advanceAmount}</span>
                 </div>
 
                 <div>

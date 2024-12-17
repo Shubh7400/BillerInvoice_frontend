@@ -14,10 +14,12 @@ interface Invoice {
   projectName: string;
   rate: number;
   adminId: string;
-  workingPeriod:string;
-  workingPeriodType: string;
+  workingPeriod:number;
+  workingPeriodType: "hours" | "months" | "fixed";
   conversionRate: number;
   clientId: string;
+  currencyType: "rupees" | "dollars" | "pounds"; 
+  paymentStatus: boolean;
 }
 
 interface InvoiceListState {

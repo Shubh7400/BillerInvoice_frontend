@@ -27,7 +27,7 @@ import { useState, useContext, useEffect } from "react";
 import { RootState, AppDispatch } from "../../states/redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
-import { fetchInvoicesThunk,clearInvoices } from "../../states/redux/InvoiceProjectState/invoiceListSlice";
+import { fetchInvoicesThunk, clearInvoices } from "../../states/redux/InvoiceProjectState/invoiceListSlice";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 function InvoiceListPage() {
   const navigate = useNavigate();
@@ -117,7 +117,7 @@ function InvoiceListPage() {
               <TableBody>
                 {Array.isArray(invoices) && invoices.length > 0 ? (
                   invoices.map((invoice, index) => {
-                    if (!invoice) return null; 
+                    if (!invoice) return null;
                     const clientName = getClientNameForInvoice(
                       invoice.clientId
                     );
@@ -129,10 +129,18 @@ function InvoiceListPage() {
                         <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                           {invoice.projectName || "Unnamed Project"}
                         </TableCell>
-                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>{clientName}</TableCell>
-                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>{invoice.rate}</TableCell>
-                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" ,width: "170px"}}>{invoice.conversionRate}</TableCell>
-                        <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>{invoice.amountAfterTax}</TableCell>
+                        <TableCell>{clientName}</TableCell>
+                        <TableCell>{invoice.rate}(
+                            {invoice.currencyType === "rupees" ? (
+                              <span>&#x20B9;</span>
+                            ) : invoice.currencyType === "dollars" ? (
+                              <span>$</span>
+                            ) : invoice.currencyType === "pounds" ? (
+                              <span>&#163;</span>
+                            ) : null}
+                            /{invoice.workingPeriodType})</TableCell>
+                        <TableCell>&#x20B9; {invoice.conversionRate}</TableCell>
+
                       </TableRow>
                     );
                   })
