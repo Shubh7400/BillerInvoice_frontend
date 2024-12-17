@@ -2,7 +2,7 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Chip, Box } from "@mui/material";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineClose } from "react-icons/md";
 import {
@@ -17,10 +17,9 @@ import {
   StateInfoType,
 } from "../../types/types";
 import SelectCountryStateCity from "./Compo_CountrySelect";
-import { Alert, LinearProgress, Typography, useTheme } from "@mui/material";
+import { Alert, LinearProgress, Typography} from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
-import { CiEdit } from "react-icons/ci";
 import {
   editClientAction,
   makeStateLoadingNeutralInEditClient,
@@ -28,17 +27,14 @@ import {
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { getClientByIdAction } from "../../states/redux/ClientStates/selectedClientSlice";
 import "react-phone-number-input/style.css";
-import PhoneInput from "react-phone-number-input";
-import { E164Number } from "libphonenumber-js/core";
 import "../../styles/addClient.css";
-import { Link } from "react-router-dom";
-import { Outlet, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { IoChevronBackSharp } from "react-icons/io5";
 
 export default function AddClientPage({
   forEditClient,
   clientToEdit,
-  handleSelectClientClose,
+  
 }: {
   forEditClient: boolean;
   clientToEdit: ClientType | null;
@@ -46,10 +42,10 @@ export default function AddClientPage({
 }) {
   const { adminId } = React.useContext(AuthContext);
   const [controlEditLoading, setControlEditLoading] = useState(false);
-  const [addClientLoadingController, setAddClientLoadingController] =
-    useState(false);
+  // const [addClientLoadingController, setAddClientLoadingController] =
+  //   useState(false);
 
-  const materialTheme = useTheme();
+  // const materialTheme = useTheme();
   const [selectedCountry, setSelectedCountry] = useState<CountryInfoType>(
     {} as CountryInfoType
   );
@@ -67,7 +63,7 @@ export default function AddClientPage({
   const dispatch = useDispatch<AppDispatch>();
   const {
     loading: addClientLoading,
-    data: addedClient,
+    // data: addedClient,
     error: addClientError,
   } = useSelector((state: RootState) => state.addClientState);
   const editClientState = useSelector(
@@ -95,7 +91,7 @@ export default function AddClientPage({
   const [postalCodeError, setPostalCodeError] = useState("");
   const [gstNumberError, setGstNumberError] = useState("");
   const [panNumberError, setPanNumberError] = useState<string | null>(null);
-  // console.log("This is client data : ", clientData);
+
 
   React.useEffect(() => {
     if (editClientState.loading === "succeeded" && controlEditLoading) {
@@ -176,7 +172,6 @@ export default function AddClientPage({
     const { name, value } = e.target;
 
     if (name === "street") {
-      // Update nested field for address.street
       setClientData((prevData) => ({
         ...prevData,
         address: {
@@ -185,8 +180,7 @@ export default function AddClientPage({
         },
       }));
     } else if (name === "postalCode") {
-      // Update nested field for address.street
-      const postalCodeRegex = /^[1-9][0-9]{5}$/; // 6-digit number
+      const postalCodeRegex = /^[1-9][0-9]{5}$/; 
       if (!postalCodeRegex.test(value)) {
         setPostalCodeError("Invalid Postal Code");
       } else {
@@ -202,7 +196,7 @@ export default function AddClientPage({
     } else if (name === "pancardNo") {
       const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
       if (value === "" || panRegex.test(value)) {
-        setPanNumberError(null); // No error if value is empty or matches regex
+        setPanNumberError(null); 
       } else {
         setPanNumberError("Invalid PAN Number");
       }
@@ -223,7 +217,6 @@ export default function AddClientPage({
         gistin: value,
       }));
     } else {
-      // Handle other fields in clientData
       setClientData({
         ...clientData,
         [name]: value,
@@ -239,14 +232,14 @@ export default function AddClientPage({
       if (!clientData.email.includes(inputEmail)) {
         setClientData((prev) => {
           const updatedEmails = [...prev.email, inputEmail];
-          console.log(updatedEmails); // Log the updated email array
+          console.log(updatedEmails);
           return {
             ...prev,
-            email: updatedEmails, // Update the clientData.email state
+            email: updatedEmails, 
           };
         });
-        setEmailError(""); // Clear any previous error
-        setInputEmail(""); // Clear the input field
+        setEmailError(""); 
+        setInputEmail(""); 
       } else {
         setEmailError("This email has already been added.");
       }
@@ -277,7 +270,6 @@ export default function AddClientPage({
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
-      // Skip the pancardNo field
       if (key === "pancardNo") {
         continue;
       }
@@ -315,7 +307,7 @@ export default function AddClientPage({
       !gstNumberError
     ) {
       dispatch(addNewClientAction(clientData));
-      setAddClientLoadingController(true);
+      // setAddClientLoadingController(true);
     } else {
       setIncompleteError("Incomplete fields");
     }
@@ -343,7 +335,7 @@ export default function AddClientPage({
     <div>
       <div className="flex gap-3 items-center mb-5">
         <button
-          onClick={() => navigate(-1)} // Use navigate(-1) to go back
+          onClick={() => navigate(-1)} 
           className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
         >
           <IoChevronBackSharp />
@@ -366,7 +358,6 @@ export default function AddClientPage({
         required
       />
       <div className="flex flex-col gap-3 mt-3">
-        {/* Render only if there are emails in the array */}
 
         <TextField
           fullWidth
@@ -384,7 +375,6 @@ export default function AddClientPage({
           }}
         />
 
-        {/* Error message below the input field */}
         {emailError && (
           <div style={{ color: "red", marginTop: 8 }}>{emailError}</div>
         )}
@@ -450,7 +440,6 @@ export default function AddClientPage({
           countryString={clientData?.address.country}
           stateString={clientData.address.state}
           cityString={clientToEdit?.address?.city}
-          // send pincode as props
         />
       )}
 

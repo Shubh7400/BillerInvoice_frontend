@@ -12,9 +12,11 @@ interface InvoiceObjectStateType {
   adminId: string,
   projectsId: string[],
   taxType: string,
-} 
+  grandTotal: number,
+  taxAmount: number,
+}
 
-const initialState:{data:InvoiceObjectStateType; loading: "idle" | "loading" | "pending" | "fulfilled"; error: string | null } = {
+const initialState: { data: InvoiceObjectStateType; loading: "idle" | "loading" | "pending" | "fulfilled"; error: string | null } = {
   data: {
     invoiceNo: 0,
     billDate: "",
@@ -25,6 +27,8 @@ const initialState:{data:InvoiceObjectStateType; loading: "idle" | "loading" | "
     adminId: "",
     projectsId: [],
     taxType: "",
+    grandTotal: 0,
+    taxAmount: 0,
   },
   loading: "idle",
   error: null,

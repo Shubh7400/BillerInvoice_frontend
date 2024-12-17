@@ -587,9 +587,8 @@ function InvoiceClientPage() {
                   <TableCell>Rate</TableCell>
                   {editableProjects.map((project: ProjectType) => (
                     <>
-                      {project.workingPeriodType === "months" && (
-                        <TableCell>Rate/day</TableCell>
-                      )}
+                      {project.workingPeriodType === "months" && <TableCell>Rate/day</TableCell>}
+
                     </>
                   ))}
                   {editableProjects.map((project: ProjectType) => (

@@ -14,7 +14,6 @@ import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import ClientSelectionTable from "./ClientSelectionTable";
-import { ClientType } from "../../types/types";
 import CompoLoading from "./Compo-Loding";
 import cubexoLogo from "../../utils/images/cubexoLogo.webp";
 import gamaedgeLogo from "../../utils/images/gammaedgeLogo.png";
@@ -47,9 +46,7 @@ const ClientPageHeader = () => {
   const addedNewClientState = useSelector(
     (state: RootState) => state.addClientState
   );
-  // -------------------------------------------------------
-  // "https://gammaedge.io/images/logo1.png";
-  // "https://www.cubexo.io/images/Logo.webp";
+
 
   useEffect(() => {
     if (

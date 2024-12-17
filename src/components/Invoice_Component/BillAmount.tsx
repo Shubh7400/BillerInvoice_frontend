@@ -92,7 +92,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
   React.useEffect(() => {
     // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
-    toggleDrawer(true, gstType);
+    toggleDrawer(true, gstType,taxAmount,grandTotal);
   }, [projectsForInvoice, showPreview]);
 
   React.useEffect(() => {
@@ -157,8 +157,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   };
 
   const generateAndPreviewPDF = async () => {
-    // Define the content for your PDF
-    // Create a div to render your component
     const div = document.createElement("div");
     div.style.width = "1050px";
     div.style.height = "1124px";
@@ -186,7 +184,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           variant: "error",
         });
       } finally {
-        // Remove the temporary div
         document.body.removeChild(div);
       }
     }, 100);
@@ -199,14 +196,12 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const [advanceAmount, setAdvanceAmount] = React.useState(0);
 
   const [grandTotal, setGrandTotal] = React.useState(0);
-
-  // Handle GST type selection
   const handleGstChange = (event: SelectChangeEvent<string>) => {
     setGstType(event.target.value);
   };
 
   React.useEffect(() => {
-    const taxPercentage = gstType === "igst" ? 18 : 18; // SGST/CGST: 9%, GST: 18%
+    const taxPercentage = gstType === "igst" ? 18 : 18; 
     const tax = (amountWithoutTax * taxPercentage) / 100;
     const total = amountWithoutTax + tax;
 
@@ -217,7 +212,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     );
   }, [gstType, amountWithoutTax, advanceAmount]);
 
-  const toggleDrawer = (newOpen: boolean, gstType: string) => {
+  const toggleDrawer = (newOpen: boolean, gstType: string,taxAmount:number,grandTotal:number) => {
     if (projectsForInvoice && projectsForInvoice.length > 0) {
       if (showPreview) {
         generateAndPreviewPDF();
@@ -237,12 +232,11 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           setAdvanceAmount(project.advanceAmount * project.conversionRate);
         }
       });
-      // Calculate tax based on GST type
       let taxPercentage = 0;
       if (gstType === "sgst_cgst") {
-        taxPercentage = 18; // SGST or CGST
+        taxPercentage = 18; 
       } else if (gstType === "igst") {
-        taxPercentage = 18; // GST
+        taxPercentage = 18; 
       }
 
       let tax = (amountPreTax * taxPercentage) / 100;
@@ -263,6 +257,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           amountAfterTax: amountPostTax,
           advanceAmount: advanceAmount,
           taxType: gstType,
+          taxAmount:taxAmount,
+          grandTotal:grandTotal,
         })
       );
     } else {
@@ -340,14 +336,11 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       <Box
         sx={{
           px: 2,
-          // pb: 2,
           height: "100%",
           overflow: "auto",
-          // bgcolor: bgColorBodyStyledBox,
           borderRadius: "20px",
         }}
       >
-        {/*Date and Bill*/}
         <Box
           sx={{
             display: { xs: "block", sm: "flex", md: "flex" },
@@ -356,7 +349,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             justifyContent: "space-between",
           }}
         >
-          {/*Date picker*/}
           <Box
             sx={{
               width: "270px",
@@ -367,7 +359,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
               color: "whitesmoke",
             }}
           ></Box>
-          {/*Bill section*/}
           <Box
             sx={{
               minWidth: { xs: "100px", sm: "250px", md: "300px" },
@@ -377,9 +368,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
               color: textColor,
             }}
           >
-            {/* <p className=" text-xl md:text-2xl border-b-2 border-slate-800 border-opacity-70 mb-3 mt-3 md:mt-1 ">
-              Bill Total
-            </p> */}
             <div className="flex justify-between text-lg md:text-lg">
               Subtotal:<span> &#8377;{amountWithoutTax} </span>
             </div>
@@ -404,29 +392,29 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                 mt: "6px",
                 "& .MuiFormControl-root": {
                   "& .MuiOutlinedInput-root": {
-                    borderRadius: "12px", // Soft rounded corners
-                    backgroundColor: "rgba(255,255,255,0.9)", // Slight transparency
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)", // Subtle elevation
+                    borderRadius: "12px", 
+                    backgroundColor: "rgba(255,255,255,0.9)", 
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)", 
                     transition: "all 0.3s ease",
                     "& .MuiSelect-select": {
-                      paddingY: "14px", // Increased padding
-                      paddingX: "16px", // Increased padding
-                      fontWeight: 500, // Medium font weight
-                      color: "rgba(0,0,0,0.87)", // Slightly softer black
+                      paddingY: "14px", 
+                      paddingX: "16px", 
+                      fontWeight: 500, 
+                      color: "rgba(0,0,0,0.87)", 
                     },
                     "& fieldset": {
-                      borderColor: "rgba(0,0,0,0.23)", // Soft border
+                      borderColor: "rgba(0,0,0,0.23)", 
                       borderWidth: 1,
                       transition: "all 0.3s ease",
                     },
                     "&:hover fieldset": {
-                      borderColor: "primary.main", // Highlight on hover
+                      borderColor: "primary.main",
                       borderWidth: 2,
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: "primary.main", // Strong focus state
+                      borderColor: "primary.main", 
                       borderWidth: 2,
-                      boxShadow: "0 0 0 4px rgba(25,118,210,0.1)", // Soft focus glow
+                      boxShadow: "0 0 0 4px rgba(25,118,210,0.1)", 
                     },
                   },
                   "& .MuiInputLabel-outlined": {
@@ -445,7 +433,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             >
               <div className="flex items-center space-x-4">
                 <FormControl sx={{ flex: 1 }}>
-                  {/* <InputLabel id="gst-type-label">GST Type</InputLabel> */}
                   <Select
                     labelId="gst-type-label"
                     value={gstType}
@@ -541,25 +528,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             )}
           </Box>
         </Box>
-        {/*Download and Preview buttons*/}
-        {/* <Box
-            sx={{
-              display: "flex",
-              justifyContent: {
-                xs: "space-between",
-                sm: "flex-end",
-                md: "flex-end",
-              },
-              width: { xs: "100%", sm: "100%" },
-              mt: "20px",
-              px: { xs: "0px", sm: "35px", md: "38px" },
-              position: { xs: "fixed", sm: "static" },
-              bottom: "0%",
-              left: "1%",
-            }}
-          >
-           
-          </Box> */}
+       
       </Box>
       <Global
         styles={{
