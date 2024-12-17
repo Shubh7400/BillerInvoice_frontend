@@ -42,7 +42,7 @@ let windowWidth: number | undefined = window.innerWidth;
 interface billAmountProps {
   workingFixed?: boolean;
 }
-export default function InvoiceDrawer({ workingFixed}: billAmountProps) {
+export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const materialTheme = useTheme();
   const { visibility } = React.useContext(ThemeContext);
   const adminState = useSelector((state: RootState) => state.adminState);
@@ -273,7 +273,6 @@ export default function InvoiceDrawer({ workingFixed}: billAmountProps) {
   };
 
   function allInvoiceFieldsAvailable(obj: any) {
-
     for (const key in obj) {
       if (obj[key] === "" || obj[key].length <= 0) {
         return false;
@@ -294,7 +293,6 @@ export default function InvoiceDrawer({ workingFixed}: billAmountProps) {
     }
     timer = setTimeout(() => {
       if (invoiceObject && allInvoiceFieldsAvailable(invoiceObject)) {
-
         AddInvoiceMutationHandler.mutate(invoiceObject, {
           onSuccess: () => {
             enqueueSnackbar("Download successfull", { variant: "success" });
@@ -458,20 +456,20 @@ export default function InvoiceDrawer({ workingFixed}: billAmountProps) {
                       padding: 0,
                       width: "180px",
                       ".MuiOutlinedInput-notchedOutline": {
-                        border: "none", 
+                        border: "none",
                       },
                       "& .MuiSelect-select": {
-                        paddingLeft: "5px !important", 
-                        paddingTop: "0 !important",  
-                        paddingBottom: "0 !important", 
+                        paddingLeft: "5px !important",
+                        paddingTop: "0 !important",
+                        paddingBottom: "0 !important",
                       },
                       "& .MuiSelect-icon": {
-                        right: "8px", 
+                        right: "8px",
                       },
                       "& .MuiOutlinedInput-root": {
-                        borderRadius: "0 !important", 
+                        borderRadius: "0 !important",
                         borderBottom: "1px solid #000",
-                        paddingLeft: "0 !important", 
+                        paddingLeft: "0 !important",
                       },
                     }}
                   >
@@ -516,16 +514,15 @@ export default function InvoiceDrawer({ workingFixed}: billAmountProps) {
                     >
                       IGST (18%)
                     </MenuItem>
-                  </Select> 
+                  </Select>
                 </FormControl>
-
-<
-
                 <div className="flex items-center text-sm text-gray-700 p-3 rounded-lg min-w-[120px] justify-end  transition-all duration-300 hover:bg-gray-100">
-                  <span className="font-semibold text-gray-800">  &#8377;{taxAmount.toFixed(2)}</span>
-
+                  <span className="font-semibold text-gray-800">
+                    {" "}
+                    &#8377;{taxAmount.toFixed(2)}
+                  </span>
                 </div>
-              </div>  
+              </div>
             </Box>
             <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-4">
               Amount:
