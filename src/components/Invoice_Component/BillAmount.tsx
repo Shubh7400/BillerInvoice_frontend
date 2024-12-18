@@ -200,8 +200,19 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     setGstType(event.target.value);
   };
 
+  // React.useEffect(() => {
+  //   const taxPercentage = gstType === "igst" ? 18 : 9;
+  //   const tax = (amountWithoutTax * taxPercentage) / 100;
+  //   const total = amountWithoutTax + tax;
+
+  //   setTaxAmount(tax);
+  //   setAmountAfterTax(total);
+  //   setGrandTotal(
+  //     total - (typeof advanceAmount === "number" ? advanceAmount : 0)
+  //   );
+  // }, [gstType, amountWithoutTax, advanceAmount]);
   React.useEffect(() => {
-    const taxPercentage = gstType === "igst" ? 18 : 18; 
+    const taxPercentage = gstType === "igst" ? 18 : 9; // You already calculate tax based on gstType
     const tax = (amountWithoutTax * taxPercentage) / 100;
     const total = amountWithoutTax + tax;
 
@@ -210,7 +221,21 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     setGrandTotal(
       total - (typeof advanceAmount === "number" ? advanceAmount : 0)
     );
-  }, [gstType, amountWithoutTax, advanceAmount]);
+
+    // Dispatch update to invoiceObjectState with the gstType as taxType
+    dispatch(
+      updateInvoiceObjectStateAction({
+        ...invoiceObject, // Keep other invoiceObject data intact
+        taxType: gstType, // Update the taxType with gstType
+        amountWithoutTax, // Make sure the amount is updated
+        amountAfterTax, // and the calculated amounts
+        taxAmount,
+        grandTotal,
+      })
+    );
+  }, [gstType, amountWithoutTax, advanceAmount, dispatch]); // Add dependencies as needed
+
+
 
   const toggleDrawer = (newOpen: boolean, gstType: string,taxAmount:number,grandTotal:number) => {
     if (projectsForInvoice && projectsForInvoice.length > 0) {
@@ -232,13 +257,24 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           setAdvanceAmount(project.advanceAmount * project.conversionRate);
         }
       });
+
+      // let taxPercentage = 0;
+      // if (gstType === "sgst_cgst") {
+      //   taxPercentage = 18;
+      // } else if (gstType === "igst") {
+      //   taxPercentage = 18;
+      // }
+      // Initialize tax percentage and total tax
       let taxPercentage = 0;
-      if (gstType === "sgst_cgst") {
-        taxPercentage = 18; 
+
+      // GST Type Logic
+      if (gstType === "sgst" || gstType === "cgst") {
+        taxPercentage = 9; // SGST or CGST is 9%
       } else if (gstType === "igst") {
-        taxPercentage = 18; 
+        taxPercentage = 18; // IGST is 18%
       }
 
+      // Tax Calculation
       let tax = (amountPreTax * taxPercentage) / 100;
       let amountPostTax = +(amountPreTax + tax).toFixed(2);
       setAmountWithoutTax(amountPreTax);
@@ -257,8 +293,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           amountAfterTax: amountPostTax,
           advanceAmount: advanceAmount,
           taxType: gstType,
-          taxAmount:taxAmount,
-          grandTotal:grandTotal,
+          taxAmount: taxAmount,
+          grandTotal: grandTotal,
         })
       );
     } else {
@@ -387,7 +423,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                 </div>
               )}
             </Box> */}
-            <Box
+            {/* <Box
               sx={{
                 mt: "6px",
                 "& .MuiFormControl-root": {
@@ -510,7 +546,64 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                   </span>
                 </div>
               </div>
+            </Box> */}
+
+            <Box
+              sx={{
+                mt: "6px",
+                "& .MuiFormControl-root": {
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px",
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
+                    transition: "all 0.3s ease",
+                    "& .MuiSelect-select": {
+                      paddingY: "14px",
+                      paddingX: "16px",
+                      fontWeight: 500,
+                      color: "rgba(0,0,0,0.87)",
+                    },
+                    "& fieldset": {
+                      borderColor: "rgba(0,0,0,0.23)",
+                      borderWidth: 1,
+                      transition: "all 0.3s ease",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "primary.main",
+                      borderWidth: 2,
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "primary.main",
+                      borderWidth: 2,
+                      boxShadow: "0 0 0 4px rgba(25,118,210,0.1)",
+                    },
+                  },
+                },
+              }}
+            >
+              <div className="flex items-center space-x-4">
+                <FormControl sx={{ flex: 1 }}>
+                  <Select
+                    labelId="gst-type-label"
+                    value={gstType}
+                    onChange={handleGstChange}
+                    label="GST Type"
+                    fullWidth
+                  >
+
+                    <MenuItem value="sgst">SGST (9%)</MenuItem>
+                    <MenuItem value="cgst">CGST (9%)</MenuItem>
+                    <MenuItem value="igst">IGST (18%)</MenuItem>
+                  </Select>
+                </FormControl>
+                <div className="flex items-center text-sm text-gray-700 p-3 rounded-lg min-w-[120px] justify-end transition-all duration-300 hover:bg-gray-100">
+                  <span className="font-semibold text-gray-800">
+                    &#8377;{taxAmount.toFixed(2)}
+                  </span>
+                </div>
+              </div>
             </Box>
+
             <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-4">
               Amount:
               <span className=" "> &#8377;{amountAfterTax.toFixed(2)}</span>
@@ -528,7 +621,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             )}
           </Box>
         </Box>
-       
+
       </Box>
       <Global
         styles={{
@@ -564,7 +657,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           onClick={(timer) => {
             handleInvoiceDownload(timer);
           }}
-          // disabled={!allowDownload}
+        // disabled={!allowDownload}
         >
           Download
         </Button>

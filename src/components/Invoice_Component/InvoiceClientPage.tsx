@@ -62,6 +62,9 @@ function InvoiceClientPage() {
   const handleRemoveProject = (project: ProjectType) => {
     if (project && project._id) {
       dispatch(removeProjectFromInvoiceAction(project._id));
+      setTimeout(() => {
+        navigate(-1);
+      }, 600);
     }
   };
 
@@ -172,69 +175,6 @@ function InvoiceClientPage() {
   console.log("id", id);
   const UpdateProjectMutationHandler = useUpdateProject(id, clientObj._id);
 
-  // const handleInputChange = (id: string, field: string, value: any) => {
-  //   const newValue = value === "" ? null : value; // Use null instead of empty string
-  //   setEditableProjects((prevProjects) =>
-  //     prevProjects.map((project) => {
-  //       if (project._id === id) {
-  //         const updatedProject = { ...project, [field]: newValue };
-
-  //         // Calculate rate per day if rate per month is provided
-  //         if (field === "rate" && project.workingPeriodType === "months" && invoiceDate) {
-  //           const prevMonth = invoiceDate.subtract(1, "month");
-  //           const daysInPrevMonth = prevMonth.daysInMonth();
-  //           updatedProject.ratePerDay = parseFloat(value) / daysInPrevMonth;
-  //         }
-
-  //         // Perform amount calculation based on workingPeriodType
-  //         if (updatedProject.rate && updatedProject.workingPeriodType) {
-  //           if (updatedProject.workingPeriodType === "hours" && updatedProject.workingPeriod) {
-  //             updatedProject.amount = updatedProject.rate * (updatedProject.workingPeriod || 1) * updatedProject.conversionRate;
-  //           } else if (updatedProject.workingPeriodType === "months" && updatedProject.ratePerDay && updatedProject.workingPeriod) {
-  //             updatedProject.amount = updatedProject.ratePerDay * (updatedProject.workingPeriod || 1) * updatedProject.conversionRate;
-  //           } else {
-  //             updatedProject.amount = updatedProject.rate * updatedProject.conversionRate;
-  //           }
-  //         }
-
-  //         // Prepare mutation data
-  //         if (updatedProject._id) {
-  //           const mutationData = {
-  //             projectId: updatedProject._id, // Ensure _id is used as projectId
-  //             updatedProjectData: {
-  //               projectName: updatedProject.projectName,
-  //               rate: updatedProject.rate,
-  //               workingPeriodType: updatedProject.workingPeriodType,
-  //               currencyType: updatedProject.currencyType,
-  //               conversionRate: updatedProject.conversionRate,
-  //               paymentStatus: updatedProject.paymentStatus,
-  //               adminId: updatedProject.adminId,
-  //               clientId: updatedProject.clientId,
-  //               workingPeriod: updatedProject.workingPeriod,
-  //               amount: updatedProject.amount,
-  //               advanceAmount: updatedProject.advanceAmount,
-  //               ratePerDay: updatedProject.ratePerDay,
-  //             },
-  //           };
-
-  //           UpdateProjectMutationHandler.mutate(mutationData, {
-  //             onSuccess: () => {
-  //               dispatch(updateProjectForInvoiceAction(updatedProject));
-  //               // enqueueSnackbar("Project updated successfully.", { variant: "success" });
-  //             },
-  //             onError: (error) => {
-  //               // enqueueSnackbar("Error updating project. Please try again.", { variant: "error" });
-  //               console.error(error);
-  //             },
-  //           });
-  //         }
-  //         return updatedProject;
-  //       }
-  //       return project;
-  //     })
-  //   );
-  // };
-
   const handleInputChange = (id: string, field: string, value: any) => {
     const newValue = value === "" ? null : value; // Use null instead of empty string
     setEditableProjects((prevProjects) =>
@@ -326,7 +266,6 @@ function InvoiceClientPage() {
       if (project.workingPeriodType === "months") {
         updatedProject.workingPeriod = project.workingPeriod || 1;
       }
-
       // Calculate the amount based on the workingPeriodType
       let amount = 0;
       if (project.rate && project.workingPeriodType) {
@@ -593,13 +532,13 @@ function InvoiceClientPage() {
                   ))}
                   {editableProjects.map((project: ProjectType) => (
                     <>
-                      {project.workingPeriodType !== "fixed" && ( 
+                      {project.workingPeriodType !== "fixed" && (
                         project.workingPeriodType === "months" ? (
                           <TableCell className="w-[175px]">Working Days</TableCell>
-                        ):
-                        (
-                          <TableCell className="w-[175px]">Working Hours</TableCell>
-                        )
+                        ) :
+                          (
+                            <TableCell className="w-[175px]">Working Hours</TableCell>
+                          )
                       )}
                     </>
                   ))}
@@ -623,28 +562,25 @@ function InvoiceClientPage() {
                         {project.currencyType === "rupees"
                           ? project.workingPeriodType === "fixed"
                             ? "₹/fixed"
-                            : `₹/${
-                                project.workingPeriodType === "hours"
-                                  ? "hours"
-                                  : "months"
-                              }`
+                            : `₹/${project.workingPeriodType === "hours"
+                              ? "hours"
+                              : "months"
+                            }`
                           : project.currencyType === "dollars"
-                          ? project.workingPeriodType === "fixed"
-                            ? "$/fixed"
-                            : `$/${
-                                project.workingPeriodType === "hours"
+                            ? project.workingPeriodType === "fixed"
+                              ? "$/fixed"
+                              : `$/${project.workingPeriodType === "hours"
+                                ? "hours"
+                                : "months"
+                              }`
+                            : project.currencyType === "pounds"
+                              ? project.workingPeriodType === "fixed"
+                                ? "£/fixed"
+                                : `£/${project.workingPeriodType === "hours"
                                   ? "hours"
                                   : "months"
-                              }`
-                          : project.currencyType === "pounds"
-                          ? project.workingPeriodType === "fixed"
-                            ? "£/fixed"
-                            : `£/${
-                                project.workingPeriodType === "hours"
-                                  ? "hours"
-                                  : "months"
-                              }`
-                          : ""}
+                                }`
+                              : ""}
                       </Typography>
                     </TableCell>
 
@@ -662,7 +598,7 @@ function InvoiceClientPage() {
                           variant="outlined"
                           size="small"
                           type="number"
-                          value={project.workingPeriod }
+                          value={project.workingPeriod || 1}
                           onChange={(e) =>
                             handleInputChange(
                               project._id ?? "",
@@ -687,10 +623,10 @@ function InvoiceClientPage() {
                                 {project.currencyType === "rupees"
                                   ? "₹"
                                   : project.currencyType === "dollars"
-                                  ? "$"
-                                  : project.currencyType === "pounds"
-                                  ? "£"
-                                  : ""}
+                                    ? "$"
+                                    : project.currencyType === "pounds"
+                                      ? "£"
+                                      : ""}
                               </span>
                             ),
                           }}
@@ -708,7 +644,7 @@ function InvoiceClientPage() {
                                   backgroundColor: "transparent",
                                 },
                               }}
-                              
+
                             >
                               <MdOutlineReplay />
                             </Button>

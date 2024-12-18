@@ -397,8 +397,19 @@ const DownloadPreview = ({
                 </div>
               ) : (
                 <div className="flex justify-between mb-[30px]">
-                  {invoiceObject.taxType === 'igst' ? (<span>IGST</span>) : (<span>SGST+CGST</span>)} <span>&#8377;{taxAmount.toFixed(2)}</span>
+                  {/* Conditional rendering for tax type */}
+                  {invoiceObject.taxType === 'igst' ? (
+                    <span>IGST</span>
+                  ) : invoiceObject.taxType === 'sgst' ? (
+                    <span>SGST</span>
+                  ) : invoiceObject.taxType === 'cgst' ? (
+                    <span>CGST</span>
+                  ) : (
+                    <span>Tax</span> // Default case for when no taxType is set
+                  )}
+                  <span>&#8377;{taxAmount.toFixed(2)}</span>
                 </div>
+
               )
               }
               
