@@ -92,7 +92,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
   React.useEffect(() => {
     // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
-    toggleDrawer(true, gstType,taxAmount,grandTotal);
+    toggleDrawer(true, gstType, taxAmount, grandTotal);
   }, [projectsForInvoice, showPreview]);
 
   React.useEffect(() => {
@@ -201,7 +201,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   };
 
   React.useEffect(() => {
-    const taxPercentage = gstType === "igst" ? 18 : 18; 
+    const taxPercentage = gstType === "igst" ? 18 : 18;
     const tax = (amountWithoutTax * taxPercentage) / 100;
     const total = amountWithoutTax + tax;
 
@@ -212,7 +212,12 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     );
   }, [gstType, amountWithoutTax, advanceAmount]);
 
-  const toggleDrawer = (newOpen: boolean, gstType: string,taxAmount:number,grandTotal:number) => {
+  const toggleDrawer = (
+    newOpen: boolean,
+    gstType: string,
+    taxAmount: number,
+    grandTotal: number
+  ) => {
     if (projectsForInvoice && projectsForInvoice.length > 0) {
       if (showPreview) {
         generateAndPreviewPDF();
@@ -234,9 +239,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       });
       let taxPercentage = 0;
       if (gstType === "sgst_cgst") {
-        taxPercentage = 18; 
+        taxPercentage = 18;
       } else if (gstType === "igst") {
-        taxPercentage = 18; 
+        taxPercentage = 18;
       }
 
       let tax = (amountPreTax * taxPercentage) / 100;
@@ -257,8 +262,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           amountAfterTax: amountPostTax,
           advanceAmount: advanceAmount,
           taxType: gstType,
-          taxAmount:taxAmount,
-          grandTotal:grandTotal,
+          taxAmount: taxAmount,
+          grandTotal: grandTotal,
         })
       );
     } else {
@@ -392,18 +397,18 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                 mt: "6px",
                 "& .MuiFormControl-root": {
                   "& .MuiOutlinedInput-root": {
-                    borderRadius: "12px", 
-                    backgroundColor: "rgba(255,255,255,0.9)", 
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)", 
+                    borderRadius: "12px",
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
                     transition: "all 0.3s ease",
                     "& .MuiSelect-select": {
-                      paddingY: "14px", 
-                      paddingX: "16px", 
-                      fontWeight: 500, 
-                      color: "rgba(0,0,0,0.87)", 
+                      paddingY: "14px",
+                      paddingX: "16px",
+                      fontWeight: 500,
+                      color: "rgba(0,0,0,0.87)",
                     },
                     "& fieldset": {
-                      borderColor: "rgba(0,0,0,0.23)", 
+                      borderColor: "rgba(0,0,0,0.23)",
                       borderWidth: 1,
                       transition: "all 0.3s ease",
                     },
@@ -412,9 +417,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                       borderWidth: 2,
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: "primary.main", 
+                      borderColor: "primary.main",
                       borderWidth: 2,
-                      boxShadow: "0 0 0 4px rgba(25,118,210,0.1)", 
+                      boxShadow: "0 0 0 4px rgba(25,118,210,0.1)",
                     },
                   },
                   "& .MuiInputLabel-outlined": {
@@ -503,32 +508,32 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                     </MenuItem>
                   </Select>
                 </FormControl>
-                <div className="flex items-center text-sm text-gray-700 p-3 rounded-lg min-w-[120px] justify-end  transition-all duration-300 hover:bg-gray-100">
-                  <span className="font-semibold text-gray-800">
+                <div className="flex items-center  rounded-lg min-w-[120px] justify-end  ">
+                  <span className="text-lg md:text-lg">
                     {" "}
-                    &#8377;{taxAmount.toFixed(2)}
+                    &#8377; {taxAmount.toFixed(2)}
                   </span>
                 </div>
               </div>
             </Box>
-            <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-4">
+            <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-2">
               Amount:
               <span className=" "> &#8377;{amountAfterTax.toFixed(2)}</span>
             </div>
             {workingFixed && Number(advanceAmount) > 0 && (
               <>
                 <div className="flex justify-between text-lg md:text-lg">
-                  Advance:<span> &#8377;{advanceAmount}</span>
+                  Advance:<span> - &#8377;{advanceAmount}</span>
                 </div>
 
-                <div>
-                  <strong>Grand Total: </strong>₹{grandTotal.toFixed(2)}
+                <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-2">
+                  Grand Total:
+                  <span className=" "> &#8377;{grandTotal.toFixed(2)}</span>
                 </div>
               </>
             )}
           </Box>
         </Box>
-       
       </Box>
       <Global
         styles={{
