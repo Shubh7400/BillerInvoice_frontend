@@ -92,7 +92,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
   React.useEffect(() => {
     // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
-    toggleDrawer(true, gstType, taxAmount, grandTotal);
+    toggleDrawer(true);
   }, [projectsForInvoice, showPreview]);
 
   React.useEffect(() => {
@@ -201,88 +201,134 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   };
 
   React.useEffect(() => {
-    const taxPercentage = gstType === "igst" ? 18 : 18;
+    const taxPercentage = gstType === "igst" ? 18 : 9; // Calculate tax percentage based on gstType
     const tax = (amountWithoutTax * taxPercentage) / 100;
     const total = amountWithoutTax + tax;
 
-    setTaxAmount(tax);
-    setAmountAfterTax(total);
-    setGrandTotal(
-      total - (typeof advanceAmount === "number" ? advanceAmount : 0)
+    const totalWithAdvance = total - (typeof advanceAmount === "number" ? advanceAmount : 0);
+  
+    // Dispatch the updated invoice data, using the calculated values
+    dispatch(
+      updateInvoiceObjectStateAction({
+        ...invoiceObject,
+        taxType: gstType, 
+        amountWithoutTax, 
+        amountAfterTax: total, 
+        taxAmount: tax, 
+        advanceAmount, 
+        grandTotal: totalWithAdvance,
+      })
     );
-  }, [gstType, amountWithoutTax, advanceAmount]);
+  }, [gstType, amountWithoutTax, advanceAmount, dispatch]); // Ensure the useEffect depends on all the relevant states
+  const calculateAmounts = () => {
+  if (projectsForInvoice && projectsForInvoice.length > 0) {
+    let amountPreTax = 0;
+    let totalAdvanceAmount = 0;
 
-  const toggleDrawer = (
-    newOpen: boolean,
-    gstType: string,
-    taxAmount: number,
-    grandTotal: number
-  ) => {
-    if (projectsForInvoice && projectsForInvoice.length > 0) {
-      if (showPreview) {
-        generateAndPreviewPDF();
+    projectsForInvoice.forEach((project) => {
+      if (project.amount) {
+        amountPreTax += project.amount;
+        amountPreTax = +amountPreTax.toFixed(2);
       }
-      setPreviewAllowed(true);
-      setOpen(newOpen);
-      const projectsIdArr = projectsForInvoice.map((project) => {
-        return project._id;
-      });
-      let amountPreTax = 0;
-      projectsForInvoice.map((project) => {
-        if (project.amount) {
-          amountPreTax += project.amount;
-          amountPreTax = +amountPreTax.toFixed(2);
-        }
-        if (project.advanceAmount) {
-          setAdvanceAmount(project.advanceAmount * project.conversionRate);
-        }
-      });
-      let taxPercentage = 0;
-      if (gstType === "sgst_cgst") {
-        taxPercentage = 18;
-      } else if (gstType === "igst") {
-        taxPercentage = 18;
+      if (project.advanceAmount) {
+        totalAdvanceAmount += project.advanceAmount * project.conversionRate; // Sum up the advance amounts
       }
+    });
 
-      let tax = (amountPreTax * taxPercentage) / 100;
-      let amountPostTax = +(amountPreTax + tax).toFixed(2);
-      setAmountWithoutTax(amountPreTax);
-      setAmountAfterTax(amountPostTax);
-      setTaxAmount(tax);
-
-      const clientId = projectsForInvoice[0].clientId;
-      const adminId = projectsForInvoice[0].adminId;
-
-      dispatch(
-        updateInvoiceObjectStateAction({
-          projectsId: projectsIdArr,
-          clientId,
-          adminId,
-          amountWithoutTax: amountPreTax,
-          amountAfterTax: amountPostTax,
-          advanceAmount: advanceAmount,
-          taxType: gstType,
-          taxAmount: taxAmount,
-          grandTotal: grandTotal,
-        })
-      );
-    } else {
-      enqueueSnackbar("Select project to create and generate invoice.", {
-        variant: "error",
-      });
+    let taxPercentage = 0;
+    if (gstType === "sgst" || gstType === "cgst") {
+      taxPercentage = 9;
+    } else if (gstType === "igst") {
+      taxPercentage = 18;
     }
-  };
+
+    const tax = +(amountPreTax * taxPercentage / 100).toFixed(2);
+    const amountPostTax = +(amountPreTax + tax).toFixed(2);
+    const grandTotalLocal = +(amountPostTax - totalAdvanceAmount).toFixed(2);
+
+    // Update state variables
+    setAmountWithoutTax(amountPreTax);
+    setAmountAfterTax(amountPostTax);
+    setTaxAmount(tax);
+    setAdvanceAmount(totalAdvanceAmount); // Set the advance amount
+    setGrandTotal(grandTotalLocal);
+  }
+};
+
+  const toggleDrawer = (newOpen: boolean) => {
+  if (projectsForInvoice && projectsForInvoice.length > 0) {
+    if (showPreview) {
+      generateAndPreviewPDF();
+    }
+    setPreviewAllowed(true);
+    setOpen(newOpen);
+
+    const projectsIdArr = projectsForInvoice.map((project) => project._id);
+    const clientId = projectsForInvoice[0].clientId;
+    const adminId = projectsForInvoice[0].adminId;
+
+    dispatch(
+      updateInvoiceObjectStateAction({
+        projectsId: projectsIdArr,
+        clientId,
+        adminId,
+        amountWithoutTax,
+        amountAfterTax,
+        advanceAmount,
+        taxType: gstType,
+        taxAmount,
+        grandTotal,
+      })
+    );
+  } else {
+    enqueueSnackbar("Select project to create and generate invoice.", {
+      variant: "error",
+    });
+  }
+};
+
+React.useEffect(() => {
+  calculateAmounts();
+}, [projectsForInvoice, gstType]);
+
 
   function allInvoiceFieldsAvailable(obj: any) {
-    for (const key in obj) {
-      if (obj[key] === "" || obj[key].length <= 0) {
-        return false;
-      }
-      if (obj.dueDate < obj.billDate) {
-        return false;
+    
+    if (!obj || typeof obj !== "object") {
+      return false;
+    }
+    if (obj.dueDate && obj.billDate && obj.dueDate < obj.billDate) {
+      return false;
+    }
+    const mandatoryFields = ["projectName", "currencyType", "rate", "workingPeriodType"];
+    for (const field of mandatoryFields) {
+      if (!obj[field] || (typeof obj[field] === "string" && obj[field].trim() === "")) {
+        return false; 
       }
     }
-    return true;
+
+    switch (obj.workingPeriodType) {
+      case "months":
+        if (!obj.ratePerDay || obj.ratePerDay <= 0) {
+          return false;
+        }
+        if (!obj.workingPeriod || obj.workingPeriod <= 0) {
+          return false;
+        }
+        break;
+      case "hours":
+        if (!obj.workingPeriod || obj.workingPeriod <= 0) {
+          return false;
+        }
+        break;
+      case "fixed":
+        // No workingPeriod required for "fixed" type
+        break;
+      default:
+        return false; 
+    }
+
+    return true; 
   }
 
   const AddInvoiceMutationHandler = useAddInvoiceMutation();
@@ -392,7 +438,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                 </div>
               )}
             </Box> */}
-            <Box
+            {/* <Box
               sx={{
                 mt: "6px",
                 "& .MuiFormControl-root": {
@@ -508,10 +554,66 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                     </MenuItem>
                   </Select>
                 </FormControl>
-                <div className="flex items-center  rounded-lg min-w-[120px] justify-end  ">
-                  <span className="text-lg md:text-lg">
+                <div className="flex items-center text-sm text-gray-700 p-3 rounded-lg min-w-[120px] justify-end  transition-all duration-300 hover:bg-gray-100">
+                  <span className="font-semibold text-gray-800">
                     {" "}
-                    &#8377; {taxAmount.toFixed(2)}
+                    &#8377;{taxAmount.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </Box> */}
+
+            <Box
+              sx={{
+                mt: "6px",
+                "& .MuiFormControl-root": {
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px",
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
+                    transition: "all 0.3s ease",
+                    "& .MuiSelect-select": {
+                      paddingY: "14px",
+                      paddingX: "16px",
+                      fontWeight: 500,
+                      color: "rgba(0,0,0,0.87)",
+                    },
+                    "& fieldset": {
+                      borderColor: "rgba(0,0,0,0.23)",
+                      borderWidth: 1,
+                      transition: "all 0.3s ease",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "primary.main",
+                      borderWidth: 2,
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "primary.main",
+                      borderWidth: 2,
+                      boxShadow: "0 0 0 4px rgba(25,118,210,0.1)",
+                    },
+                  },
+                },
+              }}
+            >
+              <div className="flex items-center space-x-4">
+                <FormControl sx={{ flex: 1 }}>
+                  <Select
+                    labelId="gst-type-label"
+                    value={gstType}
+                    onChange={handleGstChange}
+                    label="GST Type"
+                    fullWidth
+                  >
+
+                    <MenuItem value="sgst">SGST (9%)</MenuItem>
+                    <MenuItem value="cgst">CGST (9%)</MenuItem>
+                    <MenuItem value="igst">IGST (18%)</MenuItem>
+                  </Select>
+                </FormControl>
+                <div className="flex items-center text-sm text-gray-700 p-3 rounded-lg min-w-[120px] justify-end transition-all duration-300 hover:bg-gray-100">
+                  <span className="font-semibold text-gray-800">
+                    &#8377;{taxAmount.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -569,7 +671,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           onClick={(timer) => {
             handleInvoiceDownload(timer);
           }}
-          // disabled={!allowDownload}
+        // disabled={!allowDownload}
         >
           Download
         </Button>

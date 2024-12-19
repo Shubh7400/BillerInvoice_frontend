@@ -76,7 +76,18 @@ export interface InvoiceType {
   adminId: string;
   projectsId: string[];
   taxType: string;
+  taxAmount:number;
+  grandTotal?:number;
+  projectName: string;
+  rate?: number | null;
+  workingPeriodType: "hours" | "months" | "fixed";
+  currencyType: "rupees" | "dollars" | "pounds";
+  conversionRate: number;
+  paymentStatus: boolean;
+  amount?: number | null;
   advanceAmount?: number | null;
+  workingPeriod?: number | null;
+  ratePerDay?: number |null;  
 }
 
 export interface LoginDataType {
