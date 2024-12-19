@@ -92,7 +92,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
   React.useEffect(() => {
     // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
-    toggleDrawer(true, gstType,taxAmount,grandTotal);
+    toggleDrawer(true);
   }, [projectsForInvoice, showPreview]);
 
   React.useEffect(() => {
@@ -200,120 +200,135 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     setGstType(event.target.value);
   };
 
-  // React.useEffect(() => {
-  //   const taxPercentage = gstType === "igst" ? 18 : 9;
-  //   const tax = (amountWithoutTax * taxPercentage) / 100;
-  //   const total = amountWithoutTax + tax;
-
-  //   setTaxAmount(tax);
-  //   setAmountAfterTax(total);
-  //   setGrandTotal(
-  //     total - (typeof advanceAmount === "number" ? advanceAmount : 0)
-  //   );
-  // }, [gstType, amountWithoutTax, advanceAmount]);
   React.useEffect(() => {
-    const taxPercentage = gstType === "igst" ? 18 : 9; // You already calculate tax based on gstType
+    const taxPercentage = gstType === "igst" ? 18 : 9; // Calculate tax percentage based on gstType
     const tax = (amountWithoutTax * taxPercentage) / 100;
     const total = amountWithoutTax + tax;
 
-    setTaxAmount(tax);
-    setAmountAfterTax(total);
-    setGrandTotal(
-      total - (typeof advanceAmount === "number" ? advanceAmount : 0)
-    );
-
-    // Dispatch update to invoiceObjectState with the gstType as taxType
+    const totalWithAdvance = total - (typeof advanceAmount === "number" ? advanceAmount : 0);
+  
+    // Dispatch the updated invoice data, using the calculated values
     dispatch(
       updateInvoiceObjectStateAction({
-        ...invoiceObject, // Keep other invoiceObject data intact
-        taxType: gstType, // Update the taxType with gstType
-        amountWithoutTax, // Make sure the amount is updated
-        amountAfterTax, // and the calculated amounts
+        ...invoiceObject,
+        taxType: gstType, 
+        amountWithoutTax, 
+        amountAfterTax: total, 
+        taxAmount: tax, 
+        advanceAmount, 
+        grandTotal: totalWithAdvance,
+      })
+    );
+  }, [gstType, amountWithoutTax, advanceAmount, dispatch]); // Ensure the useEffect depends on all the relevant states
+  const calculateAmounts = () => {
+  if (projectsForInvoice && projectsForInvoice.length > 0) {
+    let amountPreTax = 0;
+    let totalAdvanceAmount = 0;
+
+    projectsForInvoice.forEach((project) => {
+      if (project.amount) {
+        amountPreTax += project.amount;
+        amountPreTax = +amountPreTax.toFixed(2);
+      }
+      if (project.advanceAmount) {
+        totalAdvanceAmount += project.advanceAmount * project.conversionRate; // Sum up the advance amounts
+      }
+    });
+
+    let taxPercentage = 0;
+    if (gstType === "sgst" || gstType === "cgst") {
+      taxPercentage = 9;
+    } else if (gstType === "igst") {
+      taxPercentage = 18;
+    }
+
+    const tax = +(amountPreTax * taxPercentage / 100).toFixed(2);
+    const amountPostTax = +(amountPreTax + tax).toFixed(2);
+    const grandTotalLocal = +(amountPostTax - totalAdvanceAmount).toFixed(2);
+
+    // Update state variables
+    setAmountWithoutTax(amountPreTax);
+    setAmountAfterTax(amountPostTax);
+    setTaxAmount(tax);
+    setAdvanceAmount(totalAdvanceAmount); // Set the advance amount
+    setGrandTotal(grandTotalLocal);
+  }
+};
+
+  const toggleDrawer = (newOpen: boolean) => {
+  if (projectsForInvoice && projectsForInvoice.length > 0) {
+    if (showPreview) {
+      generateAndPreviewPDF();
+    }
+    setPreviewAllowed(true);
+    setOpen(newOpen);
+
+    const projectsIdArr = projectsForInvoice.map((project) => project._id);
+    const clientId = projectsForInvoice[0].clientId;
+    const adminId = projectsForInvoice[0].adminId;
+
+    dispatch(
+      updateInvoiceObjectStateAction({
+        projectsId: projectsIdArr,
+        clientId,
+        adminId,
+        amountWithoutTax,
+        amountAfterTax,
+        advanceAmount,
+        taxType: gstType,
         taxAmount,
         grandTotal,
       })
     );
-  }, [gstType, amountWithoutTax, advanceAmount, dispatch]); // Add dependencies as needed
+  } else {
+    enqueueSnackbar("Select project to create and generate invoice.", {
+      variant: "error",
+    });
+  }
+};
 
+React.useEffect(() => {
+  calculateAmounts();
+}, [projectsForInvoice, gstType]);
 
-
-  const toggleDrawer = (newOpen: boolean, gstType: string,taxAmount:number,grandTotal:number) => {
-    if (projectsForInvoice && projectsForInvoice.length > 0) {
-      if (showPreview) {
-        generateAndPreviewPDF();
-      }
-      setPreviewAllowed(true);
-      setOpen(newOpen);
-      const projectsIdArr = projectsForInvoice.map((project) => {
-        return project._id;
-      });
-      let amountPreTax = 0;
-      projectsForInvoice.map((project) => {
-        if (project.amount) {
-          amountPreTax += project.amount;
-          amountPreTax = +amountPreTax.toFixed(2);
-        }
-        if (project.advanceAmount) {
-          setAdvanceAmount(project.advanceAmount * project.conversionRate);
-        }
-      });
-
-      // let taxPercentage = 0;
-      // if (gstType === "sgst_cgst") {
-      //   taxPercentage = 18;
-      // } else if (gstType === "igst") {
-      //   taxPercentage = 18;
-      // }
-      // Initialize tax percentage and total tax
-      let taxPercentage = 0;
-
-      // GST Type Logic
-      if (gstType === "sgst" || gstType === "cgst") {
-        taxPercentage = 9; // SGST or CGST is 9%
-      } else if (gstType === "igst") {
-        taxPercentage = 18; // IGST is 18%
-      }
-
-      // Tax Calculation
-      let tax = (amountPreTax * taxPercentage) / 100;
-      let amountPostTax = +(amountPreTax + tax).toFixed(2);
-      setAmountWithoutTax(amountPreTax);
-      setAmountAfterTax(amountPostTax);
-      setTaxAmount(tax);
-
-      const clientId = projectsForInvoice[0].clientId;
-      const adminId = projectsForInvoice[0].adminId;
-
-      dispatch(
-        updateInvoiceObjectStateAction({
-          projectsId: projectsIdArr,
-          clientId,
-          adminId,
-          amountWithoutTax: amountPreTax,
-          amountAfterTax: amountPostTax,
-          advanceAmount: advanceAmount,
-          taxType: gstType,
-          taxAmount: taxAmount,
-          grandTotal: grandTotal,
-        })
-      );
-    } else {
-      enqueueSnackbar("Select project to create and generate invoice.", {
-        variant: "error",
-      });
-    }
-  };
 
   function allInvoiceFieldsAvailable(obj: any) {
-    for (const key in obj) {
-      if (obj[key] === "" || obj[key].length <= 0) {
-        return false;
-      }
-      if (obj.dueDate < obj.billDate) {
-        return false;
+    
+    if (!obj || typeof obj !== "object") {
+      return false;
+    }
+    if (obj.dueDate && obj.billDate && obj.dueDate < obj.billDate) {
+      return false;
+    }
+    const mandatoryFields = ["projectName", "currencyType", "rate", "workingPeriodType"];
+    for (const field of mandatoryFields) {
+      if (!obj[field] || (typeof obj[field] === "string" && obj[field].trim() === "")) {
+        return false; 
       }
     }
-    return true;
+
+    switch (obj.workingPeriodType) {
+      case "months":
+        if (!obj.ratePerDay || obj.ratePerDay <= 0) {
+          return false;
+        }
+        if (!obj.workingPeriod || obj.workingPeriod <= 0) {
+          return false;
+        }
+        break;
+      case "hours":
+        if (!obj.workingPeriod || obj.workingPeriod <= 0) {
+          return false;
+        }
+        break;
+      case "fixed":
+        // No workingPeriod required for "fixed" type
+        break;
+      default:
+        return false; 
+    }
+
+    return true; 
   }
 
   const AddInvoiceMutationHandler = useAddInvoiceMutation();

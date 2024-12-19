@@ -12,6 +12,9 @@ export interface Invoice {
   amountWithoutTax: number;
   amountAfterTax: number;
   taxType:string;
+  taxAmount:number;
+  grandTotal?: number;
+  
   projectName: string;
   rate: number;
   adminId: string;

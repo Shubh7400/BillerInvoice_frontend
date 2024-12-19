@@ -129,7 +129,7 @@ function InvoiceClientPage() {
 
         // Dispatch the updated project to Redux
         dispatch(updateProjectForInvoiceAction(updatedProject));
-
+        dispatch(updateInvoiceObjectStateAction({ conversionRate: updatedProject.conversionRate }))
         // Construct the mutation data
         const mutationData = {
           projectId,
@@ -181,30 +181,34 @@ function InvoiceClientPage() {
       prevProjects.map((project) => {
         if (project._id === id) {
           const updatedProject = { ...project, [field]: newValue };
+          {
+            dispatch(updateInvoiceObjectStateAction({
+              projectName: updatedProject.projectName, workingPeriod: updatedProject.workingPeriod,
+              conversionRate: updatedProject.conversionRate, rate: updatedProject.rate, currencyType: updatedProject.currencyType, ratePerDay: updatedProject.ratePerDay, workingPeriodType: updatedProject.workingPeriodType
+            }))
 
-          // Perform amount calculation based on workingPeriodType
-          if (
-            updatedProject.workingPeriodType &&
-            updatedProject.workingPeriod
-          ) {
-            if (updatedProject.workingPeriodType === "hours") {
+            // Perform amount calculation based on workingPeriodType
+            if (
+              updatedProject.workingPeriodType &&
+              updatedProject.workingPeriod
+            ) if (updatedProject.workingPeriodType === "hours") {
               updatedProject.amount =
                 (updatedProject.rate || 0) *
                 (updatedProject.workingPeriod || 1) *
                 (updatedProject.conversionRate || 1);
             } else if (
-              updatedProject.workingPeriodType === "months" &&
-              updatedProject.ratePerDay
-            ) {
-              updatedProject.amount =
-                updatedProject.ratePerDay *
-                (updatedProject.workingPeriod || 1) *
-                (updatedProject.conversionRate || 1);
-            } else {
-              updatedProject.amount =
-                (updatedProject.rate || 0) *
-                (updatedProject.conversionRate || 1);
-            }
+                updatedProject.workingPeriodType === "months" &&
+                updatedProject.ratePerDay
+              ) {
+                updatedProject.amount =
+                  updatedProject.ratePerDay *
+                  (updatedProject.workingPeriod || 1) *
+                  (updatedProject.conversionRate || 1);
+              } else {
+                updatedProject.amount =
+                  (updatedProject.rate || 0) *
+                  (updatedProject.conversionRate || 1);
+              }
           }
 
           // Prepare mutation data for updating fields other than rate and ratePerDay
@@ -285,6 +289,11 @@ function InvoiceClientPage() {
         } else if (project.workingPeriodType === "fixed") {
           amount = project.rate * project.conversionRate;
         }
+        dispatch(updateInvoiceObjectStateAction({
+          projectName: updatedProject.projectName, workingPeriod: updatedProject.workingPeriod,conversionRate: updatedProject.conversionRate, 
+          rate: updatedProject.rate, currencyType: updatedProject.currencyType, ratePerDay: updatedProject.ratePerDay, 
+          workingPeriodType: updatedProject.workingPeriodType, clientId: updatedProject.clientId, adminId: updatedProject.adminId,
+        }))
       }
 
       updatedProject.amount = amount;
@@ -603,7 +612,7 @@ function InvoiceClientPage() {
                             handleInputChange(
                               project._id ?? "",
                               "workingPeriod",
-                              e.target.value
+                              Number(e.target.value) // Convert the value to a number
                             )
                           }
                         ></TextField>
