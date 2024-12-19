@@ -443,18 +443,18 @@ React.useEffect(() => {
                 mt: "6px",
                 "& .MuiFormControl-root": {
                   "& .MuiOutlinedInput-root": {
-                    borderRadius: "12px", 
-                    backgroundColor: "rgba(255,255,255,0.9)", 
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)", 
+                    borderRadius: "12px",
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
                     transition: "all 0.3s ease",
                     "& .MuiSelect-select": {
-                      paddingY: "14px", 
-                      paddingX: "16px", 
-                      fontWeight: 500, 
-                      color: "rgba(0,0,0,0.87)", 
+                      paddingY: "14px",
+                      paddingX: "16px",
+                      fontWeight: 500,
+                      color: "rgba(0,0,0,0.87)",
                     },
                     "& fieldset": {
-                      borderColor: "rgba(0,0,0,0.23)", 
+                      borderColor: "rgba(0,0,0,0.23)",
                       borderWidth: 1,
                       transition: "all 0.3s ease",
                     },
@@ -463,9 +463,9 @@ React.useEffect(() => {
                       borderWidth: 2,
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: "primary.main", 
+                      borderColor: "primary.main",
                       borderWidth: 2,
-                      boxShadow: "0 0 0 4px rgba(25,118,210,0.1)", 
+                      boxShadow: "0 0 0 4px rgba(25,118,210,0.1)",
                     },
                   },
                   "& .MuiInputLabel-outlined": {
@@ -618,25 +618,24 @@ React.useEffect(() => {
                 </div>
               </div>
             </Box>
-
-            <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-4">
+            <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-2">
               Amount:
               <span className=" "> &#8377;{amountAfterTax.toFixed(2)}</span>
             </div>
             {workingFixed && Number(advanceAmount) > 0 && (
               <>
                 <div className="flex justify-between text-lg md:text-lg">
-                  Advance:<span> &#8377;{advanceAmount}</span>
+                  Advance:<span> - &#8377;{advanceAmount}</span>
                 </div>
 
-                <div>
-                  <strong>Grand Total: </strong>₹{grandTotal.toFixed(2)}
+                <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-2">
+                  Grand Total:
+                  <span className=" "> &#8377;{grandTotal.toFixed(2)}</span>
                 </div>
               </>
             )}
           </Box>
         </Box>
-
       </Box>
       <Global
         styles={{
