@@ -314,15 +314,15 @@ const DownloadPreview = ({
                     </td>
 
                     {project.workingPeriodType === "months" && (
-                      <td className="border px-2 pb-4 text-center">
-                        {project.currencyType === "rupees" ? (
-                          <span>&#x20B9;</span>
-                        ) : project.currencyType === "dollars" ? (
-                          <span>$</span>
-                        ) : project.currencyType === "pounds" ? (
-                          <span>&#163;</span>
-                        ) : null}
-                        {project.ratePerDay?.toFixed(2)}
+                    <td className="border px-2 pb-4 text-center">
+                      {project.currencyType === "rupees" ? (
+                        <span>&#x20B9;</span>
+                      ) : project.currencyType === "dollars" ? (
+                        <span>$</span>
+                      ) : project.currencyType === "pounds" ? (
+                        <span>&#163;</span>
+                      ) : null}
+                      {project.ratePerDay?.toFixed(2)}
                       </td>
                     )}
                     {project.workingPeriodType !== "fixed" && (
@@ -368,12 +368,12 @@ const DownloadPreview = ({
             <div className="text-sm w-[300px]">
               {invoice ? (
                 <div className="flex justify-between mb-2">
-                  SUBTOTAL: <span>&#8377; {invoice.amountWithoutTax}</span>
+                  SUBTOTAL: <span>&#8377; {invoice.amountWithoutTax.toFixed(2)}</span>
                 </div>
               ) : (
                 <div className="flex justify-between mb-2">
                   SUBTOTAL:{" "}
-                  <span>&#8377; {invoiceObject.amountWithoutTax}</span>
+                  <span>&#8377; {invoiceObject.amountWithoutTax.toFixed(2)}</span>
                 </div>
               )}
 

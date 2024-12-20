@@ -236,8 +236,8 @@ function InvoiceListPage() {
                               ) : null}
                               /{invoice.workingPeriodType})
                             </TableCell>
-                            <TableCell>&#x20B9; {invoice.conversionRate}</TableCell>
-                            <TableCell>&#x20B9; {invoice.amountAfterTax}</TableCell>
+                            <TableCell>&#x20B9; {invoice.conversionRate?invoice.conversionRate.toFixed(2): 'N/A'}</TableCell>
+                            <TableCell>&#x20B9; {invoice.conversionRate ?invoice.amountAfterTax.toFixed(2): 'N/A'}</TableCell>
                             <TableCell>
                               <Button
                                 variant="contained"

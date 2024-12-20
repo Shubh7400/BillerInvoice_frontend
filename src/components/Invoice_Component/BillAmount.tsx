@@ -611,7 +611,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             {workingFixed && Number(advanceAmount) > 0 && (
               <>
                 <div className="flex justify-between text-lg md:text-lg">
-                  Advance:<span> &#8377;{advanceAmount}</span>
+                  Advance:<span> &#8377;{advanceAmount.toFixed(2)}</span>
                 </div>
 
                 <div>
