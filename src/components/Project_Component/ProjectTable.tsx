@@ -35,11 +35,14 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ClientInfoSection from "../Client_Component/ClientInfoSection";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { getClientByIdAction } from "../../states/redux/ClientStates/selectedClientSlice";
 import { CiEdit } from "react-icons/ci";
+import { FaEye } from "react-icons/fa";
+
 import { getProjectByIdAction } from "../../states/redux/ProjectState/selectedProjectSlice";
 
 const ProjectTable = ({
@@ -60,6 +63,8 @@ const ProjectTable = ({
   const clientObj: ClientType = selectedClientState.data;
 
   const [ProjectData, setProjectData] = useState<ProjectType[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
   const [searchProjectName, setSearchProjectName] = useState("");
   const { isLoading, data, isError } = useFetchAllProjectsByAdminId(
     adminId,
@@ -262,6 +267,17 @@ const ProjectTable = ({
     }
     navigate("/edit-project");
   };
+
+  const handleViewProject = (project: ProjectType) => {
+    setSelectedProject(project);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedProject(null);
+    setIsModalOpen(false);
+  };
+
   return (
     <section>
       <div>
@@ -316,7 +332,7 @@ const ProjectTable = ({
                         Sr.No.
                       </TableCell>
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0", width:"200px" }}
+                        style={{ paddingLeft: "0", paddingRight: "0", width: "200px" }}
                       >
                         Project
                       </TableCell>
@@ -331,7 +347,7 @@ const ProjectTable = ({
                         Project Period
                       </TableCell> */}
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0",width:"150px" }}
+                        style={{ paddingLeft: "0", paddingRight: "0", width: "150px" }}
                       >
                         Rate
                       </TableCell>
@@ -341,7 +357,7 @@ const ProjectTable = ({
                         Working Period
                       </TableCell> */}
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0", width:"170px" }}
+                        style={{ paddingLeft: "0", paddingRight: "0", width: "170px" }}
                       >
                         Conversion Rate
                       </TableCell>
@@ -351,12 +367,12 @@ const ProjectTable = ({
                         Amount
                       </TableCell> */}
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0",width:"100px" }}
+                        style={{ paddingLeft: "0", paddingRight: "0", width: "100px" }}
                       >
                         Action
                       </TableCell>
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0",width:"100px" }}
+                        style={{ paddingLeft: "0", paddingRight: "0", width: "100px" }}
                       >
                         selection
                       </TableCell>
@@ -407,6 +423,19 @@ const ProjectTable = ({
                             <div className="flex">
                               <div className={Styles.editButton}>
                                 <div className="">
+
+                                  <Button
+                                    onClick={() => handleViewProject(project)}
+                                    sx={{
+                                      color: materialTheme.palette.primary.main,
+                                      ":hover": {
+                                        color: materialTheme.palette.secondary.main,
+                                      },
+                                    }}
+                                  >
+                                    <FaEye size={20} />
+                                  </Button>
+
                                   <Button
                                     disabled={!adminId}
                                     variant="outlined"
@@ -442,7 +471,7 @@ const ProjectTable = ({
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell sx={{ paddingY: "8px",paddingX:"0" }}>
+                          <TableCell sx={{ paddingY: "8px", paddingX: "0" }}>
                             <div>
                               <Button
                                 variant="contained"
@@ -465,6 +494,90 @@ const ProjectTable = ({
                   </TableBody>
                 </Table>
               </TableContainer>
+
+              {/* Modal */}
+              {selectedProject && (
+                <Dialog open={isModalOpen} onClose={handleCloseModal} maxWidth="sm" fullWidth>
+                  <DialogTitle>Project Details</DialogTitle>
+                  <DialogContent>
+                    <Typography variant="body1"><strong>Project Name:</strong> {selectedProject.projectName}</Typography>
+                    <Typography variant="body1"><strong>Client Name:</strong> {getClientName(selectedProject.clientId)}</Typography>
+                    <Typography variant="body1"><strong>Rate:</strong> {selectedProject.rate?.toFixed(2)}
+                      {selectedProject.currencyType === "rupees"
+                        ? selectedProject.workingPeriodType === "fixed"
+                          ? " ₹/fixed"
+                          : ` ₹/${selectedProject.workingPeriodType === "hours"
+                            ? "hours"
+                            : "months"
+                          }`
+                        : selectedProject.currencyType === "dollars"
+                          ? selectedProject.workingPeriodType === "fixed"
+                            ? " $/fixed"
+                            : ` $/${selectedProject.workingPeriodType === "hours"
+                              ? "hours"
+                              : "months"
+                            }`
+                          : selectedProject.currencyType === "pounds"
+                            ? selectedProject.workingPeriodType === "fixed"
+                              ? " £/fixed"
+                              : ` £/${selectedProject.workingPeriodType === "hours"
+                                ? "hours"
+                                : "months"
+                              }`
+                            : ""}
+                    </Typography>
+                    <Typography variant="body1"><strong>Conversion Rate:</strong> &#x20B9;{selectedProject.conversionRate.toFixed(2)}</Typography>
+                    {selectedProject.workingPeriod && (
+                      <Typography variant="body1"><strong>Working Period:</strong> {selectedProject.workingPeriod}{selectedProject.workingPeriodType !== "fixed" &&
+                        (selectedProject.workingPeriodType === "months" ? (
+                          <span> Working Days</span>
+                        ) : (
+                          <span> Working Hours</span>
+                        ))}</Typography>
+                    )}
+                    {selectedProject.paymentStatus && (
+                      <Typography variant="body1"><strong>Payment Status:</strong> {selectedProject.paymentStatus}</Typography>
+                    )}
+                    {selectedProject.candidateName && (
+                      <Typography variant="body1"><strong>Candidate Name:</strong> {selectedProject.candidateName}</Typography>
+                    )}
+                    {selectedProject.billingCycle && (
+                      <Typography variant="body1"><strong>Billing Cycle:</strong> {selectedProject.billingCycle}</Typography>
+                    )}
+                    {selectedProject.advanceAmount != null && selectedProject.advanceAmount > 0 && (
+                      <Typography variant="body1">
+                        <strong>Advance Amount:</strong> {selectedProject.advanceAmount}
+                      </Typography>
+                    )}
+
+
+                    <Typography variant="body1"><strong>Currency Type:</strong> {selectedProject.currencyType}</Typography>
+                    <Typography variant="body1"><strong>Payment Cycle:</strong> {selectedProject.paymentCycle}</Typography>
+                    <Typography variant="body1"><strong>Start Date:</strong> {selectedProject.startDate}</Typography>
+                    <Typography variant="body1"><strong>End Date:</strong> {selectedProject.endDate}</Typography>
+                    {selectedProject.ratePerDay && (
+                      <Typography variant="body1"><strong>Rate/Day:</strong>{selectedProject.currencyType === "rupees" ? (
+                        <span> &#x20B9;</span>
+                      ) : selectedProject.currencyType === "dollars" ? (
+                        <span> $</span>
+                      ) : selectedProject.currencyType === "pounds" ? (
+                        <span> &#163;</span>
+                      ) : null}{selectedProject.ratePerDay.toFixed(2)}</Typography>
+                    )}
+                    <Typography variant="body1"><strong>Technology:</strong> {selectedProject.technology}</Typography>
+                    {selectedProject.timeSheet && (
+                      <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
+                    )}
+                    <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseModal} color="primary">
+                      Close
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              )}
+
             </div>
           )}
         </>
