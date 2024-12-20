@@ -20,7 +20,7 @@ function ClientInfoSection() {
 
   const firstEmail = clientData?.email?.[0];
   const fullAddress = `${clientData?.address?.street}, ${clientData?.address?.city}, ${clientData?.address?.state}, ${clientData?.address?.country}`;
-
+  const contactNo = clientData?.contactNo;
   return (
     <div>
       {clientData && loadingState !== "idle" ? (
@@ -42,6 +42,13 @@ function ClientInfoSection() {
                 <b>Address: </b>
                 {fullAddress}
               </p>
+              {contactNo &&
+                 <p className="mb-2">
+                 <b>Contact No: </b>
+                 {contactNo}
+               </p>
+              }
+             
             </div>
           </div>
         </div>

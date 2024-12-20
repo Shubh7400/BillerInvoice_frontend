@@ -36,6 +36,7 @@ export interface ClientType {
   gistin: string;
   user: string;
   sameState?: boolean;
+  contactNo: string;
 }
 export interface ProjectType {
   _id?: string;
@@ -51,6 +52,14 @@ export interface ProjectType {
   advanceAmount?: number | null;
   workingPeriod?: number | null;
   ratePerDay?: number |null;  
+  paymentCycle?: string | undefined;
+  billingCycle?:string | undefined;
+  technology?:string | undefined;
+  paidLeave?:number | undefined;
+  timeSheet?:string | undefined;
+  candidateName?: string | undefined;
+  startDate?: string | undefined;
+  endDate?: string | undefined;
 }
 export interface UpdateProjectDataType {
   _id?: string;
@@ -64,7 +73,15 @@ export interface UpdateProjectDataType {
   clientId: string;
   workingPeriod?:number| null;
   amount?: number | null;
-  advanceAmount?: number | null
+  advanceAmount?: number | null;
+  paymentCycle?: string | undefined;
+  billingCycle?:string | undefined;
+  technology?:string | undefined;
+  paidLeave?:number | undefined;
+  timeSheet?:string | undefined;
+  candidateName?: string | undefined;
+  startDate?: string | undefined;
+  endDate?: string | undefined;
 }
 export interface InvoiceType {
   invoiceNo: number;
@@ -88,6 +105,7 @@ export interface InvoiceType {
   advanceAmount?: number | null;
   workingPeriod?: number | null;
   ratePerDay?: number |null;  
+  contactNo?:string;
 }
 
 export interface LoginDataType {

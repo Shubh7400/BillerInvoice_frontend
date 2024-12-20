@@ -17,7 +17,7 @@ import {
   StateInfoType,
 } from "../../types/types";
 import SelectCountryStateCity from "./Compo_CountrySelect";
-import { Alert, LinearProgress, Typography} from "@mui/material";
+import { Alert, LinearProgress, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import {
@@ -28,13 +28,13 @@ import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/al
 import { getClientByIdAction } from "../../states/redux/ClientStates/selectedClientSlice";
 import "react-phone-number-input/style.css";
 import "../../styles/addClient.css";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { IoChevronBackSharp } from "react-icons/io5";
 
 export default function AddClientPage({
   forEditClient,
   clientToEdit,
-  
+
 }: {
   forEditClient: boolean;
   clientToEdit: ClientType | null;
@@ -83,6 +83,7 @@ export default function AddClientPage({
       postalCode: "",
     },
     user: "",
+    contactNo: "",
   });
 
   const [inputEmail, setInputEmail] = useState("");
@@ -91,6 +92,7 @@ export default function AddClientPage({
   const [postalCodeError, setPostalCodeError] = useState("");
   const [gstNumberError, setGstNumberError] = useState("");
   const [panNumberError, setPanNumberError] = useState<string | null>(null);
+  const [contactNoError, setContactNoError] = useState<string>("");
 
 
   React.useEffect(() => {
@@ -180,7 +182,7 @@ export default function AddClientPage({
         },
       }));
     } else if (name === "postalCode") {
-      const postalCodeRegex = /^[1-9][0-9]{5}$/; 
+      const postalCodeRegex = /^[1-9][0-9]{5}$/;
       if (!postalCodeRegex.test(value)) {
         setPostalCodeError("Invalid Postal Code");
       } else {
@@ -196,7 +198,7 @@ export default function AddClientPage({
     } else if (name === "pancardNo") {
       const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
       if (value === "" || panRegex.test(value)) {
-        setPanNumberError(null); 
+        setPanNumberError(null);
       } else {
         setPanNumberError("Invalid PAN Number");
       }
@@ -216,7 +218,20 @@ export default function AddClientPage({
         ...prevData,
         gistin: value,
       }));
-    } else {
+    }
+    else if (name === "contactNo") {
+      const contactRegex = /^[0-9]{10}$/;
+      if (!contactRegex.test(value)) {
+        setContactNoError("Invalid Contact Number. Must be 10 digits.");
+      } else {
+        setContactNoError("");
+      }
+      setClientData((prevData) => ({
+        ...prevData,
+        contactNo: value,
+      }));
+    } 
+     else {
       setClientData({
         ...clientData,
         [name]: value,
@@ -235,11 +250,11 @@ export default function AddClientPage({
           console.log(updatedEmails);
           return {
             ...prev,
-            email: updatedEmails, 
+            email: updatedEmails,
           };
         });
-        setEmailError(""); 
-        setInputEmail(""); 
+        setEmailError("");
+        setInputEmail("");
       } else {
         setEmailError("This email has already been added.");
       }
@@ -304,7 +319,8 @@ export default function AddClientPage({
       areEntriesValid(clientData) &&
       !panNumberError &&
       !postalCodeError &&
-      !gstNumberError
+      !gstNumberError && 
+      !contactNoError
     ) {
       dispatch(addNewClientAction(clientData));
       // setAddClientLoadingController(true);
@@ -320,6 +336,7 @@ export default function AddClientPage({
       !panNumberError &&
       !postalCodeError &&
       !gstNumberError &&
+      !contactNoError &&
       clientToEdit
     ) {
       const clientId = clientToEdit._id!;
@@ -335,7 +352,7 @@ export default function AddClientPage({
     <div>
       <div className="flex gap-3 items-center mb-5">
         <button
-          onClick={() => navigate(-1)} 
+          onClick={() => navigate(-1)}
           className="text-[16px] flex items-center gap-[10px] text-[#fff] bg-[#d9a990] rounded-[20px] px-[10px] py-[10px] hover:bg-[#4a6180]"
         >
           <IoChevronBackSharp />
@@ -459,6 +476,24 @@ export default function AddClientPage({
           }
         />
       </div>
+
+      <div className="flex gap-5 mt-3">
+        <TextField
+          className="w-[100%]"
+          label="Contact No"
+          fullWidth
+          name="contactNo"
+          value={clientData.contactNo}
+          onChange={handleChange}
+          error={!!contactNoError && clientData.contactNo !== ""}
+          helperText={
+            contactNoError && clientData.contactNo !== ""
+              ? contactNoError
+              : ""
+          }
+        />
+      </div>
+
 
       <div className="flex justify-end">
         <Button

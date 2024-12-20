@@ -194,7 +194,7 @@ function InvoiceClientPage() {
             ) if (updatedProject.workingPeriodType === "hours") {
               updatedProject.amount =
                 (updatedProject.rate || 0) *
-                (updatedProject.workingPeriod || 1) *
+                (updatedProject.workingPeriod) *
                 (updatedProject.conversionRate || 1);
             } else if (
                 updatedProject.workingPeriodType === "months" &&
@@ -202,7 +202,7 @@ function InvoiceClientPage() {
               ) {
                 updatedProject.amount =
                   updatedProject.ratePerDay *
-                  (updatedProject.workingPeriod || 1) *
+                  (updatedProject.workingPeriod) *
                   (updatedProject.conversionRate || 1);
               } else {
                 updatedProject.amount =
@@ -246,9 +246,7 @@ function InvoiceClientPage() {
       })
     );
   };
-
   const [workingFixed, setWorkingFixed] = useState(false);
-
   useEffect(() => {
     const updatedProjects = projectsForInvoice.map((project) => {
       const updatedProject = { ...project };
@@ -268,30 +266,31 @@ function InvoiceClientPage() {
 
       // Set default workingPeriod to 1 if workingPeriodType is "months"
       if (project.workingPeriodType === "months") {
-        updatedProject.workingPeriod = project.workingPeriod || 1;
+        updatedProject.workingPeriod = project.workingPeriod !== undefined ? project.workingPeriod : 1;
+
       }
       // Calculate the amount based on the workingPeriodType
       let amount = 0;
       if (project.rate && project.workingPeriodType) {
-        if (project.workingPeriodType === "hours") {
+        if (project.workingPeriodType === "hours" && project.workingPeriod) {
           amount =
             project.rate *
-            (project.workingPeriod || 1) *
+            (project.workingPeriod) *
             project.conversionRate;
         } else if (
-          project.workingPeriodType === "months" &&
+          project.workingPeriodType === "months" && updatedProject.workingPeriod &&
           updatedProject.ratePerDay
         ) {
           amount =
             updatedProject.ratePerDay *
-            (updatedProject.workingPeriod || 1) *
+            (updatedProject.workingPeriod) *
             project.conversionRate;
         } else if (project.workingPeriodType === "fixed") {
           amount = project.rate * project.conversionRate;
         }
         dispatch(updateInvoiceObjectStateAction({
-          projectName: updatedProject.projectName, workingPeriod: updatedProject.workingPeriod,conversionRate: updatedProject.conversionRate, 
-          rate: updatedProject.rate, currencyType: updatedProject.currencyType, ratePerDay: updatedProject.ratePerDay, 
+          projectName: updatedProject.projectName, workingPeriod: updatedProject.workingPeriod, conversionRate: updatedProject.conversionRate,
+          rate: updatedProject.rate, currencyType: updatedProject.currencyType, ratePerDay: updatedProject.ratePerDay,
           workingPeriodType: updatedProject.workingPeriodType, clientId: updatedProject.clientId, adminId: updatedProject.adminId,
         }))
       }
@@ -390,7 +389,7 @@ function InvoiceClientPage() {
     }
   };
 
-  const handleInvoiceNoChange = (newInvoiceNo: string) => {
+  const handleInvoiceNoChange = (newInvoiceNo: number) => {
     dispatch(updateInvoiceObjectStateAction({ invoiceNo: newInvoiceNo }));
   };
 
@@ -427,7 +426,7 @@ function InvoiceClientPage() {
                     variant="outlined"
                     size="small"
                     value={invoiceObject.invoiceNo}
-                    onChange={(e) => handleInvoiceNoChange(e.target.value)}
+                    onChange={(e) => handleInvoiceNoChange(Number(e.target.value))}
                     className="w-[150px] "
                     sx={{
                       "& .MuiOutlinedInput-root": {
@@ -535,20 +534,23 @@ function InvoiceClientPage() {
                   <TableCell>Rate</TableCell>
                   {editableProjects.map((project: ProjectType) => (
                     <>
-                      {project.workingPeriodType === "months" && <TableCell>Rate/day</TableCell>}
-
+                      {project.workingPeriodType === "months" && (
+                        <TableCell>Rate/day</TableCell>
+                      )}
                     </>
                   ))}
                   {editableProjects.map((project: ProjectType) => (
                     <>
-                      {project.workingPeriodType !== "fixed" && (
-                        project.workingPeriodType === "months" ? (
-                          <TableCell className="w-[175px]">Working Days</TableCell>
-                        ) :
-                          (
-                            <TableCell className="w-[175px]">Working Hours</TableCell>
-                          )
-                      )}
+                      {project.workingPeriodType !== "fixed" &&
+                        (project.workingPeriodType === "months" ? (
+                          <TableCell className="w-[175px]">
+                            Working Days
+                          </TableCell>
+                        ) : (
+                          <TableCell className="w-[175px]">
+                            Working Hours
+                          </TableCell>
+                        ))}
                     </>
                   ))}
                   <TableCell className="w-[175px]">Conversion Rate</TableCell>
@@ -571,32 +573,52 @@ function InvoiceClientPage() {
                         {project.currencyType === "rupees"
                           ? project.workingPeriodType === "fixed"
                             ? "₹/fixed"
-                            : `₹/${project.workingPeriodType === "hours"
-                              ? "hours"
-                              : "months"
-                            }`
-                          : project.currencyType === "dollars"
-                            ? project.workingPeriodType === "fixed"
-                              ? "$/fixed"
-                              : `$/${project.workingPeriodType === "hours"
-                                ? "hours"
-                                : "months"
-                              }`
-                            : project.currencyType === "pounds"
-                              ? project.workingPeriodType === "fixed"
-                                ? "£/fixed"
-                                : `£/${project.workingPeriodType === "hours"
+                            : `₹/${
+                                project.workingPeriodType === "hours"
                                   ? "hours"
                                   : "months"
-                                }`
-                              : ""}
+                              }`
+                          : project.currencyType === "dollars"
+                          ? project.workingPeriodType === "fixed"
+                            ? "$/fixed"
+                            : `$/${
+                                project.workingPeriodType === "hours"
+                                  ? "hours"
+                                  : "months"
+                              }`
+                          : project.currencyType === "pounds"
+                          ? project.workingPeriodType === "fixed"
+                            ? "£/fixed"
+                            : `£/${
+                                project.workingPeriodType === "hours"
+                                  ? "hours"
+                                  : "months"
+                              }`
+                          : ""}
                       </Typography>
                     </TableCell>
-
+                    {/* 
                     {project.workingPeriodType === "months" && (
                       <TableCell className="text-[13px] w-[150px]">
                         <Typography variant="body2">
                           {project.ratePerDay?.toFixed(2) || "NA"}
+                        </Typography>
+                      </TableCell>
+                    )} */}
+                    {project.workingPeriodType === "months" && (
+                      <TableCell className="text-[13px] w-[150px]">
+                        <Typography variant="body2">
+                          {project.ratePerDay
+                            ? ` ${
+                                project.currencyType === "rupees"
+                                  ? "₹"
+                                  : project.currencyType === "dollars"
+                                  ? "$"
+                                  : project.currencyType === "pounds"
+                                  ? "£"
+                                  : ""
+                              } ${project.ratePerDay.toFixed(2)}`
+                            : "NA"}
                         </Typography>
                       </TableCell>
                     )}
@@ -606,18 +628,27 @@ function InvoiceClientPage() {
                         <TextField
                           variant="outlined"
                           size="small"
-                          type="number"
-                          value={project.workingPeriod || 1}
-                          onChange={(e) =>
+                          type="text"
+                          value={project.workingPeriod}
+                          onInput={(e) => {
+                            const target = e.target as HTMLInputElement; // Cast to HTMLInputElement
+                            const value = target.value;
+                            if (!/^\d*$/.test(value)) {
+                              target.value = value.slice(0, -1); // Remove last character if invalid
+                            }
+                          }}
+                          onChange={(e) => {
+                            const target = e.target as HTMLInputElement; // Cast to HTMLInputElement
                             handleInputChange(
                               project._id ?? "",
                               "workingPeriod",
-                              Number(e.target.value) // Convert the value to a number
-                            )
-                          }
-                        ></TextField>
+                              Number(target.value)
+                            );
+                          }}
+                        />
                       </TableCell>
                     )}
+
 
                     <TableCell className="text-[13px] w-[150px] ">
                       <div className="relative">
@@ -632,10 +663,10 @@ function InvoiceClientPage() {
                                 {project.currencyType === "rupees"
                                   ? "₹"
                                   : project.currencyType === "dollars"
-                                    ? "$"
-                                    : project.currencyType === "pounds"
-                                      ? "£"
-                                      : ""}
+                                  ? "$"
+                                  : project.currencyType === "pounds"
+                                  ? "£"
+                                  : ""}
                               </span>
                             ),
                           }}
@@ -653,7 +684,6 @@ function InvoiceClientPage() {
                                   backgroundColor: "transparent",
                                 },
                               }}
-
                             >
                               <MdOutlineReplay />
                             </Button>

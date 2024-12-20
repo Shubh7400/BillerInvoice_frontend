@@ -59,6 +59,7 @@ export interface Invoice {
   };
   sameState: boolean;
   clientEmails: string[];
+  clientContactNo:string;
 }
 
 
