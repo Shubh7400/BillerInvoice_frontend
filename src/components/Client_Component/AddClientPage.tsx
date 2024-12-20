@@ -369,7 +369,7 @@ export default function AddClientPage({
           aria-label="Enter email address"
           InputProps={{
             style: {
-              marginTop: clientData.email.length > 0 ? 16 : 0,
+              // marginTop: clientData.email.length > 0 ? 16 : 0,
               textAlign: "center",
             },
           }}
