@@ -14,7 +14,11 @@ interface DownloadPreviewProps {
   advanceAmount?: number;
   invoice?: Invoice;
 }
-const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreviewProps) => {
+const DownloadPreview = ({
+  grandTotal,
+  advanceAmount,
+  invoice,
+}: DownloadPreviewProps) => {
   const { data } = useSelector((state: RootState) => state.adminState);
   const selectedClient = useSelector(
     (state: RootState) => state.selectedClientState
@@ -31,9 +35,7 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
     invoiceObject.amountAfterTax - invoiceObject.amountWithoutTax
   ).toFixed(2);
   return (
-
     <div className="relative w-full h-[297mm] flex items-center justify-center  ">
-
       <div
         className="relative w-full h-[297mm] bg-center overflow-hidden "
         style={{
@@ -60,8 +62,8 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
                 />
               )}
             </div>
-            {invoice ?
-              (<div className="w-[20%]">
+            {invoice ? (
+              <div className="w-[20%]">
                 <div className="text-black  px-2  mb-1">
                   Invoice Number: {invoice.invoiceNo}
                 </div>
@@ -71,73 +73,74 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
                 <div className="text-black px-2 mb-1">
                   Due date: {dayjs(invoice.dueDate).format("DD/MM/YYYY")}
                 </div>
-              </div>) :
-              (
-                <div className="w-[20%]">
-                  <div className="text-black  px-2  mb-1">
-                    Invoice Number: {invoiceObject.invoiceNo}
-                  </div>
-                  <div className="text-black px-2  mb-1">
-                    Bill date: {dayjs(invoiceObject.billDate).format("DD/MM/YYYY")}
-                  </div>
-                  <div className="text-black px-2 mb-1">
-                    Due date: {dayjs(invoiceObject.dueDate).format("DD/MM/YYYY")}
-                  </div>
+              </div>
+            ) : (
+              <div className="w-[20%]">
+                <div className="text-black  px-2  mb-1">
+                  Invoice Number: {invoiceObject.invoiceNo}
                 </div>
-              )
-            }
-
+                <div className="text-black px-2  mb-1">
+                  Bill date:{" "}
+                  {dayjs(invoiceObject.billDate).format("DD/MM/YYYY")}
+                </div>
+                <div className="text-black px-2 mb-1">
+                  Due date: {dayjs(invoiceObject.dueDate).format("DD/MM/YYYY")}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex justify-between my-4 ">
-
             {/* Invoice and Client section */}
 
-            {
-              invoice ? (
-                <div className="flex justify-between my-4">
-                  <div className="text-black">
-                    <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
-                      Billing From
-                    </h1>
-                    <h3 className="font-bold p-[3px]">{invoice.companyName}</h3>
-                    <p className="text-xs p-[3px] text-[15px]">
-                      <b>Gstin:</b> {invoice.gistin}
-                      <br />
-                      <b>Pan:</b> {invoice.pancardNo}
-                    </p>
-                    <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                      <span>{invoice.address?.street}</span>
-                      <br />
-                      {invoice.address?.city}, {invoice.address?.state} {invoice.address?.postalCode} - {invoice.address?.country}
-                      <br />
-                      <span className="font-semibold">{invoice.userEmail}</span> | {invoice.contactNo}
-                    </p>
-                  </div>
+            {invoice ? (
+              <div className="flex justify-between my-4">
+                <div className="text-black">
+                  <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
+                    Billing From
+                  </h1>
+                  <h3 className="font-bold p-[3px]">{invoice.companyName}</h3>
+                  <p className="text-xs p-[3px] text-[15px]">
+                    <b>Gstin:</b> {invoice.gistin}
+                    <br />
+                    <b>Pan:</b> {invoice.pancardNo}
+                  </p>
+                  <p className="text-xs opacity-70 p-[3px] text-[15px]">
+                    <span>{invoice.address?.street}</span>
+                    <br />
+                    {invoice.address?.city}, {invoice.address?.state}{" "}
+                    {invoice.address?.postalCode} - {invoice.address?.country}
+                    <br />
+                    <span className="font-semibold">
+                      {invoice.userEmail}
+                    </span> | {invoice.contactNo}
+                  </p>
                 </div>
-              ) : (
-                <div className="flex justify-between my-4">
-                  <div className="text-black">
-                    <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
-                      Billing From
-                    </h1>
-                    <h3 className="font-bold p-[3px]">{data.companyName}</h3>
-                    <p className="text-xs p-[3px] text-[15px]">
-                      <b>Gstin:</b> {data.gistin}
-                      <br />
-                      <b>Pan:</b> {data.pancardNo}
-                    </p>
-                    <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                      <span>{data.address?.street}</span>
-                      <br />
-                      {data.address?.city}, {data.address?.state} {data.address?.postalCode} - {data.address?.country}
-                      <br />
-                      <span className="font-semibold">{data.email}</span> | {data.contactNo}
-                    </p>
-                  </div>
+              </div>
+            ) : (
+              <div className="flex justify-between my-4">
+                <div className="text-black">
+                  <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
+                    Billing From
+                  </h1>
+                  <h3 className="font-bold p-[3px]">{data.companyName}</h3>
+                  <p className="text-xs p-[3px] text-[15px]">
+                    <b>Gstin:</b> {data.gistin}
+                    <br />
+                    <b>Pan:</b> {data.pancardNo}
+                  </p>
+                  <p className="text-xs opacity-70 p-[3px] text-[15px]">
+                    <span>{data.address?.street}</span>
+                    <br />
+                    {data.address?.city}, {data.address?.state}{" "}
+                    {data.address?.postalCode} - {data.address?.country}
+                    <br />
+                    <span className="font-semibold">{data.email}</span> |{" "}
+                    {data.contactNo}
+                  </p>
                 </div>
-              )
-            }
+              </div>
+            )}
             {invoice ? (
               <div className="text-black">
                 <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2 ">
@@ -178,8 +181,7 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
                   {clientObj.address?.postalCode} - {clientObj.address?.country}
                 </p>
               </div>
-            )
-            }
+            )}
           </div>
           {/* Table section */}
           <table
@@ -201,47 +203,44 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
                       {invoice.workingPeriodType === "months" && (
                         <th className="px-2 pb-4">Rate/day</th>
                       )}
-                      {invoice.workingPeriodType !== "fixed" && (
-                        invoice.workingPeriodType === "months" ?
-                          (<th className="px-2 pb-4">Working Days</th>) :
-                          (<th className="px-2 pb-4">Working Hours</th>)
-                      )
-                      }
+                      {invoice.workingPeriodType !== "fixed" &&
+                        (invoice.workingPeriodType === "months" ? (
+                          <th className="px-2 pb-4">Working Days</th>
+                        ) : (
+                          <th className="px-2 pb-4">Working Hours</th>
+                        ))}
                     </>
                     <th className="px-2 pb-4">Conversion Rate</th>
                     <th className="px-2 pb-4">Subtotal</th>
                   </tr>
                 </thead>
-              ) :
-                (
-                  <thead className="bg-[#94b9ff] text-white ">
-                    <tr>
-                      <th className="px-2 pb-4">Sr.no.</th>
-                      <th className="px-2 pb-4">Project Name</th>
-                      {/* <th className="px-2 pb-4">Project Period</th> */}
-                      <th className="px-2 pb-4">Rate</th>
-                      {projectsForInvoice?.map((project, index) => (
-                        <>
-                          {project.workingPeriodType === "months" && (
-                            <th key={index} className="px-2 pb-4">Rate/day</th>
-                          )}
-                          {project.workingPeriodType !== "fixed" && (
-                            project.workingPeriodType === "months" ?
-                              (<th className="px-2 pb-4">Working Days</th>) :
-                              (
-                                <th className="px-2 pb-4">Working Hours</th>
-                              )
-                          )
-                          }
-                        </>
-
-                      ))}
-                      <th className="px-2 pb-4">Conversion Rate</th>
-                      <th className="px-2 pb-4">Subtotal</th>
-                    </tr>
-                  </thead>
-                )
-              }
+              ) : (
+                <thead className="bg-[#94b9ff] text-white ">
+                  <tr>
+                    <th className="px-2 pb-4">Sr.no.</th>
+                    <th className="px-2 pb-4">Project Name</th>
+                    {/* <th className="px-2 pb-4">Project Period</th> */}
+                    <th className="px-2 pb-4">Rate</th>
+                    {projectsForInvoice?.map((project, index) => (
+                      <>
+                        {project.workingPeriodType === "months" && (
+                          <th key={index} className="px-2 pb-4">
+                            Rate/day
+                          </th>
+                        )}
+                        {project.workingPeriodType !== "fixed" &&
+                          (project.workingPeriodType === "months" ? (
+                            <th className="px-2 pb-4">Working Days</th>
+                          ) : (
+                            <th className="px-2 pb-4">Working Hours</th>
+                          ))}
+                      </>
+                    ))}
+                    <th className="px-2 pb-4">Conversion Rate</th>
+                    <th className="px-2 pb-4">Subtotal</th>
+                  </tr>
+                </thead>
+              )}
             </>
 
             {invoice ? (
@@ -273,15 +272,13 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
                         <span>&#163;</span>
                       ) : null}
                       {invoice.ratePerDay?.toFixed(2)}
-
-
                     </td>
                   )}
-                  {invoice.workingPeriodType !== "fixed" &&
+                  {invoice.workingPeriodType !== "fixed" && (
                     <td className="border px-2 pb-4 text-center">
                       {invoice.workingPeriod || 1}
                     </td>
-                  }
+                  )}
                   <td className="border px-2 pb-4 text-center">
                     &#x20B9; {invoice.conversionRate.toFixed(2)}
                   </td>
@@ -312,35 +309,33 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
                         / {project.workingPeriodType})
                       </td>
 
-                      {project.workingPeriodType === "months" && (
-                        <td className="border px-2 pb-4 text-center">
-                          {project.currencyType === "rupees" ? (
-                            <span>&#x20B9;</span>
-                          ) : project.currencyType === "dollars" ? (
-                            <span>$</span>
-                          ) : project.currencyType === "pounds" ? (
-                            <span>&#163;</span>
-                          ) : null}
-                          {project.ratePerDay?.toFixed(2)}
-                        </td>
-                      )}
-                      {project.workingPeriodType !== "fixed" &&
-                        <td className="border px-2 pb-4 text-center">
-                          {project.workingPeriod || 1}
-                        </td>
-                      }
-                      <td className="border px-2 pb-4 text-center">
-                        &#x20B9;{project.conversionRate.toFixed(2)}
+                    {project.workingPeriodType === "months" && (
+                    <td className="border px-2 pb-4 text-center">
+                      {project.currencyType === "rupees" ? (
+                        <span>&#x20B9;</span>
+                      ) : project.currencyType === "dollars" ? (
+                        <span>$</span>
+                      ) : project.currencyType === "pounds" ? (
+                        <span>&#163;</span>
+                      ) : null}
+                      {project.ratePerDay?.toFixed(2)}
                       </td>
+                    )}
+                    {project.workingPeriodType !== "fixed" && (
                       <td className="border px-2 pb-4 text-center">
-                        &#x20B9; {project.amount?.toFixed(2)}
+                        {project.workingPeriod || 1}
                       </td>
-                    </tr>
-                  ))}
-                </tbody>
-              )
-            }
-
+                    )}
+                    <td className="border px-2 pb-4 text-center">
+                      &#x20B9;{project.conversionRate.toFixed(2)}
+                    </td>
+                    <td className="border px-2 pb-4 text-center">
+                      &#x20B9; {project.amount?.toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
           </table>
           {/* Bank and Total amount section */}
           <div className="flex justify-between mt-4">
@@ -354,24 +349,22 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
                 <p>BANK: {invoice.bank}</p>
                 <p>IFSC: {invoice.ifsc}</p>
               </div>
-            ) :
-              (
-                <div className="text-sm">
-                  <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2 ">
-                    Payment info
-                  </h1>
-                  <p className="font-bold">{data.companyName}</p>
-                  <p>A/C NO: {data.accountNo}</p>
-                  <p>BANK: {data.bank}</p>
-                  <p>IFSC: {data.ifsc}</p>
-                </div>
-              )
-            }
+            ) : (
+              <div className="text-sm">
+                <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2 ">
+                  Payment info
+                </h1>
+                <p className="font-bold">{data.companyName}</p>
+                <p>A/C NO: {data.accountNo}</p>
+                <p>BANK: {data.bank}</p>
+                <p>IFSC: {data.ifsc}</p>
+              </div>
+            )}
 
             <div className="text-sm w-[300px]">
               {invoice ? (
                 <div className="flex justify-between mb-2">
-                  SUBTOTAL: <span>&#8377; {invoice.amountWithoutTax}</span>
+                  SUBTOTAL: <span>&#8377; {invoice.amountWithoutTax.toFixed(2)}</span>
                 </div>
               ) :
                 (
@@ -380,6 +373,20 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
                   </div>
                 )}
 
+              {/* {clientObj.sameState ? (
+                <>
+                  <div className="flex justify-between">
+                    SGST @ 9%: <span>{taxAmount / 2}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    CGST @ 9%: <span>{taxAmount / 2}</span>
+                  </div>
+                </>
+              ) : (
+                <div className="flex justify-between mb-[30px]">
+                  IGST @ 18%: <span>{taxAmount}</span>
+                </div>
+              )} */}
               {invoice ? (
                 <div className="flex justify-between mb-[30px]">
                   {/* Conditional rendering for tax type */}
@@ -411,7 +418,7 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
 
               )
               }
-
+              
               {invoice ? (
                 invoice.advanceAmount   > 0 ? (
                   <>
@@ -440,13 +447,14 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
                     </>
                   ) : (
                     <div className="text-[20px] justify-between flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
-                      Total: <span>&#8377; {invoiceObject?.amountAfterTax.toFixed(2) || 0}</span>
+                      Total:{" "}
+                      <span>
+                        &#8377; {invoiceObject?.amountAfterTax.toFixed(2) || 0}
+                      </span>
                     </div>
                   )}
                 </>
               )}
-
-
             </div>
           </div>
         </div>
@@ -459,12 +467,8 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
             </h3>
           </div>
         </div>
-
-
       </div>
-
     </div>
-
   );
 };
 

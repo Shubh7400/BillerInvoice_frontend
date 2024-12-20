@@ -534,20 +534,23 @@ function InvoiceClientPage() {
                   <TableCell>Rate</TableCell>
                   {editableProjects.map((project: ProjectType) => (
                     <>
-                      {project.workingPeriodType === "months" && <TableCell>Rate/day</TableCell>}
-
+                      {project.workingPeriodType === "months" && (
+                        <TableCell>Rate/day</TableCell>
+                      )}
                     </>
                   ))}
                   {editableProjects.map((project: ProjectType) => (
                     <>
-                      {project.workingPeriodType !== "fixed" && (
-                        project.workingPeriodType === "months" ? (
-                          <TableCell className="w-[175px]">Working Days</TableCell>
-                        ) :
-                          (
-                            <TableCell className="w-[175px]">Working Hours</TableCell>
-                          )
-                      )}
+                      {project.workingPeriodType !== "fixed" &&
+                        (project.workingPeriodType === "months" ? (
+                          <TableCell className="w-[175px]">
+                            Working Days
+                          </TableCell>
+                        ) : (
+                          <TableCell className="w-[175px]">
+                            Working Hours
+                          </TableCell>
+                        ))}
                     </>
                   ))}
                   <TableCell className="w-[175px]">Conversion Rate</TableCell>
@@ -570,32 +573,52 @@ function InvoiceClientPage() {
                         {project.currencyType === "rupees"
                           ? project.workingPeriodType === "fixed"
                             ? "₹/fixed"
-                            : `₹/${project.workingPeriodType === "hours"
-                              ? "hours"
-                              : "months"
-                            }`
-                          : project.currencyType === "dollars"
-                            ? project.workingPeriodType === "fixed"
-                              ? "$/fixed"
-                              : `$/${project.workingPeriodType === "hours"
-                                ? "hours"
-                                : "months"
-                              }`
-                            : project.currencyType === "pounds"
-                              ? project.workingPeriodType === "fixed"
-                                ? "£/fixed"
-                                : `£/${project.workingPeriodType === "hours"
+                            : `₹/${
+                                project.workingPeriodType === "hours"
                                   ? "hours"
                                   : "months"
-                                }`
-                              : ""}
+                              }`
+                          : project.currencyType === "dollars"
+                          ? project.workingPeriodType === "fixed"
+                            ? "$/fixed"
+                            : `$/${
+                                project.workingPeriodType === "hours"
+                                  ? "hours"
+                                  : "months"
+                              }`
+                          : project.currencyType === "pounds"
+                          ? project.workingPeriodType === "fixed"
+                            ? "£/fixed"
+                            : `£/${
+                                project.workingPeriodType === "hours"
+                                  ? "hours"
+                                  : "months"
+                              }`
+                          : ""}
                       </Typography>
                     </TableCell>
-
+                    {/* 
                     {project.workingPeriodType === "months" && (
                       <TableCell className="text-[13px] w-[150px]">
                         <Typography variant="body2">
                           {project.ratePerDay?.toFixed(2) || "NA"}
+                        </Typography>
+                      </TableCell>
+                    )} */}
+                    {project.workingPeriodType === "months" && (
+                      <TableCell className="text-[13px] w-[150px]">
+                        <Typography variant="body2">
+                          {project.ratePerDay
+                            ? ` ${
+                                project.currencyType === "rupees"
+                                  ? "₹"
+                                  : project.currencyType === "dollars"
+                                  ? "$"
+                                  : project.currencyType === "pounds"
+                                  ? "£"
+                                  : ""
+                              } ${project.ratePerDay.toFixed(2)}`
+                            : "NA"}
                         </Typography>
                       </TableCell>
                     )}
@@ -640,10 +663,10 @@ function InvoiceClientPage() {
                                 {project.currencyType === "rupees"
                                   ? "₹"
                                   : project.currencyType === "dollars"
-                                    ? "$"
-                                    : project.currencyType === "pounds"
-                                      ? "£"
-                                      : ""}
+                                  ? "$"
+                                  : project.currencyType === "pounds"
+                                  ? "£"
+                                  : ""}
                               </span>
                             ),
                           }}
@@ -661,7 +684,6 @@ function InvoiceClientPage() {
                                   backgroundColor: "transparent",
                                 },
                               }}
-
                             >
                               <MdOutlineReplay />
                             </Button>
