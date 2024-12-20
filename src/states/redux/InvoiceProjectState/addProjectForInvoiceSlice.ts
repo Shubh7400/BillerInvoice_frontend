@@ -42,15 +42,16 @@ const addProjectForInvoiceSlice = createSlice({
             if (workingPeriodType === "hours") {
               amount = rate * (workingPeriod || 1) * conversionRate;
             } else if (workingPeriodType === "months") {
-              const effectiveWorkingDays = workingPeriod || 1; // Default to 1 if not provided
-              amount = (ratePerDay || 1) * effectiveWorkingDays * conversionRate;
+              const effectiveWorkingDays = workingPeriod !== undefined ? workingPeriod : 1; // Default to 1 if not provided
+              if(effectiveWorkingDays){
+              amount = (ratePerDay || 1) * effectiveWorkingDays * conversionRate; }
             } else if (workingPeriodType === "fixed") {
               amount = rate * conversionRate;
             }
           }
           draftState.projectsForInvoice.push({
             ...action.payload,
-            workingPeriod: workingPeriod || 1, // Ensure default value
+            workingPeriod: workingPeriod !== undefined ? workingPeriod : 1,
             amount , 
             advanceAmount: advanceAmount || 0, 
             ratePerDay,
@@ -66,62 +67,80 @@ const addProjectForInvoiceSlice = createSlice({
     ) => {
       return produce(state, (draftState: InitialStateType) => {
         draftState.projectsForInvoice = action.payload.map((project) => {
-          const { rate, ratePerDay, workingPeriodType, conversionRate, workingPeriod,
-             advanceAmount} = project;
-
+          const {
+            rate,
+            ratePerDay,
+            workingPeriodType,
+            conversionRate,
+            workingPeriod,
+            advanceAmount,
+          } = project;
+    
           let amount = 0;
           if (rate && workingPeriodType) {
             if (workingPeriodType === "hours") {
-              amount = rate * (workingPeriod || 1) * conversionRate;
+              if(workingPeriod){
+              amount = rate * (workingPeriod !== undefined ? workingPeriod : 1) * conversionRate; }
             } else if (workingPeriodType === "months") {
-              const effectiveWorkingDays = workingPeriod || 1; // Default to 1 if not provided
-              amount = (ratePerDay || 1) * effectiveWorkingDays * conversionRate;
+              const effectiveWorkingDays = workingPeriod !== undefined ? workingPeriod : 1;
+              if(effectiveWorkingDays){
+              amount = (ratePerDay || 1) * effectiveWorkingDays * conversionRate; }
             } else if (workingPeriodType === "fixed") {
               amount = rate * conversionRate;
             }
-          }
+          }  
           return {
             ...project,
-            workingPeriod: workingPeriod || 1, // Ensure default value
-            amount,advanceAmount,
+            workingPeriod: workingPeriod !== undefined ? workingPeriod : 1, // Ensure default value
+            amount,
+            advanceAmount,
           };
         });
       });
     },
-
-
+    
     updateProjectForInvoiceAction: (
       state,
       action: PayloadAction<ProjectType>
     ) => {
       return produce(state, (draftState: InitialStateType) => {
         const updatedProject = action.payload;
-        const { _id, rate, ratePerDay, workingPeriodType, conversionRate, workingPeriod, 
-      
-          advanceAmount} = updatedProject;
-
+        const {
+          _id,
+          rate,
+          ratePerDay,
+          workingPeriodType,
+          conversionRate,
+          workingPeriod,
+          advanceAmount,
+        } = updatedProject;
+    
         const projectIndex = draftState.projectsForInvoice.findIndex(
           (project) => project._id === _id
         );
-
+    
         if (projectIndex !== -1) {
           let amount = 0;
           if (rate && workingPeriodType) {
             if (workingPeriodType === "hours") {
-              amount = rate * (workingPeriod || 1) * conversionRate;
+              if(workingPeriod){
+
+              amount = rate * (workingPeriod !== undefined ? workingPeriod : 1) * conversionRate; }
             } else if (workingPeriodType === "months") {
-              const effectiveWorkingDays = workingPeriod || 1; // Default to 1 if not provided
-              amount = (ratePerDay || 1) * effectiveWorkingDays * conversionRate;
+              const effectiveWorkingDays = workingPeriod !== undefined ? workingPeriod : 1;
+              if(effectiveWorkingDays){
+              amount = (ratePerDay || 1) * effectiveWorkingDays * conversionRate; }
             } else if (workingPeriodType === "fixed") {
               amount = rate * conversionRate;
             }
           }
-
+    
           draftState.projectsForInvoice[projectIndex] = {
             ...draftState.projectsForInvoice[projectIndex],
             ...updatedProject,
-            workingPeriod: workingPeriod || 1, // Ensure default value
-            amount, advanceAmount,
+            workingPeriod: workingPeriod !== undefined ? workingPeriod : 1, // Ensure default value
+            amount,
+            advanceAmount,
           };
         }
       });

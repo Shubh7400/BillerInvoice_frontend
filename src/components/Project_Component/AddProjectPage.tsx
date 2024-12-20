@@ -34,6 +34,19 @@ import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/al
 import { log } from "node:console";
 import { addProjectForInvoiceAction, removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
+
+import dayjs, { Dayjs } from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+import {
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from "@mui/material";
 function AddProjectPage({
   adminId,
   clientId,
@@ -81,6 +94,7 @@ function AddProjectPage({
     gistin: client.gistin,
     user: client.user,
     sameState: client.sameState,
+    contactNo: client.contactNo,
   }));
 
   const handleToAddClick = () => {
@@ -97,7 +111,7 @@ function AddProjectPage({
   const handleClose = () => {
     setOpen(false);
   };
-
+  const [textColor, setTextColor] = React.useState("black");
   const materialTheme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   const [workPeriodType, setWorkPeriodType] = useState("hours");
@@ -109,7 +123,7 @@ function AddProjectPage({
   const [loadingRate, setLoadingRate] = useState(false);
   const [rateError, setRateError] = useState("");
   const [projectData, setProjectData] = useState<ProjectType>({
-    _id:"",
+    _id: "",
     projectName: "",
     rate: 0,
     workingPeriodType: "hours",
@@ -119,6 +133,14 @@ function AddProjectPage({
     adminId: "",
     clientId: clientId || "",
     advanceAmount: 0,
+    paymentCycle: "",
+    billingCycle: "",
+    technology: "",
+    paidLeave: 0,
+    timeSheet: "",
+    candidateName: "",
+    startDate: "",
+    endDate: "",
   });
 
   const {
@@ -140,6 +162,14 @@ function AddProjectPage({
         conversionRate: selectedProjectData.conversionRate,
         paymentStatus: selectedProjectData.paymentStatus,
         advanceAmount: selectedProjectData.advanceAmount,
+        paymentCycle: selectedProjectData.paymentCycle,
+        billingCycle: selectedProjectData.billingCycle,
+        technology: selectedProjectData.technology,
+        paidLeave: selectedProjectData.paidLeave,
+        timeSheet: selectedProjectData.timeSheet,
+        candidateName: selectedProjectData.candidateName,
+        startDate: selectedProjectData.startDate,
+        endDate: selectedProjectData.endDate,
       });
     }
   }, [selectedProjectLoading, selectedProjectData, selectedProjectError]);
@@ -205,7 +235,7 @@ function AddProjectPage({
       });
     }
   }, [clientId]);
- 
+
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void {
@@ -264,6 +294,24 @@ function AddProjectPage({
     if (name === "workingPeriodType") {
       setWorkPeriodType(value);
     }
+
+
+    if (name === "timeSheet") {
+      setProjectData((prevData) => ({
+        ...prevData,
+        timeSheet: value,
+      }));
+      return;
+    }
+
+    if (name === "billingCycle") {
+      setProjectData((prevData) => ({
+        ...prevData,
+        billingCycle: value,
+      }));
+      return;
+    }
+
   }
 
   function areAllRequiredFieldsFilled(obj: any) {
@@ -376,6 +424,14 @@ function AddProjectPage({
         adminId: adminId ? adminId : "",
         clientId: clientId ? clientId : "",
         advanceAmount: 0,
+        paymentCycle: "",
+        billingCycle: "",
+        technology: "",
+        paidLeave: 0,
+        timeSheet: "",
+        candidateName: "",
+        startDate: "",
+        endDate: "",
       });
     }
     if (!forAddProject && !toEdit && projectToEdit && projectToEdit._id) {
@@ -397,6 +453,15 @@ function AddProjectPage({
       setProjectData({ ...projectData, adminId });
     }
   }, [clientId, adminId]);
+
+  const handleDateChange = (field: string, value: dayjs.Dayjs | null) => {
+    if (!value) {
+      setProjectData((prevData) => ({ ...prevData, [field]: null }));
+    } else {
+      setProjectData((prevData) => ({ ...prevData, [field]: value.toISOString() }));
+    }
+  };
+  
 
   return (
     <>
@@ -429,34 +494,34 @@ function AddProjectPage({
             <div>
               {!clientAddProject ? (
                 <Autocomplete
-                options={clientsArr}
-                getOptionLabel={(option) => option.clientName || ""}
-                value={
-                  clientsArr.find((client) => client._id === projectData.clientId) || null
-                }
-                onChange={(event, newValue) => {
-                  if (newValue && newValue._id) {
-                    setFormError("");
-                    setSelectClient(newValue);
-                    setProjectData({
-                      ...projectData,
-                      clientId: newValue._id,
-                    });
+                  options={clientsArr}
+                  getOptionLabel={(option) => option.clientName || ""}
+                  value={
+                    clientsArr.find((client) => client._id === projectData.clientId) || null
                   }
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    margin="dense"
-                    id="clientSelect"
-                    label="Select Client"
-                    type="text"
-                    fullWidth
-                    variant="outlined"
-                    required
-                  />
-                )}
-              />
+                  onChange={(event, newValue) => {
+                    if (newValue && newValue._id) {
+                      setFormError("");
+                      setSelectClient(newValue);
+                      setProjectData({
+                        ...projectData,
+                        clientId: newValue._id,
+                      });
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      margin="dense"
+                      id="clientSelect"
+                      label="Select Client"
+                      type="text"
+                      fullWidth
+                      variant="outlined"
+                      required
+                    />
+                  )}
+                />
               ) : (
                 <div>
                   <label className="text-xs py-1 opacity-60">
@@ -536,7 +601,7 @@ function AddProjectPage({
                   : `Rate (${currencyType}/${workPeriodType === "months" ? "months" : "hours"
                   })`
               }
-              type="number"
+              type="text"
               fullWidth
               variant="outlined"
               name="rate"
@@ -544,7 +609,7 @@ function AddProjectPage({
               onChange={handleChange}
             />
 
-            {projectData.workingPeriodType=== "fixed" &&
+            {projectData.workingPeriodType === "fixed" &&
               <TextField
                 margin="dense"
                 id="workingPeriodType"
@@ -557,58 +622,7 @@ function AddProjectPage({
                 onChange={handleChange}
               />
             }
-            {/* {workPeriodType === "days" ? (
-              <TextField
-                margin="dense"
-                id="projectPeriod"
-                label={`Total project period in ${workPeriodType}`}
-                type="number"
-                fullWidth
-                variant="outlined"
-                name="projectPeriod"
-                value={projectData.projectPeriod}
-                onChange={handleChange}
-              />
-            ) : null} */}
-            {/* {workPeriodType === "hours" ? (
-              <>
-                <label className=" text-[14px] text-gray-500">
-                  {`Actual working in ${workPeriodType}`}
-                </label>
 
-                <TextField
-                  margin="dense"
-                  id="periodFrom"
-                  type="time" // Set the type to "time" for HH:MM input
-                  fullWidth
-                  variant="outlined"
-                  name="workingPeriod"
-                  value={projectData.workingPeriod}
-                  onChange={handleChange}
-                  required
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  InputProps={{
-                    inputProps: {
-                      step: 300, // Set the step to 5 minutes (300 seconds)
-                    },
-                  }}
-                />
-              </>
-            ) : (
-              <TextField
-                margin="dense"
-                id="workingPeriod"
-                label={`Actual working in ${workPeriodType}`}
-                type="number"
-                fullWidth
-                variant="outlined"
-                name="workingPeriod"
-                value={projectData.workingPeriod}
-                onChange={handleChange}
-              />
-            )} */}
 
             {currencyType !== "rupees" ? (
               <>
@@ -648,6 +662,110 @@ function AddProjectPage({
                 )}
               </>
             ) : null}
+
+            <TextField
+              margin="dense"
+              id="paymentCycle"
+              label="PaymentCycle"
+              type="text"
+              fullWidth
+              variant="outlined"
+              name="paymentCycle"
+              value={projectData.paymentCycle}
+              onChange={handleChange}
+            // required
+            />
+
+            <TextField
+              select
+              margin="dense"
+              id="billingCycle"
+              label="Billing Cycle"
+              fullWidth
+              variant="outlined"
+              name="billingCycle"
+              value={projectData.billingCycle || ""}
+              onChange={handleChange}
+            >
+              <MenuItem value="hours">Working day</MenuItem>
+              <MenuItem value="months">Calender</MenuItem>
+              <MenuItem value="fixed">Fixed</MenuItem>
+            </TextField>
+
+            <TextField
+              margin="dense"
+              id="technology"
+              label="Technology"
+              type="text"
+              fullWidth
+              variant="outlined"
+              name="technology"
+              value={projectData.technology}
+              onChange={handleChange}
+            // required
+            />
+
+            <FormControl component="fieldset" margin="dense" fullWidth>
+              <FormLabel component="legend">Time Sheet</FormLabel>
+              <RadioGroup
+                row
+                name="timeSheet"
+                value={projectData.timeSheet}
+                onChange={handleChange}
+              >
+                <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+                <FormControlLabel value="no" control={<Radio />} label="No" />
+              </RadioGroup>
+            </FormControl>
+
+            <TextField
+              margin="dense"
+              id="candidateName"
+              label="Candidate / Resource Name"
+              type="text"
+              fullWidth
+              variant="outlined"
+              name="candidateName"
+              value={projectData.candidateName}
+              onChange={handleChange}
+            // required
+            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}> {/* Use Dayjs Adapter */}
+              <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                {/* Start Date Picker */}
+                <DatePicker
+                  label="Start Date"
+                  value={projectData.startDate ? dayjs(projectData.startDate) : null}
+                  onChange={(newValue) => handleDateChange("startDate", newValue)}
+                  slotProps={{
+                    textField: {
+                      variant: "outlined",
+                      fullWidth: true,
+                      margin: "normal",
+                    },
+                  }}
+                />
+
+                {/* End Date Picker */}
+                <DatePicker
+                  label="End Date"
+                  value={projectData.endDate ? dayjs(projectData.endDate) : null}
+                  onChange={(newValue) => handleDateChange("endDate", newValue)}
+                  slotProps={{
+                    textField: {
+                      variant: "outlined",
+                      fullWidth: true,
+                      margin: "normal",
+                    },
+                  }}
+                />
+              </div>
+            </LocalizationProvider>
+
+
+
+
+
           </form>
         </DialogContent>
         <DialogActions>

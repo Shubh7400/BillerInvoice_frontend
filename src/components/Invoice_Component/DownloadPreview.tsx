@@ -25,7 +25,7 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
   const { data: invoiceObject } = useSelector(
     (state: RootState) => state.invoiceObjectState
   );
-
+  
   const clientObj: ClientType = selectedClient.data;
   const taxAmount = +(
     invoiceObject.amountAfterTax - invoiceObject.amountWithoutTax
@@ -156,6 +156,8 @@ const DownloadPreview = ({ grandTotal, advanceAmount, invoice }: DownloadPreview
                   {invoice.clientAddress?.postalCode} - {invoice.clientAddress?.country}
                   <br />
                       <span className="font-semibold">{invoice.clientEmails}</span> 
+                      <br />
+                      <span className="font-semibold">{invoice.clientContactNo}</span> 
                 </p>
               </div>
             ) : (

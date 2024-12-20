@@ -104,6 +104,7 @@ export default function CompoAddClient({
       postalCode: "",
     },
     user: "",
+    contactNo: "",
   });
 
   React.useEffect(() => {
