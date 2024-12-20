@@ -369,7 +369,7 @@ const DownloadPreview = ({
               ) :
                 (
                   <div className="flex justify-between mb-2">
-                    SUBTOTAL: <span>&#8377; {invoiceObject.amountWithoutTax}</span>
+                    SUBTOTAL: <span>&#8377; {invoiceObject.amountWithoutTax.toFixed(2)}</span>
                   </div>
                 )}
 

@@ -454,14 +454,45 @@ function AddProjectPage({
     }
   }, [clientId, adminId]);
 
+  const [startDateError, setStartDateError] = useState(false);
+  const [endDateError, setEndDateError] = useState(false);
+
   const handleDateChange = (field: string, value: dayjs.Dayjs | null) => {
     if (!value) {
       setProjectData((prevData) => ({ ...prevData, [field]: null }));
+      if (field === "startDate") {
+        setStartDateError(false);
+      }
+      if (field === "endDate") {
+        setEndDateError(false);
+      }
     } else {
-      setProjectData((prevData) => ({ ...prevData, [field]: value.toISOString() }));
+      setProjectData((prevData) => ({
+        ...prevData,
+        [field]: value.toISOString(),
+      }));
+
+      // Validate the date range
+      if (field === "startDate") {
+        if (projectData.endDate && value.isAfter(dayjs(projectData.endDate))) {
+          setStartDateError(true);
+        } else {
+          setStartDateError(false);
+        }
+      }
+
+      if (field === "endDate") {
+        if (projectData.startDate && value.isBefore(dayjs(projectData.startDate))) {
+          setEndDateError(true);
+        } else {
+          setEndDateError(false);
+        }
+      }
     }
   };
-  
+
+
+
 
   return (
     <>
@@ -614,7 +645,7 @@ function AddProjectPage({
                 margin="dense"
                 id="workingPeriodType"
                 label="Advance Amount"
-                type="number"
+                type="text"
                 fullWidth
                 variant="outlined"
                 name="advanceAmount"
@@ -742,7 +773,10 @@ function AddProjectPage({
                       variant: "outlined",
                       fullWidth: true,
                       margin: "normal",
+                      error: startDateError, // Use boolean error flag
+                      helperText: startDateError ? "Start date should be less than end date" : "",
                     },
+
                   }}
                 />
 
@@ -756,6 +790,8 @@ function AddProjectPage({
                       variant: "outlined",
                       fullWidth: true,
                       margin: "normal",
+                      error: endDateError, // Use boolean error flag
+                      helperText: endDateError ? "End date should be greater than start date" : "",
                     },
                   }}
                 />

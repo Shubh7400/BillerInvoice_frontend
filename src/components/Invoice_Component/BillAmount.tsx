@@ -420,7 +420,7 @@ React.useEffect(() => {
             }}
           >
             <div className="flex justify-between text-lg md:text-lg">
-              Subtotal:<span> &#8377;{amountWithoutTax} </span>
+              Subtotal:<span> &#8377;{amountWithoutTax.toFixed(2)} </span>
             </div>
             {/* <Box sx={{ mt: "6px" }}>
               {clientSameState ? (
@@ -626,9 +626,7 @@ React.useEffect(() => {
               <>
                 <div className="flex justify-between text-lg md:text-lg">
                   Advance:<span> &#8377;{advanceAmount.toFixed(2)}</span>
-                  Advance:<span> - &#8377;{advanceAmount}</span>
                 </div>
-
                 <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-2">
                   Grand Total:
                   <span className=" "> &#8377;{grandTotal.toFixed(2)}</span>
