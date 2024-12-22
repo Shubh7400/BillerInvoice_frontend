@@ -627,10 +627,9 @@ function AddProjectPage({
               margin="dense"
               id="rate"
               label={
-                workPeriodType === "fixed"
+                projectData.workingPeriodType === "fixed"
                   ? "Enter Fixed Amount"
-                  : `Rate (${currencyType}/${workPeriodType === "months" ? "months" : "hours"
-                  })`
+                  : `Rate (${projectData.currencyType}/${projectData.workingPeriodType})`
               }
               type="text"
               fullWidth
@@ -718,8 +717,8 @@ function AddProjectPage({
               value={projectData.billingCycle || ""}
               onChange={handleChange}
             >
-              <MenuItem value="hours">Working day</MenuItem>
-              <MenuItem value="months">Calender</MenuItem>
+              <MenuItem value="workingday">Working day</MenuItem>
+              <MenuItem value="calender">Calender</MenuItem>
               <MenuItem value="fixed">Fixed</MenuItem>
             </TextField>
 
