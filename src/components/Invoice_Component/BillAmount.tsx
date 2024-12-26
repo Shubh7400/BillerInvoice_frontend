@@ -55,6 +55,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
   const [invoiceNo, setInvoiceNo] = React.useState(0);
   const [clientSameState, setClientSameState] = React.useState(false);
+  const [sameCountry, setSameCountry] = React.useState(false);
   const [invoiceDate, setInvoiceDate] = React.useState(dayjs());
   const [dueDate, setDueDate] = React.useState(dayjs());
   const [previewAllowed, setPreviewAllowed] = React.useState(true);
@@ -85,10 +86,35 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
         })
       );
     }
-    if (selectedClientState.data.sameState) {
-      setClientSameState(selectedClientState.data.sameState);
+    // if (selectedClientState.data.sameState) {
+    //   setClientSameState(selectedClientState.data.sameState);
+    // }
+    if (
+      selectedClientState?.data?.address?.country &&
+      adminState?.data?.address?.country &&
+      selectedClientState.data.address.country.trim().toLowerCase() ===
+      adminState.data.address.country.trim().toLowerCase()
+    ) {
+      setSameCountry(true);
     }
-  }, [adminState, selectedClientState]);
+    else{
+      setSameCountry(false);
+    }
+
+    if (
+      selectedClientState?.data?.address?.state &&
+      adminState?.data?.address?.state &&
+      selectedClientState.data.address.state.trim().toLowerCase() ===
+      adminState.data.address.state.trim().toLowerCase()
+    ) {
+      setClientSameState(true);
+    }
+    else{
+      setClientSameState(false);
+    }
+
+
+  }, [adminState, selectedClientState,clientSameState]);
 
   React.useEffect(() => {
     // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
@@ -201,99 +227,114 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   };
 
   React.useEffect(() => {
-    const taxPercentage = gstType === "igst" ? 18 : 9; // Calculate tax percentage based on gstType
-    const tax = (amountWithoutTax * taxPercentage) / 100;
+    // const taxPercentage = gstType === "igst" ? 18 : 9; // Calculate tax percentage based on gstType
+    
+    // const tax = (amountWithoutTax * taxPercentage) / 100;
+
+    const tax = sameCountry === true ? +(amountWithoutTax * 18 / 100).toFixed(2) : 0;
+
     const total = amountWithoutTax + tax;
 
     const totalWithAdvance = total - (typeof advanceAmount === "number" ? advanceAmount : 0);
-  
+
     // Dispatch the updated invoice data, using the calculated values
     dispatch(
       updateInvoiceObjectStateAction({
         ...invoiceObject,
-        taxType: gstType, 
-        amountWithoutTax, 
-        amountAfterTax: total, 
-        taxAmount: tax, 
-        advanceAmount, 
+        taxType: gstType,
+        amountWithoutTax,
+        amountAfterTax: total,
+        taxAmount: tax,
+        advanceAmount,
         grandTotal: totalWithAdvance,
       })
     );
   }, [gstType, amountWithoutTax, advanceAmount, dispatch]); // Ensure the useEffect depends on all the relevant states
   const calculateAmounts = () => {
-  if (projectsForInvoice && projectsForInvoice.length > 0) {
-    let amountPreTax = 0;
-    let totalAdvanceAmount = 0;
+    if (projectsForInvoice && projectsForInvoice.length > 0) {
+      let amountPreTax = 0;
+      let totalAdvanceAmount = 0;
 
-    projectsForInvoice.forEach((project) => {
-      if (project.amount) {
-        amountPreTax += project.amount;
-        amountPreTax = +amountPreTax.toFixed(2);
-      }
-      if (project.advanceAmount) {
-        totalAdvanceAmount += project.advanceAmount * project.conversionRate; // Sum up the advance amounts
-      }
-    });
+      projectsForInvoice.forEach((project) => {
+        if (project.amount) {
+          amountPreTax += project.amount;
+          amountPreTax = +amountPreTax.toFixed(2);
+        }
+        if (project.advanceAmount) {
+          totalAdvanceAmount += project.advanceAmount * project.conversionRate; // Sum up the advance amounts
+        }
+      });
 
-    let taxPercentage = 0;
-    if (gstType === "sgst" || gstType === "cgst") {
-      taxPercentage = 9;
-    } else if (gstType === "igst") {
-      taxPercentage = 18;
+
+     
+
+      // let taxPercentage = 0;
+      // if (gstType === "sgst" || gstType === "cgst") {
+      //   taxPercentage = 9;
+      // } else if (gstType === "igst") {
+      //   taxPercentage = 18;
+      // }
+     
+
+      const tax = sameCountry === true ? +(amountPreTax * 18 / 100).toFixed(2) : 0;
+
+      const amountPostTax = +(amountPreTax + tax).toFixed(2);
+      const grandTotalLocal = +(amountPostTax - totalAdvanceAmount).toFixed(2);
+
+      // Update state variables
+      setAmountWithoutTax(amountPreTax);
+      setAmountAfterTax(amountPostTax);
+      setTaxAmount(tax);
+      setAdvanceAmount(totalAdvanceAmount); // Set the advance amount
+      setGrandTotal(grandTotalLocal);
     }
+  };
 
-    const tax = +(amountPreTax * taxPercentage / 100).toFixed(2);
-    const amountPostTax = +(amountPreTax + tax).toFixed(2);
-    const grandTotalLocal = +(amountPostTax - totalAdvanceAmount).toFixed(2);
 
-    // Update state variables
-    setAmountWithoutTax(amountPreTax);
-    setAmountAfterTax(amountPostTax);
-    setTaxAmount(tax);
-    setAdvanceAmount(totalAdvanceAmount); // Set the advance amount
-    setGrandTotal(grandTotalLocal);
-  }
-};
+  
+  // console.log(selectedClientState?.data?.address?.country);
+  // console.log(adminState?.data?.address?.country);
+  // console.log(sameCountry);
 
   const toggleDrawer = (newOpen: boolean) => {
-  if (projectsForInvoice && projectsForInvoice.length > 0) {
-    if (showPreview) {
-      generateAndPreviewPDF();
+    if (projectsForInvoice && projectsForInvoice.length > 0) {
+      if (showPreview) {
+        generateAndPreviewPDF();
+      }
+      setPreviewAllowed(true);
+      setOpen(newOpen);
+
+      const projectsIdArr = projectsForInvoice.map((project) => project._id);
+      const clientId = projectsForInvoice[0].clientId;
+      const adminId = projectsForInvoice[0].adminId;
+
+      dispatch(
+        updateInvoiceObjectStateAction({
+          projectsId: projectsIdArr,
+          clientId,
+          adminId,
+          amountWithoutTax,
+          amountAfterTax,
+          advanceAmount,
+          taxType: gstType,
+          taxAmount,
+          grandTotal,
+        })
+      );
+    } else {
+      enqueueSnackbar("Select project to create and generate invoice.", {
+        variant: "error",
+      });
     }
-    setPreviewAllowed(true);
-    setOpen(newOpen);
+  };
 
-    const projectsIdArr = projectsForInvoice.map((project) => project._id);
-    const clientId = projectsForInvoice[0].clientId;
-    const adminId = projectsForInvoice[0].adminId;
-
-    dispatch(
-      updateInvoiceObjectStateAction({
-        projectsId: projectsIdArr,
-        clientId,
-        adminId,
-        amountWithoutTax,
-        amountAfterTax,
-        advanceAmount,
-        taxType: gstType,
-        taxAmount,
-        grandTotal,
-      })
-    );
-  } else {
-    enqueueSnackbar("Select project to create and generate invoice.", {
-      variant: "error",
-    });
-  }
-};
-
-React.useEffect(() => {
-  calculateAmounts();
-}, [projectsForInvoice, gstType]);
+  React.useEffect(() => {
+    calculateAmounts();
+  }, [projectsForInvoice, gstType,sameCountry]);
 
 
   function allInvoiceFieldsAvailable(obj: any) {
-    
+
     if (!obj || typeof obj !== "object") {
       return false;
     }
@@ -303,7 +344,7 @@ React.useEffect(() => {
     const mandatoryFields = ["projectName", "currencyType", "rate", "workingPeriodType"];
     for (const field of mandatoryFields) {
       if (!obj[field] || (typeof obj[field] === "string" && obj[field].trim() === "")) {
-        return false; 
+        return false;
       }
     }
 
@@ -325,10 +366,10 @@ React.useEffect(() => {
         // No workingPeriod required for "fixed" type
         break;
       default:
-        return false; 
+        return false;
     }
 
-    return true; 
+    return true;
   }
 
   const AddInvoiceMutationHandler = useAddInvoiceMutation();
@@ -372,6 +413,10 @@ React.useEffect(() => {
     setShowPreview(value);
   };
 
+  // console.log(selectedClientState.data.sameState);
+  // console.log("admin address : ", adminState.data.address);
+  // console.log("client address", selectedClientState.data.address);
+  console.log("client address",clientSameState);
   return (
     <Box>
       <CssBaseline />
@@ -422,22 +467,25 @@ React.useEffect(() => {
             <div className="flex justify-between text-lg md:text-lg">
               Subtotal:<span> &#8377;{amountWithoutTax.toFixed(2)} </span>
             </div>
-            {/* <Box sx={{ mt: "6px" }}>
-              {clientSameState ? (
-                <>
+            {sameCountry &&
+              <Box sx={{ mt: "6px" }}>
+                {clientSameState ? (
+                  <>
+                    <div className="flex justify-between ">
+                      SGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between ">
+                      CGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
+                    </div>
+                  </>
+                ) : (
                   <div className="flex justify-between ">
-                    SGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
+                    IGST:(18%)<span>{taxAmount.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between ">
-                    CGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
-                  </div>
-                </>
-              ) : (
-                <div className="flex justify-between ">
-                  GST:(18%)<span>{taxAmount.toFixed(2)}</span>
-                </div>
-              )}
-            </Box> */}
+                )}
+              </Box>
+            }
+
             {/* <Box
               sx={{
                 mt: "6px",
@@ -563,7 +611,7 @@ React.useEffect(() => {
               </div>
             </Box> */}
 
-            <Box
+            {/* <Box
               sx={{
                 mt: "6px",
                 "& .MuiFormControl-root": {
@@ -617,7 +665,7 @@ React.useEffect(() => {
                   </span>
                 </div>
               </div>
-            </Box>
+            </Box> */}
             <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-2">
               Amount:
               <span className=" "> &#8377;{amountAfterTax.toFixed(2)}</span>

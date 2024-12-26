@@ -311,6 +311,11 @@ function AddProjectPage({
       }));
       return;
     }
+    // Handle other fields
+    setProjectData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
 
   }
 
@@ -337,6 +342,7 @@ function AddProjectPage({
       | React.FormEvent<HTMLFormElement>
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
+    console.log(projectData);
     e.preventDefault();
     if (areAllRequiredFieldsFilled(projectData)) {
       setLoading(true);

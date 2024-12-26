@@ -409,86 +409,82 @@ const ProjectTable = ({
                             ) : null}
                             /{project.workingPeriodType})
                           </TableCell>
-                          {/* <TableCell style={{ padding: "0" }}>
-                          {project.workingPeriod}({project.workingPeriodType})
-                        </TableCell> */}
-                          <TableCell style={{ padding: "0" }}>
-                            <span>&#x20B9; </span>
-                            {project.conversionRate.toFixed(2)}
-                          </TableCell>
-                          {/* <TableCell style={{ padding: "0" }}>
-                          &#x20B9; {project.amount ? project.amount : 0}
-                        </TableCell> */}
-                          <TableCell style={{ padding: "0" }}>
-                            <div className="flex">
-                              <div className={Styles.editButton}>
-                                <div className="">
+                                                 
+                            <TableCell style={{ padding: "0" }}>
+                              <span>&#x20B9; </span>
+                              {(project?.conversionRate ?? 0).toFixed(2)}
+                            </TableCell>
+                            
+                            <TableCell style={{ padding: "0" }}>
+                              <div className="flex">
+                                <div className={Styles.editButton}>
+                                  <div className="">
 
-                                  <Button
-                                    onClick={() => handleViewProject(project)}
-                                    sx={{
-                                      color: materialTheme.palette.primary.main,
-                                      ":hover": {
-                                        color: materialTheme.palette.secondary.main,
-                                      },
-                                    }}
-                                  >
-                                    <FaEye size={20} />
-                                  </Button>
+                                    <Button
+                                      onClick={() => handleViewProject(project)}
+                                      sx={{
+                                        color: materialTheme.palette.primary.main,
+                                        ":hover": {
+                                          color: materialTheme.palette.secondary.main,
+                                        },
+                                      }}
+                                    >
+                                      <FaEye size={20} />
+                                    </Button>
 
-                                  <Button
-                                    disabled={!adminId}
-                                    variant="outlined"
-                                    sx={{
-                                      color: materialTheme.palette.primary.main,
-                                      borderColor:
-                                        materialTheme.palette.primary.main,
-                                      ":hover": {
+                                    <Button
+                                      disabled={!adminId}
+                                      variant="outlined"
+                                      sx={{
+                                        color: materialTheme.palette.primary.main,
                                         borderColor:
-                                          materialTheme.palette.secondary.main,
-                                        backgroundColor:
-                                          materialTheme.palette.secondary.main,
-                                        color: "white",
-                                      },
-                                      cursor: "pointer",
-                                    }}
-                                    onClick={() => {
-                                      if (project) {
-                                        handleEditProject(project);
-                                      }
-                                    }}
-                                  >
-                                    <CiEdit size={25} />
-                                  </Button>
+                                          materialTheme.palette.primary.main,
+                                        ":hover": {
+                                          borderColor:
+                                            materialTheme.palette.secondary.main,
+                                          backgroundColor:
+                                            materialTheme.palette.secondary.main,
+                                          color: "white",
+                                        },
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() => {
+                                        if (project) {
+                                          handleEditProject(project);
+                                        }
+                                      }}
+                                    >
+                                      <CiEdit size={25} />
+                                    </Button>
+                                  </div>
+                                </div>
+                                <div className={Styles.editButton}>
+                                  <ActionConfirmer
+                                    actionTag="Delete"
+                                    actionFunction={handleProjectDelete}
+                                    parameter={project._id}
+                                  />
                                 </div>
                               </div>
-                              <div className={Styles.editButton}>
-                                <ActionConfirmer
-                                  actionTag="Delete"
-                                  actionFunction={handleProjectDelete}
-                                  parameter={project._id}
-                                />
+                            </TableCell>
+                            <TableCell sx={{ paddingY: "8px", paddingX: "0" }}>
+                              <div>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => handleConfirmSelection(project)}
+                                  sx={{
+                                    backgroundColor: "#d9a990",
+                                    borderRadius: "20px",
+                                    ":hover": {
+                                      backgroundColor: "#4a6180",
+                                    },
+                                  }}
+                                >
+                                  view
+                                </Button>
                               </div>
-                            </div>
-                          </TableCell>
-                          <TableCell sx={{ paddingY: "8px", paddingX: "0" }}>
-                            <div>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => handleConfirmSelection(project)}
-                                sx={{
-                                  backgroundColor: "#d9a990",
-                                  borderRadius: "20px",
-                                  ":hover": {
-                                    backgroundColor: "#4a6180",
-                                  },
-                                }}
-                              >
-                                view
-                              </Button>
-                            </div>
-                          </TableCell>
+                            </TableCell>
                         </TableRow>
                       ))}
                   </TableBody>

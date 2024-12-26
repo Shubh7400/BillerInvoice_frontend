@@ -392,6 +392,14 @@ function InvoiceClientPage() {
   const handleInvoiceNoChange = (newInvoiceNo: number) => {
     dispatch(updateInvoiceObjectStateAction({ invoiceNo: newInvoiceNo }));
   };
+  const handleRateChange = (newRate: number, project: ProjectType) => {
+    const updatedProject = {
+      ...project,
+      rate: newRate,
+    };
+    dispatch(updateProjectForInvoiceAction(updatedProject));
+    dispatch(updateInvoiceObjectStateAction(updatedProject));
+  };
 
   return (
     <div>
@@ -530,7 +538,7 @@ function InvoiceClientPage() {
             >
               <TableHead className={Styles.animated}>
                 <TableRow>
-                  <TableCell>Project Name</TableCell>
+                  <TableCell>Project Description</TableCell>
                   <TableCell>Rate</TableCell>
                   {editableProjects.map((project: ProjectType) => (
                     <>
@@ -566,58 +574,48 @@ function InvoiceClientPage() {
                   >
                     <TableCell className="text-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
                       {project.projectName}
-                    </TableCell>
+                    </TableCell>                   
                     <TableCell className="text-[13px] w-[150px]">
-                      <Typography variant="body2">
-                        {project.rate ? `${project.rate} ` : ""}
-                        {project.currencyType === "rupees"
-                          ? project.workingPeriodType === "fixed"
-                            ? "₹/fixed"
-                            : `₹/${
-                                project.workingPeriodType === "hours"
-                                  ? "hours"
-                                  : "months"
-                              }`
-                          : project.currencyType === "dollars"
-                          ? project.workingPeriodType === "fixed"
-                            ? "$/fixed"
-                            : `$/${
-                                project.workingPeriodType === "hours"
-                                  ? "hours"
-                                  : "months"
-                              }`
-                          : project.currencyType === "pounds"
-                          ? project.workingPeriodType === "fixed"
-                            ? "£/fixed"
-                            : `£/${
-                                project.workingPeriodType === "hours"
-                                  ? "hours"
-                                  : "months"
-                              }`
-                          : ""}
-                      </Typography>
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        value={project.rate ||""}
+                        onChange={(e) => handleRateChange(Number(e.target.value), project)}
+                        InputProps={{
+                          endAdornment: (
+                            <Typography variant="body2" style={{ marginLeft: "8px" }}>
+                              {project.currencyType === "rupees"
+                                ? project.workingPeriodType === "fixed"
+                                  ? "₹/fixed"
+                                  : `₹/${project.workingPeriodType === "hours" ? "hours" : "months"}`
+                                : project.currencyType === "dollars"
+                                  ? project.workingPeriodType === "fixed"
+                                    ? "$/fixed"
+                                    : `$/${project.workingPeriodType === "hours" ? "hours" : "months"}`
+                                  : project.currencyType === "pounds"
+                                    ? project.workingPeriodType === "fixed"
+                                      ? "£/fixed"
+                                      : `£/${project.workingPeriodType === "hours" ? "hours" : "months"}`
+                                    : ""}
+                            </Typography>
+                          ),
+                        }}
+                      />
+
                     </TableCell>
-                    {/* 
-                    {project.workingPeriodType === "months" && (
-                      <TableCell className="text-[13px] w-[150px]">
-                        <Typography variant="body2">
-                          {project.ratePerDay?.toFixed(2) || "NA"}
-                        </Typography>
-                      </TableCell>
-                    )} */}
+
                     {project.workingPeriodType === "months" && (
                       <TableCell className="text-[13px] w-[150px]">
                         <Typography variant="body2">
                           {project.ratePerDay
-                            ? ` ${
-                                project.currencyType === "rupees"
-                                  ? "₹"
-                                  : project.currencyType === "dollars"
-                                  ? "$"
-                                  : project.currencyType === "pounds"
+                            ? ` ${project.currencyType === "rupees"
+                              ? "₹"
+                              : project.currencyType === "dollars"
+                                ? "$"
+                                : project.currencyType === "pounds"
                                   ? "£"
                                   : ""
-                              } ${project.ratePerDay.toFixed(2)}`
+                            } ${project.ratePerDay.toFixed(2)}`
                             : "NA"}
                         </Typography>
                       </TableCell>
@@ -663,10 +661,10 @@ function InvoiceClientPage() {
                                 {project.currencyType === "rupees"
                                   ? "₹"
                                   : project.currencyType === "dollars"
-                                  ? "$"
-                                  : project.currencyType === "pounds"
-                                  ? "£"
-                                  : ""}
+                                    ? "$"
+                                    : project.currencyType === "pounds"
+                                      ? "£"
+                                      : ""}
                               </span>
                             ),
                           }}
