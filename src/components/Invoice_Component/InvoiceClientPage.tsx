@@ -572,14 +572,27 @@ function InvoiceClientPage() {
                     key={project._id}
                     className={`${Styles.project_row}`}
                   >
-                    <TableCell className="text-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
+                    {/* <TableCell className="text-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
                       {project.projectName}
-                    </TableCell>                   
+                    </TableCell>                    */}
+                    <TableCell className="text-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        type="text"
+                        value={project.projectName}
+                        onChange={(e) => {
+                          const target = e.target as HTMLInputElement; // Cast to HTMLInputElement
+                          handleInputChange(project._id ?? "", "projectName", target.value);
+                        }}
+                      />
+                    </TableCell>
+
                     <TableCell className="text-[13px] w-[150px]">
                       <TextField
                         variant="outlined"
                         size="small"
-                        value={project.rate ||""}
+                        value={project.rate || ""}
                         onChange={(e) => handleRateChange(Number(e.target.value), project)}
                         InputProps={{
                           endAdornment: (

@@ -29,11 +29,41 @@ const DownloadPreview = ({
   const { data: invoiceObject } = useSelector(
     (state: RootState) => state.invoiceObjectState
   );
-  
+
   const clientObj: ClientType = selectedClient.data;
   const taxAmount = +(
     invoiceObject.amountAfterTax - invoiceObject.amountWithoutTax
   ).toFixed(2);
+  const [clientSameState, setClientSameState] = React.useState(false);
+  const [sameCountry, setSameCountry] = React.useState(false);
+  React.useEffect(() => {
+    if (
+      selectedClient?.data?.address?.country &&
+      data?.address?.country &&
+      selectedClient.data.address.country.trim().toLowerCase() ===
+      data.address.country.trim().toLowerCase()
+    ) {
+      setSameCountry(true);
+    }
+    else {
+      setSameCountry(false);
+    }
+
+    if (
+      selectedClient?.data?.address?.state &&
+      data?.address?.state &&
+      selectedClient.data.address.state.trim().toLowerCase() ===
+      data.address.state.trim().toLowerCase()
+    ) {
+      setClientSameState(true);
+    }
+    else {
+      setClientSameState(false);
+    }
+
+
+  }, [data, selectedClient, clientSameState]);
+
   return (
     <div className="relative w-full h-[297mm] flex items-center justify-center  ">
       <div
@@ -158,9 +188,9 @@ const DownloadPreview = ({
                   {invoice.clientAddress?.city}, {invoice.clientAddress?.state}{" "}
                   {invoice.clientAddress?.postalCode} - {invoice.clientAddress?.country}
                   <br />
-                      <span className="font-semibold">{invoice.clientEmails}</span> 
-                      <br />
-                      <span className="font-semibold">{invoice.clientContactNo}</span> 
+                  <span className="font-semibold">{invoice.clientEmails}</span>
+                  <br />
+                  <span className="font-semibold">{invoice.clientContactNo}</span>
                 </p>
               </div>
             ) : (
@@ -249,7 +279,7 @@ const DownloadPreview = ({
                   <td className="border px-2 pb-4 text-center">{1}</td>
                   <td className="border px-2 pb-4 text-center">
                     {invoice.projectName}
-                  </td>        
+                  </td>
                   <td className="border px-2 pb-4 text-center">
                     {invoice.rate}(
                     {invoice.currencyType === "rupees" ? (
@@ -296,7 +326,7 @@ const DownloadPreview = ({
                       <td className="border px-2 pb-4 text-center">{index + 1}</td>
                       <td className="border px-2 pb-4 text-center">
                         {project.projectName}
-                      </td>              
+                      </td>
                       <td className="border px-2 pb-4 text-center">
                         {project.rate}(
                         {project.currencyType === "rupees" ? (
@@ -309,33 +339,33 @@ const DownloadPreview = ({
                         / {project.workingPeriodType})
                       </td>
 
-                    {project.workingPeriodType === "months" && (
-                    <td className="border px-2 pb-4 text-center">
-                      {project.currencyType === "rupees" ? (
-                        <span>&#x20B9;</span>
-                      ) : project.currencyType === "dollars" ? (
-                        <span>$</span>
-                      ) : project.currencyType === "pounds" ? (
-                        <span>&#163;</span>
-                      ) : null}
-                      {project.ratePerDay?.toFixed(2)}
-                      </td>
-                    )}
-                    {project.workingPeriodType !== "fixed" && (
+                      {project.workingPeriodType === "months" && (
+                        <td className="border px-2 pb-4 text-center">
+                          {project.currencyType === "rupees" ? (
+                            <span>&#x20B9;</span>
+                          ) : project.currencyType === "dollars" ? (
+                            <span>$</span>
+                          ) : project.currencyType === "pounds" ? (
+                            <span>&#163;</span>
+                          ) : null}
+                          {project.ratePerDay?.toFixed(2)}
+                        </td>
+                      )}
+                      {project.workingPeriodType !== "fixed" && (
+                        <td className="border px-2 pb-4 text-center">
+                          {project.workingPeriod || 1}
+                        </td>
+                      )}
                       <td className="border px-2 pb-4 text-center">
-                        {project.workingPeriod || 1}
+                        &#x20B9;{project.conversionRate.toFixed(2)}
                       </td>
-                    )}
-                    <td className="border px-2 pb-4 text-center">
-                      &#x20B9;{project.conversionRate.toFixed(2)}
-                    </td>
-                    <td className="border px-2 pb-4 text-center">
-                      &#x20B9; {project.amount?.toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            )}
+                      <td className="border px-2 pb-4 text-center">
+                        &#x20B9; {project.amount?.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
           </table>
           {/* Bank and Total amount section */}
           <div className="flex justify-between mt-4">
@@ -372,24 +402,30 @@ const DownloadPreview = ({
                     SUBTOTAL: <span>&#8377; {invoiceObject.amountWithoutTax.toFixed(2)}</span>
                   </div>
                 )}
-
-              {/* {clientObj.sameState ? (
-                <>
-                  <div className="flex justify-between">
-                    SGST @ 9%: <span>{taxAmount / 2}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    CGST @ 9%: <span>{taxAmount / 2}</span>
-                  </div>
-                </>
-              ) : (
-                <div className="flex justify-between mb-[30px]">
-                  IGST @ 18%: <span>{taxAmount}</span>
+              {sameCountry && (
+                <div style={{ marginTop: "6px" }}>
+                  {clientSameState ? (
+                    <>
+                      <div className="flex justify-between">
+                        SGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        CGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex justify-between">
+                      IGST:(18%)<span>{taxAmount.toFixed(2)}</span>
+                    </div>
+                  )}
                 </div>
-              )} */}
-              {invoice ? (
+              )}
+
+
+
+              {/* {invoice ? (
                 <div className="flex justify-between mb-[30px]">
-                  {/* Conditional rendering for tax type */}
+                 
                   {invoice.taxType === 'igst' ? (
                     <span>IGST</span>
                   ) : invoice.taxType === 'sgst' ? (
@@ -403,7 +439,7 @@ const DownloadPreview = ({
                 </div>
               ) : (
                 <div className="flex justify-between mb-[30px]">
-                  {/* Conditional rendering for tax type */}
+                 
                   {invoiceObject.taxType === 'igst' ? (
                     <span>IGST</span>
                   ) : invoiceObject.taxType === 'sgst' ? (
@@ -417,10 +453,10 @@ const DownloadPreview = ({
                 </div>
 
               )
-              }
-              
+              } */}
+
               {invoice ? (
-                invoice.advanceAmount   > 0 ? (
+                invoice.advanceAmount > 0 ? (
                   <>
                     <div className="flex justify-between mb-[30px]">
                       Advance: <span>{invoice.advanceAmount?.toFixed(2)}</span>
@@ -430,7 +466,7 @@ const DownloadPreview = ({
                     </div>
                   </>
                 ) : (
-                  <div className="text-[20px] justify-between flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
+                  <div className="text-[20px] justify-between flex items-center h-[30px] mt-[10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
                     Total: <span>&#8377; {invoice.amountAfterTax?.toFixed(2)}</span>
                   </div>
                 )
@@ -446,7 +482,7 @@ const DownloadPreview = ({
                       </div>
                     </>
                   ) : (
-                    <div className="text-[20px] justify-between flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
+                    <div className="text-[20px] justify-between flex items-center h-[30px] mt-[10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
                       Total:{" "}
                       <span>
                         &#8377; {invoiceObject?.amountAfterTax.toFixed(2) || 0}
