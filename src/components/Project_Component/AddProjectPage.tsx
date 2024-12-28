@@ -34,12 +34,12 @@ import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/al
 import { log } from "node:console";
 import { addProjectForInvoiceAction, removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
-
+import { FileData } from "../../types/types";
 import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
+import { addProject } from "../../api/project_requests";
 import {
   FormControl,
   FormLabel,
@@ -123,7 +123,7 @@ function AddProjectPage({
   const [loadingRate, setLoadingRate] = useState(false);
   const [rateError, setRateError] = useState("");
   const [projectData, setProjectData] = useState<ProjectType>({
-    _id: "",
+    // _id: "",
     projectName: "",
     rate: 0,
     workingPeriodType: "hours",
@@ -141,6 +141,7 @@ function AddProjectPage({
     candidateName: "",
     startDate: "",
     endDate: "",
+    files: [], // Initialize as an empty array
   });
 
   const {
@@ -152,7 +153,7 @@ function AddProjectPage({
   React.useEffect(() => {
     if (selectedProjectLoading === "succeeded" && selectedProjectData) {
       setProjectData({
-        _id: selectedProjectData._id || "",
+        // _id: selectedProjectData._id || "",
         adminId: selectedProjectData.adminId,
         clientId: selectedProjectData.clientId,
         projectName: selectedProjectData.projectName,
@@ -170,6 +171,7 @@ function AddProjectPage({
         candidateName: selectedProjectData.candidateName,
         startDate: selectedProjectData.startDate,
         endDate: selectedProjectData.endDate,
+        files: selectedProjectData.files,
       });
     }
   }, [selectedProjectLoading, selectedProjectData, selectedProjectError]);
@@ -239,9 +241,23 @@ function AddProjectPage({
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void {
-    let { name, value } = e.target;
+    let { name, value, type } = e.target;
     setFormError("");
     setIncompleteError("");
+
+    if (type === "file" && e.target instanceof HTMLInputElement && e.target.files) {
+      const files = e.target.files;
+      const updatedFiles = Array.from(files).map((file) => ({
+        name: file.name,
+        url: URL.createObjectURL(file), // Temporary URL for preview
+      }));
+
+      setProjectData((prevData) => ({
+        ...prevData,
+        files: [...(prevData.files || []), ...updatedFiles], // Append new file objects
+      }));
+      return;
+    }
 
     if (workPeriodType === "months" && parseInt(value) < 0) {
       value = "0";
@@ -311,6 +327,11 @@ function AddProjectPage({
       }));
       return;
     }
+    // Handle other fields
+    setProjectData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
 
   }
 
@@ -337,14 +358,22 @@ function AddProjectPage({
       | React.FormEvent<HTMLFormElement>
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
+    console.log(projectData);
     e.preventDefault();
     if (areAllRequiredFieldsFilled(projectData)) {
       setLoading(true);
-      addProjectMutation.mutate(projectData, {
+
+      // Ensure `fileUrls` is populated with URLs from `files`
+      const updatedProjectData: ProjectType = {
+        ...projectData,
+        fileUrls: projectData.files?.map((file) => file.url), // Extract `url` from each file
+      };
+
+      addProjectMutation.mutate(updatedProjectData, {
         onSuccess: () => {
           queryClient.invalidateQueries(["projects", clientId]);
           queryClient.refetchQueries(["projects", clientId]);
-          dispatch(addProjectForInvoiceAction(projectData));
+          dispatch(addProjectForInvoiceAction(updatedProjectData));
           setLoading(false);
           handleClose();
           //  Success message after adding project
@@ -414,7 +443,7 @@ function AddProjectPage({
   React.useEffect(() => {
     if (forAddProject && toEdit) {
       setProjectData({
-        _id: "",
+        // _id: "",
         projectName: "",
         rate: 0,
         workingPeriodType: "hours",
@@ -432,6 +461,7 @@ function AddProjectPage({
         candidateName: "",
         startDate: "",
         endDate: "",
+        // files: [], // Initialize as an empty array
       });
     }
     if (!forAddProject && !toEdit && projectToEdit && projectToEdit._id) {
@@ -441,7 +471,6 @@ function AddProjectPage({
         ...prevData,
         _id: projectToEdit._id,
       }));
-
     }
   }, [toEdit, forAddProject, projectToEdit, clientId, adminId]);
 
@@ -490,8 +519,6 @@ function AddProjectPage({
       }
     }
   };
-
-
 
 
   return (
@@ -627,10 +654,9 @@ function AddProjectPage({
               margin="dense"
               id="rate"
               label={
-                workPeriodType === "fixed"
+                projectData.workingPeriodType === "fixed"
                   ? "Enter Fixed Amount"
-                  : `Rate (${currencyType}/${workPeriodType === "months" ? "months" : "hours"
-                  })`
+                  : `Rate (${projectData.currencyType}/${projectData.workingPeriodType})`
               }
               type="text"
               fullWidth
@@ -718,8 +744,8 @@ function AddProjectPage({
               value={projectData.billingCycle || ""}
               onChange={handleChange}
             >
-              <MenuItem value="hours">Working day</MenuItem>
-              <MenuItem value="months">Calender</MenuItem>
+              <MenuItem value="workingday">Working day</MenuItem>
+              <MenuItem value="calender">Calender</MenuItem>
               <MenuItem value="fixed">Fixed</MenuItem>
             </TextField>
 
@@ -749,6 +775,21 @@ function AddProjectPage({
               </RadioGroup>
             </FormControl>
 
+           
+
+            <div>
+              <label htmlFor="fileUpload">Upload File:</label>
+              <input
+                type="file"
+                id="fileUpload"
+                name="files"
+                onChange={handleChange}
+                accept="image/*,.pdf,.docx" // Specify allowed file types
+                multiple={true} // Set to true if multiple file uploads are allowed
+              />
+            </div>
+
+
             <TextField
               margin="dense"
               id="candidateName"
@@ -759,7 +800,7 @@ function AddProjectPage({
               name="candidateName"
               value={projectData.candidateName}
               onChange={handleChange}
-            // required
+            
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}> {/* Use Dayjs Adapter */}
               <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>

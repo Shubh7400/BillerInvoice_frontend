@@ -37,6 +37,7 @@ export async function addProject(projectData: ProjectType) {
     const response = await axios.post(`${config.apiUrlProject}`, projectData, {
       headers: {
         Authorization: `Bearer ${token}`,
+        // 'Content-Type': 'multipart/form-data',
       },
     });
     return response.data;

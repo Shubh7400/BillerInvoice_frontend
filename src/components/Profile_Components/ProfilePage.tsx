@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from "../../states/redux/store";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
+import { updateAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
 import cubexoLogo from "../assets/cubexo_logo.png";
 import gamaedgeLogo from "../../utils/images/gammaedgeLogo.png";
 import { useNavigate } from "react-router-dom";
@@ -86,15 +87,42 @@ const ProfilePage = () => {
     }
   };
 
-  const handleSave = () => {
-    console.log("Updated data:", editableData);
-    // Dispatch action to save data here
-    setIsEditing(false);
+  const handleSave = async () => {
+    if (!adminId) {
+      console.error("Admin ID is required but is null or undefined.");
+      return;
+    }
+
+    try {
+      const updatedData = await dispatch(
+        updateAdminByIdAction({ adminId, updateData: editableData })
+      ).unwrap();
+      console.log("Admin updated successfully:", updatedData);
+      dispatch(getAdminByIdAction(adminId)); // Fetch the latest data after update
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating admin:", error);
+    }
   };
   const handleCancel = () => {
     setEditableData(originalData); // Reset data to original state
     setIsEditing(false);
   };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setEditableData((prev: any) => ({
+          ...prev,
+          companyLogo: reader.result, // Store the image as a base64 string for preview
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
 
   return (
     <div>
@@ -114,21 +142,44 @@ const ProfilePage = () => {
       {data ? (
         <div className="text-black p-4 relative border-2 border-[#c1c1c1] rounded-[20px] mt-[15px]">
           <div className="absolute right-[20px]">
-          {!isEditing && (
-            <button  onClick={() => setIsEditing(true)} 
-            className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
->
-              <CiEdit />
-            </button>
-          )}
+            {!isEditing && (
+              <button onClick={(e) => setIsEditing(true)}
+                className="text-white text-[20px] bg-[#E4A98A] w-[35px] h-[35px] flex justify-center items-center rounded-[50px]"
+              >
+                <CiEdit />
+              </button>
+            )}
           </div>
 
-          <div className="bg-slate-100 flex justify-start items-center rounded-[15px] h-auto w-[200px] p-2">
+          {/* <div className="bg-slate-100 flex justify-start items-center rounded-[15px] h-auto w-[200px] p-2">
             <img src={companyLogo} alt="CompanyLogo" className="h-auto w-[200px]" />
+          </div> */}
+          <div className="bg-slate-100 flex justify-start items-center rounded-[15px] h-auto w-[200px] p-2">
+            <img
+              src={data.companyLogo}
+              alt="Company Logo"
+              className="h-auto w-[200px]"
+            />
           </div>
           <div className="text-black pt-5">
             {isEditing ? (
               <>
+                {/* <div className="bg-slate-100 flex flex-col justify-start items-center rounded-[15px] h-auto w-[200px] p-2 ml-10"> */}
+                  {/* File input for uploading the image */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileChange(e)}
+                    className="mb-4"
+                  />
+                  {/* {editableData.companyLogo && (
+                    <img
+                      src={editableData.companyLogo}
+                      alt="Preview"
+                      className="h-auto w-[200px] mt-2"
+                    />
+                  )} */}
+                {/* </div> */}
                 <TextField
                   label="Company Name"
                   name="companyName"
@@ -201,26 +252,26 @@ const ProfilePage = () => {
                   fullWidth
                   margin="normal"
                 />
-                
+
                 <div className="flex gap-2 mt-4">
                   <Button variant="contained" color="primary" onClick={handleSave}
-                  style={{
-                    backgroundColor: isHovered ? "#4a6180" : "#d9a990",
-                    borderRadius: "20px",
-                    padding: "5px 15px",
-                    color: "#fff ",
-                    marginTop: "10px",
-                  }}>
+                    style={{
+                      backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+                      borderRadius: "20px",
+                      padding: "5px 15px",
+                      color: "#fff ",
+                      marginTop: "10px",
+                    }}>
                     Save
                   </Button>
                   <Button variant="outlined" color="secondary" onClick={handleCancel}
-                  style={{
-                    backgroundColor: isHovered ? "#4a6180" : "#d9a990",
-                    borderRadius: "20px",
-                    padding: "5px 15px",
-                    color: "#fff ",
-                    marginTop: "10px",
-                  }}>
+                    style={{
+                      backgroundColor: isHovered ? "#4a6180" : "#d9a990",
+                      borderRadius: "20px",
+                      padding: "5px 15px",
+                      color: "#fff ",
+                      marginTop: "10px",
+                    }}>
                     Cancel
                   </Button>
                 </div>
