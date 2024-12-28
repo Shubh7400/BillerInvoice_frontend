@@ -73,7 +73,6 @@ const ProfilePage = () => {
       });
     }
   }, [data]);
-
   const [isHovered, setIsHovered] = useState(false);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -87,7 +86,6 @@ const ProfilePage = () => {
       setEditableData((prev: any) => ({ ...prev, [name]: value }));
     }
   };
-
 
   const handleSave = async () => {
     if (!adminId) {
@@ -106,7 +104,6 @@ const ProfilePage = () => {
       console.error("Error updating admin:", error);
     }
   };
-
   const handleCancel = () => {
     setEditableData(originalData); // Reset data to original state
     setIsEditing(false);

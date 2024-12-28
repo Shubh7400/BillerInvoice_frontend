@@ -395,8 +395,6 @@ function AddProjectPage({
       setIncompleteError("Incomplete fields");
     }
   };
-  
-
 
   const UpdateProjectMutationHandler = useUpdateProject(
     projectData._id,

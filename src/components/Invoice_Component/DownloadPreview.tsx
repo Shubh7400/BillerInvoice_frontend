@@ -220,10 +220,10 @@ const DownloadPreview = ({
                   <span className="font-semibold">{clientObj.email[0]}</span> |{" "}
                     {clientObj.contactNo}
                 </p> 
-                
+               
               </div>
             )}
-            </div>
+           </div>
           </div>
           {/* Table section */}
           <table
