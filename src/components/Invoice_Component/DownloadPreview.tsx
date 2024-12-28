@@ -171,9 +171,10 @@ const DownloadPreview = ({
                 </div>
               </div>
             )}
+             <div className="flex justify-between my-4">
             {invoice ? (
               <div className="text-black">
-                <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2 ">
+                <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
                   Bill To
                 </h1>
                 <h3 className="text-sm font-bold p-[3px]">
@@ -182,20 +183,23 @@ const DownloadPreview = ({
                 <p className="text-xs p-[3px] text-[15px]">
                   <b>Gstin:</b> {invoice.clientGstin}
                 </p>
+                <p className="text-xs p-[3px] text-[15px]">
+                  <b>PAN:</b> {invoice.clientPanCard}
+                </p>
                 <p className="text-xs opacity-70 p-[3px] text-[15px]">
                   {invoice.clientAddress?.street}
                   <br />
                   {invoice.clientAddress?.city}, {invoice.clientAddress?.state}{" "}
                   {invoice.clientAddress?.postalCode} - {invoice.clientAddress?.country}
                   <br />
-                  <span className="font-semibold">{invoice.clientEmails}</span>
-                  <br />
-                  <span className="font-semibold">{invoice.clientContactNo}</span>
+                  <span className="font-semibold">{invoice.clientEmails[0]}</span> |{" "}
+                    {invoice.contactNo}
                 </p>
+
               </div>
             ) : (
               <div className="text-black">
-                <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2 ">
+                <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
                   Bill To
                 </h1>
                 <h3 className="text-sm font-bold p-[3px]">
@@ -204,14 +208,22 @@ const DownloadPreview = ({
                 <p className="text-xs p-[3px] text-[15px]">
                   <b>Gstin:</b> {clientObj.gistin}
                 </p>
+                <p className="text-xs p-[3px] text-[15px]">
+                  <b>PAN:</b> {clientObj.pancardNo}
+                </p>
                 <p className="text-xs opacity-70 p-[3px] text-[15px]">
                   {clientObj.address?.street}
                   <br />
                   {clientObj.address?.city}, {clientObj.address?.state}{" "}
                   {clientObj.address?.postalCode} - {clientObj.address?.country}
-                </p>
+                  <br />
+                  <span className="font-semibold">{clientObj.email[0]}</span> |{" "}
+                    {clientObj.contactNo}
+                </p> 
+                
               </div>
             )}
+            </div>
           </div>
           {/* Table section */}
           <table
@@ -225,7 +237,7 @@ const DownloadPreview = ({
                 <thead className="bg-[#94b9ff] text-white ">
                   <tr>
                     <th className="px-2 pb-4">Sr.no.</th>
-                    <th className="px-2 pb-4">Project Name</th>
+                    <th className="px-2 pb-4">Project Description</th>
                     {/* <th className="px-2 pb-4">Project Period</th> */}
                     <th className="px-2 pb-4">Rate</th>
 

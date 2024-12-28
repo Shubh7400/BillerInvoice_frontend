@@ -33,10 +33,12 @@ export async function addProject(projectData: ProjectType) {
     token = token.substring(1, token.length - 1);
   }
 
+
   try {
     const response = await axios.post(`${config.apiUrlProject}`, projectData, {
       headers: {
         Authorization: `Bearer ${token}`,
+        // 'Content-Type': 'multipart/form-data',
       },
     });
     return response.data;
@@ -48,6 +50,8 @@ export async function addProject(projectData: ProjectType) {
     throw new Error("Error in  adding project");
   }
 }
+
+
 
 export async function getProjectById(projectId: string) {
   let token = localStorage.getItem("billAppAuthToken");

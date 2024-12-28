@@ -409,82 +409,82 @@ const ProjectTable = ({
                             ) : null}
                             /{project.workingPeriodType})
                           </TableCell>
-                                                 
-                            <TableCell style={{ padding: "0" }}>
-                              <span>&#x20B9; </span>
-                              {(project?.conversionRate ?? 0).toFixed(2)}
-                            </TableCell>
-                            
-                            <TableCell style={{ padding: "0" }}>
-                              <div className="flex">
-                                <div className={Styles.editButton}>
-                                  <div className="">
 
-                                    <Button
-                                      onClick={() => handleViewProject(project)}
-                                      sx={{
-                                        color: materialTheme.palette.primary.main,
-                                        ":hover": {
-                                          color: materialTheme.palette.secondary.main,
-                                        },
-                                      }}
-                                    >
-                                      <FaEye size={20} />
-                                    </Button>
+                          <TableCell style={{ padding: "0" }}>
+                            <span>&#x20B9; </span>
+                            {(project?.conversionRate ?? 0).toFixed(2)}
+                          </TableCell>
 
-                                    <Button
-                                      disabled={!adminId}
-                                      variant="outlined"
-                                      sx={{
-                                        color: materialTheme.palette.primary.main,
+                          <TableCell style={{ padding: "0" }}>
+                            <div className="flex">
+                              <div className={Styles.editButton}>
+                                <div className="">
+
+                                  <Button
+                                    onClick={() => handleViewProject(project)}
+                                    sx={{
+                                      color: materialTheme.palette.primary.main,
+                                      ":hover": {
+                                        color: materialTheme.palette.secondary.main,
+                                      },
+                                    }}
+                                  >
+                                    <FaEye size={20} />
+                                  </Button>
+
+                                  <Button
+                                    disabled={!adminId}
+                                    variant="outlined"
+                                    sx={{
+                                      color: materialTheme.palette.primary.main,
+                                      borderColor:
+                                        materialTheme.palette.primary.main,
+                                      ":hover": {
                                         borderColor:
-                                          materialTheme.palette.primary.main,
-                                        ":hover": {
-                                          borderColor:
-                                            materialTheme.palette.secondary.main,
-                                          backgroundColor:
-                                            materialTheme.palette.secondary.main,
-                                          color: "white",
-                                        },
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={() => {
-                                        if (project) {
-                                          handleEditProject(project);
-                                        }
-                                      }}
-                                    >
-                                      <CiEdit size={25} />
-                                    </Button>
-                                  </div>
-                                </div>
-                                <div className={Styles.editButton}>
-                                  <ActionConfirmer
-                                    actionTag="Delete"
-                                    actionFunction={handleProjectDelete}
-                                    parameter={project._id}
-                                  />
+                                          materialTheme.palette.secondary.main,
+                                        backgroundColor:
+                                          materialTheme.palette.secondary.main,
+                                        color: "white",
+                                      },
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() => {
+                                      if (project) {
+                                        handleEditProject(project);
+                                      }
+                                    }}
+                                  >
+                                    <CiEdit size={25} />
+                                  </Button>
                                 </div>
                               </div>
-                            </TableCell>
-                            <TableCell sx={{ paddingY: "8px", paddingX: "0" }}>
-                              <div>
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  onClick={() => handleConfirmSelection(project)}
-                                  sx={{
-                                    backgroundColor: "#d9a990",
-                                    borderRadius: "20px",
-                                    ":hover": {
-                                      backgroundColor: "#4a6180",
-                                    },
-                                  }}
-                                >
-                                  view
-                                </Button>
+                              <div className={Styles.editButton}>
+                                <ActionConfirmer
+                                  actionTag="Delete"
+                                  actionFunction={handleProjectDelete}
+                                  parameter={project._id}
+                                />
                               </div>
-                            </TableCell>
+                            </div>
+                          </TableCell>
+                          <TableCell sx={{ paddingY: "8px", paddingX: "0" }}>
+                            <div>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleConfirmSelection(project)}
+                                sx={{
+                                  backgroundColor: "#d9a990",
+                                  borderRadius: "20px",
+                                  ":hover": {
+                                    backgroundColor: "#4a6180",
+                                  },
+                                }}
+                              >
+                                view
+                              </Button>
+                            </div>
+                          </TableCell>
                         </TableRow>
                       ))}
                   </TableBody>
@@ -546,11 +546,19 @@ const ProjectTable = ({
                       </Typography>
                     )}
 
+                    {selectedProject.currencyType && (
+                      <Typography variant="body1"><strong>Currency Type:</strong> {selectedProject.currencyType}</Typography>
+                    )}
+                    {selectedProject.paymentCycle && (
+                      <Typography variant="body1"><strong>Payment Cycle:</strong> {selectedProject.paymentCycle}</Typography>
+                    )}
+                    {selectedProject.startDate && (
+                      <Typography variant="body1"><strong>Start Date:</strong> {selectedProject.startDate}</Typography>
+                    )}
+                    {selectedProject.endDate && (
+                      <Typography variant="body1"><strong>End Date:</strong> {selectedProject.endDate}</Typography>
+                    )}
 
-                    <Typography variant="body1"><strong>Currency Type:</strong> {selectedProject.currencyType}</Typography>
-                    <Typography variant="body1"><strong>Payment Cycle:</strong> {selectedProject.paymentCycle}</Typography>
-                    <Typography variant="body1"><strong>Start Date:</strong> {selectedProject.startDate}</Typography>
-                    <Typography variant="body1"><strong>End Date:</strong> {selectedProject.endDate}</Typography>
                     {selectedProject.ratePerDay && (
                       <Typography variant="body1"><strong>Rate/Day:</strong>{selectedProject.currencyType === "rupees" ? (
                         <span> &#x20B9;</span>
@@ -560,7 +568,10 @@ const ProjectTable = ({
                         <span> &#163;</span>
                       ) : null}{selectedProject.ratePerDay.toFixed(2)}</Typography>
                     )}
-                    <Typography variant="body1"><strong>Technology:</strong> {selectedProject.technology}</Typography>
+                    {selectedProject.technology && (
+                      <Typography variant="body1"><strong>Technology:</strong> {selectedProject.technology}</Typography>
+                    )}
+
                     {selectedProject.timeSheet && (
                       <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
                     )}

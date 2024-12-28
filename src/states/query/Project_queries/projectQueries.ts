@@ -9,6 +9,7 @@ import {
 } from "../../../api/project_requests";
 import { ProjectType, UpdateProjectDataType } from "../../../types/types";
 import { queryClient } from "../../..";
+import { FileData } from "../../../types/types";
 
 export const useFetchAllProjectsByClientId = (clientId: string | undefined, projectTableforClient: boolean) => {
   return useQuery(
@@ -30,6 +31,7 @@ export const useAddNewProject = () => {
   );
   return AddProjectMutationHandler;
 };
+
 
 export const useUpdateProject = (
   projectId: string | undefined,

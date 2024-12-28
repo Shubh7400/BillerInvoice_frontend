@@ -38,6 +38,11 @@ export interface ClientType {
   sameState?: boolean;
   contactNo: string;
 }
+
+export interface FileData {
+  name: string;
+  url: string; // Ensure each file object has a `url` property
+}
 export interface ProjectType {
   _id?: string;
   projectName: string;
@@ -60,6 +65,9 @@ export interface ProjectType {
   candidateName?: string | undefined;
   startDate?: string | undefined;
   endDate?: string | undefined;
+  files?: FileData[]; // Specify that `files` is an array of `FileData`
+  fileUrls?: string[];
+
 }
 export interface UpdateProjectDataType {
   _id?: string;
@@ -82,6 +90,9 @@ export interface UpdateProjectDataType {
   candidateName?: string | undefined;
   startDate?: string | undefined;
   endDate?: string | undefined;
+  files?: FileData[]; // Specify that `files` is an array of `FileData`
+  fileUrls?: string[];
+
 }
 export interface InvoiceType {
   invoiceNo: number;
@@ -106,6 +117,9 @@ export interface InvoiceType {
   workingPeriod?: number | null;
   ratePerDay?: number |null;  
   contactNo?:string;
+  files?: FileData[]; // Specify that `files` is an array of `FileData`
+  fileUrls?: string[];
+
 }
 
 export interface LoginDataType {

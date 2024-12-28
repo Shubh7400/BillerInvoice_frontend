@@ -73,6 +73,7 @@ const ProfilePage = () => {
       });
     }
   }, [data]);
+
   const [isHovered, setIsHovered] = useState(false);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -87,28 +88,44 @@ const ProfilePage = () => {
     }
   };
 
+
   const handleSave = async () => {
     if (!adminId) {
       console.error("Admin ID is required but is null or undefined.");
       return;
     }
 
-    console.log("Updated data:", editableData);
     try {
-      const updatedData = await dispatch(updateAdminByIdAction({ adminId, updateData: editableData })).unwrap();
-      console.log("Admin updated successfully");
-
-      setOriginalData(updatedData); // Update original data
-      setEditableData(updatedData); // Reflect changes in the editable data
+      const updatedData = await dispatch(
+        updateAdminByIdAction({ adminId, updateData: editableData })
+      ).unwrap();
+      console.log("Admin updated successfully:", updatedData);
+      dispatch(getAdminByIdAction(adminId)); // Fetch the latest data after update
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating admin:", error);
     }
   };
+
   const handleCancel = () => {
     setEditableData(originalData); // Reset data to original state
     setIsEditing(false);
   };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setEditableData((prev: any) => ({
+          ...prev,
+          companyLogo: reader.result, // Store the image as a base64 string for preview
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
 
   return (
     <div>
@@ -137,12 +154,35 @@ const ProfilePage = () => {
             )}
           </div>
 
-          <div className="bg-slate-100 flex justify-start items-center rounded-[15px] h-auto w-[200px] p-2">
+          {/* <div className="bg-slate-100 flex justify-start items-center rounded-[15px] h-auto w-[200px] p-2">
             <img src={companyLogo} alt="CompanyLogo" className="h-auto w-[200px]" />
+          </div> */}
+          <div className="bg-slate-100 flex justify-start items-center rounded-[15px] h-auto w-[200px] p-2">
+            <img
+              src={data.companyLogo}
+              alt="Company Logo"
+              className="h-auto w-[200px]"
+            />
           </div>
           <div className="text-black pt-5">
             {isEditing ? (
               <>
+                {/* <div className="bg-slate-100 flex flex-col justify-start items-center rounded-[15px] h-auto w-[200px] p-2 ml-10"> */}
+                  {/* File input for uploading the image */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileChange(e)}
+                    className="mb-4"
+                  />
+                  {/* {editableData.companyLogo && (
+                    <img
+                      src={editableData.companyLogo}
+                      alt="Preview"
+                      className="h-auto w-[200px] mt-2"
+                    />
+                  )} */}
+                {/* </div> */}
                 <TextField
                   label="Company Name"
                   name="companyName"
