@@ -176,6 +176,12 @@ function AddProjectPage({
     }
   }, [selectedProjectLoading, selectedProjectData, selectedProjectError]);
 
+  interface FileData {
+    name: string;
+    file: File; // The actual file object
+    url: string; // Temporary URL for preview
+  }
+
   const fetchExchangeRate = async () => {
     setLoadingRate(true);
     setRateError("");
@@ -248,8 +254,9 @@ function AddProjectPage({
     if (type === "file" && e.target instanceof HTMLInputElement && e.target.files) {
       const files = e.target.files;
       const updatedFiles = Array.from(files).map((file) => ({
-        name: file.name,
-        url: URL.createObjectURL(file), // Temporary URL for preview
+      name: file.name,
+      file: file, // Keep the original File object
+      url: URL.createObjectURL(file), // Temporary URL for preview
       }));
 
       setProjectData((prevData) => ({
@@ -358,34 +365,36 @@ function AddProjectPage({
       | React.FormEvent<HTMLFormElement>
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    console.log(projectData);
-    e.preventDefault();
+    e.preventDefault(); 
     if (areAllRequiredFieldsFilled(projectData)) {
       setLoading(true);
-
-      // Ensure `fileUrls` is populated with URLs from `files`
-      const updatedProjectData: ProjectType = {
-        ...projectData,
-        fileUrls: projectData.files?.map((file) => file.url), // Extract `url` from each file
-      };
-
-      addProjectMutation.mutate(updatedProjectData, {
+  
+      const formData = new FormData();
+  
+      for (const key in projectData) {
+        const value = projectData[key as keyof ProjectType];
+  
+        if (key === "files" && Array.isArray(projectData.files)) {
+          projectData.files.forEach((fileData) => {
+            formData.append("files", fileData.file);
+          });
+        } else if (value !== null && value !== undefined) {
+          formData.append(key, value.toString());
+        }
+      }
+      // Send form data with the mutation
+      addProjectMutation.mutate(formData, {
         onSuccess: () => {
           queryClient.invalidateQueries(["projects", clientId]);
           queryClient.refetchQueries(["projects", clientId]);
-          dispatch(addProjectForInvoiceAction(updatedProjectData));
           setLoading(false);
           handleClose();
-          //  Success message after adding project
-          enqueueSnackbar("Project added successfully.", {
-            variant: "success",
-          });
+          enqueueSnackbar("Project added successfully.", { variant: "success" });
           navigate(-1);
         },
-
-        onError(error) {
+        onError: (error) => {
           setLoading(false);
-          setIncompleteError("Add request error, add again.");
+          setIncompleteError("Error adding project, try again.");
           enqueueSnackbar("Error in adding project. Try again!", {
             variant: "error",
           });
@@ -395,6 +404,10 @@ function AddProjectPage({
       setIncompleteError("Incomplete fields");
     }
   };
+  
+  
+  
+
 
   const UpdateProjectMutationHandler = useUpdateProject(
     projectData._id,
@@ -461,7 +474,7 @@ function AddProjectPage({
         candidateName: "",
         startDate: "",
         endDate: "",
-        // files: [], // Initialize as an empty array
+        
       });
     }
     if (!forAddProject && !toEdit && projectToEdit && projectToEdit._id) {
@@ -775,7 +788,7 @@ function AddProjectPage({
               </RadioGroup>
             </FormControl>
 
-           
+
 
             <div>
               <label htmlFor="fileUpload">Upload File:</label>
@@ -800,7 +813,7 @@ function AddProjectPage({
               name="candidateName"
               value={projectData.candidateName}
               onChange={handleChange}
-            
+
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}> {/* Use Dayjs Adapter */}
               <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>

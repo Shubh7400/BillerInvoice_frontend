@@ -27,7 +27,7 @@ export async function getAllProjectsByClientId(clientId: string) {
   }
 }
 
-export async function addProject(projectData: ProjectType) {
+export async function addProject(projectData: FormData) {
   let token = localStorage.getItem("billAppAuthToken");
   if (token) {
     token = token.substring(1, token.length - 1);
@@ -37,16 +37,16 @@ export async function addProject(projectData: ProjectType) {
     const response = await axios.post(`${config.apiUrlProject}`, projectData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        // 'Content-Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data', // Ensure the correct content type
       },
     });
     return response.data;
   } catch (error) {
     console.log(
-      "Error in adding project :from  adding project function-",
+      "Error in adding project :from adding project function-",
       error
     );
-    throw new Error("Error in  adding project");
+    throw new Error("Error in adding project");
   }
 }
 

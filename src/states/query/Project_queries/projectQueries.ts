@@ -26,9 +26,10 @@ export const useFetchProjectByProjectId = (projectId: string) => {
 };
 
 export const useAddNewProject = () => {
-  const AddProjectMutationHandler = useMutation((projectData: ProjectType) =>
-    addProject(projectData)
-  );
+  const AddProjectMutationHandler = useMutation((formData: FormData) => {
+    return addProject(formData); // Ensure `addProject` handles `FormData`
+  });
+
   return AddProjectMutationHandler;
 };
 
