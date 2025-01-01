@@ -27,7 +27,7 @@ export async function getAllProjectsByClientId(clientId: string) {
   }
 }
 
-export async function addProject(projectData: ProjectType) {
+export async function addProject(projectData: FormData) {
   let token = localStorage.getItem("billAppAuthToken");
   if (token) {
     token = token.substring(1, token.length - 1);
@@ -37,16 +37,16 @@ export async function addProject(projectData: ProjectType) {
     const response = await axios.post(`${config.apiUrlProject}`, projectData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        // 'Content-Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data', // Ensure the correct content type
       },
     });
     return response.data;
   } catch (error) {
     console.log(
-      "Error in adding project :from  adding project function-",
+      "Error in adding project :from adding project function-",
       error
     );
-    throw new Error("Error in  adding project");
+    throw new Error("Error in adding project");
   }
 }
 
@@ -74,7 +74,7 @@ export async function getProjectById(projectId: string) {
 
 export async function editProject(
   projectId: string,
-  updatedProjectData: UpdateProjectDataType
+  updatedProjectData: FormData
 ) {
   let token = localStorage.getItem("billAppAuthToken");
   if (token) {
@@ -88,18 +88,18 @@ export async function editProject(
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       }
     );
     return res.data;
   } catch (error) {
-    console.log(
-      "Error in updating project :from  updating axios project function-",
-      error
-    );
+    console.error("Error in updating project:", error);
     throw new Error("Error in updating project");
   }
 }
+
+
 
 export async function deleteProject(projectId: string) {
   let token = localStorage.getItem("billAppAuthToken");

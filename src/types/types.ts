@@ -41,6 +41,7 @@ export interface ClientType {
 
 export interface FileData {
   name: string;
+  file: File;
   url: string; // Ensure each file object has a `url` property
 }
 export interface ProjectType {
@@ -67,7 +68,6 @@ export interface ProjectType {
   endDate?: string | undefined;
   files?: FileData[]; // Specify that `files` is an array of `FileData`
   fileUrls?: string[];
-
 }
 export interface UpdateProjectDataType {
   _id?: string;

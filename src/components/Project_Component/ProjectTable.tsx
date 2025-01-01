@@ -575,6 +575,19 @@ const ProjectTable = ({
                     {selectedProject.timeSheet && (
                       <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
                     )}
+                    {selectedProject.fileUrls && selectedProject.fileUrls.length > 0 && (
+                      <div>
+                        <Typography variant="body1"><strong>File URLs:</strong></Typography>
+                        <ul>
+                          {selectedProject.fileUrls.map((url, index) => (
+                            <li key={index}>
+                              <a href={url} target="_blank" rel="noopener noreferrer">{url}</a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
                     <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
                   </DialogContent>
                   <DialogActions>

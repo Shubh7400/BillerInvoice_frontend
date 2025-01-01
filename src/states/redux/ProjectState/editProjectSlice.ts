@@ -11,7 +11,15 @@ export const editProjectAction = createAsyncThunk(
   "editClient/editClientByIdStatus",
   async ({ projectId, projectData }: EditProjectActionType, thunkApi) => {
     try {
-      const res = await editProject(projectId, projectData);
+      // Convert projectData to FormData
+      const formData = new FormData();
+      Object.entries(projectData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
+        }
+      });
+
+      const res = await editProject(projectId, formData); // Pass FormData here
       return res;
     } catch (error) {
       return thunkApi.rejectWithValue(
@@ -20,6 +28,7 @@ export const editProjectAction = createAsyncThunk(
     }
   }
 );
+
 
 interface EditProjectStateType {
   loading: "idle" | "pending" | "succeeded" | "failed";

@@ -26,12 +26,12 @@ export const useFetchProjectByProjectId = (projectId: string) => {
 };
 
 export const useAddNewProject = () => {
-  const AddProjectMutationHandler = useMutation((projectData: ProjectType) =>
-    addProject(projectData)
-  );
+  const AddProjectMutationHandler = useMutation((formData: FormData) => {
+    return addProject(formData); // Ensure `addProject` handles `FormData`
+  });
+
   return AddProjectMutationHandler;
 };
-
 
 export const useUpdateProject = (
   projectId: string | undefined,
@@ -40,7 +40,7 @@ export const useUpdateProject = (
   const UpdateProjectMutationHandler = useMutation(
     (variables: {
       projectId: string;
-      updatedProjectData: UpdateProjectDataType;
+      updatedProjectData: FormData; // Updated to accept FormData
     }) => editProject(variables.projectId, variables.updatedProjectData),
     {
       onSuccess: () => {
@@ -55,6 +55,7 @@ export const useUpdateProject = (
   );
   return UpdateProjectMutationHandler;
 };
+
 
 export const useDeleteProject = (clientId: string | undefined) => {
   const DeleteProjectMutationHandler = useMutation(
