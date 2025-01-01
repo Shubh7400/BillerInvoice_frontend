@@ -129,24 +129,30 @@ function InvoiceClientPage() {
 
         // Dispatch the updated project to Redux
         dispatch(updateProjectForInvoiceAction(updatedProject));
-        dispatch(updateInvoiceObjectStateAction({ conversionRate: updatedProject.conversionRate }))
-        // Construct the mutation data
+        dispatch(
+          updateInvoiceObjectStateAction({
+            conversionRate: updatedProject.conversionRate,
+          })
+        );
+
+        // Construct the mutation data with FormData
+        const formData = new FormData();
+        formData.append("conversionRate", newRate.toString());
+        formData.append("workingPeriodType", workingPeriodType);
+        formData.append("currencyType", currencyType);
+        formData.append("adminId", adminId);
+        formData.append("clientId", clientId);
+
         const mutationData = {
           projectId,
-          updatedProjectData: {
-            conversionRate: newRate,
-            workingPeriodType,
-            currencyType,
-            adminId,
-            clientId,
-          },
+          updatedProjectData: formData,
         };
 
         // Save the updated conversion rate to the database
         UpdateProjectMutationHandler.mutate(mutationData, {
           onSuccess: () => {
             // Optionally show a success notification
-            // enqueueSnackbar("Conversion rate updated successfully.", { variant: "success" });
+            console.log("Conversion rate updated successfully.");
           },
           onError: (error) => {
             // Handle error and show notification
@@ -162,6 +168,7 @@ function InvoiceClientPage() {
       setLoadingRate(false);
     }
   };
+
   const [id, setId] = React.useState<string | undefined>(undefined);
 
   React.useEffect(() => {
@@ -174,69 +181,92 @@ function InvoiceClientPage() {
   }, [projectsForInvoice, clientObj._id]);
   console.log("id", id);
   const UpdateProjectMutationHandler = useUpdateProject(id, clientObj._id);
-
   const handleInputChange = (id: string, field: string, value: any) => {
     const newValue = value === "" ? null : value; // Use null instead of empty string
     setEditableProjects((prevProjects) =>
       prevProjects.map((project) => {
         if (project._id === id) {
           const updatedProject = { ...project, [field]: newValue };
-          {
-            dispatch(updateInvoiceObjectStateAction({
-              projectName: updatedProject.projectName, workingPeriod: updatedProject.workingPeriod,
-              conversionRate: updatedProject.conversionRate, rate: updatedProject.rate, currencyType: updatedProject.currencyType, ratePerDay: updatedProject.ratePerDay, workingPeriodType: updatedProject.workingPeriodType
-            }))
 
-            // Perform amount calculation based on workingPeriodType
-            if (
-              updatedProject.workingPeriodType &&
-              updatedProject.workingPeriod
-            ) if (updatedProject.workingPeriodType === "hours") {
+          // Dispatch updated project to Redux
+          dispatch(
+            updateInvoiceObjectStateAction({
+              projectName: updatedProject.projectName,
+              workingPeriod: updatedProject.workingPeriod,
+              conversionRate: updatedProject.conversionRate,
+              rate: updatedProject.rate,
+              currencyType: updatedProject.currencyType,
+              ratePerDay: updatedProject.ratePerDay,
+              workingPeriodType: updatedProject.workingPeriodType,
+            })
+          );
+
+          // Perform amount calculation based on workingPeriodType
+          if (updatedProject.workingPeriodType && updatedProject.workingPeriod) {
+            if (updatedProject.workingPeriodType === "hours") {
               updatedProject.amount =
                 (updatedProject.rate || 0) *
-                (updatedProject.workingPeriod) *
+                updatedProject.workingPeriod *
                 (updatedProject.conversionRate || 1);
             } else if (
-                updatedProject.workingPeriodType === "months" &&
-                updatedProject.ratePerDay
-              ) {
-                updatedProject.amount =
-                  updatedProject.ratePerDay *
-                  (updatedProject.workingPeriod) *
-                  (updatedProject.conversionRate || 1);
-              } else {
-                updatedProject.amount =
-                  (updatedProject.rate || 0) *
-                  (updatedProject.conversionRate || 1);
-              }
+              updatedProject.workingPeriodType === "months" &&
+              updatedProject.ratePerDay
+            ) {
+              updatedProject.amount =
+                updatedProject.ratePerDay *
+                updatedProject.workingPeriod *
+                (updatedProject.conversionRate || 1);
+            } else {
+              updatedProject.amount =
+                (updatedProject.rate || 0) *
+                (updatedProject.conversionRate || 1);
+            }
           }
 
-          // Prepare mutation data for updating fields other than rate and ratePerDay
+          // Prepare FormData for mutation
           if (updatedProject._id) {
+            const formData = new FormData();
+            formData.append("projectName", updatedProject.projectName || "");
+            formData.append(
+              "workingPeriodType",
+              updatedProject.workingPeriodType || ""
+            );
+            formData.append("currencyType", updatedProject.currencyType || "");
+            formData.append(
+              "conversionRate",
+              updatedProject.conversionRate?.toString() || "0"
+            );
+            formData.append(
+              "paymentStatus",
+              updatedProject.paymentStatus?.toString() || "false"
+            );
+            formData.append("adminId", updatedProject.adminId || "");
+            formData.append("clientId", updatedProject.clientId || "");
+            formData.append(
+              "workingPeriod",
+              updatedProject.workingPeriod?.toString() || "0"
+            );
+            formData.append("amount", updatedProject.amount?.toString() || "0");
+            formData.append(
+              "advanceAmount",
+              updatedProject.advanceAmount?.toString() || "0"
+            );
+
             const mutationData = {
-              projectId: updatedProject._id, // Ensure _id is used as projectId
-              updatedProjectData: {
-                projectName: updatedProject.projectName,
-                workingPeriodType: updatedProject.workingPeriodType,
-                currencyType: updatedProject.currencyType,
-                conversionRate: updatedProject.conversionRate,
-                paymentStatus: updatedProject.paymentStatus,
-                adminId: updatedProject.adminId,
-                clientId: updatedProject.clientId,
-                workingPeriod: updatedProject.workingPeriod,
-                amount: updatedProject.amount,
-                advanceAmount: updatedProject.advanceAmount,
-              },
+              projectId: updatedProject._id,
+              updatedProjectData: formData,
             };
 
+            // Save the updated data to the database
             UpdateProjectMutationHandler.mutate(mutationData, {
               onSuccess: () => {
                 dispatch(updateProjectForInvoiceAction(updatedProject));
-                // enqueueSnackbar("Project updated successfully.", { variant: "success" });
+                // Optionally show success notification
+                console.log("Project updated successfully.");
               },
               onError: (error) => {
-                // enqueueSnackbar("Error updating project. Please try again.", { variant: "error" });
-                console.error(error);
+                // Optionally handle and log the error
+                console.error("Error updating project:", error);
               },
             });
           }
@@ -246,7 +276,9 @@ function InvoiceClientPage() {
       })
     );
   };
+
   const [workingFixed, setWorkingFixed] = useState(false);
+  
   useEffect(() => {
     const updatedProjects = projectsForInvoice.map((project) => {
       const updatedProject = { ...project };
@@ -267,32 +299,40 @@ function InvoiceClientPage() {
       // Set default workingPeriod to 1 if workingPeriodType is "months"
       if (project.workingPeriodType === "months") {
         updatedProject.workingPeriod = project.workingPeriod !== undefined ? project.workingPeriod : 1;
-
       }
+
       // Calculate the amount based on the workingPeriodType
       let amount = 0;
       if (project.rate && project.workingPeriodType) {
         if (project.workingPeriodType === "hours" && project.workingPeriod) {
           amount =
             project.rate *
-            (project.workingPeriod) *
+            project.workingPeriod *
             project.conversionRate;
         } else if (
-          project.workingPeriodType === "months" && updatedProject.workingPeriod &&
+          project.workingPeriodType === "months" &&
+          updatedProject.workingPeriod &&
           updatedProject.ratePerDay
         ) {
           amount =
             updatedProject.ratePerDay *
-            (updatedProject.workingPeriod) *
+            updatedProject.workingPeriod *
             project.conversionRate;
         } else if (project.workingPeriodType === "fixed") {
           amount = project.rate * project.conversionRate;
         }
+
         dispatch(updateInvoiceObjectStateAction({
-          projectName: updatedProject.projectName, workingPeriod: updatedProject.workingPeriod, conversionRate: updatedProject.conversionRate,
-          rate: updatedProject.rate, currencyType: updatedProject.currencyType, ratePerDay: updatedProject.ratePerDay,
-          workingPeriodType: updatedProject.workingPeriodType, clientId: updatedProject.clientId, adminId: updatedProject.adminId,
-        }))
+          projectName: updatedProject.projectName,
+          workingPeriod: updatedProject.workingPeriod,
+          conversionRate: updatedProject.conversionRate,
+          rate: updatedProject.rate,
+          currencyType: updatedProject.currencyType,
+          ratePerDay: updatedProject.ratePerDay,
+          workingPeriodType: updatedProject.workingPeriodType,
+          clientId: updatedProject.clientId,
+          adminId: updatedProject.adminId,
+        }));
       }
 
       updatedProject.amount = amount;
@@ -305,15 +345,16 @@ function InvoiceClientPage() {
           return updatedProject; // Skip mutation if projectId is undefined
         }
 
+        const formData = new FormData();
+        formData.append("ratePerDay", String(updatedProject.ratePerDay ?? 0));
+        formData.append("workingPeriodType", updatedProject.workingPeriodType || "");
+        formData.append("currencyType", updatedProject.currencyType || "");
+        formData.append("adminId", updatedProject.adminId || "");
+        formData.append("clientId", updatedProject.clientId || "");
+
         const mutationData = {
           projectId,
-          updatedProjectData: {
-            ratePerDay: updatedProject.ratePerDay ?? 0, // Default to 0 if null or undefined
-            workingPeriodType: updatedProject.workingPeriodType,
-            currencyType: updatedProject.currencyType,
-            adminId: updatedProject.adminId,
-            clientId: updatedProject.clientId,
-          },
+          updatedProjectData: formData, // Pass FormData here
         };
 
         UpdateProjectMutationHandler.mutate(mutationData, {
@@ -337,6 +378,7 @@ function InvoiceClientPage() {
 
     setEditableProjects(updatedProjects);
   }, [projectsForInvoice, invoiceDate, workingFixed]);
+
 
   React.useEffect(() => {
     if (isAuth && adminId) {

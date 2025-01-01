@@ -74,7 +74,7 @@ export async function getProjectById(projectId: string) {
 
 export async function editProject(
   projectId: string,
-  updatedProjectData: UpdateProjectDataType
+  updatedProjectData: FormData
 ) {
   let token = localStorage.getItem("billAppAuthToken");
   if (token) {
@@ -88,18 +88,18 @@ export async function editProject(
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       }
     );
     return res.data;
   } catch (error) {
-    console.log(
-      "Error in updating project :from  updating axios project function-",
-      error
-    );
+    console.error("Error in updating project:", error);
     throw new Error("Error in updating project");
   }
 }
+
+
 
 export async function deleteProject(projectId: string) {
   let token = localStorage.getItem("billAppAuthToken");

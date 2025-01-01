@@ -47,6 +47,8 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
+import { Typography, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 function AddProjectPage({
   adminId,
   clientId,
@@ -123,7 +125,7 @@ function AddProjectPage({
   const [loadingRate, setLoadingRate] = useState(false);
   const [rateError, setRateError] = useState("");
   const [projectData, setProjectData] = useState<ProjectType>({
-    // _id: "",
+    _id: "",
     projectName: "",
     rate: 0,
     workingPeriodType: "hours",
@@ -153,7 +155,7 @@ function AddProjectPage({
   React.useEffect(() => {
     if (selectedProjectLoading === "succeeded" && selectedProjectData) {
       setProjectData({
-        // _id: selectedProjectData._id || "",
+        _id: selectedProjectData._id || "",
         adminId: selectedProjectData.adminId,
         clientId: selectedProjectData.clientId,
         projectName: selectedProjectData.projectName,
@@ -254,9 +256,9 @@ function AddProjectPage({
     if (type === "file" && e.target instanceof HTMLInputElement && e.target.files) {
       const files = e.target.files;
       const updatedFiles = Array.from(files).map((file) => ({
-      name: file.name,
-      file: file, // Keep the original File object
-      url: URL.createObjectURL(file), // Temporary URL for preview
+        name: file.name,
+        file: file, // Keep the original File object
+        url: URL.createObjectURL(file), // Temporary URL for preview
       }));
 
       setProjectData((prevData) => ({
@@ -265,7 +267,6 @@ function AddProjectPage({
       }));
       return;
     }
-
     if (workPeriodType === "months" && parseInt(value) < 0) {
       value = "0";
     }
@@ -365,15 +366,15 @@ function AddProjectPage({
       | React.FormEvent<HTMLFormElement>
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    e.preventDefault(); 
+    e.preventDefault();
     if (areAllRequiredFieldsFilled(projectData)) {
       setLoading(true);
-  
+
       const formData = new FormData();
-  
+
       for (const key in projectData) {
         const value = projectData[key as keyof ProjectType];
-  
+
         if (key === "files" && Array.isArray(projectData.files)) {
           projectData.files.forEach((fileData) => {
             formData.append("files", fileData.file);
@@ -404,9 +405,9 @@ function AddProjectPage({
       setIncompleteError("Incomplete fields");
     }
   };
-  
-  
-  
+
+
+
 
 
   const UpdateProjectMutationHandler = useUpdateProject(
@@ -414,36 +415,41 @@ function AddProjectPage({
     projectData.clientId
   );
   const handleEditSubmit = (
-    e:
-      | React.FormEvent<HTMLFormElement>
-      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
     if (areAllRequiredFieldsFilled(projectData)) {
       setLoading(true);
+
+      const formData = new FormData();
+      for (const key in projectData) {
+        const value = projectData[key as keyof UpdateProjectDataType];
+
+        if (key === "files" && Array.isArray(projectData.files)) {
+          projectData.files.forEach((fileData) => {
+            formData.append("files", fileData.file);
+          });
+        } else if (value !== null && value !== undefined) {
+          formData.append(key, value.toString());
+        }
+      }
+
       UpdateProjectMutationHandler.mutate(
         {
           projectId: projectData._id!,
-          updatedProjectData: projectData as UpdateProjectDataType,
+          updatedProjectData: formData,
         },
         {
           onSuccess: () => {
             queryClient.refetchQueries(["projects", clientId]);
             setLoading(false);
-            enqueueSnackbar("Project edited successfully.", {
-              variant: "success",
-            });
-
+            enqueueSnackbar("Project edited successfully.", { variant: "success" });
             handleClose();
-            setTimeout(() => {
-              navigate(-1);
-            }, 600)
+            setTimeout(() => navigate(-1), 600);
           },
           onError(error) {
             setLoading(false);
-            enqueueSnackbar("Error in updating project. Try again! ", {
-              variant: "error",
-            });
+            enqueueSnackbar("Error in updating project. Try again! ", { variant: "error" });
             setIncompleteError("Add request error, add again.");
           },
         }
@@ -453,10 +459,11 @@ function AddProjectPage({
     }
   };
 
+
   React.useEffect(() => {
     if (forAddProject && toEdit) {
       setProjectData({
-        // _id: "",
+        _id: "",
         projectName: "",
         rate: 0,
         workingPeriodType: "hours",
@@ -474,7 +481,7 @@ function AddProjectPage({
         candidateName: "",
         startDate: "",
         endDate: "",
-        
+
       });
     }
     if (!forAddProject && !toEdit && projectToEdit && projectToEdit._id) {
@@ -532,6 +539,12 @@ function AddProjectPage({
       }
     }
   };
+  // const handleRemoveFile = (index:any) => {
+  //   setProjectData((prevData) => ({
+  //     ...prevData,
+  //     files: prevData?.files?.filter((_, i) => i !== index), // Remove the selected file
+  //   }));
+  // };
 
 
   return (
@@ -792,16 +805,19 @@ function AddProjectPage({
 
             <div>
               <label htmlFor="fileUpload">Upload File:</label>
-              <input
+              <TextField
                 type="file"
                 id="fileUpload"
                 name="files"
                 onChange={handleChange}
-                accept="image/*,.pdf,.docx" // Specify allowed file types
-                multiple={true} // Set to true if multiple file uploads are allowed
+                inputProps={{
+                  accept: "image/*,.pdf,.docx", 
+                  multiple: true, 
+                }}
+                fullWidth
               />
+              
             </div>
-
 
             <TextField
               margin="dense"

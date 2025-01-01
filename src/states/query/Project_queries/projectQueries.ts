@@ -33,7 +33,6 @@ export const useAddNewProject = () => {
   return AddProjectMutationHandler;
 };
 
-
 export const useUpdateProject = (
   projectId: string | undefined,
   clientId: string | undefined
@@ -41,7 +40,7 @@ export const useUpdateProject = (
   const UpdateProjectMutationHandler = useMutation(
     (variables: {
       projectId: string;
-      updatedProjectData: UpdateProjectDataType;
+      updatedProjectData: FormData; // Updated to accept FormData
     }) => editProject(variables.projectId, variables.updatedProjectData),
     {
       onSuccess: () => {
@@ -56,6 +55,7 @@ export const useUpdateProject = (
   );
   return UpdateProjectMutationHandler;
 };
+
 
 export const useDeleteProject = (clientId: string | undefined) => {
   const DeleteProjectMutationHandler = useMutation(
