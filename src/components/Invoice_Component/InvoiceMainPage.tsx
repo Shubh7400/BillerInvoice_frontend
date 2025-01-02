@@ -18,39 +18,58 @@ import { AppDispatch } from '../../states/redux/store';
 import { useContext } from "react";
 import { AuthContext } from '../../states/context/AuthContext/AuthContext';
 import { fetchInvoicesByDateRange } from '../../states/redux/InvoiceProjectState/invoiceListSlice';
+const currentYear = new Date().getFullYear();
 const tabsContent: YearContent[] = [
+
+  {
+    label: currentYear.toString(),
+    content: {
+      January: '',
+      February: '',
+      March: '',
+      April: '',
+      May: '',
+      June: '',
+      July: '',
+      August: '',
+      September: '',
+      October: '',
+      November: '',
+      December: '',
+    },
+  },
   {
     label: '2024',
     content: {
-      January: '300',
-      February: '301',
-      March: '302',
-      April: '302',
-      May: '304',
-      June: '305',
-      July: '306',
-      August: '307',
-      September: '308',
-      October: '309',
-      November: '310',
-      December: '311',
+      January: '',
+      February: '',
+      March: '',
+      April: '',
+      May: '',
+      June: '',
+      July: '',
+      August: '',
+      September: '',
+      October: '',
+      November: '',
+      December: '',
     },
   },
   {
     label: '2023',
     content: {
-      January: '300',
-      February: '301',
-      March: '302',
-      April: '302',
-      May: '304',
-      June: '305',
-      July: '306',
-      August: '307',
-      September: '308',
-      October: '309',
-      November: '310',
-      December: '311',
+      January: '',
+      February: '',
+      March: '',
+      April: '',
+      May: '',
+      June: '',
+      July: '',
+      August: '',
+      September: '',
+      October: '',
+      November: '',
+      December: '',
     },
   },
 ];
@@ -118,7 +137,6 @@ interface YearContent {
 const TabPillsComponent: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const currentYear = new Date().getFullYear();
   const invoiceCounts = useSelector((state: RootState) => state.InvoiceCountState);
   const { adminId } = useContext(AuthContext);
   const [isHovered, setIsHovered] = useState(false);
