@@ -42,8 +42,13 @@ export interface ClientType {
 export interface FileData {
   name: string;
   file: File;
-  url: string; // Ensure each file object has a `url` property
+  url: string;
 }
+export interface UploadedFile {
+  filename: string;
+  url: string;
+}
+
 export interface ProjectType {
   _id?: string;
   projectName: string;
@@ -66,8 +71,9 @@ export interface ProjectType {
   candidateName?: string | undefined;
   startDate?: string | undefined;
   endDate?: string | undefined;
-  files?: FileData[]; // Specify that `files` is an array of `FileData`
+  files?: FileData[]; 
   fileUrls?: string[];
+  uploadedFiles?: UploadedFile[];
 }
 export interface UpdateProjectDataType {
   _id?: string;
@@ -90,9 +96,9 @@ export interface UpdateProjectDataType {
   candidateName?: string | undefined;
   startDate?: string | undefined;
   endDate?: string | undefined;
-  files?: FileData[]; // Specify that `files` is an array of `FileData`
+  files?: FileData[]; 
   fileUrls?: string[];
-
+  uploadedFiles?: UploadedFile[];
 }
 export interface InvoiceType {
   invoiceNo: number;
@@ -117,9 +123,9 @@ export interface InvoiceType {
   workingPeriod?: number | null;
   ratePerDay?: number |null;  
   contactNo?:string;
-  files?: FileData[]; // Specify that `files` is an array of `FileData`
+  files?: FileData[];
   fileUrls?: string[];
-
+  uploadedFiles?: UploadedFile[];
 }
 
 export interface LoginDataType {
@@ -156,7 +162,6 @@ export type CityInfoType = {
   latitude?: string | null | undefined;
   longitude?: string | null | undefined;
 };
-
 export type NewPasswordType = {
   newPassword: string;
   confirmNewPassword: string;

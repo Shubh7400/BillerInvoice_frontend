@@ -97,7 +97,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     ) {
       setSameCountry(true);
     }
-    else{
+    else {
       setSameCountry(false);
     }
 
@@ -109,12 +109,12 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     ) {
       setClientSameState(true);
     }
-    else{
+    else {
       setClientSameState(false);
     }
 
 
-  }, [adminState, selectedClientState,clientSameState]);
+  }, [adminState, selectedClientState, clientSameState]);
 
   React.useEffect(() => {
     // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
@@ -225,10 +225,29 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const handleGstChange = (event: SelectChangeEvent<string>) => {
     setGstType(event.target.value);
   };
-
+  React.useEffect(() => {
+    if(sameCountry===true){
+      if (clientSameState === true) {
+        setGstType("sgst_cgst")
+      }
+      else {
+        setGstType("igst")
+      }
+    }
+    else{
+      setGstType("");
+    }
+    dispatch(
+      updateInvoiceObjectStateAction({
+        ...invoiceObject,
+        taxType: gstType,
+      })
+    );
+    console.log("clientSameState", clientSameState);
+  }, [clientSameState]);
   React.useEffect(() => {
     // const taxPercentage = gstType === "igst" ? 18 : 9; // Calculate tax percentage based on gstType
-    
+
     // const tax = (amountWithoutTax * taxPercentage) / 100;
 
     const tax = sameCountry === true ? +(amountWithoutTax * 18 / 100).toFixed(2) : 0;
@@ -249,16 +268,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
         grandTotal: totalWithAdvance,
       })
     );
-  }, [gstType, amountWithoutTax, advanceAmount, dispatch]); 
-  React.useEffect(() => {
-    if(clientSameState===true) {
-      setGstType("sgst_cgst")
-    }
-    else{
-      setGstType("igst")
-    }
-    console.log("clientSameState",clientSameState);
-  },[clientSameState]);
+  }, [gstType, amountWithoutTax, advanceAmount, dispatch]);
+
 
   const calculateAmounts = () => {
     if (projectsForInvoice && projectsForInvoice.length > 0) {
@@ -276,7 +287,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       });
 
 
-     
+
 
       // let taxPercentage = 0;
       // if (gstType === "sgst" || gstType === "cgst") {
@@ -284,7 +295,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       // } else if (gstType === "igst") {
       //   taxPercentage = 18;
       // }
-     
+
 
       const tax = sameCountry === true ? +(amountPreTax * 18 / 100).toFixed(2) : 0;
 
@@ -301,7 +312,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   };
 
 
-  
+
   // console.log(selectedClientState?.data?.address?.country);
   // console.log(adminState?.data?.address?.country);
   // console.log(sameCountry);
@@ -340,7 +351,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
   React.useEffect(() => {
     calculateAmounts();
-  }, [projectsForInvoice, gstType,sameCountry]);
+  }, [projectsForInvoice, gstType, sameCountry]);
 
 
   function allInvoiceFieldsAvailable(obj: any) {
@@ -426,7 +437,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   // console.log(selectedClientState.data.sameState);
   // console.log("admin address : ", adminState.data.address);
   // console.log("client address", selectedClientState.data.address);
-  console.log("client address",clientSameState);
+  console.log("client address", clientSameState);
   return (
     <Box>
       <CssBaseline />
@@ -477,7 +488,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             <div className="flex justify-between text-lg md:text-lg">
               Subtotal:<span> &#8377;{amountWithoutTax.toFixed(2)} </span>
             </div>
-            {sameCountry &&
+            {/* {sameCountry &&
               <Box sx={{ mt: "6px" }}>
                 {clientSameState ? (
                   <>
@@ -494,10 +505,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                   </div>
                 )}
               </Box>
-            }
-{/* 
-            {sameCountry && 
-                <Box
+//             } */}
+            {sameCountry &&
+              <Box
                 sx={{
                   mt: "6px",
                   "& .MuiFormControl-root": {
@@ -590,7 +600,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                       >
                         SGST/CGST (18%)
                       </MenuItem>
-  
                       <MenuItem
                         value="igst"
                         sx={{
@@ -615,14 +624,13 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
                   </FormControl>
                   <div className="flex items-center text-sm text-gray-700 p-3 rounded-lg min-w-[120px] justify-end  transition-all duration-300 hover:bg-gray-100">
                     <span className="font-semibold text-gray-800">
-                      {" "}
-                      &#8377;{taxAmount.toFixed(2)}
+                      {" "} &#8377;{taxAmount.toFixed(2)}
                     </span>
                   </div>
                 </div>
-              </Box> 
+              </Box>
             }
-             */}
+
 
             <div className="flex justify-between border-t border-slate-800 border-opacity-70 text-xl md:text-2xl mt-2">
               Amount:
