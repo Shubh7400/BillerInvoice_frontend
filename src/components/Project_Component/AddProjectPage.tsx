@@ -49,7 +49,6 @@ import {
 } from "@mui/material";
 import { Typography, List, ListItem, ListItemText, IconButton, Box, Paper } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-
 function AddProjectPage({
   adminId,
   clientId,
@@ -146,7 +145,6 @@ function AddProjectPage({
     endDate: "",
     files: [],
     uploadedFiles: []
-
   });
 
   const {
@@ -528,7 +526,7 @@ function AddProjectPage({
       }
     }
   };
-  console.log("project Data: ", projectData);
+
 
   return (
     <>

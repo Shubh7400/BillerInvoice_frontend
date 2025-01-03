@@ -457,9 +457,6 @@ const DownloadPreview = ({
                 )
               )}
 
-
-
-
               {invoice ? (
                 invoice.advanceAmount > 0 ? (
                   <>
