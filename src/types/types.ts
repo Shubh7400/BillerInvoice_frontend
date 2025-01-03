@@ -48,7 +48,6 @@ export interface UploadedFile {
   filename: string;
   url: string;
 }
-
 export interface ProjectType {
   _id?: string;
   projectName: string;

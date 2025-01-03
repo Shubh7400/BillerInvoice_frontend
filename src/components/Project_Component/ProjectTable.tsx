@@ -594,7 +594,6 @@ const ProjectTable = ({
                       </>
                     )}
 
-
                     <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
                   </DialogContent>
                   <DialogActions>
