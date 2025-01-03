@@ -47,8 +47,9 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
-import { Typography, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import { Typography, List, ListItem, ListItemText, IconButton, Box, Paper } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+
 function AddProjectPage({
   adminId,
   clientId,
@@ -143,7 +144,9 @@ function AddProjectPage({
     candidateName: "",
     startDate: "",
     endDate: "",
-    files: [], // Initialize as an empty array
+    files: [],
+    uploadedFiles: []
+
   });
 
   const {
@@ -174,6 +177,7 @@ function AddProjectPage({
         startDate: selectedProjectData.startDate,
         endDate: selectedProjectData.endDate,
         files: selectedProjectData.files,
+        uploadedFiles: selectedProjectData.uploadedFiles,
       });
     }
   }, [selectedProjectLoading, selectedProjectData, selectedProjectError]);
@@ -216,15 +220,7 @@ function AddProjectPage({
     }
   };
 
-  const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setCurrencyType(value);
-    if (value === "rupees") {
-      setConversionRate(1);
-    }
-  };
   const navigate = useNavigate();
-
 
   React.useEffect(() => {
     if (adminId && adminLoding === "idle") {
@@ -318,8 +314,6 @@ function AddProjectPage({
     if (name === "workingPeriodType") {
       setWorkPeriodType(value);
     }
-
-
     if (name === "timeSheet") {
       setProjectData((prevData) => ({
         ...prevData,
@@ -406,10 +400,6 @@ function AddProjectPage({
     }
   };
 
-
-
-
-
   const UpdateProjectMutationHandler = useUpdateProject(
     projectData._id,
     projectData.clientId
@@ -458,7 +448,6 @@ function AddProjectPage({
       setIncompleteError("Incomplete fields");
     }
   };
-
 
   React.useEffect(() => {
     if (forAddProject && toEdit) {
@@ -539,13 +528,7 @@ function AddProjectPage({
       }
     }
   };
-  // const handleRemoveFile = (index:any) => {
-  //   setProjectData((prevData) => ({
-  //     ...prevData,
-  //     files: prevData?.files?.filter((_, i) => i !== index), // Remove the selected file
-  //   }));
-  // };
-
+  console.log("project Data: ", projectData);
 
   return (
     <>
@@ -706,7 +689,6 @@ function AddProjectPage({
               />
             }
 
-
             {currencyType !== "rupees" ? (
               <>
                 <div></div>
@@ -801,8 +783,6 @@ function AddProjectPage({
               </RadioGroup>
             </FormControl>
 
-
-
             <div>
               <label htmlFor="fileUpload">Upload File:</label>
               <TextField
@@ -811,14 +791,30 @@ function AddProjectPage({
                 name="files"
                 onChange={handleChange}
                 inputProps={{
-                  accept: "image/*,.pdf,.docx", 
-                  multiple: true, 
+                  accept: "image/*,.pdf,.docx",
+                  multiple: true,
                 }}
                 fullWidth
               />
-              
-            </div>
-
+             {!forAddProject   &&
+               <>
+               <List>
+                 {selectedProjectData.uploadedFiles?.map((file, index) => (
+                   <ListItem
+                     key={index}
+                     component="a"
+                     href={file.url}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                   >
+                     <ListItemText primary={file.filename} />
+                   </ListItem>
+                 ))}
+               </List>
+               </>
+             }
+            </div>  
+           
             <TextField
               margin="dense"
               id="candidateName"
@@ -867,11 +863,6 @@ function AddProjectPage({
                 />
               </div>
             </LocalizationProvider>
-
-
-
-
-
           </form>
         </DialogContent>
         <DialogActions>

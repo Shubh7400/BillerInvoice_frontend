@@ -35,7 +35,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Typography } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Typography ,List, ListItem, ListItemText} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ClientInfoSection from "../Client_Component/ClientInfoSection";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
@@ -575,18 +575,25 @@ const ProjectTable = ({
                     {selectedProject.timeSheet && (
                       <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
                     )}
-                    {selectedProject.fileUrls && selectedProject.fileUrls.length > 0 && (
-                      <div>
-                        <Typography variant="body1"><strong>File URLs:</strong></Typography>
-                        <ul>
-                          {selectedProject.fileUrls.map((url, index) => (
-                            <li key={index}>
-                              <a href={url} target="_blank" rel="noopener noreferrer">{url}</a>
-                            </li>
+                    {selectedProject.uploadedFiles && selectedProject.uploadedFiles.length > 0 && (
+                      <>
+                        <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
+                        <List>
+                          {selectedProject.uploadedFiles.map((file, index) => (
+                            <ListItem
+                              key={index}
+                              component="a"
+                              href={file.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <ListItemText primary={file.filename} />
+                            </ListItem>
                           ))}
-                        </ul>
-                      </div>
+                        </List>
+                      </>
                     )}
+
 
                     <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
                   </DialogContent>

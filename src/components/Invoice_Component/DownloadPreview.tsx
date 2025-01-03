@@ -171,59 +171,59 @@ const DownloadPreview = ({
                 </div>
               </div>
             )}
-             <div className="flex justify-between my-4">
-            {invoice ? (
-              <div className="text-black">
-                <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
-                  Bill To
-                </h1>
-                <h3 className="text-sm font-bold p-[3px]">
-                  {invoice.clientName}
-                </h3>
-                <p className="text-xs p-[3px] text-[15px]">
-                  <b>Gstin:</b> {invoice.clientGstin}
-                </p>
-                <p className="text-xs p-[3px] text-[15px]">
-                  <b>PAN:</b> {invoice.clientPanCard}
-                </p>
-                <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                  {invoice.clientAddress?.street}
-                  <br />
-                  {invoice.clientAddress?.city}, {invoice.clientAddress?.state}{" "}
-                  {invoice.clientAddress?.postalCode} - {invoice.clientAddress?.country}
-                  <br />
-                  <span className="font-semibold">{invoice.clientEmails[0]}</span> |{" "}
+            <div className="flex justify-between my-4">
+              {invoice ? (
+                <div className="text-black">
+                  <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
+                    Bill To
+                  </h1>
+                  <h3 className="text-sm font-bold p-[3px]">
+                    {invoice.clientName}
+                  </h3>
+                  <p className="text-xs p-[3px] text-[15px]">
+                    <b>Gstin:</b> {invoice.clientGstin}
+                  </p>
+                  <p className="text-xs p-[3px] text-[15px]">
+                    <b>PAN:</b> {invoice.clientPanCard}
+                  </p>
+                  <p className="text-xs opacity-70 p-[3px] text-[15px]">
+                    {invoice.clientAddress?.street}
+                    <br />
+                    {invoice.clientAddress?.city}, {invoice.clientAddress?.state}{" "}
+                    {invoice.clientAddress?.postalCode} - {invoice.clientAddress?.country}
+                    <br />
+                    <span className="font-semibold">{invoice.clientEmails[0]}</span> |{" "}
                     {invoice.contactNo}
-                </p>
+                  </p>
 
-              </div>
-            ) : (
-              <div className="text-black">
-                <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
-                  Bill To
-                </h1>
-                <h3 className="text-sm font-bold p-[3px]">
-                  {clientObj.clientName}
-                </h3>
-                <p className="text-xs p-[3px] text-[15px]">
-                  <b>Gstin:</b> {clientObj.gistin}
-                </p>
-                <p className="text-xs p-[3px] text-[15px]">
-                  <b>PAN:</b> {clientObj.pancardNo}
-                </p>
-                <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                  {clientObj.address?.street}
-                  <br />
-                  {clientObj.address?.city}, {clientObj.address?.state}{" "}
-                  {clientObj.address?.postalCode} - {clientObj.address?.country}
-                  <br />
-                  <span className="font-semibold">{clientObj.email[0]}</span> |{" "}
+                </div>
+              ) : (
+                <div className="text-black">
+                  <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
+                    Bill To
+                  </h1>
+                  <h3 className="text-sm font-bold p-[3px]">
+                    {clientObj.clientName}
+                  </h3>
+                  <p className="text-xs p-[3px] text-[15px]">
+                    <b>Gstin:</b> {clientObj.gistin}
+                  </p>
+                  <p className="text-xs p-[3px] text-[15px]">
+                    <b>PAN:</b> {clientObj.pancardNo}
+                  </p>
+                  <p className="text-xs opacity-70 p-[3px] text-[15px]">
+                    {clientObj.address?.street}
+                    <br />
+                    {clientObj.address?.city}, {clientObj.address?.state}{" "}
+                    {clientObj.address?.postalCode} - {clientObj.address?.country}
+                    <br />
+                    <span className="font-semibold">{clientObj.email[0]}</span> |{" "}
                     {clientObj.contactNo}
-                </p> 
-               
-              </div>
-            )}
-           </div>
+                  </p>
+
+                </div>
+              )}
+            </div>
           </div>
           {/* Table section */}
           <table
@@ -414,7 +414,7 @@ const DownloadPreview = ({
                     SUBTOTAL: <span>&#8377; {invoiceObject.amountWithoutTax.toFixed(2)}</span>
                   </div>
                 )}
-              {sameCountry && (
+              {/* {sameCountry && (
                 <div style={{ marginTop: "6px" }}>
                   {clientSameState ? (
                     <>
@@ -431,41 +431,34 @@ const DownloadPreview = ({
                     </div>
                   )}
                 </div>
+              )} */}
+
+              {invoice ? (
+                invoice.taxType !== "" && (
+                  <div className="flex justify-between mb-[30px]">
+                    {invoice.taxType === 'igst' ? (
+                      <span>IGST</span>
+                    ) : invoice.taxType === 'sgst_cgst' ? (
+                      <span>SGST/CGST</span>
+                    ) : null}
+                    <span>&#8377;{invoice.taxAmount.toFixed(2)}</span>
+                  </div>
+                )
+              ) : (
+                invoiceObject.taxType !== "" && (
+                  <div className="flex justify-between mb-[30px]">
+                    {invoiceObject.taxType === 'igst' ? (
+                      <span>IGST</span>
+                    ) : invoiceObject.taxType === 'sgst_cgst' ? (
+                      <span>SGST/CGST</span>
+                    ) : null}
+                    <span>&#8377;{taxAmount.toFixed(2)}</span>
+                  </div>
+                )
               )}
 
 
 
-              {/* {invoice ? (
-                <div className="flex justify-between mb-[30px]">
-                 
-                  {invoice.taxType === 'igst' ? (
-                    <span>IGST</span>
-                  ) : invoice.taxType === 'sgst' ? (
-                    <span>SGST</span>
-                  ) : invoice.taxType === 'cgst' ? (
-                    <span>CGST</span>
-                  ) : (
-                    <span>Tax</span> 
-                  )}
-                  <span>&#8377;{invoice.taxAmount.toFixed(2)}</span>
-                </div>
-              ) : (
-                <div className="flex justify-between mb-[30px]">
-                 
-                  {invoiceObject.taxType === 'igst' ? (
-                    <span>IGST</span>
-                  ) : invoiceObject.taxType === 'sgst' ? (
-                    <span>SGST</span>
-                  ) : invoiceObject.taxType === 'cgst' ? (
-                    <span>CGST</span>
-                  ) : (
-                    <span>Tax</span> // Default case for when no taxType is set
-                  )}
-                  <span>&#8377;{taxAmount.toFixed(2)}</span>
-                </div>
-
-              )
-              } */}
 
               {invoice ? (
                 invoice.advanceAmount > 0 ? (
