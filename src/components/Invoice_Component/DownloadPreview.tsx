@@ -193,7 +193,7 @@ const DownloadPreview = ({
                     {invoice.clientAddress?.postalCode} - {invoice.clientAddress?.country}
                     <br />
                     <span className="font-semibold">{invoice.clientEmails[0]}</span> |{" "}
-                    {invoice.contactNo}
+                    {invoice.clientContactNo}
                   </p>
 
                 </div>
