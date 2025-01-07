@@ -46,9 +46,16 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Card, CardMedia
 } from "@mui/material";
 import { Typography, List, ListItem, ListItemText, IconButton, Box, Paper } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { UploadedFile } from "../../types/types";
+interface ImageConverterProps {
+  selectedProjectData: ProjectType;
+}
+
+
 function AddProjectPage({
   adminId,
   clientId,
@@ -780,7 +787,6 @@ function AddProjectPage({
                 <FormControlLabel value="no" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-
             <div>
               <label htmlFor="fileUpload">Upload File:</label>
               <TextField
@@ -794,26 +800,114 @@ function AddProjectPage({
                 }}
                 fullWidth
               />
-             {!forAddProject   &&
-               <>
-               <List>
-                 {selectedProjectData.uploadedFiles?.map((file, index) => (
-                   <ListItem
-                     key={index}
-                     component="a"
-                     href={file.url}
-                     target="_blank"
-                     rel="noopener noreferrer"
-                   >
-                     <ListItemText primary={file.filename} />
-                   </ListItem>
-                 ))}
-               </List>
-               </>
-             }
-            </div>  
+              {!forAddProject && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 2,
+                    padding: 2,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "16px", // Spacing between items
+                      justifyContent: "start",
+                      alignItems: "center",
+                    }}
+                  >
+                    {selectedProjectData.uploadedFiles?.map((file, index) => {
+                      if (file.imageUrl?.match(/image\/.*/)) {
+                        // Preview Images
+                        return (
+                          <Card
+                            key={index}
+                            sx={{
+                              width: 150, // Card width
+                              height: 200, // Card height
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "space-between",
+                              padding: "8px",
+                              boxShadow: 2,
+                              borderRadius: "8px",
+                              transition: "transform 0.3s",
+                              "&:hover": {
+                                transform: "scale(1.05)", // Slight zoom on hover
+                              },
+                            }}
+                          >
+                            <CardMedia
+                              component="img"
+                              src={file.imageUrl}
+                              alt={file.filename}
+                              sx={{
+                                maxHeight: "120px",
+                                objectFit: "contain", // Maintain aspect ratio
+                                marginBottom: "8px",
+                              }}
+                            />
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                textAlign: "center",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                              title={file.filename} // Tooltip for long filenames
+                            >
+                               <a href={file.imageUrl} target="_blank" rel="noopener noreferrer">
+                                {file.filename}
+                              </a>
 
-           
+
+                            </Typography>
+                          </Card>
+                        );
+                      } else {
+                        // For unsupported formats like .docx
+                        return (
+                          <Card
+                            key={index}
+                            sx={{
+                              width: 150,
+                              height: 100,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              padding: "8px",
+                              boxShadow: 2,
+                              borderRadius: "8px",
+                              backgroundColor: "#f8d7da",
+                              color: "#721c24",
+                              border: "1px solid #f5c6cb",
+                            }}
+                          >
+                            <Typography
+                              variant="body2"
+                              textAlign="center"
+                              title={file.filename}
+                            >
+                              Preview not available for <strong>{file.filename}</strong>
+                            </Typography>
+                          </Card>
+                        );
+                      }
+                    })}
+                  </Box>
+                </Box>
+              )}
+            </div>
+
+
+
+
+
             <TextField
               margin="dense"
               id="candidateName"
@@ -824,7 +918,6 @@ function AddProjectPage({
               name="candidateName"
               value={projectData.candidateName}
               onChange={handleChange}
-
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}> {/* Use Dayjs Adapter */}
               <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>

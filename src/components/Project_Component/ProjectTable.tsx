@@ -583,7 +583,7 @@ const ProjectTable = ({
                             <ListItem
                               key={index}
                               component="a"
-                              href={file.url}
+                              href={file.imageUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                             >
