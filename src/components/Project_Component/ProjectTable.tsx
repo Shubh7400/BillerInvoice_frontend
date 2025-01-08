@@ -663,58 +663,35 @@ const ProjectTable = ({
                         </Typography>
                       )}
 
-                      {selectedProject.timeSheet && (
-                        <Typography variant="body1">
-                          <strong>Timesheet:</strong>{" "}
-                          {selectedProject.timeSheet}
-                        </Typography>
-                      )}
-                      {selectedProject.uploadedFiles &&
-                        selectedProject.uploadedFiles.length > 0 && (
-                          <>
-                            <Typography variant="body1">
-                              <strong>Uploaded Files:</strong>
-                            </Typography>
-                            <List 
-                            sx={{
-                              display: "flex",
-                              flexWrap: "wrap", // Allows items to wrap if they overflow
-                              gap: "8px", // Optional: Adds spacing between items
-                            }}
+                    {selectedProject.timeSheet && (
+                      <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
+                    )}
+                    {selectedProject.uploadedFiles && selectedProject.uploadedFiles.length > 0 && (
+                      <>
+                        <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
+                        <List>
+                          {selectedProject.uploadedFiles.map((file, index) => (
+                            <ListItem
+                              key={index}
+                              component="a"
+                              href={file.imageUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
                             >
-                              {selectedProject.uploadedFiles.map(
-                                (file, index) => (
-                                  <ListItem
-                                  key={index}
-                                  component="a"
-                                  href={file.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  sx={{
-                                    display: "inline-flex", // Keeps the individual list item inline
-                                    width: "auto", // Prevents the item from taking the full width
-                                    padding: "4px 8px", // Adjust padding if needed
-                                  }}
-                                  >
-                                    <ListItemText primary={file.filename} />
-                                  </ListItem>
-                                )
-                              )}
-                            </List>
-                          </>
-                        )}
+                              <ListItemText primary={file.filename} />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </>
+                    )}
 
-                      <Typography variant="body1">
-                        <strong>Working Period Type:</strong>{" "}
-                        {selectedProject.workingPeriodType}
-                      </Typography>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={handleCloseModal} color="primary">
-                        Close
-                      </Button>
-                    </DialogActions>
-                  </Box>
+                    <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseModal} color="primary">
+                      Close
+                    </Button>
+                  </DialogActions>
                 </Dialog>
               )}
             </div>

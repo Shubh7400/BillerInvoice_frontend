@@ -47,8 +47,8 @@ export interface FileData {
 export interface UploadedFile {
   filename: string;
   url: string;
+  imageUrl:string;
 }
-
 export interface ProjectType {
   _id?: string;
   projectName: string;
@@ -100,6 +100,35 @@ export interface UpdateProjectDataType {
   fileUrls?: string[];
   uploadedFiles?: UploadedFile[];
 }
+export interface Address {
+  street: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+}
+
+export interface ClientDetails {
+  clientName: string;
+  gistin: string;
+  pancardNo: string;
+  address: Address;
+  email: string[];
+}
+
+export interface AdminDetails {
+  email: string;
+  companyName: string;
+  gistin: string;
+  contactNo: string;
+  pancardNo: string;
+  address: Address;
+  companyLogo?: string;
+  accountNo: string;
+  ifsc: string;
+  bank: string;
+}
+
 export interface InvoiceType {
   invoiceNo: number;
   billDate: string;
@@ -126,6 +155,8 @@ export interface InvoiceType {
   files?: FileData[];
   fileUrls?: string[];
   uploadedFiles?: UploadedFile[];
+   clientDetails?: ClientDetails;
+  adminDetails?: AdminDetails;
 }
 
 export interface LoginDataType {

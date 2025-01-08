@@ -244,11 +244,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       })
     );
     console.log("clientSameState", clientSameState);
-  }, [clientSameState]);
+  }, [clientSameState,sameCountry]);
   React.useEffect(() => {
-    // const taxPercentage = gstType === "igst" ? 18 : 9; // Calculate tax percentage based on gstType
-
-    // const tax = (amountWithoutTax * taxPercentage) / 100;
 
     const tax = sameCountry === true ? +(amountWithoutTax * 18 / 100).toFixed(2) : 0;
 
@@ -256,7 +253,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
     const totalWithAdvance = total - (typeof advanceAmount === "number" ? advanceAmount : 0);
 
-    // Dispatch the updated invoice data, using the calculated values
     dispatch(
       updateInvoiceObjectStateAction({
         ...invoiceObject,
@@ -269,7 +265,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       })
     );
   }, [gstType, amountWithoutTax, advanceAmount, dispatch]);
-
 
   const calculateAmounts = () => {
     if (projectsForInvoice && projectsForInvoice.length > 0) {
@@ -286,17 +281,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
         }
       });
 
-
-
-
-      // let taxPercentage = 0;
-      // if (gstType === "sgst" || gstType === "cgst") {
-      //   taxPercentage = 9;
-      // } else if (gstType === "igst") {
-      //   taxPercentage = 18;
-      // }
-
-
       const tax = sameCountry === true ? +(amountPreTax * 18 / 100).toFixed(2) : 0;
 
       const amountPostTax = +(amountPreTax + tax).toFixed(2);
@@ -310,12 +294,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       setGrandTotal(grandTotalLocal);
     }
   };
-
-
-
-  // console.log(selectedClientState?.data?.address?.country);
-  // console.log(adminState?.data?.address?.country);
-  // console.log(sameCountry);
 
   const toggleDrawer = (newOpen: boolean) => {
     if (projectsForInvoice && projectsForInvoice.length > 0) {
@@ -353,7 +331,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     calculateAmounts();
   }, [projectsForInvoice, gstType, sameCountry]);
 
-
   function allInvoiceFieldsAvailable(obj: any) {
 
     if (!obj || typeof obj !== "object") {
@@ -384,7 +361,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
         }
         break;
       case "fixed":
-        // No workingPeriod required for "fixed" type
         break;
       default:
         return false;
@@ -434,7 +410,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     setShowPreview(value);
   };
 
-  console.log("client address", clientSameState);
   return (
     <Box>
       <CssBaseline />
