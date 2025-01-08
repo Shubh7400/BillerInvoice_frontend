@@ -79,11 +79,11 @@ function InvoiceListPage() {
       dispatch(getAllClientsByAdminIdAction(adminId));
     }
   }, [dispatch, adminId]);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showView, setShowView] = useState(false);
   const [tempImgData, setTempImgData] = useState("");
   const [searchInvoiceProject,setSearchInvoiceProject] = useState("");
   const ViewAndPreviewPDF = async (invoice: Invoice) => {
-    setShowPreview(true);
+    setShowView(true);
 
     // Create a temporary container for rendering
     const div = document.createElement("div");
@@ -97,7 +97,10 @@ function InvoiceListPage() {
     const root = createRoot(div);
     root.render(
       <Provider store={store}>
-        <DownloadPreview invoice={invoice} />
+        <DownloadPreview 
+        invoice={invoice} 
+        showPreview={false}
+        />
       </Provider>
     );
 
@@ -122,7 +125,7 @@ function InvoiceListPage() {
   };
 
   const previewExecution = (state: boolean) => {
-    setShowPreview(state);
+    setShowView(state);
     if (!state) setTempImgData("");
   };
   return (
@@ -160,7 +163,7 @@ function InvoiceListPage() {
      
 
       {/* Preview Section */}
-      {showPreview ? (
+      {showView ? (
         <div className="w-screen h-[900px] sm:h-[1200px] absolute top-[0px] right-[0] z-[100] bg-[#989fce] bg-opacity-80">
           {/* Close Button */}
           <div

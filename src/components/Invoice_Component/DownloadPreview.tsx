@@ -13,11 +13,13 @@ interface DownloadPreviewProps {
   grandTotal?: number;
   advanceAmount?: number;
   invoice?: Invoice;
+  showPreview: boolean;
 }
 const DownloadPreview = ({
   grandTotal,
   advanceAmount,
   invoice,
+  showPreview
 }: DownloadPreviewProps) => {
   const { data } = useSelector((state: RootState) => state.adminState);
   const selectedClient = useSelector(
@@ -92,10 +94,10 @@ const DownloadPreview = ({
                 />
               )}
             </div>
-            {invoice ? (
+            {!showPreview && invoice ? (
               <div className="w-[20%]">
                 <div className="text-black  px-2  mb-1">
-                  Invoice Number: {invoice.invoiceNo}
+                  Invoice Number: {invoice.invoiceNo} 
                 </div>
                 <div className="text-black px-2  mb-1">
                   Bill date: {dayjs(invoice.billDate).format("DD/MM/YYYY")}
@@ -123,7 +125,7 @@ const DownloadPreview = ({
           <div className="flex justify-between my-4 ">
             {/* Invoice and Client section */}
 
-            {invoice ? (
+            {!showPreview && invoice ? (
               <div className="flex justify-between my-4">
                 <div className="text-black">
                   <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
@@ -172,7 +174,7 @@ const DownloadPreview = ({
               </div>
             )}
             <div className="flex justify-between my-4">
-              {invoice ? (
+              {!showPreview && invoice ? (
                 <div className="text-black">
                   <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
                     Bill To
@@ -233,7 +235,7 @@ const DownloadPreview = ({
             }}
           >
             <>
-              {invoice ? (
+              {!showPreview && invoice ? (
                 <thead className="bg-[#94b9ff] text-white ">
                   <tr>
                     <th className="px-2 pb-4">Sr.no.</th>
@@ -285,7 +287,7 @@ const DownloadPreview = ({
               )}
             </>
 
-            {invoice ? (
+            {!showPreview && invoice ?(
               <tbody>
                 <tr className="text-black">
                   <td className="border px-2 pb-4 text-center">{1}</td>
@@ -381,7 +383,7 @@ const DownloadPreview = ({
           </table>
           {/* Bank and Total amount section */}
           <div className="flex justify-between mt-4">
-            {invoice ? (
+            {!showPreview && invoice ?(
               <div className="text-sm">
                 <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2 ">
                   Payment info
@@ -404,7 +406,7 @@ const DownloadPreview = ({
             )}
 
             <div className="text-sm w-[300px]">
-              {invoice ? (
+              {!showPreview && invoice ? (
                 <div className="flex justify-between mb-2">
                   SUBTOTAL: <span>&#8377; {invoice.amountWithoutTax.toFixed(2)}</span>
                 </div>
@@ -433,7 +435,7 @@ const DownloadPreview = ({
                 </div>
               )} */}
 
-              {invoice ? (
+              {!showPreview && invoice ? (
                 invoice.taxType !== "" && (
                   <div className="flex justify-between mb-[30px]">
                     {invoice.taxType === 'igst' ? (
@@ -457,7 +459,7 @@ const DownloadPreview = ({
                 )
               )}
 
-              {invoice ? (
+              {!showPreview && invoice ? (
                 invoice.advanceAmount > 0 ? (
                   <>
                     <div className="flex justify-between mb-[30px]">

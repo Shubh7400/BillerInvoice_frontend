@@ -861,7 +861,7 @@ function AddProjectPage({
                               }}
                               title={file.filename} // Tooltip for long filenames
                             >
-                               <a href={file.imageUrl} target="_blank" rel="noopener noreferrer">
+                               <a href={file.url} target="_blank" rel="noopener noreferrer"  >
                                 {file.filename}
                               </a>
 
