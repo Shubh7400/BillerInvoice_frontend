@@ -15,6 +15,7 @@ import {
   Checkbox,
   FormControlLabel,
   useTheme,
+  Box,
 } from "@mui/material";
 import { queryClient } from "../..";
 import { useSnackbar } from "notistack";
@@ -35,7 +36,16 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Typography ,List, ListItem, ListItemText} from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ClientInfoSection from "../Client_Component/ClientInfoSection";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
@@ -64,7 +74,9 @@ const ProjectTable = ({
 
   const [ProjectData, setProjectData] = useState<ProjectType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
+  const [selectedProject, setSelectedProject] = useState<ProjectType | null>(
+    null
+  );
   const [searchProjectName, setSearchProjectName] = useState("");
   const { isLoading, data, isError } = useFetchAllProjectsByAdminId(
     adminId,
@@ -214,7 +226,6 @@ const ProjectTable = ({
     }
   };
 
-
   // const handleSingleCheckboxChange = (
   //   e: React.ChangeEvent<HTMLInputElement>,
   //   index: number,
@@ -289,11 +300,10 @@ const ProjectTable = ({
           setSearchProjectName={handleSearchProjectName}
           searchProjectName={searchProjectName}
           handleProjectEdit={handleEditProject}
-
         />
         {clientObj &&
-          selectedClientState.loading !== "idle" &&
-          projectTableforClient ? (
+        selectedClientState.loading !== "idle" &&
+        projectTableforClient ? (
           <ClientInfoSection />
         ) : null}
       </div>
@@ -312,9 +322,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                  (clientProjectTableData &&
-                    (clientProjectTableData === "" ||
-                      clientProjectTableData.length <= 0)) ? (
+                (clientProjectTableData &&
+                  (clientProjectTableData === "" ||
+                    clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -324,7 +334,7 @@ const ProjectTable = ({
           ) : (
             <div className="  rounded-[20px]">
               <TableContainer className={Styles.table_scroll}>
-                <Table >
+                <Table>
                   <TableHead className={Styles.animated}>
                     <TableRow>
                       {/* <TableCell style={{ paddingRight: "0" }}>Select</TableCell> */}
@@ -332,7 +342,11 @@ const ProjectTable = ({
                         Sr.No.
                       </TableCell>
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0", width: "200px" }}
+                        style={{
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                          width: "200px",
+                        }}
                       >
                         Project
                       </TableCell>
@@ -347,7 +361,11 @@ const ProjectTable = ({
                         Project Period
                       </TableCell> */}
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0", width: "150px" }}
+                        style={{
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                          width: "150px",
+                        }}
                       >
                         Rate
                       </TableCell>
@@ -357,7 +375,11 @@ const ProjectTable = ({
                         Working Period
                       </TableCell> */}
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0", width: "170px" }}
+                        style={{
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                          width: "170px",
+                        }}
                       >
                         Conversion Rate
                       </TableCell>
@@ -367,12 +389,20 @@ const ProjectTable = ({
                         Amount
                       </TableCell> */}
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0", width: "100px" }}
+                        style={{
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                          width: "100px",
+                        }}
                       >
                         Action
                       </TableCell>
                       <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0", width: "100px" }}
+                        style={{
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                          width: "100px",
+                        }}
                       >
                         selection
                       </TableCell>
@@ -419,13 +449,13 @@ const ProjectTable = ({
                             <div className="flex">
                               <div className={Styles.editButton}>
                                 <div className="">
-
                                   <Button
                                     onClick={() => handleViewProject(project)}
                                     sx={{
                                       color: materialTheme.palette.primary.main,
                                       ":hover": {
-                                        color: materialTheme.palette.secondary.main,
+                                        color:
+                                          materialTheme.palette.secondary.main,
                                       },
                                     }}
                                   >
@@ -492,85 +522,146 @@ const ProjectTable = ({
               </TableContainer>
 
               {/* Modal */}
+
               {selectedProject && (
-                <Dialog open={isModalOpen} onClose={handleCloseModal} maxWidth="sm" fullWidth>
-                  <DialogTitle>Project Details</DialogTitle>
-                  <DialogContent>
-                    <Typography variant="body1"><strong>Project Name:</strong> {selectedProject.projectName}</Typography>
-                    <Typography variant="body1"><strong>Client Name:</strong> {getClientName(selectedProject.clientId)}</Typography>
-                    <Typography variant="body1"><strong>Rate:</strong> {selectedProject.rate?.toFixed(2)}
-                      {selectedProject.currencyType === "rupees"
-                        ? selectedProject.workingPeriodType === "fixed"
-                          ? " ₹/fixed"
-                          : ` ₹/${selectedProject.workingPeriodType === "hours"
-                            ? "hours"
-                            : "months"
-                          }`
-                        : selectedProject.currencyType === "dollars"
+                <Dialog
+                  open={isModalOpen}
+                  onClose={handleCloseModal}
+                  maxWidth="sm"
+                  fullWidth
+                >
+                  <Box
+                    className="MuiBox-root"
+                    sx={{
+                      border: 4, 
+                      borderColor: materialTheme.palette.secondary.main, 
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <DialogTitle>Project Details</DialogTitle>
+                    <DialogContent>
+                      <Typography variant="body1">
+                        <strong>Project Name:</strong>{" "}
+                        {selectedProject.projectName}
+                      </Typography>
+                      <Typography variant="body1">
+                        <strong>Client Name:</strong>{" "}
+                        {getClientName(selectedProject.clientId)}
+                      </Typography>
+                      <Typography variant="body1">
+                        <strong>Rate:</strong>{" "}
+                        {selectedProject.rate?.toFixed(2)}
+                        {selectedProject.currencyType === "rupees"
+                          ? selectedProject.workingPeriodType === "fixed"
+                            ? " ₹/fixed"
+                            : ` ₹/${
+                                selectedProject.workingPeriodType === "hours"
+                                  ? "hours"
+                                  : "months"
+                              }`
+                          : selectedProject.currencyType === "dollars"
                           ? selectedProject.workingPeriodType === "fixed"
                             ? " $/fixed"
-                            : ` $/${selectedProject.workingPeriodType === "hours"
-                              ? "hours"
-                              : "months"
-                            }`
-                          : selectedProject.currencyType === "pounds"
-                            ? selectedProject.workingPeriodType === "fixed"
-                              ? " £/fixed"
-                              : ` £/${selectedProject.workingPeriodType === "hours"
-                                ? "hours"
-                                : "months"
+                            : ` $/${
+                                selectedProject.workingPeriodType === "hours"
+                                  ? "hours"
+                                  : "months"
                               }`
-                            : ""}
-                    </Typography>
-                    <Typography variant="body1"><strong>Conversion Rate:</strong> &#x20B9;{selectedProject.conversionRate.toFixed(2)}</Typography>
-                    {selectedProject.workingPeriod && (
-                      <Typography variant="body1"><strong>Working Period:</strong> {selectedProject.workingPeriod}{selectedProject.workingPeriodType !== "fixed" &&
-                        (selectedProject.workingPeriodType === "months" ? (
-                          <span> Working Days</span>
-                        ) : (
-                          <span> Working Hours</span>
-                        ))}</Typography>
-                    )}
-                    {selectedProject.paymentStatus && (
-                      <Typography variant="body1"><strong>Payment Status:</strong> {selectedProject.paymentStatus}</Typography>
-                    )}
-                    {selectedProject.candidateName && (
-                      <Typography variant="body1"><strong>Candidate Name:</strong> {selectedProject.candidateName}</Typography>
-                    )}
-                    {selectedProject.billingCycle && (
-                      <Typography variant="body1"><strong>Billing Cycle:</strong> {selectedProject.billingCycle}</Typography>
-                    )}
-                    {selectedProject.advanceAmount != null && selectedProject.advanceAmount > 0 && (
-                      <Typography variant="body1">
-                        <strong>Advance Amount:</strong> {selectedProject.advanceAmount}
+                          : selectedProject.currencyType === "pounds"
+                          ? selectedProject.workingPeriodType === "fixed"
+                            ? " £/fixed"
+                            : ` £/${
+                                selectedProject.workingPeriodType === "hours"
+                                  ? "hours"
+                                  : "months"
+                              }`
+                          : ""}
                       </Typography>
-                    )}
+                      <Typography variant="body1">
+                        <strong>Conversion Rate:</strong> &#x20B9;
+                        {selectedProject.conversionRate.toFixed(2)}
+                      </Typography>
+                      {selectedProject.workingPeriod && (
+                        <Typography variant="body1">
+                          <strong>Working Period:</strong>{" "}
+                          {selectedProject.workingPeriod}
+                          {selectedProject.workingPeriodType !== "fixed" &&
+                            (selectedProject.workingPeriodType === "months" ? (
+                              <span> Working Days</span>
+                            ) : (
+                              <span> Working Hours</span>
+                            ))}
+                        </Typography>
+                      )}
+                      {selectedProject.paymentStatus && (
+                        <Typography variant="body1">
+                          <strong>Payment Status:</strong>{" "}
+                          {selectedProject.paymentStatus}
+                        </Typography>
+                      )}
+                      {selectedProject.candidateName && (
+                        <Typography variant="body1">
+                          <strong>Candidate Name:</strong>{" "}
+                          {selectedProject.candidateName}
+                        </Typography>
+                      )}
+                      {selectedProject.billingCycle && (
+                        <Typography variant="body1">
+                          <strong>Billing Cycle:</strong>{" "}
+                          {selectedProject.billingCycle}
+                        </Typography>
+                      )}
+                      {selectedProject.advanceAmount != null &&
+                        selectedProject.advanceAmount > 0 && (
+                          <Typography variant="body1">
+                            <strong>Advance Amount:</strong>{" "}
+                            {selectedProject.advanceAmount}
+                          </Typography>
+                        )}
 
-                    {selectedProject.currencyType && (
-                      <Typography variant="body1"><strong>Currency Type:</strong> {selectedProject.currencyType}</Typography>
-                    )}
-                    {selectedProject.paymentCycle && (
-                      <Typography variant="body1"><strong>Payment Cycle:</strong> {selectedProject.paymentCycle}</Typography>
-                    )}
-                    {selectedProject.startDate && (
-                      <Typography variant="body1"><strong>Start Date:</strong> {selectedProject.startDate}</Typography>
-                    )}
-                    {selectedProject.endDate && (
-                      <Typography variant="body1"><strong>End Date:</strong> {selectedProject.endDate}</Typography>
-                    )}
+                      {selectedProject.currencyType && (
+                        <Typography variant="body1">
+                          <strong>Currency Type:</strong>{" "}
+                          {selectedProject.currencyType}
+                        </Typography>
+                      )}
+                      {selectedProject.paymentCycle && (
+                        <Typography variant="body1">
+                          <strong>Payment Cycle:</strong>{" "}
+                          {selectedProject.paymentCycle}
+                        </Typography>
+                      )}
+                      {selectedProject.startDate && (
+                        <Typography variant="body1">
+                          <strong>Start Date:</strong>{" "}
+                          {selectedProject.startDate}
+                        </Typography>
+                      )}
+                      {selectedProject.endDate && (
+                        <Typography variant="body1">
+                          <strong>End Date:</strong> {selectedProject.endDate}
+                        </Typography>
+                      )}
 
-                    {selectedProject.ratePerDay && (
-                      <Typography variant="body1"><strong>Rate/Day:</strong>{selectedProject.currencyType === "rupees" ? (
-                        <span> &#x20B9;</span>
-                      ) : selectedProject.currencyType === "dollars" ? (
-                        <span> $</span>
-                      ) : selectedProject.currencyType === "pounds" ? (
-                        <span> &#163;</span>
-                      ) : null}{selectedProject.ratePerDay.toFixed(2)}</Typography>
-                    )}
-                    {selectedProject.technology && (
-                      <Typography variant="body1"><strong>Technology:</strong> {selectedProject.technology}</Typography>
-                    )}
+                      {selectedProject.ratePerDay && (
+                        <Typography variant="body1">
+                          <strong>Rate/Day:</strong>
+                          {selectedProject.currencyType === "rupees" ? (
+                            <span> &#x20B9;</span>
+                          ) : selectedProject.currencyType === "dollars" ? (
+                            <span> $</span>
+                          ) : selectedProject.currencyType === "pounds" ? (
+                            <span> &#163;</span>
+                          ) : null}
+                          {selectedProject.ratePerDay.toFixed(2)}
+                        </Typography>
+                      )}
+                      {selectedProject.technology && (
+                        <Typography variant="body1">
+                          <strong>Technology:</strong>{" "}
+                          {selectedProject.technology}
+                        </Typography>
+                      )}
 
                     {selectedProject.timeSheet && (
                       <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
@@ -603,7 +694,6 @@ const ProjectTable = ({
                   </DialogActions>
                 </Dialog>
               )}
-
             </div>
           )}
         </>
@@ -611,9 +701,9 @@ const ProjectTable = ({
         <>
           {/* Project Table for Client  */}
           {clientProjectTableError ||
-            clientProjectTableLoading ||
-            clientProjectTableData === "" ||
-            clientProjectTableData.length <= 0 ? (
+          clientProjectTableLoading ||
+          clientProjectTableData === "" ||
+          clientProjectTableData.length <= 0 ? (
             <div>
               <div></div>
               <div className="text-xl font-bold text-center p-4 ">
@@ -626,9 +716,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                  (clientProjectTableData &&
-                    (clientProjectTableData === "" ||
-                      clientProjectTableData.length <= 0)) ? (
+                (clientProjectTableData &&
+                  (clientProjectTableData === "" ||
+                    clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -722,7 +812,11 @@ const ProjectTable = ({
                                     },
                                   }}
                                   onChange={(e) =>
-                                    handleSingleCheckboxChange(e, index, project)
+                                    handleSingleCheckboxChange(
+                                      e,
+                                      index,
+                                      project
+                                    )
                                   }
                                 />
                               }
@@ -770,7 +864,6 @@ const ProjectTable = ({
                         </TableRow>
                       ))}
                   </TableBody>
-
                 </Table>
               </TableContainer>
             </div>

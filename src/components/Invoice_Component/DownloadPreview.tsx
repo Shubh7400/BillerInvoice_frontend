@@ -194,8 +194,8 @@ const DownloadPreview = ({
                     {invoice.clientAddress?.city}, {invoice.clientAddress?.state}{" "}
                     {invoice.clientAddress?.postalCode} - {invoice.clientAddress?.country}
                     <br />
-                    <span className="font-semibold">{invoice.clientEmails[0]}</span> |{" "}
-                    {invoice.clientContactNo}
+                    <span className="font-semibold">{invoice?.clientEmails?.[0]}</span> |{" "}
+                    {invoice.contactNo}
                   </p>
 
                 </div>
@@ -216,10 +216,11 @@ const DownloadPreview = ({
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
                     {clientObj.address?.street}
                     <br />
+                    
                     {clientObj.address?.city}, {clientObj.address?.state}{" "}
                     {clientObj.address?.postalCode} - {clientObj.address?.country}
                     <br />
-                    <span className="font-semibold">{clientObj.email[0]}</span> |{" "}
+                    <span className="font-semibold">{clientObj?.email?.[0]}</span> |{" "}
                     {clientObj.contactNo}
                   </p>
 
