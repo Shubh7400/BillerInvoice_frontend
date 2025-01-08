@@ -434,9 +434,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     setShowPreview(value);
   };
 
-  // console.log(selectedClientState.data.sameState);
-  // console.log("admin address : ", adminState.data.address);
-  // console.log("client address", selectedClientState.data.address);
   console.log("client address", clientSameState);
   return (
     <Box>
