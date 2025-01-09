@@ -337,75 +337,13 @@ const ProjectTable = ({
                 <Table>
                   <TableHead className={Styles.animated}>
                     <TableRow>
-                      {/* <TableCell style={{ paddingRight: "0" }}>Select</TableCell> */}
-                      <TableCell sx={{ paddingX: "10px", width: "50px" }}>
-                        Sr.No.
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          paddingLeft: "0",
-                          paddingRight: "0",
-                          width: "200px",
-                        }}
-                      >
-                        Project
-                      </TableCell>
-                      <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Client Name
-                      </TableCell>
-                      {/* <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Project Period
-                      </TableCell> */}
-                      <TableCell
-                        style={{
-                          paddingLeft: "0",
-                          paddingRight: "0",
-                          width: "150px",
-                        }}
-                      >
-                        Rate
-                      </TableCell>
-                      {/* <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Working Period
-                      </TableCell> */}
-                      <TableCell
-                        style={{
-                          paddingLeft: "0",
-                          paddingRight: "0",
-                          width: "170px",
-                        }}
-                      >
-                        Conversion Rate
-                      </TableCell>
-                      {/* <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Amount
-                      </TableCell> */}
-                      <TableCell
-                        style={{
-                          paddingLeft: "0",
-                          paddingRight: "0",
-                          width: "100px",
-                        }}
-                      >
-                        Action
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          paddingLeft: "0",
-                          paddingRight: "0",
-                          width: "100px",
-                        }}
-                      >
-                        selection
-                      </TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto" ,paddingLeft: "0",paddingRight: "0",}}>Sr.No.</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto" ,paddingLeft: "0",paddingRight: "0",}}>Project</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto" ,paddingLeft: "0",paddingRight: "0",}}>Client Name</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto",paddingLeft: "20px" ,paddingRight: "0"}}>Rate</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto" ,paddingLeft: "0",paddingRight: "0",}}>Conversion Rate</TableCell>
+                      <TableCell sx={{ paddingX: "1px", width: "auto", paddingLeft: "30px" ,paddingRight: "0"}}>Action</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto" ,paddingLeft: "0",paddingRight: "0", }}>Selection</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -418,17 +356,17 @@ const ProjectTable = ({
                       }).map((project: ProjectType, index: number) => (
                         <TableRow key={project._id} className="p-3">
                           <TableCell
-                            sx={{ paddingX: "10px", textAlign: "center" }}
+                            sx={{ paddingX: "16px", textAlign: "center", width: "auto" }}
                           >
                             {index + 1}
                           </TableCell>
-                          <TableCell style={{ padding: "0" }}>
+                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             {project.projectName}
                           </TableCell>
-                          <TableCell style={{ padding: "0" }}>
+                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             {getClientName(project.clientId)}
                           </TableCell>
-                          <TableCell style={{ padding: "0" }}>
+                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             {project.rate}(
                             {project.currencyType === "rupees" ? (
                               <span>&#x20B9;</span>
@@ -440,12 +378,12 @@ const ProjectTable = ({
                             /{project.workingPeriodType})
                           </TableCell>
 
-                          <TableCell style={{ padding: "0" }}>
+                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             <span>&#x20B9; </span>
                             {(project?.conversionRate ?? 0).toFixed(2)}
                           </TableCell>
 
-                          <TableCell style={{ padding: "0" }}>
+                          <TableCell sx={{ paddingX: "16px", width: "255px" }}>
                             <div className="flex">
                               <div className={Styles.editButton}>
                                 <div className="">
@@ -497,7 +435,7 @@ const ProjectTable = ({
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell sx={{ paddingY: "8px", paddingX: "0" }}>
+                          <TableCell sx={{ paddingY: "8px", paddingX: "16px", width: "auto" }}>
                             <div>
                               <Button
                                 variant="contained"
@@ -530,7 +468,6 @@ const ProjectTable = ({
                   maxWidth="sm"
                   fullWidth
                 >
-
                   <DialogTitle>Project Details</DialogTitle>
                   <DialogContent>
                     <Typography variant="body1">

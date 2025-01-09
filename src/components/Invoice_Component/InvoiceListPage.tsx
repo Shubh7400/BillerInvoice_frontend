@@ -200,12 +200,12 @@ function InvoiceListPage() {
                       </TableCell>
                       <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Project</TableCell>
                       <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Client Name</TableCell>
-                      <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Rate</TableCell>
+                      <TableCell style={{ paddingLeft: "20px", paddingRight: "0" }}>Rate</TableCell>
                       <TableCell style={{ paddingLeft: "0", paddingRight: "0", width: "170px" }}>
                         Conversion Rate
                       </TableCell>
-                      <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Amount</TableCell>
-                      <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Action</TableCell>
+                      <TableCell style={{ paddingLeft: "15px", paddingRight: "0" }}>Amount</TableCell>
+                      <TableCell style={{ paddingLeft: "25px", paddingRight: "0" }}>Action</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
