@@ -656,7 +656,7 @@ const ProjectTable = ({
                     {selectedProject.timeSheet && (
                       <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
                     )}
-                    {selectedProject.uploadedFiles && selectedProject.uploadedFiles.length > 0 && (
+                    {/* {selectedProject.uploadedFiles && selectedProject.uploadedFiles.length > 0 && (
                       <>
                         <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
                         <List>
@@ -673,7 +673,58 @@ const ProjectTable = ({
                           ))}
                         </List>
                       </>
+                    )} */}
+                    {selectedProject.uploadedFiles && selectedProject.uploadedFiles.length > 0 && (
+                      <>
+                        <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
+                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+                          {selectedProject.uploadedFiles.map((file, index) => (
+                            <ListItem
+                              key={index}
+                              component="a"
+                              href={file.imageUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              sx={{
+                                width: 150, // Card width
+                                height: 200, // Card height
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
+                                padding: "8px",
+                                boxShadow: 2,
+                                borderRadius: "8px",
+                                transition: "transform 0.3s",
+                                "&:hover": {
+                                  transform: "scale(1.05)", // Slight zoom on hover
+                                },
+                              }}
+                            >
+                              <ListItemText
+                                primary={
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      textAlign: "center",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                      whiteSpace: "nowrap",
+                                    }}
+                                    title={file.filename}
+                                  >
+                                    <a href={file.url} target="_blank" rel="noopener noreferrer">
+                                      {file.filename}
+                                    </a>
+                                  </Typography>
+                                }
+                              />
+                            </ListItem>
+                          ))}
+                        </Box>
+                      </>
                     )}
+
+
 
                     <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
                   </DialogContent>
