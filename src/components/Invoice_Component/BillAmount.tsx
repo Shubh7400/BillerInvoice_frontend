@@ -147,6 +147,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           <DownloadPreview
             grandTotal={grandTotal}
             advanceAmount={advanceAmount}
+            showPreview={showPreview}
           />
         </Provider>
       </div>
@@ -195,6 +196,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           <DownloadPreview
             grandTotal={grandTotal}
             advanceAmount={advanceAmount}
+            showPreview={showPreview}
           />
         </Provider>
       </div>

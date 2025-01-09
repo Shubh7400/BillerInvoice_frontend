@@ -122,7 +122,7 @@ const ProfilePage = () => {
       reader.readAsDataURL(file);
     }
   };
-  
+
 
   return (
     <div>
@@ -165,14 +165,14 @@ const ProfilePage = () => {
             {isEditing ? (
               <>
                 {/* <div className="bg-slate-100 flex flex-col justify-start items-center rounded-[15px] h-auto w-[200px] p-2 ml-10"> */}
-                  {/* File input for uploading the image */}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileChange(e)}
-                    className="mb-4"
-                  />
-                  {/* {editableData.companyLogo && (
+                {/* File input for uploading the image */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileChange(e)}
+                  className="mb-4"
+                />
+                {/* {editableData.companyLogo && (
                     <img
                       src={editableData.companyLogo}
                       alt="Preview"
@@ -279,12 +279,16 @@ const ProfilePage = () => {
             ) : (
               <>
                 <h3 className="text-2xl font-semibold">{data.companyName}</h3>
-                <p className="my-2">
+                {/* <p className="my-2">
+                  <b>Gstin: </b>
+                  {data.gistin}
+                </p> */}
+                <div className="text-black opacity-70 flex flex-col justify-start gap-1">
+                <p className="mt-2">
                   <b>Gstin: </b>
                   {data.gistin}
                 </p>
-                <div className="text-black opacity-70 flex flex-col justify-start gap-1">
-                  <p>{data.address?.street}</p>
+                  <b>Address: </b> <p>{data.address?.street}</p>
                   <p>
                     {data.address
                       ? `${data.address.city} ${data.address.state}`
@@ -296,7 +300,7 @@ const ProfilePage = () => {
                       : null}
                   </p>
                   <b>
-                    <b>Contact: </b>
+                    <b>Contact No: </b>
                     {data.contactNo}
                   </b>
                   <p>

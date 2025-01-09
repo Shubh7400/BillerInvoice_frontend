@@ -34,7 +34,6 @@ import { IoChevronBackSharp } from "react-icons/io5";
 export default function AddClientPage({
   forEditClient,
   clientToEdit,
-
 }: {
   forEditClient: boolean;
   clientToEdit: ClientType | null;
@@ -86,6 +85,30 @@ export default function AddClientPage({
     contactNo: "",
   });
 
+  const {
+    loading: clientsLoading,
+    data: clients,
+    error: clientsError,
+  } = useSelector((state: RootState) => state.allClientsState);
+
+  const clientsArr: ClientType[] = clients.map((client) => ({
+    _id: client._id,
+    clientName: client.clientName,
+    email: client.email,
+    pancardNo: client.pancardNo,
+    address: {
+      street: client.address.street,
+      city: client.address.city,
+      state: client.address.state,
+      country: client.address.country,
+      postalCode: client.address.postalCode,
+    },
+    gistin: client.gistin,
+    user: client.user,
+    sameState: client.sameState,
+    contactNo: client.contactNo,
+  }));
+
   const [inputEmail, setInputEmail] = useState("");
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const [emailError, setEmailError] = useState("");
@@ -93,8 +116,8 @@ export default function AddClientPage({
   const [gstNumberError, setGstNumberError] = useState("");
   const [panNumberError, setPanNumberError] = useState<string | null>(null);
   const [contactNoError, setContactNoError] = useState<string>("");
-
-
+  const [clientNameError, setClientNameError] = useState<string>("");
+  const [streetError, setStreetError] = useState<string | null>(null);
   React.useEffect(() => {
     if (editClientState.loading === "succeeded" && controlEditLoading) {
       setControlEditLoading(false);
@@ -173,7 +196,38 @@ export default function AddClientPage({
   ) => {
     const { name, value } = e.target;
 
-    if (name === "street") {
+    if (name === "clientName") {
+      const clientNameRegex = /^[a-zA-Z\s]{2,50}$/; // Allow only alphabets and spaces, between 2 to 50 characters
+      if (!clientNameRegex.test(value)) {
+        setClientNameError(
+          "Invalid Client Name. Only letters and spaces allowed, 2-50 characters."
+        );
+      }
+      else if (
+        clientsArr.some(
+          (client) => client.clientName.trim().toLowerCase() === value.trim().toLowerCase()
+        )
+      ) {
+
+        setClientNameError("Client name already exists.");
+      }
+      else {
+        setClientNameError("");
+      }
+      setClientData((prevData) => ({
+        ...prevData,
+        clientName: value,
+      }));
+    } else if (name === "street") {
+      const streetRegex = /^[a-zA-Z0-9\s.,'-]{3,50}$/;
+
+      // Check if the input matches the regex
+      if (!streetRegex.test(value)) {
+        setStreetError("Street name must be 3-50 characters and only contain letters, numbers, spaces, ., ',', '-', or '.");
+      } else {
+        setStreetError(""); // Clear error if valid
+      }
+
       setClientData((prevData) => ({
         ...prevData,
         address: {
@@ -218,11 +272,10 @@ export default function AddClientPage({
         ...prevData,
         gistin: value,
       }));
-    }
-    else if (name === "contactNo") {
+    } else if (name === "contactNo") {
       const contactRegex = /^[0-9]{10}$/;
       if (!contactRegex.test(value)) {
-        setContactNoError("Invalid Contact Number. Must be 10 digits.");
+        setContactNoError("Invalid Contact Number.");
       } else {
         setContactNoError("");
       }
@@ -230,8 +283,7 @@ export default function AddClientPage({
         ...prevData,
         contactNo: value,
       }));
-    } 
-     else {
+    } else {
       setClientData({
         ...clientData,
         [name]: value,
@@ -319,8 +371,10 @@ export default function AddClientPage({
       areEntriesValid(clientData) &&
       !panNumberError &&
       !postalCodeError &&
-      !gstNumberError && 
-      !contactNoError
+      !gstNumberError &&
+      !contactNoError &&
+      !clientNameError &&
+      !streetError
     ) {
       dispatch(addNewClientAction(clientData));
       // setAddClientLoadingController(true);
@@ -337,6 +391,8 @@ export default function AddClientPage({
       !postalCodeError &&
       !gstNumberError &&
       !contactNoError &&
+      !clientNameError &&
+      !streetError &&
       clientToEdit
     ) {
       const clientId = clientToEdit._id!;
@@ -369,13 +425,23 @@ export default function AddClientPage({
         className="mb-2"
         label="Client Name"
         name="clientName"
+        type="text"
         value={clientData.clientName}
         onChange={handleChange}
+        onKeyDown={(e) => {
+          if (e.key >= '0' && e.key <= '9') {
+            e.preventDefault(); // Block numeric input
+          }
+        }}
+        error={!!clientNameError && clientData.clientName !== ""}
+        helperText={
+          clientNameError && clientData.clientName !== "" ? clientNameError : ""
+        }
         fullWidth
         required
       />
-      <div className="flex flex-col gap-3 mt-3">
 
+      <div className="flex flex-col gap-3 mt-3">
         <TextField
           fullWidth
           label="Enter email and press enter"
@@ -442,6 +508,10 @@ export default function AddClientPage({
           name="street"
           value={clientData.address.street}
           onChange={handleChange}
+          error={!!streetError && clientData.address.street !== ""}
+          helperText={
+            streetError && clientData.address.street !== "" ? streetError : ""
+          }
         />
       </div>
 
@@ -463,7 +533,7 @@ export default function AddClientPage({
       <div className="flex gap-5 mt-3">
         <TextField
           className="w-[100%]"
-          label="postalCode"
+          label="PostalCode"
           fullWidth
           name="postalCode"
           value={clientData.address.postalCode}
@@ -474,6 +544,7 @@ export default function AddClientPage({
               ? postalCodeError
               : ""
           }
+
         />
       </div>
 
@@ -485,15 +556,28 @@ export default function AddClientPage({
           name="contactNo"
           value={clientData.contactNo}
           onChange={handleChange}
+          onKeyDown={(e) => {
+            // Allow only numeric keys, backspace, and arrow keys
+            if (
+              !(
+                (e.key >= '0' && e.key <= '9') || // Numeric keys
+                e.key === 'Backspace' || // Backspace
+                e.key === 'ArrowLeft' || // Left arrow
+                e.key === 'ArrowRight' || // Right arrow
+                e.key === 'Delete' || // Delete key
+                e.key === 'Tab' // Tab key
+              )
+            ) {
+              e.preventDefault(); // Block non-numeric input
+            }
+          }}
           error={!!contactNoError && clientData.contactNo !== ""}
           helperText={
-            contactNoError && clientData.contactNo !== ""
-              ? contactNoError
-              : ""
+            contactNoError && clientData.contactNo !== "" ? contactNoError : ""
           }
+          required
         />
       </div>
-
 
       <div className="flex justify-end">
         <Button

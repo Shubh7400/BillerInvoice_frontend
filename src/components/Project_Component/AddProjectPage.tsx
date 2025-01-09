@@ -32,7 +32,10 @@ import axios from "axios";
 import CompoLoadingProjects from "./CompoLoadingProjects";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { log } from "node:console";
-import { addProjectForInvoiceAction, removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
+import {
+  addProjectForInvoiceAction,
+  removeAllProjectsFromInvoiceAction,
+} from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
 import { FileData } from "../../types/types";
 import dayjs, { Dayjs } from "dayjs";
@@ -46,9 +49,16 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Card, CardMedia
 } from "@mui/material";
 import { Typography, List, ListItem, ListItemText, IconButton, Box, Paper } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { UploadedFile } from "../../types/types";
+interface ImageConverterProps {
+  selectedProjectData: ProjectType;
+}
+
+
 function AddProjectPage({
   adminId,
   clientId,
@@ -247,7 +257,11 @@ function AddProjectPage({
     setFormError("");
     setIncompleteError("");
 
-    if (type === "file" && e.target instanceof HTMLInputElement && e.target.files) {
+    if (
+      type === "file" &&
+      e.target instanceof HTMLInputElement &&
+      e.target.files
+    ) {
       const files = e.target.files;
       const updatedFiles = Array.from(files).map((file) => ({
         name: file.name,
@@ -332,7 +346,6 @@ function AddProjectPage({
       ...prevData,
       [name]: value,
     }));
-
   }
 
   function areAllRequiredFieldsFilled(obj: any) {
@@ -382,7 +395,9 @@ function AddProjectPage({
           queryClient.refetchQueries(["projects", clientId]);
           setLoading(false);
           handleClose();
-          enqueueSnackbar("Project added successfully.", { variant: "success" });
+          enqueueSnackbar("Project added successfully.", {
+            variant: "success",
+          });
           navigate(-1);
         },
         onError: (error) => {
@@ -403,7 +418,9 @@ function AddProjectPage({
     projectData.clientId
   );
   const handleEditSubmit = (
-    e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
     if (areAllRequiredFieldsFilled(projectData)) {
@@ -431,13 +448,17 @@ function AddProjectPage({
           onSuccess: () => {
             queryClient.refetchQueries(["projects", clientId]);
             setLoading(false);
-            enqueueSnackbar("Project edited successfully.", { variant: "success" });
+            enqueueSnackbar("Project edited successfully.", {
+              variant: "success",
+            });
             handleClose();
             setTimeout(() => navigate(-1), 600);
           },
           onError(error) {
             setLoading(false);
-            enqueueSnackbar("Error in updating project. Try again! ", { variant: "error" });
+            enqueueSnackbar("Error in updating project. Try again! ", {
+              variant: "error",
+            });
             setIncompleteError("Add request error, add again.");
           },
         }
@@ -468,7 +489,6 @@ function AddProjectPage({
         candidateName: "",
         startDate: "",
         endDate: "",
-
       });
     }
     if (!forAddProject && !toEdit && projectToEdit && projectToEdit._id) {
@@ -518,7 +538,10 @@ function AddProjectPage({
       }
 
       if (field === "endDate") {
-        if (projectData.startDate && value.isBefore(dayjs(projectData.startDate))) {
+        if (
+          projectData.startDate &&
+          value.isBefore(dayjs(projectData.startDate))
+        ) {
           setEndDateError(true);
         } else {
           setEndDateError(false);
@@ -562,7 +585,9 @@ function AddProjectPage({
                   options={clientsArr}
                   getOptionLabel={(option) => option.clientName || ""}
                   value={
-                    clientsArr.find((client) => client._id === projectData.clientId) || null
+                    clientsArr.find(
+                      (client) => client._id === projectData.clientId
+                    ) || null
                   }
                   onChange={(event, newValue) => {
                     if (newValue && newValue._id) {
@@ -673,7 +698,7 @@ function AddProjectPage({
               onChange={handleChange}
             />
 
-            {projectData.workingPeriodType === "fixed" &&
+            {projectData.workingPeriodType === "fixed" && (
               <TextField
                 margin="dense"
                 id="workingPeriodType"
@@ -685,7 +710,7 @@ function AddProjectPage({
                 value={projectData.advanceAmount || ""}
                 onChange={handleChange}
               />
-            }
+            )}
 
             {currencyType !== "rupees" ? (
               <>
@@ -729,14 +754,13 @@ function AddProjectPage({
             <TextField
               margin="dense"
               id="paymentCycle"
-              label="PaymentCycle"
+              label="Payment Cycle"
               type="text"
               fullWidth
               variant="outlined"
               name="paymentCycle"
               value={projectData.paymentCycle}
               onChange={handleChange}
-            // required
             />
 
             <TextField
@@ -765,7 +789,7 @@ function AddProjectPage({
               name="technology"
               value={projectData.technology}
               onChange={handleChange}
-            // required
+              
             />
 
             <FormControl component="fieldset" margin="dense" fullWidth>
@@ -780,7 +804,6 @@ function AddProjectPage({
                 <FormControlLabel value="no" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-
             <div>
               <label htmlFor="fileUpload">Upload File:</label>
               <TextField
@@ -794,25 +817,114 @@ function AddProjectPage({
                 }}
                 fullWidth
               />
-             {!forAddProject   &&
-               <>
-               <List>
-                 {selectedProjectData.uploadedFiles?.map((file, index) => (
-                   <ListItem
-                     key={index}
-                     component="a"
-                     href={file.url}
-                     target="_blank"
-                     rel="noopener noreferrer"
-                   >
-                     <ListItemText primary={file.filename} />
-                   </ListItem>
-                 ))}
-               </List>
-               </>
-             }
-            </div>  
-           
+              {!forAddProject && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 2,
+                    padding: 2,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "16px", // Spacing between items
+                      justifyContent: "start",
+                      alignItems: "center",
+                    }}
+                  >
+                    {selectedProjectData.uploadedFiles?.map((file, index) => {
+                      if (file.imageUrl?.match(/image\/.*/)) {
+                        // Preview Images
+                        return (
+                          <Card
+                            key={index}
+                            sx={{
+                              width: 150, // Card width
+                              height: 200, // Card height
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "space-between",
+                              padding: "8px",
+                              boxShadow: 2,
+                              borderRadius: "8px",
+                              transition: "transform 0.3s",
+                              "&:hover": {
+                                transform: "scale(1.05)", // Slight zoom on hover
+                              },
+                            }}
+                          >
+                            <CardMedia
+                              component="img"
+                              src={file.imageUrl}
+                              alt={file.filename}
+                              sx={{
+                                maxHeight: "120px",
+                                objectFit: "contain", // Maintain aspect ratio
+                                marginBottom: "8px",
+                              }}
+                            />
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                textAlign: "center",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                              title={file.filename} // Tooltip for long filenames
+                            >
+                               <a href={file.url} target="_blank" rel="noopener noreferrer"  >
+                                {file.filename}
+                              </a>
+
+
+                            </Typography>
+                          </Card>
+                        );
+                      } else {
+                        // For unsupported formats like .docx
+                        return (
+                          <Card
+                            key={index}
+                            sx={{
+                              width: 150,
+                              height: 100,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              padding: "8px",
+                              boxShadow: 2,
+                              borderRadius: "8px",
+                              backgroundColor: "#f8d7da",
+                              color: "#721c24",
+                              border: "1px solid #f5c6cb",
+                            }}
+                          >
+                            <Typography
+                              variant="body2"
+                              textAlign="center"
+                              title={file.filename}
+                            >
+                              Preview not available for <strong>{file.filename}</strong>
+                            </Typography>
+                          </Card>
+                        );
+                      }
+                    })}
+                  </Box>
+                </Box>
+              )}
+            </div>
+
+
+
+
+
             <TextField
               margin="dense"
               id="candidateName"
@@ -823,31 +935,41 @@ function AddProjectPage({
               name="candidateName"
               value={projectData.candidateName}
               onChange={handleChange}
-
             />
-            <LocalizationProvider dateAdapter={AdapterDayjs}> {/* Use Dayjs Adapter */}
-              <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              {" "}
+              {/* Use Dayjs Adapter */}
+              <div
+                style={{ display: "flex", gap: "16px", alignItems: "center" }}
+              >
                 {/* Start Date Picker */}
                 <DatePicker
                   label="Start Date"
-                  value={projectData.startDate ? dayjs(projectData.startDate) : null}
-                  onChange={(newValue) => handleDateChange("startDate", newValue)}
+                  value={
+                    projectData.startDate ? dayjs(projectData.startDate) : null
+                  }
+                  onChange={(newValue) =>
+                    handleDateChange("startDate", newValue)
+                  }
                   slotProps={{
                     textField: {
                       variant: "outlined",
                       fullWidth: true,
                       margin: "normal",
                       error: startDateError, // Use boolean error flag
-                      helperText: startDateError ? "Start date should be less than end date" : "",
+                      helperText: startDateError
+                        ? "Start date should be less than end date"
+                        : "",
                     },
-
                   }}
                 />
 
                 {/* End Date Picker */}
                 <DatePicker
                   label="End Date"
-                  value={projectData.endDate ? dayjs(projectData.endDate) : null}
+                  value={
+                    projectData.endDate ? dayjs(projectData.endDate) : null
+                  }
                   onChange={(newValue) => handleDateChange("endDate", newValue)}
                   slotProps={{
                     textField: {
@@ -855,7 +977,9 @@ function AddProjectPage({
                       fullWidth: true,
                       margin: "normal",
                       error: endDateError, // Use boolean error flag
-                      helperText: endDateError ? "End date should be greater than start date" : "",
+                      helperText: endDateError
+                        ? "End date should be greater than start date"
+                        : "",
                     },
                   }}
                 />

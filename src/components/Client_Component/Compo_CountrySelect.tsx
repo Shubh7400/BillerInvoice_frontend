@@ -111,6 +111,11 @@ export default function SelectCountryStateCity({
         filterOption={(option, inputValue) =>
           option.label.toLowerCase().startsWith(inputValue.toLowerCase())
         }
+        placeholder="Select Country" // Custom placeholder
+        menuPortalTarget={document.body} // Render menu to body
+        styles={{
+          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+        }}
       />
       <label className="text-xs py-1 opacity-60">
         State: <b>{stateString}</b>
@@ -129,6 +134,11 @@ export default function SelectCountryStateCity({
         filterOption={(option, inputValue) =>
           option.label.toLowerCase().startsWith(inputValue.toLowerCase())
         }
+        placeholder="Select State" // Custom placeholder
+        menuPortalTarget={document.body} // Render menu to body
+        styles={{
+          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+        }}
       />
       <label className="text-xs py-1 opacity-60">
         City : <b>{cityString}</b>{" "}
@@ -146,6 +156,11 @@ export default function SelectCountryStateCity({
         filterOption={(option, inputValue) =>
           option.label.toLowerCase().startsWith(inputValue.toLowerCase())
         }
+        placeholder="Select City" // Custom placeholder
+        menuPortalTarget={document.body} // Render menu to body
+        styles={{
+          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+        }}
       />
     </div>
   );
