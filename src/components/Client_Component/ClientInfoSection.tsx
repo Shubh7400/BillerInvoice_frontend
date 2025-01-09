@@ -32,23 +32,25 @@ function ClientInfoSection() {
                   {clientData.clientName}
                 </h2>
               </div>
-              <div>
-                <p className="overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden">
+              <div >
+                <p className="overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden mt-2">
                   <b>Email: </b>
                   {firstEmail}
                 </p>
+
               </div>
+              {contactNo && (
+                <p>
+                  <b>Contact No: </b>
+                  {contactNo}
+                </p>
+              )}
               <p className="mb-2">
                 <b>Address: </b>
                 {fullAddress}
               </p>
-              {contactNo &&
-                 <p className="mb-2">
-                 <b>Contact No: </b>
-                 {contactNo}
-               </p>
-              }
-             
+
+
             </div>
           </div>
         </div>

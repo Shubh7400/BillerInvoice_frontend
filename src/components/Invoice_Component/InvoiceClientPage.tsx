@@ -580,12 +580,12 @@ function InvoiceClientPage() {
             >
               <TableHead className={Styles.animated}>
                 <TableRow>
-                  <TableCell>Project Description</TableCell>
-                  <TableCell>Rate</TableCell>
+                  <TableCell className="w-[175px]">Project Description</TableCell>
+                  <TableCell className="w-[135px]">Rate</TableCell>
                   {editableProjects.map((project: ProjectType) => (
                     <>
                       {project.workingPeriodType === "months" && (
-                        <TableCell>Rate/day</TableCell>
+                        <TableCell className="w-[175px]">Rate/day</TableCell>
                       )}
                     </>
                   ))}

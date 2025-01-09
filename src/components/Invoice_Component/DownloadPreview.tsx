@@ -138,7 +138,7 @@ const DownloadPreview = ({
                     <b>Pan:</b> {invoice.pancardNo}
                   </p>
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                    <span>{invoice.address?.street}</span>
+                  <b>Address: </b> <span>{invoice.address?.street}</span>
                     <br />
                     {invoice.address?.city}, {invoice.address?.state}{" "}
                     {invoice.address?.postalCode} - {invoice.address?.country}
@@ -162,7 +162,7 @@ const DownloadPreview = ({
                     <b>Pan:</b> {data.pancardNo}
                   </p>
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                    <span>{data.address?.street}</span>
+                  <b>Address: </b><span>{data.address?.street}</span>
                     <br />
                     {data.address?.city}, {data.address?.state}{" "}
                     {data.address?.postalCode} - {data.address?.country}
@@ -182,20 +182,19 @@ const DownloadPreview = ({
                   <h3 className="text-sm font-bold p-[3px]">
                     {invoice.clientName}
                   </h3>
-                  <p className="text-xs p-[3px] text-[15px]">
-                    <b>Gstin:</b> {invoice.clientGstin}
-                  </p>
-                  <p className="text-xs p-[3px] text-[15px]">
-                    <b>PAN:</b> {invoice.clientPanCard}
+                   <p className="text-xs p-[3px] text-[15px]">
+                    <b>Gstin:</b> {invoice.gistin}
+                    <br />
+                    <b>Pan:</b> {invoice.pancardNo}
                   </p>
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                    {invoice.clientAddress?.street}
+                  <b>Address: </b>{invoice.clientAddress?.street}
                     <br />
                     {invoice.clientAddress?.city}, {invoice.clientAddress?.state}{" "}
                     {invoice.clientAddress?.postalCode} - {invoice.clientAddress?.country}
                     <br />
                     <span className="font-semibold">{invoice?.clientEmails?.[0]}</span> |{" "}
-                    {invoice.contactNo}
+                    {invoice.clientContactNo}
                   </p>
 
                 </div>
@@ -209,12 +208,11 @@ const DownloadPreview = ({
                   </h3>
                   <p className="text-xs p-[3px] text-[15px]">
                     <b>Gstin:</b> {clientObj.gistin}
-                  </p>
-                  <p className="text-xs p-[3px] text-[15px]">
-                    <b>PAN:</b> {clientObj.pancardNo}
+                    <br />
+                    <b>Pan:</b> {clientObj.pancardNo}
                   </p>
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                    {clientObj.address?.street}
+                  <b>Address: </b>{clientObj.address?.street}
                     <br />
                     
                     {clientObj.address?.city}, {clientObj.address?.state}{" "}
@@ -387,7 +385,7 @@ const DownloadPreview = ({
             {!showPreview && invoice ?(
               <div className="text-sm">
                 <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2 ">
-                  Payment info
+                  Payment information
                 </h1>
                 <p className="font-bold">{invoice.companyName}</p>
                 <p>A/C NO: {invoice.accountNo}</p>
@@ -397,7 +395,7 @@ const DownloadPreview = ({
             ) : (
               <div className="text-sm">
                 <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2 ">
-                  Payment info
+                  Payment information
                 </h1>
                 <p className="font-bold">{data.companyName}</p>
                 <p>A/C NO: {data.accountNo}</p>
@@ -417,43 +415,25 @@ const DownloadPreview = ({
                     SUBTOTAL: <span>&#8377; {invoiceObject.amountWithoutTax.toFixed(2)}</span>
                   </div>
                 )}
-              {/* {sameCountry && (
-                <div style={{ marginTop: "6px" }}>
-                  {clientSameState ? (
-                    <>
-                      <div className="flex justify-between">
-                        SGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        CGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="flex justify-between">
-                      IGST:(18%)<span>{taxAmount.toFixed(2)}</span>
-                    </div>
-                  )}
-                </div>
-              )} */}
-
+             
               {!showPreview && invoice ? (
                 invoice.taxType !== "" && (
-                  <div className="flex justify-between mb-[30px]">
+                  <div className="flex justify-between mb-[10px]">
                     {invoice.taxType === 'igst' ? (
-                      <span>IGST</span>
+                      <span>IGST:</span>
                     ) : invoice.taxType === 'sgst_cgst' ? (
-                      <span>SGST/CGST</span>
+                      <span>SGST/CGST:</span>
                     ) : null}
                     <span>&#8377;{invoice.taxAmount.toFixed(2)}</span>
                   </div>
                 )
               ) : (
                 invoiceObject.taxType !== "" && (
-                  <div className="flex justify-between mb-[30px]">
+                  <div className="flex justify-between mb-[10px]">
                     {invoiceObject.taxType === 'igst' ? (
-                      <span>IGST</span>
+                      <span>IGST:</span>
                     ) : invoiceObject.taxType === 'sgst_cgst' ? (
-                      <span>SGST/CGST</span>
+                      <span>SGST/CGST:</span>
                     ) : null}
                     <span>&#8377;{taxAmount.toFixed(2)}</span>
                   </div>
@@ -471,7 +451,7 @@ const DownloadPreview = ({
                     </div>
                   </>
                 ) : (
-                  <div className="text-[20px] justify-between flex items-center h-[30px] mt-[10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
+                  <div className="text-[20px] justify-between flex items-center h-[30px] mt-[20px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
                     Total: <span>&#8377; {invoice.amountAfterTax?.toFixed(2)}</span>
                   </div>
                 )
@@ -487,7 +467,7 @@ const DownloadPreview = ({
                       </div>
                     </>
                   ) : (
-                    <div className="text-[20px] justify-between flex items-center h-[30px] mt-[10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
+                    <div className="text-[20px] justify-between flex items-center h-[30px] mt-[20px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] px-2 ">
                       Total:{" "}
                       <span>
                         &#8377; {invoiceObject?.amountAfterTax.toFixed(2) || 0}

@@ -754,14 +754,13 @@ function AddProjectPage({
             <TextField
               margin="dense"
               id="paymentCycle"
-              label="PaymentCycle"
+              label="Payment Cycle"
               type="text"
               fullWidth
               variant="outlined"
               name="paymentCycle"
               value={projectData.paymentCycle}
               onChange={handleChange}
-              // required
             />
 
             <TextField
@@ -790,7 +789,7 @@ function AddProjectPage({
               name="technology"
               value={projectData.technology}
               onChange={handleChange}
-              // required
+              
             />
 
             <FormControl component="fieldset" margin="dense" fullWidth>

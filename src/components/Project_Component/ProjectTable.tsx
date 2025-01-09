@@ -302,8 +302,8 @@ const ProjectTable = ({
           handleProjectEdit={handleEditProject}
         />
         {clientObj &&
-        selectedClientState.loading !== "idle" &&
-        projectTableforClient ? (
+          selectedClientState.loading !== "idle" &&
+          projectTableforClient ? (
           <ClientInfoSection />
         ) : null}
       </div>
@@ -322,9 +322,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                (clientProjectTableData &&
-                  (clientProjectTableData === "" ||
-                    clientProjectTableData.length <= 0)) ? (
+                  (clientProjectTableData &&
+                    (clientProjectTableData === "" ||
+                      clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -530,138 +530,128 @@ const ProjectTable = ({
                   maxWidth="sm"
                   fullWidth
                 >
-                  <Box
-                    className="MuiBox-root"
-                    sx={{
-                      border: 4, 
-                      borderColor: materialTheme.palette.secondary.main, 
-                      borderRadius: "8px",
-                    }}
-                  >
-                    <DialogTitle>Project Details</DialogTitle>
-                    <DialogContent>
-                      <Typography variant="body1">
-                        <strong>Project Name:</strong>{" "}
-                        {selectedProject.projectName}
-                      </Typography>
-                      <Typography variant="body1">
-                        <strong>Client Name:</strong>{" "}
-                        {getClientName(selectedProject.clientId)}
-                      </Typography>
-                      <Typography variant="body1">
-                        <strong>Rate:</strong>{" "}
-                        {selectedProject.rate?.toFixed(2)}
-                        {selectedProject.currencyType === "rupees"
-                          ? selectedProject.workingPeriodType === "fixed"
-                            ? " ₹/fixed"
-                            : ` ₹/${
-                                selectedProject.workingPeriodType === "hours"
-                                  ? "hours"
-                                  : "months"
-                              }`
-                          : selectedProject.currencyType === "dollars"
+
+                  <DialogTitle>Project Details</DialogTitle>
+                  <DialogContent>
+                    <Typography variant="body1">
+                      <strong>Project Name:</strong>{" "}
+                      {selectedProject.projectName}
+                    </Typography>
+                    <Typography variant="body1">
+                      <strong>Client Name:</strong>{" "}
+                      {getClientName(selectedProject.clientId)}
+                    </Typography>
+                    <Typography variant="body1">
+                      <strong>Rate:</strong>{" "}
+                      {selectedProject.rate?.toFixed(2)}
+                      {selectedProject.currencyType === "rupees"
+                        ? selectedProject.workingPeriodType === "fixed"
+                          ? " ₹/fixed"
+                          : ` ₹/${selectedProject.workingPeriodType === "hours"
+                            ? "hours"
+                            : "months"
+                          }`
+                        : selectedProject.currencyType === "dollars"
                           ? selectedProject.workingPeriodType === "fixed"
                             ? " $/fixed"
-                            : ` $/${
-                                selectedProject.workingPeriodType === "hours"
-                                  ? "hours"
-                                  : "months"
-                              }`
+                            : ` $/${selectedProject.workingPeriodType === "hours"
+                              ? "hours"
+                              : "months"
+                            }`
                           : selectedProject.currencyType === "pounds"
-                          ? selectedProject.workingPeriodType === "fixed"
-                            ? " £/fixed"
-                            : ` £/${
-                                selectedProject.workingPeriodType === "hours"
-                                  ? "hours"
-                                  : "months"
+                            ? selectedProject.workingPeriodType === "fixed"
+                              ? " £/fixed"
+                              : ` £/${selectedProject.workingPeriodType === "hours"
+                                ? "hours"
+                                : "months"
                               }`
-                          : ""}
-                      </Typography>
+                            : ""}
+                    </Typography>
+                    <Typography variant="body1">
+                      <strong>Conversion Rate:</strong> &#x20B9;
+                      {selectedProject.conversionRate.toFixed(2)}
+                    </Typography>
+                    {selectedProject.workingPeriod && (
                       <Typography variant="body1">
-                        <strong>Conversion Rate:</strong> &#x20B9;
-                        {selectedProject.conversionRate.toFixed(2)}
+                        <strong>Working Period:</strong>{" "}
+                        {selectedProject.workingPeriod}
+                        {selectedProject.workingPeriodType !== "fixed" &&
+                          (selectedProject.workingPeriodType === "months" ? (
+                            <span> Working Days</span>
+                          ) : (
+                            <span> Working Hours</span>
+                          ))}
                       </Typography>
-                      {selectedProject.workingPeriod && (
+                    )}
+                    {selectedProject.paymentStatus && (
+                      <Typography variant="body1">
+                        <strong>Payment Status:</strong>{" "}
+                        {selectedProject.paymentStatus}
+                      </Typography>
+                    )}
+                    {selectedProject.candidateName && (
+                      <Typography variant="body1">
+                        <strong>Candidate Name:</strong>{" "}
+                        {selectedProject.candidateName}
+                      </Typography>
+                    )}
+                    {selectedProject.billingCycle && (
+                      <Typography variant="body1">
+                        <strong>Billing Cycle:</strong>{" "}
+                        {selectedProject.billingCycle}
+                      </Typography>
+                    )}
+                    {selectedProject.advanceAmount != null &&
+                      selectedProject.advanceAmount > 0 && (
                         <Typography variant="body1">
-                          <strong>Working Period:</strong>{" "}
-                          {selectedProject.workingPeriod}
-                          {selectedProject.workingPeriodType !== "fixed" &&
-                            (selectedProject.workingPeriodType === "months" ? (
-                              <span> Working Days</span>
-                            ) : (
-                              <span> Working Hours</span>
-                            ))}
-                        </Typography>
-                      )}
-                      {selectedProject.paymentStatus && (
-                        <Typography variant="body1">
-                          <strong>Payment Status:</strong>{" "}
-                          {selectedProject.paymentStatus}
-                        </Typography>
-                      )}
-                      {selectedProject.candidateName && (
-                        <Typography variant="body1">
-                          <strong>Candidate Name:</strong>{" "}
-                          {selectedProject.candidateName}
-                        </Typography>
-                      )}
-                      {selectedProject.billingCycle && (
-                        <Typography variant="body1">
-                          <strong>Billing Cycle:</strong>{" "}
-                          {selectedProject.billingCycle}
-                        </Typography>
-                      )}
-                      {selectedProject.advanceAmount != null &&
-                        selectedProject.advanceAmount > 0 && (
-                          <Typography variant="body1">
-                            <strong>Advance Amount:</strong>{" "}
-                            {selectedProject.advanceAmount}
-                          </Typography>
-                        )}
-
-                      {selectedProject.currencyType && (
-                        <Typography variant="body1">
-                          <strong>Currency Type:</strong>{" "}
-                          {selectedProject.currencyType}
-                        </Typography>
-                      )}
-                      {selectedProject.paymentCycle && (
-                        <Typography variant="body1">
-                          <strong>Payment Cycle:</strong>{" "}
-                          {selectedProject.paymentCycle}
-                        </Typography>
-                      )}
-                      {selectedProject.startDate && (
-                        <Typography variant="body1">
-                          <strong>Start Date:</strong>{" "}
-                          {selectedProject.startDate}
-                        </Typography>
-                      )}
-                      {selectedProject.endDate && (
-                        <Typography variant="body1">
-                          <strong>End Date:</strong> {selectedProject.endDate}
+                          <strong>Advance Amount:</strong>{" "}
+                          {selectedProject.advanceAmount}
                         </Typography>
                       )}
 
-                      {selectedProject.ratePerDay && (
-                        <Typography variant="body1">
-                          <strong>Rate/Day:</strong>
-                          {selectedProject.currencyType === "rupees" ? (
-                            <span> &#x20B9;</span>
-                          ) : selectedProject.currencyType === "dollars" ? (
-                            <span> $</span>
-                          ) : selectedProject.currencyType === "pounds" ? (
-                            <span> &#163;</span>
-                          ) : null}
-                          {selectedProject.ratePerDay.toFixed(2)}
-                        </Typography>
-                      )}
-                      {selectedProject.technology && (
-                        <Typography variant="body1">
-                          <strong>Technology:</strong>{" "}
-                          {selectedProject.technology}
-                        </Typography>
-                      )}
+                    {selectedProject.currencyType && (
+                      <Typography variant="body1">
+                        <strong>Currency Type:</strong>{" "}
+                        {selectedProject.currencyType}
+                      </Typography>
+                    )}
+                    {selectedProject.paymentCycle && (
+                      <Typography variant="body1">
+                        <strong>Payment Cycle:</strong>{" "}
+                        {selectedProject.paymentCycle}
+                      </Typography>
+                    )}
+                    {selectedProject.startDate && (
+                      <Typography variant="body1">
+                        <strong>Start Date:</strong>{" "}
+                        {selectedProject.startDate}
+                      </Typography>
+                    )}
+                    {selectedProject.endDate && (
+                      <Typography variant="body1">
+                        <strong>End Date:</strong> {selectedProject.endDate}
+                      </Typography>
+                    )}
+
+                    {selectedProject.ratePerDay && (
+                      <Typography variant="body1">
+                        <strong>Rate/Day:</strong>
+                        {selectedProject.currencyType === "rupees" ? (
+                          <span> &#x20B9;</span>
+                        ) : selectedProject.currencyType === "dollars" ? (
+                          <span> $</span>
+                        ) : selectedProject.currencyType === "pounds" ? (
+                          <span> &#163;</span>
+                        ) : null}
+                        {selectedProject.ratePerDay.toFixed(2)}
+                      </Typography>
+                    )}
+                    {selectedProject.technology && (
+                      <Typography variant="body1">
+                        <strong>Technology:</strong>{" "}
+                        {selectedProject.technology}
+                      </Typography>
+                    )}
 
                     {selectedProject.timeSheet && (
                       <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
@@ -693,7 +683,9 @@ const ProjectTable = ({
                     </Button>
                   </DialogActions>
                 </Dialog>
+
               )}
+
             </div>
           )}
         </>
@@ -701,9 +693,9 @@ const ProjectTable = ({
         <>
           {/* Project Table for Client  */}
           {clientProjectTableError ||
-          clientProjectTableLoading ||
-          clientProjectTableData === "" ||
-          clientProjectTableData.length <= 0 ? (
+            clientProjectTableLoading ||
+            clientProjectTableData === "" ||
+            clientProjectTableData.length <= 0 ? (
             <div>
               <div></div>
               <div className="text-xl font-bold text-center p-4 ">
@@ -716,9 +708,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data.length <= 0)) ||
-                (clientProjectTableData &&
-                  (clientProjectTableData === "" ||
-                    clientProjectTableData.length <= 0)) ? (
+                  (clientProjectTableData &&
+                    (clientProjectTableData === "" ||
+                      clientProjectTableData.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
