@@ -59,6 +59,7 @@ function InvoiceClientPage() {
     (state: RootState) => state.projectsForInvoiceState
   );
 
+
   const handleRemoveProject = (project: ProjectType) => {
     if (project && project._id) {
       dispatch(removeProjectFromInvoiceAction(project._id));

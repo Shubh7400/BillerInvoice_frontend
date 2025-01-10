@@ -337,13 +337,13 @@ const ProjectTable = ({
                 <Table>
                   <TableHead className={Styles.animated}>
                     <TableRow>
-                      <TableCell sx={{ paddingX: "10px", width: "auto" ,paddingLeft: "0",paddingRight: "0",}}>Sr.No.</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto" ,paddingLeft: "0",paddingRight: "0",}}>Project</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto" ,paddingLeft: "0",paddingRight: "0",}}>Client Name</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto",paddingLeft: "20px" ,paddingRight: "0"}}>Rate</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto" ,paddingLeft: "0",paddingRight: "0",}}>Conversion Rate</TableCell>
-                      <TableCell sx={{ paddingX: "1px", width: "auto", paddingLeft: "30px" ,paddingRight: "0"}}>Action</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto" ,paddingLeft: "0",paddingRight: "0", }}>Selection</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Sr.No.</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Project</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Client Name</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "20px", paddingRight: "0" }}>Rate</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Conversion Rate</TableCell>
+                      <TableCell sx={{ paddingX: "1px", width: "auto", paddingLeft: "30px", paddingRight: "0" }}>Action</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Selection</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -614,7 +614,15 @@ const ProjectTable = ({
                     {selectedProject.uploadedFiles && selectedProject.uploadedFiles.length > 0 && (
                       <>
                         <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
-                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 2, // Space between capsules
+                            justifyContent: "flex-start", // Align items to the start
+                            alignItems: "center", // Align items in the center
+                          }}
+                        >
                           {selectedProject.uploadedFiles.map((file, index) => (
                             <ListItem
                               key={index}
@@ -623,17 +631,21 @@ const ProjectTable = ({
                               target="_blank"
                               rel="noopener noreferrer"
                               sx={{
-                                width: 150, // Card width
-                                height: 200, // Card height
+                                minWidth: 50,
+                                height: 50,
                                 display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "space-between",
-                                padding: "8px",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                padding: "8px 16px",
                                 boxShadow: 2,
-                                borderRadius: "8px",
-                                transition: "transform 0.3s",
+                                borderRadius: "25px", // Makes the shape capsule-like
+                                backgroundColor: "#f0f0f0", // Light background color
+                                color: "#333", // Text color
+                                textDecoration: "none",
+                                transition: "transform 0.3s, background-color 0.3s",
                                 "&:hover": {
                                   transform: "scale(1.05)", // Slight zoom on hover
+                                  backgroundColor: "#e0e0e0", // Slightly darker background on hover
                                 },
                               }}
                             >
@@ -646,12 +658,11 @@ const ProjectTable = ({
                                       overflow: "hidden",
                                       textOverflow: "ellipsis",
                                       whiteSpace: "nowrap",
+                                      fontWeight: "bold",
                                     }}
                                     title={file.filename}
                                   >
-                                    <a href={file.url} target="_blank" rel="noopener noreferrer">
-                                      {file.filename}
-                                    </a>
+                                    {file.filename}
                                   </Typography>
                                 }
                               />
@@ -660,6 +671,7 @@ const ProjectTable = ({
                         </Box>
                       </>
                     )}
+
 
 
 

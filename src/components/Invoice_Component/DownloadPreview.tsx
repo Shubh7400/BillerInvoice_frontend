@@ -131,21 +131,21 @@ const DownloadPreview = ({
                   <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
                     Billing From
                   </h1>
-                  <h3 className="font-bold p-[3px]">{invoice.companyName}</h3>
+                  <h3 className="font-bold p-[3px]">{invoice.adminDetails?.companyName}</h3>
                   <p className="text-xs p-[3px] text-[15px]">
-                    <b>Gstin:</b> {invoice.gistin}
+                    <b>Gstin:</b> {invoice.adminDetails?.gistin}
                     <br />
-                    <b>Pan:</b> {invoice.pancardNo}
+                    <b>Pan:</b> {invoice.adminDetails?.pancardNo}
                   </p>
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                  <b>Address: </b> <span>{invoice.address?.street}</span>
+                  <b>Address: </b> <span>{invoice.adminDetails?.address?.street}</span>
                     <br />
-                    {invoice.address?.city}, {invoice.address?.state}{" "}
-                    {invoice.address?.postalCode} - {invoice.address?.country}
+                    {invoice.adminDetails?.address?.city}, {invoice.adminDetails?.address?.state}{" "}
+                    {invoice.adminDetails?.address?.postalCode} - {invoice.adminDetails?.address?.country}
                     <br />
                     <span className="font-semibold">
-                      {invoice.userEmail}
-                    </span> | {invoice.contactNo}
+                      {invoice.adminDetails?.email}
+                    </span> | {invoice.adminDetails?.contactNo}
                   </p>
                 </div>
               </div>
@@ -180,21 +180,21 @@ const DownloadPreview = ({
                     Bill To
                   </h1>
                   <h3 className="text-sm font-bold p-[3px]">
-                    {invoice.clientName}
+                    {invoice.clientDetails?.clientName}
                   </h3>
                    <p className="text-xs p-[3px] text-[15px]">
-                    <b>Gstin:</b> {invoice.gistin}
+                    <b>Gstin:</b> {invoice.clientDetails?.gistin}
                     <br />
-                    <b>Pan:</b> {invoice.pancardNo}
+                    <b>Pan:</b> {invoice.clientDetails?.pancardNo}
                   </p>
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                  <b>Address: </b>{invoice.clientAddress?.street}
+                  <b>Address: </b>{invoice.clientDetails?.address?.street}
                     <br />
-                    {invoice.clientAddress?.city}, {invoice.clientAddress?.state}{" "}
-                    {invoice.clientAddress?.postalCode} - {invoice.clientAddress?.country}
+                    {invoice.clientDetails?.address?.city}, {invoice.clientDetails?.address?.state}{" "}
+                    {invoice.clientDetails?.address?.postalCode} - {invoice.clientDetails?.address?.country}
                     <br />
-                    <span className="font-semibold">{invoice?.clientEmails?.[0]}</span> |{" "}
-                    {invoice.clientContactNo}
+                    <span className="font-semibold">{invoice?.clientDetails?.email?.[0]}</span> |{" "}
+                    {invoice.clientDetails?.contactNo}
                   </p>
 
                 </div>
@@ -387,10 +387,10 @@ const DownloadPreview = ({
                 <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2 ">
                   Payment information
                 </h1>
-                <p className="font-bold">{invoice.companyName}</p>
-                <p>A/C NO: {invoice.accountNo}</p>
-                <p>BANK: {invoice.bank}</p>
-                <p>IFSC: {invoice.ifsc}</p>
+                <p className="font-bold">{invoice.adminDetails?.companyName}</p>
+                <p>A/C NO: {invoice.adminDetails?.accountNo}</p>
+                <p>BANK: {invoice.adminDetails?.bank}</p>
+                <p>IFSC: {invoice.adminDetails?.ifsc}</p>
               </div>
             ) : (
               <div className="text-sm">

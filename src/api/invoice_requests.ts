@@ -94,13 +94,15 @@ export async function fetchInvoiceProjects(year: string, month: string) {
    const formattedMonth = month.padStart(2, '0');
   try {
     const res = await axios.get(`${config.apiUrlInvoice}/projects-by-month`, {
+      
       headers: {
         Authorization: `Bearer ${token}`,
       },
       params: { year, month: formattedMonth }, 
 
     });
-    return res.data.data; // Return the projects
+    console.log('API Response in fetchInvoiceProjects:', res);
+    return res.data; // Return the projects
   } catch (error) {
     console.error('Error fetching invoice projects:', error);
     throw new Error('Error fetching invoice projects');

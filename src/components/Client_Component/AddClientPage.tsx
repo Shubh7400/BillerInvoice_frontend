@@ -30,7 +30,7 @@ import "react-phone-number-input/style.css";
 import "../../styles/addClient.css";
 import { useNavigate } from "react-router-dom";
 import { IoChevronBackSharp } from "react-icons/io5";
-
+import { deleteEmailAction } from "../../states/redux/ClientStates/removeClientEmailSlice";
 export default function AddClientPage({
   forEditClient,
   clientToEdit,
@@ -315,6 +315,30 @@ export default function AddClientPage({
     }
   };
 
+
+  const handleRemoveEmail = async (index: number) => {
+    const emailToDelete = clientData.email[index];
+    const clientId = clientData._id; // Assuming the client ID is stored as `_id` in clientData
+
+    if (!clientId) {
+      console.error("Client ID is not available");
+      return;
+    }
+
+    try {
+      // Dispatch the delete email action
+      await dispatch(deleteEmailAction({ clientId, email: emailToDelete }));
+
+      // Optionally fetch updated client data after deletion
+      // fetchClientData();
+      dispatch(getClientByIdAction(clientId));
+     
+    } catch (error) {
+      console.error("Error deleting email:", error);
+    }
+  };
+
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -328,12 +352,7 @@ export default function AddClientPage({
     }
   };
 
-  const handleRemoveEmail = (index: number) => {
-    setClientData({
-      ...clientData,
-      email: clientData.email.filter((_, i) => i !== index),
-    });
-  };
+
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
@@ -463,7 +482,7 @@ export default function AddClientPage({
         )}
         {clientData.email.length > 0 && (
           <Box display="flex" flexWrap="wrap" gap={1}>
-            {clientData.email.map((email, index) => (
+            {clientData.email.map((email: string, index: number) => (
               <Chip
                 key={index}
                 label={email}

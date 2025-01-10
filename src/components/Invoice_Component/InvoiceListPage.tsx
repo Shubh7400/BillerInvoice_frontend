@@ -61,10 +61,10 @@ function InvoiceListPage() {
     error: clientsError,
   } = useSelector((state: RootState) => state.allClientsState);
 
-  const getClientNameForInvoice = (clientId: string) => {
-    const selectData = clients.find((item) => item._id === clientId);
-    return selectData?.clientName || "Unknown Client";
-  };
+  // const getClientNameForInvoice = (clientId: string) => {
+  //   const selectData = clients.find((item) => item._id === clientId);
+  //   return selectData?.clientName || "Unknown Client";
+  // };
   useEffect(() => {
     if (selectedYear && selectedMonth) {
       dispatch(clearInvoices()); // Clear state before fetching
@@ -218,7 +218,7 @@ function InvoiceListPage() {
                       
                       .map((invoice, index) => {
                         if (!invoice) return null;
-                        const clientName = getClientNameForInvoice(invoice.clientId);
+                        // const clientName = getClientNameForInvoice(invoice.clientId);
 
                         return (
                           <TableRow key={invoice._id}>
@@ -227,7 +227,7 @@ function InvoiceListPage() {
                             <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                               {invoice.projectName || "Unnamed Project"}
                             </TableCell>
-                            <TableCell>{clientName}</TableCell>
+                            <TableCell>{invoice.clientDetails?.clientName}</TableCell>
                             <TableCell>
                               {invoice.rate}(
                               {invoice.currencyType === "rupees" ? (
