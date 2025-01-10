@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { fetchInvoiceProjects } from '../../../api/invoice_requests'; 
 import { getProjectById } from '../../../api/project_requests'; 
 import { fetchInvoicesByDate } from '../../../api/invoice_requests';
-
+import { ClientDetails,AdminDetails } from '../../../types/types';
 export interface Invoice {
   _id: string;
   invoiceNo: number;
@@ -27,39 +27,8 @@ export interface Invoice {
   ratePerDay:number;
   advanceAmount:number;
   amount:number;
-  // User details
-  userEmail: string;
-  companyName: string;
-  gistin: string;
-  contactNo: string;
-  pancardNo: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-  };
-  invoiceNoUser: number;
-  companyLogo: string;
-  accountNo: string;
-  ifsc: string;
-  bank: string;
-
-  // client detail
-  clientName: string;
-  clientGstin: string;
-  clientPanCard: string;
-  clientAddress: {
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-  };
-  sameState: boolean;
-  clientEmails: string[];
-  clientContactNo:string;
+  clientDetails?:ClientDetails;
+  adminDetails?: AdminDetails;
 }
 
 
@@ -81,8 +50,14 @@ export const fetchInvoicesThunk = createAsyncThunk(
   async ({ year, month }: { year: string; month: string }, { rejectWithValue }) => {
     try {
       const invoices = await fetchInvoiceProjects(year, month);
+      if (!invoices) {
+        console.warn('No data returned from API');
+        return [];
+      }
+      console.log('Invoices Fetched:', invoices);
       return invoices;
     } catch (error) {
+      console.error('API Error:', error);
       return rejectWithValue('Failed to fetch invoices');
     }
   }
@@ -110,10 +85,14 @@ const invoiceListSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchInvoicesThunk.pending, (state) => {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchInvoicesThunk.fulfilled, (state, action: PayloadAction<Invoice[]>) => {
+        if (!action.payload || action.payload.length === 0) {
+          console.warn('No invoices to update in state');
+        }   
         state.loading = false;
         state.invoices = action.payload;
       })

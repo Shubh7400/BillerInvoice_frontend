@@ -37,6 +37,7 @@ import {
   removeAllProjectsFromInvoiceAction,
 } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
+import { deleteFileFromProjectAction } from "../../states/redux/ProjectState/selectedProjectSlice";
 import { FileData } from "../../types/types";
 import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -550,6 +551,23 @@ function AddProjectPage({
     }
   };
 
+  // const {
+  //   loading: selectedProjectLoading,
+  //   data: selectedProjectData,
+  //   error: selectedProjectError,
+  // } = useSelector((state: RootState) => state.selectedProjectState);
+
+  // const dispatch = useDispatch();
+
+  const handleDeleteFile = (filename: string) => {
+    const projectId = selectedProjectData?._id;  // Get project ID
+    if (projectId) {
+      dispatch(deleteFileFromProjectAction({ projectId, filename }));
+    } else {
+      console.error('Project ID is missing');
+    }
+  };
+
 
   return (
     <>
@@ -789,7 +807,7 @@ function AddProjectPage({
               name="technology"
               value={projectData.technology}
               onChange={handleChange}
-              
+
             />
 
             <FormControl component="fieldset" margin="dense" fullWidth>
@@ -817,113 +835,123 @@ function AddProjectPage({
                 }}
                 fullWidth
               />
-              {!forAddProject && (
+            
+
+
+
+            {!forAddProject && (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 2,
+                  padding: 2,
+                }}
+              >
                 <Box
                   sx={{
                     display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
+                    flexWrap: "wrap",
+                    gap: "16px", // Spacing between items
+                    justifyContent: "start",
                     alignItems: "center",
-                    gap: 2,
-                    padding: 2,
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: "16px", // Spacing between items
-                      justifyContent: "start",
-                      alignItems: "center",
-                    }}
-                  >
-                    {selectedProjectData.uploadedFiles?.map((file, index) => {
-                      if (file.imageUrl?.match(/image\/.*/)) {
-                        // Preview Images
-                        return (
-                          <Card
-                            key={index}
-                            sx={{
-                              width: 150, // Card width
-                              height: 200, // Card height
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "space-between",
-                              padding: "8px",
-                              boxShadow: 2,
-                              borderRadius: "8px",
-                              transition: "transform 0.3s",
-                              "&:hover": {
-                                transform: "scale(1.05)", // Slight zoom on hover
-                              },
-                            }}
-                          >
-                            <CardMedia
-                              component="img"
-                              src={file.imageUrl}
-                              alt={file.filename}
-                              sx={{
-                                maxHeight: "120px",
-                                objectFit: "contain", // Maintain aspect ratio
-                                marginBottom: "8px",
-                              }}
-                            />
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                textAlign: "center",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                              title={file.filename} // Tooltip for long filenames
-                            >
-                               <a href={file.url} target="_blank" rel="noopener noreferrer"  >
-                                {file.filename}
-                              </a>
+                  {selectedProjectData.uploadedFiles?.map((file: any, index: number) => (
+                    <Card
+                      key={index}
+                      sx={{
+                        width: 150, // Card width
+                        height: file.imageUrl ? 200 : 100, // Adjust height based on content
+                        display: "flex",
+                        flexDirection: file.imageUrl ? "column" : "row",
+                        justifyContent: file.imageUrl ? "space-between" : "center",
+                        alignItems: "center",
+                        padding: "8px",
+                        boxShadow: 2,
+                        borderRadius: "8px",
+                        transition: "transform 0.3s",
+                        backgroundColor: file.imageUrl
+                          ? "white"
+                          : "#f8d7da", // Background color for unsupported formats
+                        color: file.imageUrl ? "inherit" : "#721c24",
+                        border: file.imageUrl ? "none" : "1px solid #f5c6cb",
+                        "&:hover": {
+                          transform: "scale(1.05)", // Slight zoom on hover
+                        },
+                        position: "relative", // For positioning the delete icon
+                      }}
+                    >
+                      {/* Delete Icon */}
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "8px",
+                          right: "8px",
+                          cursor: "pointer",
+                          zIndex: 2,
+                        }}
+                        onClick={() => handleDeleteFile(file.filename)}
+                      >
+                        <DeleteIcon
+                          sx={{
+                            fontSize: "20px",
+                            color: "rgba(255, 0, 0, 0.8)",
+                            "&:hover": {
+                              color: "red",
+                            },
+                          }}
+                        />
+                      </Box>
 
-
-                            </Typography>
-                          </Card>
-                        );
-                      } else {
-                        // For unsupported formats like .docx
-                        return (
-                          <Card
-                            key={index}
+                      {file.imageUrl ? (
+                        <>
+                          <CardMedia
+                            component="img"
+                            src={file.imageUrl}
+                            alt={file.filename}
                             sx={{
-                              width: 150,
-                              height: 100,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              padding: "8px",
-                              boxShadow: 2,
-                              borderRadius: "8px",
-                              backgroundColor: "#f8d7da",
-                              color: "#721c24",
-                              border: "1px solid #f5c6cb",
+                              maxHeight: "120px",
+                              objectFit: "contain", // Maintain aspect ratio
+                              marginBottom: "8px",
                             }}
+                          />
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              textAlign: "center",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                            title={file.filename} // Tooltip for long filenames
                           >
-                            <Typography
-                              variant="body2"
-                              textAlign="center"
-                              title={file.filename}
+                            <a
+                              href={file.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
                             >
-                              Preview not available for <strong>{file.filename}</strong>
-                            </Typography>
-                          </Card>
-                        );
-                      }
-                    })}
-                  </Box>
+                              {file.filename}
+                            </a>
+                          </Typography>
+                        </>
+                      ) : (
+                        <Typography
+                          variant="body2"
+                          textAlign="center"
+                          title={file.filename}
+                        >
+                          Preview not available for <strong>{file.filename}</strong>
+                        </Typography>
+                      )}
+                    </Card>
+                  ))}
                 </Box>
-              )}
+              </Box>
+            )}
             </div>
-
-
-
-
 
             <TextField
               margin="dense"

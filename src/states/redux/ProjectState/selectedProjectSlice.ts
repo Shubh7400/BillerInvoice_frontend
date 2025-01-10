@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getProjectById } from "../../../api/project_requests";
 import { ProjectType } from "../../../types/types";
+import { deleteFileFromProject } from "../../../api/project_requests";
 
 // Async thunk for fetching a project by its ID
 export const getProjectByIdAction = createAsyncThunk(
@@ -12,6 +13,21 @@ export const getProjectByIdAction = createAsyncThunk(
     } catch (error) {
       return thunkApi.rejectWithValue(
         `Error in gettingOneProjectById ${error}`
+      );
+    }
+  }
+);
+
+// Async thunk for deleting a file from the project
+export const deleteFileFromProjectAction = createAsyncThunk(
+  "selectedProject/deleteFileFromProject",
+  async ({ projectId, filename }: { projectId: string; filename: string }, thunkApi) => {
+    try {
+      const res = await deleteFileFromProject(projectId, filename);
+      return { projectId, filename };  // Return projectId and filename to update state
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        `Error in deleting file from project: ${error}`
       );
     }
   }
@@ -52,6 +68,21 @@ const selectedProjectSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(getProjectByIdAction.rejected, (state, action) => {
+        state.loading = "failed";
+        state.error = action.payload as string;
+      })
+      .addCase(deleteFileFromProjectAction.pending, (state) => {
+        state.loading = "pending";
+      })
+      .addCase(deleteFileFromProjectAction.fulfilled, (state, action) => {
+        state.loading = "succeeded";
+        // Filter out the deleted file from the uploadedFiles array
+        const updatedFiles = state.data?.uploadedFiles?.filter(
+          (file) => file.filename !== action.payload.filename
+        );
+        state.data.uploadedFiles = updatedFiles;
+      })
+      .addCase(deleteFileFromProjectAction.rejected, (state, action) => {
         state.loading = "failed";
         state.error = action.payload as string;
       });

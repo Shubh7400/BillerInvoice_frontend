@@ -337,75 +337,13 @@ const ProjectTable = ({
                 <Table>
                   <TableHead className={Styles.animated}>
                     <TableRow>
-                      {/* <TableCell style={{ paddingRight: "0" }}>Select</TableCell> */}
-                      <TableCell sx={{ paddingX: "10px", width: "50px" }}>
-                        Sr.No.
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          paddingLeft: "0",
-                          paddingRight: "0",
-                          width: "200px",
-                        }}
-                      >
-                        Project
-                      </TableCell>
-                      <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Client Name
-                      </TableCell>
-                      {/* <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Project Period
-                      </TableCell> */}
-                      <TableCell
-                        style={{
-                          paddingLeft: "0",
-                          paddingRight: "0",
-                          width: "150px",
-                        }}
-                      >
-                        Rate
-                      </TableCell>
-                      {/* <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Working Period
-                      </TableCell> */}
-                      <TableCell
-                        style={{
-                          paddingLeft: "0",
-                          paddingRight: "0",
-                          width: "170px",
-                        }}
-                      >
-                        Conversion Rate
-                      </TableCell>
-                      {/* <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Amount
-                      </TableCell> */}
-                      <TableCell
-                        style={{
-                          paddingLeft: "0",
-                          paddingRight: "0",
-                          width: "100px",
-                        }}
-                      >
-                        Action
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          paddingLeft: "0",
-                          paddingRight: "0",
-                          width: "100px",
-                        }}
-                      >
-                        selection
-                      </TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Sr.No.</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Project</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Client Name</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "20px", paddingRight: "0" }}>Rate</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Conversion Rate</TableCell>
+                      <TableCell sx={{ paddingX: "1px", width: "auto", paddingLeft: "30px", paddingRight: "0" }}>Action</TableCell>
+                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Selection</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -418,17 +356,17 @@ const ProjectTable = ({
                       }).map((project: ProjectType, index: number) => (
                         <TableRow key={project._id} className="p-3">
                           <TableCell
-                            sx={{ paddingX: "10px", textAlign: "center" }}
+                            sx={{ paddingX: "16px", textAlign: "center", width: "auto" }}
                           >
                             {index + 1}
                           </TableCell>
-                          <TableCell style={{ padding: "0" }}>
+                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             {project.projectName}
                           </TableCell>
-                          <TableCell style={{ padding: "0" }}>
+                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             {getClientName(project.clientId)}
                           </TableCell>
-                          <TableCell style={{ padding: "0" }}>
+                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             {project.rate}(
                             {project.currencyType === "rupees" ? (
                               <span>&#x20B9;</span>
@@ -440,12 +378,12 @@ const ProjectTable = ({
                             /{project.workingPeriodType})
                           </TableCell>
 
-                          <TableCell style={{ padding: "0" }}>
+                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             <span>&#x20B9; </span>
                             {(project?.conversionRate ?? 0).toFixed(2)}
                           </TableCell>
 
-                          <TableCell style={{ padding: "0" }}>
+                          <TableCell sx={{ paddingX: "16px", width: "255px" }}>
                             <div className="flex">
                               <div className={Styles.editButton}>
                                 <div className="">
@@ -497,7 +435,7 @@ const ProjectTable = ({
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell sx={{ paddingY: "8px", paddingX: "0" }}>
+                          <TableCell sx={{ paddingY: "8px", paddingX: "16px", width: "auto" }}>
                             <div>
                               <Button
                                 variant="contained"
@@ -530,7 +468,6 @@ const ProjectTable = ({
                   maxWidth="sm"
                   fullWidth
                 >
-
                   <DialogTitle>Project Details</DialogTitle>
                   <DialogContent>
                     <Typography variant="body1">
@@ -677,7 +614,15 @@ const ProjectTable = ({
                     {selectedProject.uploadedFiles && selectedProject.uploadedFiles.length > 0 && (
                       <>
                         <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
-                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 2, // Space between capsules
+                            justifyContent: "flex-start", // Align items to the start
+                            alignItems: "center", // Align items in the center
+                          }}
+                        >
                           {selectedProject.uploadedFiles.map((file, index) => (
                             <ListItem
                               key={index}
@@ -686,17 +631,21 @@ const ProjectTable = ({
                               target="_blank"
                               rel="noopener noreferrer"
                               sx={{
-                                width: 150, // Card width
-                                height: 200, // Card height
+                                minWidth: 50,
+                                height: 50,
                                 display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "space-between",
-                                padding: "8px",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                padding: "8px 16px",
                                 boxShadow: 2,
-                                borderRadius: "8px",
-                                transition: "transform 0.3s",
+                                borderRadius: "25px", // Makes the shape capsule-like
+                                backgroundColor: "#f0f0f0", // Light background color
+                                color: "#333", // Text color
+                                textDecoration: "none",
+                                transition: "transform 0.3s, background-color 0.3s",
                                 "&:hover": {
                                   transform: "scale(1.05)", // Slight zoom on hover
+                                  backgroundColor: "#e0e0e0", // Slightly darker background on hover
                                 },
                               }}
                             >
@@ -709,12 +658,11 @@ const ProjectTable = ({
                                       overflow: "hidden",
                                       textOverflow: "ellipsis",
                                       whiteSpace: "nowrap",
+                                      fontWeight: "bold",
                                     }}
                                     title={file.filename}
                                   >
-                                    <a href={file.url} target="_blank" rel="noopener noreferrer">
-                                      {file.filename}
-                                    </a>
+                                    {file.filename}
                                   </Typography>
                                 }
                               />
@@ -723,6 +671,7 @@ const ProjectTable = ({
                         </Box>
                       </>
                     )}
+
 
 
 
