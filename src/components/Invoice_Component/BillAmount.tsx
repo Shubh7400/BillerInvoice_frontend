@@ -90,9 +90,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     //   setClientSameState(selectedClientState.data.sameState);
     // }
     if (
-      selectedClientState?.data?.address?.country &&
+      projectsForInvoice?.[0]?.clientDetails?.address?.country &&
       adminState?.data?.address?.country &&
-      selectedClientState.data.address.country.trim().toLowerCase() ===
+      projectsForInvoice?.[0]?.clientDetails?.address.country.trim().toLowerCase() ===
       adminState.data.address.country.trim().toLowerCase()
     ) {
       setSameCountry(true);
@@ -102,9 +102,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     }
 
     if (
-      selectedClientState?.data?.address?.state &&
+      projectsForInvoice?.[0]?.clientDetails?.address?.state &&
       adminState?.data?.address?.state &&
-      selectedClientState.data.address.state.trim().toLowerCase() ===
+      projectsForInvoice?.[0]?.clientDetails?.address.state.trim().toLowerCase() ===
       adminState.data.address.state.trim().toLowerCase()
     ) {
       setClientSameState(true);
@@ -114,7 +114,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     }
 
 
-  }, [adminState, selectedClientState, clientSameState]);
+  }, [adminState, projectsForInvoice, clientSameState]);
 
   React.useEffect(() => {
     // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));

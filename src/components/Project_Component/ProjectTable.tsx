@@ -304,7 +304,7 @@ const ProjectTable = ({
         {clientObj &&
           selectedClientState.loading !== "idle" &&
           projectTableforClient ? (
-          <ClientInfoSection />
+          <ClientInfoSection projectsForInvoice={projectsForInvoice}/>
         ) : null}
       </div>
       {!projectTableforClient ? (
@@ -364,7 +364,7 @@ const ProjectTable = ({
                             {project.projectName}
                           </TableCell>
                           <TableCell sx={{ paddingX: "16px", width: "auto" }}>
-                            {getClientName(project.clientId)}
+                            {project?.clientDetails?.clientName}
                           </TableCell>
                           <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             {project.rate}(

@@ -462,7 +462,7 @@ function InvoiceClientPage() {
       </div>
       <div className="flex justify-between items-start gap-2">
         {clientObj && selectedClientState.loading !== "idle" ? (
-          <ClientInfoSection />
+          <ClientInfoSection projectsForInvoice={projectsForInvoice}/>
         ) : null}
         <div className="w-full flex justify-end">
           {windowWidth && windowWidth > 768 ? (

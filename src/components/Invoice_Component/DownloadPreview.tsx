@@ -204,22 +204,22 @@ const DownloadPreview = ({
                     Bill To
                   </h1>
                   <h3 className="text-sm font-bold p-[3px]">
-                    {clientObj.clientName}
+                    {projectsForInvoice[0]?.clientDetails?.clientName}        
                   </h3>
                   <p className="text-xs p-[3px] text-[15px]">
-                    <b>Gstin:</b> {clientObj.gistin}
-                    <br />
-                    <b>Pan:</b> {clientObj.pancardNo}
+                    <b>Gstin:</b> {projectsForInvoice[0]?.clientDetails?.gistin}
+                    <br />        
+                    <b>Pan:</b> {projectsForInvoice[0]?.clientDetails?.pancardNo}
                   </p>
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
                   <b>Address: </b>{clientObj.address?.street}
                     <br />
                     
-                    {clientObj.address?.city}, {clientObj.address?.state}{" "}
-                    {clientObj.address?.postalCode} - {clientObj.address?.country}
+                    {projectsForInvoice[0]?.clientDetails?.address?.city}, {projectsForInvoice[0]?.clientDetails?.address?.state}{" "}
+                    {projectsForInvoice[0]?.clientDetails?.address?.postalCode} - {projectsForInvoice[0]?.clientDetails?.address?.country}
                     <br />
-                    <span className="font-semibold">{clientObj?.email?.[0]}</span> |{" "}
-                    {clientObj.contactNo}
+                    <span className="font-semibold">{projectsForInvoice[0]?.clientDetails?.email?.[0]}</span> |{" "}
+                    {projectsForInvoice[0]?.clientDetails?.contactNo}
                   </p>
 
                 </div>
