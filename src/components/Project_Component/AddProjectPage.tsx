@@ -906,7 +906,7 @@ function AddProjectPage({
                           />
                         </Box>
 
-                        {file.imageUrl ? (
+                        {file.viewUrl ? (
                           <>
                             <CardMedia
                               component="img"
@@ -929,7 +929,7 @@ function AddProjectPage({
                               title={file.filename} // Tooltip for long filenames
                             >
                               <a
-                                href={file.url}
+                                href={file.viewUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >

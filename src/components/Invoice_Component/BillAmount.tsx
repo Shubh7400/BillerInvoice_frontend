@@ -378,7 +378,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
 
     // Check if client data is empty or unavailable
     if (loading === "succeeded" && Object.keys(data).length === 0 && error === null) {
-      enqueueSnackbar("Client not deleted. Cannot generate invoice.", {
+      enqueueSnackbar("Client deleted. Cannot generate invoice.", {
         variant: "error",
       });
       setAllowDownload(true);

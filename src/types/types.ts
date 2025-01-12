@@ -48,6 +48,7 @@ export interface UploadedFile {
   filename: string;
   url: string;
   imageUrl:string;
+  viewUrl:string;
 }
 export interface ProjectType {
   _id?: string;

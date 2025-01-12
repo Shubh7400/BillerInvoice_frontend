@@ -610,7 +610,7 @@ const ProjectTable = ({
                             <ListItem
                               key={index}
                               component="a"
-                              href={file.imageUrl}
+                              href={file.viewUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               sx={{
@@ -677,7 +677,7 @@ const ProjectTable = ({
           {clientProjectTableError ||
             clientProjectTableLoading ||
             clientProjectTableData === "" ||
-            clientProjectTableData.length <= 0 ? (
+            clientProjectTableData?.length <= 0 ? (
             <div>
               <div></div>
               <div className="text-xl font-bold text-center p-4 ">
@@ -692,7 +692,7 @@ const ProjectTable = ({
                 {(data && (data === "" || data.length <= 0)) ||
                   (clientProjectTableData &&
                     (clientProjectTableData === "" ||
-                      clientProjectTableData.length <= 0)) ? (
+                      clientProjectTableData?.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>

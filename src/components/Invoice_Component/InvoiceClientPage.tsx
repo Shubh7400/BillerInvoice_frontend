@@ -636,7 +636,7 @@ function InvoiceClientPage() {
                         variant="outlined"
                         size="small"
                         value={project.rate || ""}
-                        onChange={(e) => handleRateChange(Number(e.target.value), project)}
+                        onChange={(e) => handleRateChange(Number(e.target.value), project)}                      
                         InputProps={{
                           endAdornment: (
                             <Typography variant="body2" style={{ marginLeft: "8px" }}>

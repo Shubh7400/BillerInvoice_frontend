@@ -236,7 +236,7 @@ export default function AddClientPage({
         },
       }));
     } else if (name === "postalCode") {
-      const postalCodeRegex = /^[1-9][0-9]{5}$/;
+      const postalCodeRegex = /^[a-zA-Z0-9\s\-]{3,10}$/;
       if (!postalCodeRegex.test(value)) {
         setPostalCodeError("Invalid Postal Code");
       } else {
@@ -393,7 +393,8 @@ export default function AddClientPage({
       !gstNumberError &&
       !contactNoError &&
       !clientNameError &&
-      !streetError
+      !streetError &&
+      !emailError 
     ) {
       dispatch(addNewClientAction(clientData));
       // setAddClientLoadingController(true);
@@ -412,6 +413,7 @@ export default function AddClientPage({
       !contactNoError &&
       !clientNameError &&
       !streetError &&
+      !emailError && 
       clientToEdit
     ) {
       const clientId = clientToEdit._id!;
@@ -607,6 +609,10 @@ export default function AddClientPage({
               !postalCodeError &&
               !gstNumberError &&
               !formError &&
+              !contactNoError &&
+              !clientNameError &&
+              !streetError &&
+              !emailError &&
               areAllFieldsFilled(clientData) &&
               areEntriesValid(clientData)
             ) {
