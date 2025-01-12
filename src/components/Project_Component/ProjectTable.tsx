@@ -304,7 +304,7 @@ const ProjectTable = ({
         {clientObj &&
           selectedClientState.loading !== "idle" &&
           projectTableforClient ? (
-          <ClientInfoSection />
+          <ClientInfoSection projectsForInvoice={projectsForInvoice} />
         ) : null}
       </div>
       {!projectTableforClient ? (
@@ -364,7 +364,7 @@ const ProjectTable = ({
                             {project.projectName}
                           </TableCell>
                           <TableCell sx={{ paddingX: "16px", width: "auto" }}>
-                            {getClientName(project.clientId)}
+                            {project.clientDetails?.clientName}
                           </TableCell>
                           <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             {project.rate}(
@@ -593,24 +593,7 @@ const ProjectTable = ({
                     {selectedProject.timeSheet && (
                       <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
                     )}
-                    {/* {selectedProject.uploadedFiles && selectedProject.uploadedFiles.length > 0 && (
-                      <>
-                        <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
-                        <List>
-                          {selectedProject.uploadedFiles.map((file, index) => (
-                            <ListItem
-                              key={index}
-                              component="a"
-                              href={file.imageUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <ListItemText primary={file.filename} />
-                            </ListItem>
-                          ))}
-                        </List>
-                      </>
-                    )} */}
+                   <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
                     {selectedProject.uploadedFiles && selectedProject.uploadedFiles.length > 0 && (
                       <>
                         <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
@@ -627,12 +610,15 @@ const ProjectTable = ({
                             <ListItem
                               key={index}
                               component="a"
-                              href={file.imageUrl}
+                              href={file.viewUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               sx={{
-                                minWidth: 50,
-                                height: 50,
+                                maxWidth: '200px',  // Add this
+                                minWidth: '100px',  // Add this
+                                height: 40,         // Change from 50 to 40
+
+                          
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
@@ -659,6 +645,7 @@ const ProjectTable = ({
                                       textOverflow: "ellipsis",
                                       whiteSpace: "nowrap",
                                       fontWeight: "bold",
+                                      maxWidth: '168px',  // Add this
                                     }}
                                     title={file.filename}
                                   >
@@ -671,11 +658,6 @@ const ProjectTable = ({
                         </Box>
                       </>
                     )}
-
-
-
-
-                    <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={handleCloseModal} color="primary">
@@ -695,7 +677,7 @@ const ProjectTable = ({
           {clientProjectTableError ||
             clientProjectTableLoading ||
             clientProjectTableData === "" ||
-            clientProjectTableData.length <= 0 ? (
+            clientProjectTableData?.length <= 0 ? (
             <div>
               <div></div>
               <div className="text-xl font-bold text-center p-4 ">
@@ -710,7 +692,7 @@ const ProjectTable = ({
                 {(data && (data === "" || data.length <= 0)) ||
                   (clientProjectTableData &&
                     (clientProjectTableData === "" ||
-                      clientProjectTableData.length <= 0)) ? (
+                      clientProjectTableData?.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>

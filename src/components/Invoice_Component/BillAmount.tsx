@@ -86,13 +86,11 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
         })
       );
     }
-    // if (selectedClientState.data.sameState) {
-    //   setClientSameState(selectedClientState.data.sameState);
-    // }
+
     if (
-      selectedClientState?.data?.address?.country &&
+      projectsForInvoice?.[0]?.clientDetails?.address?.country &&
       adminState?.data?.address?.country &&
-      selectedClientState.data.address.country.trim().toLowerCase() ===
+      projectsForInvoice?.[0]?.clientDetails?.address.country.trim().toLowerCase() ===
       adminState.data.address.country.trim().toLowerCase()
     ) {
       setSameCountry(true);
@@ -102,9 +100,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     }
 
     if (
-      selectedClientState?.data?.address?.state &&
+      projectsForInvoice?.[0]?.clientDetails?.address?.state &&
       adminState?.data?.address?.state &&
-      selectedClientState.data.address.state.trim().toLowerCase() ===
+      projectsForInvoice?.[0]?.clientDetails?.address.state.trim().toLowerCase() ===
       adminState.data.address.state.trim().toLowerCase()
     ) {
       setClientSameState(true);
@@ -114,10 +112,9 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     }
 
 
-  }, [adminState, selectedClientState, clientSameState]);
+  }, [adminState, projectsForInvoice, clientSameState]);
 
   React.useEffect(() => {
-    // dispatch(updateInvoiceObjectStateAction({ invoiceNo }));
     toggleDrawer(true);
   }, [projectsForInvoice, showPreview]);
 
@@ -228,7 +225,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     setGstType(event.target.value);
   };
   React.useEffect(() => {
-    if(sameCountry===true){
+    if (sameCountry === true) {
       if (clientSameState === true) {
         setGstType("sgst_cgst")
       }
@@ -236,7 +233,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
         setGstType("igst")
       }
     }
-    else{
+    else {
       setGstType("");
     }
     dispatch(
@@ -246,7 +243,7 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       })
     );
     console.log("clientSameState", clientSameState);
-  }, [clientSameState,sameCountry]);
+  }, [clientSameState, sameCountry]);
   React.useEffect(() => {
 
     const tax = sameCountry === true ? +(amountWithoutTax * 18 / 100).toFixed(2) : 0;
@@ -375,6 +372,20 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   let timer = null;
   const handleInvoiceDownload = (timer: any) => {
     setAllowDownload(false);
+
+    // Extract the state properties
+    const { loading, data, error } = selectedClientState;
+
+    // Check if client data is empty or unavailable
+    if (loading === "succeeded" && Object.keys(data).length === 0 && error === null) {
+      enqueueSnackbar("Client deleted. Cannot generate invoice.", {
+        variant: "error",
+      });
+      setAllowDownload(true);
+      return;
+    }
+
+
     if (timer) {
       clearTimeout(timer);
     }
