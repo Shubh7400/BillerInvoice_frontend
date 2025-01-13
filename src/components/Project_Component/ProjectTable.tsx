@@ -21,8 +21,7 @@ import { queryClient } from "../..";
 import { useSnackbar } from "notistack";
 import {
   ClientType,
-  ProjectType,
-  UpdateProjectDataType,
+  ProjectType
 } from "../../types/types";
 import {
   addAllProjectsForInvoiceAction,
@@ -212,17 +211,17 @@ const ProjectTable = ({
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      // When a checkbox is checked, deselect all other projects and select this one
-      setProjectId([project._id]); // Set only the current project ID
-      setSelectedProjectId(project._id); // Set as selected
-      setProjectDetails([project]); // Set project details with only the selected project
-      setAllChecked(false); // Reset "Select All" state
+      
+      setProjectId([project._id]); 
+      setSelectedProjectId(project._id); 
+      setProjectDetails([project]); 
+      setAllChecked(false); 
     } else {
-      // When the checkbox is unchecked, clear all selections
-      setProjectId([]); // Clear all project IDs
-      setSelectedProjectId(""); // Clear selected ID
-      setProjectDetails([]); // Clear project details
-      setAllChecked(false); // Reset "Select All" state
+     
+      setProjectId([]); 
+      setSelectedProjectId(""); 
+      setProjectDetails([]); 
+      setAllChecked(false);
     }
   };
 
@@ -309,7 +308,6 @@ const ProjectTable = ({
       </div>
       {!projectTableforClient ? (
         <>
-          {/* Project Table for all  */}
           {isError || isLoading || (data === "" && data?.length <= 0) ? (
             <div>
               <div className="text-xl font-bold text-center p-4 ">
@@ -601,9 +599,9 @@ const ProjectTable = ({
                           sx={{
                             display: "flex",
                             flexWrap: "wrap",
-                            gap: 2, // Space between capsules
-                            justifyContent: "flex-start", // Align items to the start
-                            alignItems: "center", // Align items in the center
+                            gap: 2, 
+                            justifyContent: "flex-start", 
+                            alignItems: "center",
                           }}
                         >
                           {selectedProject.uploadedFiles.map((file, index) => (
@@ -614,9 +612,9 @@ const ProjectTable = ({
                               target="_blank"
                               rel="noopener noreferrer"
                               sx={{
-                                maxWidth: '200px',  // Add this
-                                minWidth: '100px',  // Add this
-                                height: 40,         // Change from 50 to 40
+                                maxWidth: '200px',  
+                                minWidth: '100px',  
+                                height: 40,         
 
                           
                                 display: "flex",
@@ -624,14 +622,14 @@ const ProjectTable = ({
                                 justifyContent: "center",
                                 padding: "8px 16px",
                                 boxShadow: 2,
-                                borderRadius: "25px", // Makes the shape capsule-like
-                                backgroundColor: "#f0f0f0", // Light background color
-                                color: "#333", // Text color
+                                borderRadius: "25px", 
+                                backgroundColor: "#f0f0f0", 
+                                color: "#333", 
                                 textDecoration: "none",
                                 transition: "transform 0.3s, background-color 0.3s",
                                 "&:hover": {
-                                  transform: "scale(1.05)", // Slight zoom on hover
-                                  backgroundColor: "#e0e0e0", // Slightly darker background on hover
+                                  transform: "scale(1.05)", 
+                                  backgroundColor: "#e0e0e0",
                                 },
                               }}
                             >
@@ -645,7 +643,7 @@ const ProjectTable = ({
                                       textOverflow: "ellipsis",
                                       whiteSpace: "nowrap",
                                       fontWeight: "bold",
-                                      maxWidth: '168px',  // Add this
+                                      maxWidth: '168px', 
                                     }}
                                     title={file.filename}
                                   >
@@ -673,7 +671,6 @@ const ProjectTable = ({
         </>
       ) : (
         <>
-          {/* Project Table for Client  */}
           {clientProjectTableError ||
             clientProjectTableLoading ||
             clientProjectTableData === "" ||
@@ -731,21 +728,11 @@ const ProjectTable = ({
                       >
                         Rate
                       </TableCell>
-                      {/* <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Working Period
-                      </TableCell> */}
                       <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Conversion Rate
                       </TableCell>
-                      {/* <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Amount
-                      </TableCell> */}
                       <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
@@ -761,7 +748,6 @@ const ProjectTable = ({
                   <TableBody>
                     {ProjectData &&
                       ProjectData.filter((project) => {
-                        // Apply the same filter condition as ProjectTable 1
                         if (searchProjectName?.length <= 0) return true;
                         return project.projectName
                           .toLowerCase()

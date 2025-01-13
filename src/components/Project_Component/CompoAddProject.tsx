@@ -2,31 +2,16 @@ import * as React from "react";
 import { useDispatch } from "react-redux";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
-import { Alert, LinearProgress, MenuItem, useTheme } from "@mui/material";
-import { ProjectType, UpdateProjectDataType } from "../../types/types";
+import {  useTheme } from "@mui/material";
+import { ProjectType} from "../../types/types";
 import {
-  useAddNewProject,
-  useUpdateProject,
-} from "../../states/query/Project_queries/projectQueries";
-import {
-  Grid,
-  Typography,
-  Select,
-  FormControl,
-  styled,
-  SelectChangeEvent,
+  Typography
+ 
 } from "@mui/material";
-import { queryClient } from "../..";
 import { CiEdit } from "react-icons/ci";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import Styles from "./ProjectTable.module.css";
 import { makeStateNeutralOfSelectedClient } from "../../states/redux/ClientStates/selectedClientSlice";
@@ -78,14 +63,7 @@ export default function CompoAddProject({
   const handleBackButtonClick = () => {
     navigate(-1);
   };
-  // const handleAddProjectClick = () => {
-  //   dispatch(makeStateNeutralOfSelectedClient());
-  //   navigate(
-  //     !projectTableforClient
-  //       ? "/add-project"
-  //       : "/client/add-project"
-  //   );
-  // }
+ 
   const handleAddProjectClick = () => {
     if (!projectTableforClient) {
       dispatch(makeStateNeutralOfSelectedClient());
@@ -96,9 +74,6 @@ export default function CompoAddProject({
         : "/client/add-project"
     );
   };
-  
-  
-
   return (
     <>
       {forAddProject ? (
@@ -141,11 +116,6 @@ export default function CompoAddProject({
               }}
               onClick={() => {
                 handleAddProjectClick();
-                // navigate(
-                //   !projectTableforClient
-                //     ? "/add-project"
-                //     : "/client/add-project"
-                // );
               }}
             >
               Add Project

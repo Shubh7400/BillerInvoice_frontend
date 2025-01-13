@@ -1,41 +1,25 @@
 import * as React from "react";
-import ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import { Global } from "@emotion/react";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { deepPurple, grey, purple } from "@mui/material/colors";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { SelectChangeEvent } from "@mui/material/Select";
-import Skeleton from "@mui/material/Skeleton";
-import Typography from "@mui/material/Typography";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState, store } from "../../states/redux/store";
 import { useSnackbar } from "notistack";
 import dayjs, { Dayjs } from "dayjs";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
 import { useAddInvoiceMutation } from "../../states/query/Invoice_queries/invoiceQueries";
 import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
-import generatePDF, { Margin, usePDF } from "react-to-pdf";
 import { RxCross1 } from "react-icons/rx";
 import DownloadPreview from "./DownloadPreview";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { ThemeContext } from "../../states/context/ThemeContext/ThemeContext";
-import TextField from "@mui/material/TextField";
-import { AppBar, Dialog, IconButton, Toolbar } from "@mui/material";
-import Slide from "@mui/material/Slide";
-import { TransitionProps } from "@mui/material/transitions";
-import Styles from "./billi.module.css";
-import { Link } from "react-router-dom";
-import { IoIosArrowBack } from "react-icons/io";
-import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 // import CloseIcon from "@mui/icons-material/Close";
 import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
-import { addProjectForInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 const drawerBleeding = 56;
 let windowWidth: number | undefined = window.innerWidth;
 
@@ -162,10 +146,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           resolution: 96,
         };
 
-        // Add the image to the PDF
         doc.addImage(imgOptions);
 
-        // Save the PDF with a specific filename
         doc.save(`invoice${invoiceNo}.pdf`);
       } catch (error) {
         enqueueSnackbar({
@@ -173,7 +155,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           variant: "error",
         });
       } finally {
-        // Remove the temporary div
         document.body.removeChild(div);
         setAllowDownload(true);
       }
@@ -242,7 +223,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
         taxType: gstType,
       })
     );
-    console.log("clientSameState", clientSameState);
   }, [clientSameState, sameCountry]);
   React.useEffect(() => {
 
@@ -285,11 +265,10 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       const amountPostTax = +(amountPreTax + tax).toFixed(2);
       const grandTotalLocal = +(amountPostTax - totalAdvanceAmount).toFixed(2);
 
-      // Update state variables
       setAmountWithoutTax(amountPreTax);
       setAmountAfterTax(amountPostTax);
       setTaxAmount(tax);
-      setAdvanceAmount(totalAdvanceAmount); // Set the advance amount
+      setAdvanceAmount(totalAdvanceAmount); 
       setGrandTotal(grandTotalLocal);
     }
   };
@@ -373,10 +352,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const handleInvoiceDownload = (timer: any) => {
     setAllowDownload(false);
 
-    // Extract the state properties
     const { loading, data, error } = selectedClientState;
 
-    // Check if client data is empty or unavailable
     if (loading === "succeeded" && Object.keys(data).length === 0 && error === null) {
       enqueueSnackbar("Client deleted. Cannot generate invoice.", {
         variant: "error",
@@ -473,24 +450,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             <div className="flex justify-between text-lg md:text-lg">
               Subtotal:<span> &#8377;{amountWithoutTax.toFixed(2)} </span>
             </div>
-            {/* {sameCountry &&
-              <Box sx={{ mt: "6px" }}>
-                {clientSameState ? (
-                  <>
-                    <div className="flex justify-between ">
-                      SGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between ">
-                      CGST:(9%)<span>{(taxAmount / 2).toFixed(2)}</span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex justify-between ">
-                    IGST:(18%)<span>{taxAmount.toFixed(2)}</span>
-                  </div>
-                )}
-              </Box>
-//             } */}
             {sameCountry &&
               <Box
                 sx={{
@@ -661,9 +620,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             ":hover": {
               backgroundColor: "#4a6180",
             },
-            // position: "absolute",
-            // bottom: "50px",
-            // right: "40px",
             color: "#fff",
           }}
           onClick={(timer) => {
@@ -680,9 +636,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
             ":hover": {
               backgroundColor: "#4a6180",
             },
-            // position: "absolute",
-            // bottom: "50px",
-            // right: "40px",
             color: "#fff",
           }}
           // disabled={!previewAllowed}
@@ -691,7 +644,6 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
           Preview
         </Button>
       </div>
-      {/* </SwipeableDrawer> */}
 
       {showPreview ? (
         <div className="w-screen h-[900px] sm:h-[1200px] absolute top-[0px] right-[0] z-[100] bg-[#989fce] bg-opacity-80 ">

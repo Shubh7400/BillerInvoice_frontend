@@ -1,12 +1,10 @@
 import React, { useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import Login from "../pages/Login/Login";
-import Home from "../pages/Home/Home";
 import PrivateRoute from "./PrivateRoute";
 import Layout from "./Layout";
 import ClientPage from "../components/Client_Component/ClientPage";
 import ProjectPage from "../components/Project_Component/ProjectPage";
-import InvoicePage from "../components/Invoice_Component/InvoicePage";
 import ProfilePage from "../components/Profile_Components/ProfilePage";
 import DashBoardPage from "../components/Dashboard_Component/DashBoardPage";
 import AddClientPage from "../components/Client_Component/AddClientPage";

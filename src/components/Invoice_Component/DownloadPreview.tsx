@@ -3,11 +3,10 @@ import "./DownloadPreview.module.css";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { RootState } from "../../states/redux/store";
-import { ClientType, ProjectType } from "../../types/types";
+import { ClientType} from "../../types/types";
 import cubexoLogo from "../assets/cubexo_logo.png";
 import gammaedgeLogo from "../../utils/images/gammaedgeLogo.png";
 import billbg from "../assets/invoice_bg.png";
-import { TbBorderRadius } from "react-icons/tb";
 import { Invoice } from "../../states/redux/InvoiceProjectState/invoiceListSlice";
 interface DownloadPreviewProps {
   grandTotal?: number;
@@ -72,12 +71,11 @@ const DownloadPreview = ({
         className="relative w-full h-[297mm] bg-center overflow-hidden "
         style={{
           backgroundImage: `url(${billbg})`,
-          backgroundSize: "100% 100%", // Ensures the entire image is visible without cropping
-          backgroundRepeat: "no-repeat", // Prevents the image from repeating
+          backgroundSize: "100% 100%", 
+          backgroundRepeat: "no-repeat", 
         }}
       >
         <div className="absolute inset-0 p-8 pt-20 flex flex-col">
-          {/* Logo and Admin section */}
           <div className="flex justify-between mb-6">
             <div className="w-[55%]">
               {data.companyLogo === "https://gammaedge.io/images/logo1.png" ? (
@@ -123,7 +121,6 @@ const DownloadPreview = ({
           </div>
 
           <div className="flex justify-between my-4 ">
-            {/* Invoice and Client section */}
 
             {!showPreview && invoice ? (
               <div className="flex justify-between my-4">
@@ -226,7 +223,6 @@ const DownloadPreview = ({
               )}
             </div>
           </div>
-          {/* Table section */}
           <table
             className="w-full my-4 text-sm rounded-[20px]"
             style={{
@@ -239,7 +235,6 @@ const DownloadPreview = ({
                   <tr>
                     <th className="px-2 pb-4">Sr.no.</th>
                     <th className="px-2 pb-4">Project Description</th>
-                    {/* <th className="px-2 pb-4">Project Period</th> */}
                     <th className="px-2 pb-4">Rate</th>
 
                     <>
@@ -262,7 +257,6 @@ const DownloadPreview = ({
                   <tr>
                     <th className="px-2 pb-4">Sr.no.</th>
                     <th className="px-2 pb-4">Project Name</th>
-                    {/* <th className="px-2 pb-4">Project Period</th> */}
                     <th className="px-2 pb-4">Rate</th>
                     {projectsForInvoice?.map((project, index) => (
                       <>
@@ -329,7 +323,6 @@ const DownloadPreview = ({
                     &#x20B9; {invoice.amountWithoutTax?.toFixed(2)}
                   </td>
                 </tr>
-                {/* ))} */}
               </tbody>
             ) :
               (
@@ -380,7 +373,6 @@ const DownloadPreview = ({
                 </tbody>
               )}
           </table>
-          {/* Bank and Total amount section */}
           <div className="flex justify-between mt-4">
             {!showPreview && invoice ?(
               <div className="text-sm">
@@ -480,7 +472,6 @@ const DownloadPreview = ({
           </div>
         </div>
 
-        {/* T&C section*/}
         <div className="flex justify-between absolute bottom-[15%] right-[10%]">
           <div>
             <h3 className="font-bold text-[20px] p-[3px]">

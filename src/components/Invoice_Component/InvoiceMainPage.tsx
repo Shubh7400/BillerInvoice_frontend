@@ -6,7 +6,6 @@ import two from '../assets/002.gif';
 import three from '../assets/003.gif';
 import four from '../assets/004.gif';
 import five from '../assets/005.gif';
-import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaArrowRight } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
@@ -89,13 +88,12 @@ const monthImages: { [key: string]: string } = {
   December: two,
 };
 
-// Map image to colors directly
 const monthColors: { [key: string]: string } = {
-  [one]: 'rgb(254, 217, 164)', // Red
-  [two]: 'rgb(191, 197, 210)', // Green
-  [three]: 'rgb(157, 225, 229)', // Blue
-  [four]: 'rgb(119, 221, 161)', // Pink
-  [five]: 'rgb(254, 224, 156)', // Yellow
+  [one]: 'rgb(254, 217, 164)', 
+  [two]: 'rgb(191, 197, 210)', 
+  [three]: 'rgb(157, 225, 229)', 
+  [four]: 'rgb(119, 221, 161)', 
+  [five]: 'rgb(254, 224, 156)', 
 };
 
 const StyledSelect = styled(Select)({
@@ -235,7 +233,6 @@ const handleMonthClick = (year: string, month: string) => {
         </div>
       </div>
 
-      {/* Popup Dialog */}
       <Dialog open={isFilterPopupOpen} onClose={() => setFilterPopupOpen(false)}>
         <DialogTitle>Invoice Filter</DialogTitle>
         <DialogContent>
@@ -313,8 +310,6 @@ const handleMonthClick = (year: string, month: string) => {
         </DialogContent>
       </Dialog>
 
-
-      {/* Dropdown Content */}
       <Grid container spacing={2}>
         {monthNames.map((month: string, index: number) => {
           const apiMonthData = invoiceCounts.data.find(
@@ -324,11 +319,8 @@ const handleMonthClick = (year: string, month: string) => {
           const isCurrentYear = tabsContent[dropdownIndex].label === currentYear.toString();
           const isUpcomingMonth = isCurrentYear && index > new Date().getMonth();
           const displayData = isUpcomingMonth ? 'N/A' : apiMonthData?.count ?? '0';
-
-          // Get the image path for the month
           const imagePath = monthImages[month];
-          // Set color based on the image path
-          const buttonColor = monthColors[imagePath] || '#E4A98A'; // Default color if no match
+          const buttonColor = monthColors[imagePath] || '#E4A98A'; 
 
           return (
             <Grid item xs={3} key={month} className={`${Styles.motion_btn} relative`}>
@@ -364,7 +356,7 @@ const handleMonthClick = (year: string, month: string) => {
               <div className={Styles.annimated_btn}>
               <Typography className={`text-gray-700 text-[20px] absolute bottom-[-5px] right-[-9px] bg-[#d1d1d194] w-[20%] h-[30%] flex justify-center items-center rounded-[50%] hover:border ${isUpcomingMonth ? 'pointer-events-none opacity-50' : ''}`}
                 style={{
-                  backgroundColor: buttonColor, // Apply dynamic color here
+                  backgroundColor: buttonColor,
                 }} 
                 onClick={() => handleMonthClick(tabsContent[dropdownIndex]?.label, month)}>
                   

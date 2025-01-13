@@ -5,7 +5,7 @@ import plane from "../assets/plane.gif";
 import projects from "../assets/project-task.png";
 import invoice from "../assets/invoicebg.png";
 import { Link } from "react-router-dom";
-import { Outlet, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import cubexoLogo from "../assets/cubexo_logo.png";
 import MyMapComponent from "./location";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +26,6 @@ function DashBoardPage() {
   const { loading, data, error } = useSelector(
     (state: RootState) => state.dashboardState
   );
-console.log("Dashboard",data);
   useEffect(() => {
     dispatch(getDashBoardData());
   }, [dispatch]);
@@ -78,7 +77,7 @@ console.log("Dashboard",data);
             to="/Projects"
             className="text-[16px] flex items-center gap-[10px]"
           >
-            <div className={styles.viewproject}>View All Project</div>
+            <div className={styles.viewproject}>View All Projects</div>
           </Link>
         </div>
       </div>
@@ -91,7 +90,7 @@ console.log("Dashboard",data);
            
             
               <div className="text-[16px] flex items-center justify-between gap-[10px]"  >
-              <h2>Generated Invoice</h2>
+              <h2>Generated Invoices</h2>
               <Link
                 to="/invoices"
                 className="border border-black rounded-[50px] py-2 px-2  hover:bg-white hover:shadow-[1px 1px 1px #000]"

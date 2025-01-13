@@ -11,7 +11,6 @@ export const editProjectAction = createAsyncThunk(
   "editClient/editClientByIdStatus",
   async ({ projectId, projectData }: EditProjectActionType, thunkApi) => {
     try {
-      // Convert projectData to FormData
       const formData = new FormData();
       Object.entries(projectData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -19,7 +18,7 @@ export const editProjectAction = createAsyncThunk(
         }
       });
 
-      const res = await editProject(projectId, formData); // Pass FormData here
+      const res = await editProject(projectId, formData); 
       return res;
     } catch (error) {
       return thunkApi.rejectWithValue(

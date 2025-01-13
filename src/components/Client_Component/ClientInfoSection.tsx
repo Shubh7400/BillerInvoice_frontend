@@ -30,11 +30,11 @@ useEffect(() => {
     selectedClientState?.data &&
     Object.keys(selectedClientState.data).length > 0
   ) {
-    // Valid client data from Redux
+    
     setClientData(selectedClientState.data);
     setLoadingState(selectedClientState.loading);
   } else if (projectsForInvoice?.length > 0) {
-    // Fallback to the first project's client data
+   
     const fallbackClient = projectsForInvoice[0]?.clientDetails as ClientType;
     if (fallbackClient) {
       setClientData(fallbackClient);

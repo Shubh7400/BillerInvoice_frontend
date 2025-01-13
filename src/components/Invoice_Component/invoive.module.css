@@ -65,7 +65,6 @@
   }
   .project_scroll{
     max-width: 200vw;
-    /* overflow-x: auto; */
     gap: 10px;
     position: relative;
     display: flex;
@@ -81,8 +80,8 @@
   border-radius: 20px;
 }
 .table_client_scroll::-webkit-scrollbar {
-  width: 6px; /* Vertical scrollbar width */
-  height: 6px; /* Horizontal scrollbar height */
+  width: 6px; 
+  height: 6px; 
   background-color: #F5F5F5;
   border-radius: 50px;
 }
@@ -106,7 +105,6 @@ background-color: #F5F5F5;
 .table_scroll{
     
   width: 80vw !important;
-/* height: 75vh; */
 margin-bottom: 20px;
 background: #F5F5F5;
 overflow-y: auto;
@@ -114,8 +112,8 @@ overflow-x: auto;
   border-radius: 20px;
 }
 .table_scroll::-webkit-scrollbar {
-  width: 6px; /* Vertical scrollbar width */
-  height: 6px; /* Horizontal scrollbar height */
+  width: 6px; 
+  height: 6px; 
   background-color: #F5F5F5;
   border-radius: 50px;
 }

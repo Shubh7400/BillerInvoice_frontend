@@ -3,7 +3,7 @@ import { getProjectById } from "../../../api/project_requests";
 import { ProjectType } from "../../../types/types";
 import { deleteFileFromProject } from "../../../api/project_requests";
 
-// Async thunk for fetching a project by its ID
+
 export const getProjectByIdAction = createAsyncThunk(
   "selectedProject/getProjectByIdStatus",
   async (projectId: string, thunkApi) => {
@@ -18,13 +18,12 @@ export const getProjectByIdAction = createAsyncThunk(
   }
 );
 
-// Async thunk for deleting a file from the project
 export const deleteFileFromProjectAction = createAsyncThunk(
   "selectedProject/deleteFileFromProject",
   async ({ projectId, filename }: { projectId: string; filename: string }, thunkApi) => {
     try {
       const res = await deleteFileFromProject(projectId, filename);
-      return { projectId, filename };  // Return projectId and filename to update state
+      return { projectId, filename };  
     } catch (error) {
       return thunkApi.rejectWithValue(
         `Error in deleting file from project: ${error}`
@@ -76,7 +75,6 @@ const selectedProjectSlice = createSlice({
       })
       .addCase(deleteFileFromProjectAction.fulfilled, (state, action) => {
         state.loading = "succeeded";
-        // Filter out the deleted file from the uploadedFiles array
         const updatedFiles = state.data?.uploadedFiles?.filter(
           (file) => file.filename !== action.payload.filename
         );

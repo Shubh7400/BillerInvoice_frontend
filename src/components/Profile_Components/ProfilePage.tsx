@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../states/redux/store";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
-import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { updateAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
 import cubexoLogo from "../assets/cubexo_logo.png";
 import gamaedgeLogo from "../../utils/images/gammaedgeLogo.png";
@@ -97,7 +96,6 @@ const ProfilePage = () => {
       const updatedData = await dispatch(
         updateAdminByIdAction({ adminId, updateData: editableData })
       ).unwrap();
-      console.log("Admin updated successfully:", updatedData);
       dispatch(getAdminByIdAction(adminId)); // Fetch the latest data after update
       setIsEditing(false);
     } catch (error) {
@@ -150,10 +148,6 @@ const ProfilePage = () => {
               </button>
             )}
           </div>
-
-          {/* <div className="bg-slate-100 flex justify-start items-center rounded-[15px] h-auto w-[200px] p-2">
-            <img src={companyLogo} alt="CompanyLogo" className="h-auto w-[200px]" />
-          </div> */}
           <div className="bg-slate-100 flex justify-start items-center rounded-[15px] h-auto w-[200px] p-2">
             <img
               src={data.companyLogo}
@@ -164,22 +158,12 @@ const ProfilePage = () => {
           <div className="text-black pt-5">
             {isEditing ? (
               <>
-                {/* <div className="bg-slate-100 flex flex-col justify-start items-center rounded-[15px] h-auto w-[200px] p-2 ml-10"> */}
-                {/* File input for uploading the image */}
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) => handleFileChange(e)}
                   className="mb-4"
                 />
-                {/* {editableData.companyLogo && (
-                    <img
-                      src={editableData.companyLogo}
-                      alt="Preview"
-                      className="h-auto w-[200px] mt-2"
-                    />
-                  )} */}
-                {/* </div> */}
                 <TextField
                   label="Company Name"
                   name="companyName"
@@ -279,10 +263,6 @@ const ProfilePage = () => {
             ) : (
               <>
                 <h3 className="text-2xl font-semibold">{data.companyName}</h3>
-                {/* <p className="my-2">
-                  <b>Gstin: </b>
-                  {data.gistin}
-                </p> */}
                 <div className="text-black opacity-70 flex flex-col justify-start gap-1">
                 <p className="mt-2">
                   <b>Gstin: </b>

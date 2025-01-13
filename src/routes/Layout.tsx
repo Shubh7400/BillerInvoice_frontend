@@ -13,8 +13,6 @@ const Layout = () => {
     <div
       className="flex h-screen "
       style={{
-        // background: 'linear-gradient(-45deg, #95b3bf, #c6cdd3, #e5d8d9, #f1e1d9, #f3e1cd)',
-        // background: "#dce5e4",
         backgroundImage:`url(${bg_image})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",

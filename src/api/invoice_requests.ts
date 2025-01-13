@@ -14,37 +14,12 @@ export async function addNewInvoice(invoiceObject: InvoiceType) {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("Res after add invoice-", res.data);
     return res.data;
   } catch (error) {
-    console.log("Error after add invoice-", error);
     return new Error(`Network error in adding invoice to server ${error}`);
   }
 }
 
-// export async function updateInvoice(invoiceObject: InvoiceType) {
-//   let token = localStorage.getItem("billAppAuthToken");
-//   if (token) {
-//     token = token.substring(1, token.length - 1);
-//   }
-
-//   try {
-//     const res = await axios.patch(
-//       `${config.apiUrlInvoice}/${invoiceObject._id}`,
-//       invoiceObject,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       }
-//     );
-//     console.log("Res after updating invoice-", res.data);
-//     return res.data;
-//   } catch (error: any) {
-//     console.log("Error after updating invoice-", error);
-//     return new Error(`Network error in updating invoice: ${error.message || error}`);
-//   }
-// }
 
 export async function getAllInvoice() {
   let token = localStorage.getItem("billAppAuthToken");
@@ -101,15 +76,12 @@ export async function fetchInvoiceProjects(year: string, month: string) {
       params: { year, month: formattedMonth }, 
 
     });
-    console.log('API Response in fetchInvoiceProjects:', res);
-    return res.data; // Return the projects
+    return res.data; 
   } catch (error) {
-    console.error('Error fetching invoice projects:', error);
     throw new Error('Error fetching invoice projects');
   }
 
 }
-// Function to fetch invoices by date range
 export async function fetchInvoicesByDate({ fromYear, fromMonth, toYear, toMonth }: { fromYear: number; fromMonth: number; toYear: number; toMonth: number }) {
   let token = localStorage.getItem('billAppAuthToken');
   if (token) {
@@ -127,9 +99,8 @@ export async function fetchInvoicesByDate({ fromYear, fromMonth, toYear, toMonth
         toMonth
       }
     });
-    return response;  // Return the API response
+    return response;  
   } catch (error) {
-    console.error('Error fetching invoices:', error);
     throw error;
   }
 }

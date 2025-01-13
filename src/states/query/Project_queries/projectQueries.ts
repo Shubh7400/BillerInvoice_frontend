@@ -7,9 +7,7 @@ import {
   getAllProjectsByClientId,
   getProjectById,
 } from "../../../api/project_requests";
-import { ProjectType, UpdateProjectDataType } from "../../../types/types";
 import { queryClient } from "../../..";
-import { FileData } from "../../../types/types";
 
 export const useFetchAllProjectsByClientId = (clientId: string | undefined, projectTableforClient: boolean) => {
   return useQuery(
@@ -27,7 +25,7 @@ export const useFetchProjectByProjectId = (projectId: string) => {
 
 export const useAddNewProject = () => {
   const AddProjectMutationHandler = useMutation((formData: FormData) => {
-    return addProject(formData); // Ensure `addProject` handles `FormData`
+    return addProject(formData); 
   });
 
   return AddProjectMutationHandler;
@@ -40,7 +38,7 @@ export const useUpdateProject = (
   const UpdateProjectMutationHandler = useMutation(
     (variables: {
       projectId: string;
-      updatedProjectData: FormData; // Updated to accept FormData
+      updatedProjectData: FormData; 
     }) => editProject(variables.projectId, variables.updatedProjectData),
     {
       onSuccess: () => {

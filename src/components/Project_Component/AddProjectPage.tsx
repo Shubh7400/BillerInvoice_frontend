@@ -1,10 +1,8 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { Autocomplete } from "@mui/material";
@@ -19,31 +17,18 @@ import {
   useUpdateProject,
 } from "../../states/query/Project_queries/projectQueries";
 import { queryClient } from "../..";
-import { CiEdit } from "react-icons/ci";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { IoChevronBackSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../states/redux/store";
-import Select from "react-select";
-import { InputActionMeta } from "react-select";
 import axios from "axios";
-import CompoLoadingProjects from "./CompoLoadingProjects";
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
-import { log } from "node:console";
-import {
-  addProjectForInvoiceAction,
-  removeAllProjectsFromInvoiceAction,
-} from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
-import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
 import { deleteFileFromProjectAction } from "../../states/redux/ProjectState/selectedProjectSlice";
-import { FileData } from "../../types/types";
 import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { addProject } from "../../api/project_requests";
 import {
   FormControl,
   FormLabel,
@@ -52,9 +37,8 @@ import {
   Radio,
   Card, CardMedia
 } from "@mui/material";
-import { Typography, List, ListItem, ListItemText, IconButton, Box, Paper } from '@mui/material';
+import { Typography,  Box} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { UploadedFile } from "../../types/types";
 interface ImageConverterProps {
   selectedProjectData: ProjectType;
 }
@@ -193,8 +177,8 @@ function AddProjectPage({
 
   interface FileData {
     name: string;
-    file: File; // The actual file object
-    url: string; // Temporary URL for preview
+    file: File;
+    url: string; 
   }
 
   const fetchExchangeRate = async () => {
@@ -202,19 +186,19 @@ function AddProjectPage({
     setRateError("");
     try {
       const response = await axios.get(
-        `https://api.exchangerate-api.com/v4/latest/USD` // Replace with your API endpoint
+        `https://api.exchangerate-api.com/v4/latest/USD` 
       );
 
       const rates = response.data.rates;
       if (currencyType === "dollars") {
-        setConversionRate(rates.INR); // INR equivalent of 1 USD
+        setConversionRate(rates.INR); 
         setProjectData((prevData) => ({
           ...prevData,
           currencyType: "dollars",
           conversionRate: rates.INR,
         }));
       } else if (currencyType === "pounds") {
-        setConversionRate(rates.INR / rates.GBP); // INR equivalent of 1 GBP
+        setConversionRate(rates.INR / rates.GBP); 
         setProjectData((prevData) => ({
           ...prevData,
           currencyType: "pounds",
@@ -266,13 +250,13 @@ function AddProjectPage({
       const files = e.target.files;
       const updatedFiles = Array.from(files).map((file) => ({
         name: file.name,
-        file: file, // Keep the original File object
-        url: URL.createObjectURL(file), // Temporary URL for preview
+        file: file, 
+        url: URL.createObjectURL(file), 
       }));
 
       setProjectData((prevData) => ({
         ...prevData,
-        files: [...(prevData.files || []), ...updatedFiles], // Append new file objects
+        files: [...(prevData.files || []), ...updatedFiles], 
       }));
       return;
     }
@@ -283,7 +267,6 @@ function AddProjectPage({
       let numVal = +value;
       setProjectData((prevData) => ({
         ...prevData,
-        // advanceAmount: parseFloat(value) || 0,
         [name]: numVal,
       }));
       return;
@@ -342,7 +325,6 @@ function AddProjectPage({
       }));
       return;
     }
-    // Handle other fields
     setProjectData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -389,7 +371,6 @@ function AddProjectPage({
           formData.append(key, value.toString());
         }
       }
-      // Send form data with the mutation
       addProjectMutation.mutate(formData, {
         onSuccess: () => {
           queryClient.invalidateQueries(["projects", clientId]);
@@ -528,8 +509,6 @@ function AddProjectPage({
         ...prevData,
         [field]: value.toISOString(),
       }));
-
-      // Validate the date range
       if (field === "startDate") {
         if (projectData.endDate && value.isAfter(dayjs(projectData.endDate))) {
           setStartDateError(true);
@@ -551,14 +530,6 @@ function AddProjectPage({
     }
   };
 
-  // const {
-  //   loading: selectedProjectLoading,
-  //   data: selectedProjectData,
-  //   error: selectedProjectError,
-  // } = useSelector((state: RootState) => state.selectedProjectState);
-
-  // const dispatch = useDispatch();
-
   const handleDeleteFile = (filename: string) => {
     const projectId = selectedProjectData?._id;  // Get project ID
     if (projectId) {
@@ -572,7 +543,6 @@ function AddProjectPage({
   return (
     <>
       <div>
-        {/* <Dialog open={open} onClose={handleClose}> */}
         <div className="flex gap-3 items-center mb-4 ">
           <button
             onClick={() =>
@@ -732,9 +702,6 @@ function AddProjectPage({
 
             {currencyType !== "rupees" ? (
               <>
-                <div></div>
-
-                {/* Display Conversion Rate for Dollar and Pound */}
                 {currencyType !== "rupees" && (
                   <div className="relative mt-3">
                     <TextField
@@ -835,10 +802,6 @@ function AddProjectPage({
                 }}
                 fullWidth
               />
-
-
-
-
               {!forAddProject && (
                 <Box
                   sx={{
@@ -854,7 +817,7 @@ function AddProjectPage({
                     sx={{
                       display: "flex",
                       flexWrap: "wrap",
-                      gap: "16px", // Spacing between items
+                      gap: "16px", 
                       justifyContent: "start",
                       alignItems: "center",
                     }}
@@ -863,8 +826,8 @@ function AddProjectPage({
                       <Card
                         key={index}
                         sx={{
-                          width: 150, // Card width
-                          height: file.imageUrl ? 200 : 100, // Adjust height based on content
+                          width: 150, 
+                          height: file.imageUrl ? 200 : 100, 
                           display: "flex",
                           flexDirection: file.imageUrl ? "column" : "row",
                           justifyContent: file.imageUrl ? "space-between" : "center",
@@ -875,13 +838,13 @@ function AddProjectPage({
                           transition: "transform 0.3s",
                           backgroundColor: file.imageUrl
                             ? "white"
-                            : "#f8d7da", // Background color for unsupported formats
+                            : "#f8d7da", 
                           color: file.imageUrl ? "inherit" : "#721c24",
                           border: file.imageUrl ? "none" : "1px solid #f5c6cb",
                           "&:hover": {
-                            transform: "scale(1.05)", // Slight zoom on hover
+                            transform: "scale(1.05)", 
                           },
-                          position: "relative", // For positioning the delete icon
+                          position: "relative", 
                         }}
                       >
                         {/* Delete Icon */}
@@ -914,7 +877,7 @@ function AddProjectPage({
                               alt={file.filename}
                               sx={{
                                 maxHeight: "120px",
-                                objectFit: "contain", // Maintain aspect ratio
+                                objectFit: "contain", 
                                 marginBottom: "8px",
                               }}
                             />
@@ -926,7 +889,7 @@ function AddProjectPage({
                                 textOverflow: "ellipsis",
                                 whiteSpace: "nowrap",
                               }}
-                              title={file.filename} // Tooltip for long filenames
+                              title={file.filename} 
                             >
                               <a
                                 href={file.viewUrl}
@@ -966,11 +929,9 @@ function AddProjectPage({
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               {" "}
-              {/* Use Dayjs Adapter */}
               <div
                 style={{ display: "flex", gap: "16px", alignItems: "center" }}
               >
-                {/* Start Date Picker */}
                 <DatePicker
                   label="Start Date"
                   value={
@@ -984,15 +945,13 @@ function AddProjectPage({
                       variant: "outlined",
                       fullWidth: true,
                       margin: "normal",
-                      error: startDateError, // Use boolean error flag
+                      error: startDateError, 
                       helperText: startDateError
                         ? "Start date should be less than end date"
                         : "",
                     },
                   }}
                 />
-
-                {/* End Date Picker */}
                 <DatePicker
                   label="End Date"
                   value={
@@ -1004,7 +963,7 @@ function AddProjectPage({
                       variant: "outlined",
                       fullWidth: true,
                       margin: "normal",
-                      error: endDateError, // Use boolean error flag
+                      error: endDateError, 
                       helperText: endDateError
                         ? "End date should be greater than start date"
                         : "",
@@ -1016,11 +975,10 @@ function AddProjectPage({
           </form>
         </DialogContent>
         <DialogActions>
-          {/* <Button onClick={handleClose}>Cancel</Button> */}
           {forAddProject && !toEdit ? (
             <Button
               onClick={(e) => handleAddSubmit(e)}
-              disabled={loading} // Disable the button during loading
+              disabled={loading} 
               style={{
                 backgroundColor: loading ? "#a5a5a5" : isHovered ? "#4a6180" : "#d9a990",
                 borderRadius: "20px",
@@ -1032,13 +990,13 @@ function AddProjectPage({
               onMouseEnter={() => !loading && setIsHovered(true)}
               onMouseLeave={() => !loading && setIsHovered(false)}
             >
-              {loading ? "Adding..." : "Add Project"} {/* Show loading text */}
+              {loading ? "Adding..." : "Add Project"}
             </Button>
           ) : (
 
             <Button
               onClick={(e) => handleEditSubmit(e)}
-              disabled={loading} // Disable the button during loading
+              disabled={loading} 
               style={{
                 backgroundColor: loading ? "#a5a5a5" : isHovered ? "#4a6180" : "#d9a990",
                 borderRadius: "20px",
@@ -1050,12 +1008,11 @@ function AddProjectPage({
               onMouseEnter={() => !loading && setIsHovered(true)}
               onMouseLeave={() => !loading && setIsHovered(false)}
             >
-              {loading ? "Updating..." : "Edit Project"} {/* Show loading text */}
+              {loading ? "Updating..." : "Edit Project"} 
             </Button>
 
           )}
         </DialogActions>
-        {/* </Dialog> */}
       </div>
     </>
   );

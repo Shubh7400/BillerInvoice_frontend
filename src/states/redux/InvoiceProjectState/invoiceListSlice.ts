@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { fetchInvoiceProjects } from '../../../api/invoice_requests'; 
-import { getProjectById } from '../../../api/project_requests'; 
 import { fetchInvoicesByDate } from '../../../api/invoice_requests';
 import { ClientDetails,AdminDetails } from '../../../types/types';
 export interface Invoice {
@@ -44,7 +43,6 @@ const initialState: InvoiceListState = {
   error: null,
 };
 
-// Fetch invoices for a given month and year
 export const fetchInvoicesThunk = createAsyncThunk(
   'invoice/fetchInvoices',
   async ({ year, month }: { year: string; month: string }, { rejectWithValue }) => {
@@ -63,7 +61,6 @@ export const fetchInvoicesThunk = createAsyncThunk(
   }
 );
 
-// Thunk to fetch invoices by date range
 export const fetchInvoicesByDateRange = createAsyncThunk(
   'invoice/fetchInvoicesByDateRange',
   async ({ fromYear, fromMonth, toYear, toMonth }: { fromYear: number, fromMonth: number, toYear: number, toMonth: number }, { rejectWithValue }) => {

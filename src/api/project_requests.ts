@@ -1,6 +1,5 @@
 import axios from "axios";
 import config from "../config/config";
-import { ProjectType, UpdateProjectDataType } from "../types/types";
 
 export async function getAllProjectsByClientId(clientId: string) {
   let token = localStorage.getItem("billAppAuthToken");
@@ -13,16 +12,8 @@ export async function getAllProjectsByClientId(clientId: string) {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(
-      "================res after getAllProjectByClients================>",
-      response
-    );
     return response.data;
   } catch (error) {
-    console.log(
-      "Error in getting allprojects :from getAllClients function-",
-      error
-    );
     throw new Error("Error in getting all client projects");
   }
 }
@@ -37,15 +28,11 @@ export async function addProject(projectData: FormData) {
     const response = await axios.post(`${config.apiUrlProject}`, projectData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data', // Ensure the correct content type
+        'Content-Type': 'multipart/form-data', 
       },
     });
     return response.data;
   } catch (error) {
-    console.log(
-      "Error in adding project :from adding project function-",
-      error
-    );
     throw new Error("Error in adding project");
   }
 }
@@ -64,10 +51,6 @@ export async function getProjectById(projectId: string) {
     });
     return res.data;
   } catch (error) {
-    console.log(
-      "Error in getProjectById project :from  getProjectById axios project function-",
-      error
-    );
     throw new Error("Error in getProjectById");
   }
 }
@@ -94,7 +77,6 @@ export async function editProject(
     );
     return res.data;
   } catch (error) {
-    console.error("Error in updating project:", error);
     throw new Error("Error in updating project");
   }
 }
@@ -115,10 +97,6 @@ export async function deleteProject(projectId: string) {
     });
     return res.data;
   } catch (error) {
-    console.log(
-      "Error in deleting project :from  deleting axios project function-",
-      error
-    );
     throw new Error("Error in deleting project");
   }
 }
@@ -134,7 +112,7 @@ export async function deleteFileFromProject(projectId: string, filename: string)
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      data: { filename }, // Passing the filename in the body
+      data: { filename }, 
     });
     return response.data;
   } catch (error: any) {
@@ -154,16 +132,8 @@ export async function getAllProjectsByAdminId(AdminId: string) {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(
-      "================res after getAllProjectByAdminId================>",
-      response
-    );
     return response.data;
   } catch (error) {
-    console.log(
-      "Error in getting allprojects :from getAllClients function-",
-      error
-    );
     throw new Error("Error in getting all admin projects");
   }
 }
