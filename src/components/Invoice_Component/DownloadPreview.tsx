@@ -238,7 +238,7 @@ const DownloadPreview = ({
                 <thead className="bg-[#94b9ff] text-white ">
                   <tr>
                     <th className="px-2 pb-4">Sr.no.</th>
-                    <th className="px-2 pb-4">Project Description</th>
+                    <th className="px-2 pb-4">Description</th>
                     {/* <th className="px-2 pb-4">Project Period</th> */}
                     <th className="px-2 pb-4">Rate</th>
 
@@ -261,7 +261,7 @@ const DownloadPreview = ({
                 <thead className="bg-[#94b9ff] text-white ">
                   <tr>
                     <th className="px-2 pb-4">Sr.no.</th>
-                    <th className="px-2 pb-4">Project Name</th>
+                    <th className="px-2 pb-4">Description</th>
                     {/* <th className="px-2 pb-4">Project Period</th> */}
                     <th className="px-2 pb-4">Rate</th>
                     {projectsForInvoice?.map((project, index) => (
@@ -291,7 +291,7 @@ const DownloadPreview = ({
                 <tr className="text-black">
                   <td className="border px-2 pb-4 text-center">{1}</td>
                   <td className="border px-2 pb-4 text-center">
-                    {invoice.projectName}
+                  {`${invoice.resumeName} - ${invoice.projectName} `}
                   </td>
                   <td className="border px-2 pb-4 text-center">
                     {invoice.rate}(
@@ -338,7 +338,8 @@ const DownloadPreview = ({
                     <tr key={project._id} className="text-black">
                       <td className="border px-2 pb-4 text-center">{index + 1}</td>
                       <td className="border px-2 pb-4 text-center">
-                        {project.projectName}
+            
+                      {`${project.resumeName} - ${project.projectName}`}
                       </td>
                       <td className="border px-2 pb-4 text-center">
                         {project.rate}(

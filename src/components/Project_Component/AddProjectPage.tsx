@@ -50,15 +50,23 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  Card, CardMedia
+  Card,
+  CardMedia,
 } from "@mui/material";
-import { Typography, List, ListItem, ListItemText, IconButton, Box, Paper } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Box,
+  Paper,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { UploadedFile } from "../../types/types";
 interface ImageConverterProps {
   selectedProjectData: ProjectType;
 }
-
 
 function AddProjectPage({
   adminId,
@@ -138,6 +146,7 @@ function AddProjectPage({
   const [projectData, setProjectData] = useState<ProjectType>({
     _id: "",
     projectName: "",
+    resumeName: "",
     rate: 0,
     workingPeriodType: "hours",
     currencyType: "rupees",
@@ -155,7 +164,7 @@ function AddProjectPage({
     startDate: "",
     endDate: "",
     files: [],
-    uploadedFiles: []
+    uploadedFiles: [],
   });
 
   const {
@@ -171,6 +180,7 @@ function AddProjectPage({
         adminId: selectedProjectData.adminId,
         clientId: selectedProjectData.clientId,
         projectName: selectedProjectData.projectName,
+        resumeName: selectedProjectData.resumeName,
         rate: selectedProjectData.rate,
         workingPeriodType: selectedProjectData.workingPeriodType,
         currencyType: selectedProjectData.currencyType,
@@ -355,6 +365,10 @@ function AddProjectPage({
       setFormError("Project name compulsary*");
       return false;
     }
+    if (obj.resumeName === "") {
+      setFormError("Resume name compulsary*");
+      return false;
+    }
     if (obj.conversionRate === "") {
       setProjectData({ ...obj, conversionRate: 1 });
     }
@@ -474,6 +488,7 @@ function AddProjectPage({
       setProjectData({
         _id: "",
         projectName: "",
+        resumeName: "",
         rate: 0,
         workingPeriodType: "hours",
         currencyType: "rupees",
@@ -560,14 +575,13 @@ function AddProjectPage({
   // const dispatch = useDispatch();
 
   const handleDeleteFile = (filename: string) => {
-    const projectId = selectedProjectData?._id;  // Get project ID
+    const projectId = selectedProjectData?._id; // Get project ID
     if (projectId) {
       dispatch(deleteFileFromProjectAction({ projectId, filename }));
     } else {
-      console.error('Project ID is missing');
+      console.error("Project ID is missing");
     }
   };
-
 
   return (
     <>
@@ -667,6 +681,20 @@ function AddProjectPage({
               onChange={handleChange}
               required
             />
+
+            <TextField
+              margin="dense"
+              id="resumeName"
+              label="Resume Name"
+              type="text"
+              fullWidth
+              variant="outlined"
+              name="resumeName"
+              value={projectData.resumeName}
+              onChange={handleChange}
+              required
+            />
+
             <div className="flex gap-2">
               <TextField
                 select
@@ -807,7 +835,6 @@ function AddProjectPage({
               name="technology"
               value={projectData.technology}
               onChange={handleChange}
-
             />
 
             <FormControl component="fieldset" margin="dense" fullWidth>
@@ -836,9 +863,6 @@ function AddProjectPage({
                 fullWidth
               />
 
-
-
-
               {!forAddProject && (
                 <Box
                   sx={{
@@ -859,95 +883,102 @@ function AddProjectPage({
                       alignItems: "center",
                     }}
                   >
-                    {selectedProjectData.uploadedFiles?.map((file: any, index: number) => (
-                      <Card
-                        key={index}
-                        sx={{
-                          width: 150, // Card width
-                          height: file.imageUrl ? 200 : 100, // Adjust height based on content
-                          display: "flex",
-                          flexDirection: file.imageUrl ? "column" : "row",
-                          justifyContent: file.imageUrl ? "space-between" : "center",
-                          alignItems: "center",
-                          padding: "8px",
-                          boxShadow: 2,
-                          borderRadius: "8px",
-                          transition: "transform 0.3s",
-                          backgroundColor: file.imageUrl
-                            ? "white"
-                            : "#f8d7da", // Background color for unsupported formats
-                          color: file.imageUrl ? "inherit" : "#721c24",
-                          border: file.imageUrl ? "none" : "1px solid #f5c6cb",
-                          "&:hover": {
-                            transform: "scale(1.05)", // Slight zoom on hover
-                          },
-                          position: "relative", // For positioning the delete icon
-                        }}
-                      >
-                        {/* Delete Icon */}
-                        <Box
+                    {selectedProjectData.uploadedFiles?.map(
+                      (file: any, index: number) => (
+                        <Card
+                          key={index}
                           sx={{
-                            position: "absolute",
-                            top: "8px",
-                            right: "8px",
-                            cursor: "pointer",
-                            zIndex: 2,
+                            width: 150, // Card width
+                            height: file.imageUrl ? 200 : 100, // Adjust height based on content
+                            display: "flex",
+                            flexDirection: file.imageUrl ? "column" : "row",
+                            justifyContent: file.imageUrl
+                              ? "space-between"
+                              : "center",
+                            alignItems: "center",
+                            padding: "8px",
+                            boxShadow: 2,
+                            borderRadius: "8px",
+                            transition: "transform 0.3s",
+                            backgroundColor: file.imageUrl
+                              ? "white"
+                              : "#f8d7da", // Background color for unsupported formats
+                            color: file.imageUrl ? "inherit" : "#721c24",
+                            border: file.imageUrl
+                              ? "none"
+                              : "1px solid #f5c6cb",
+                            "&:hover": {
+                              transform: "scale(1.05)", // Slight zoom on hover
+                            },
+                            position: "relative", // For positioning the delete icon
                           }}
-                          onClick={() => handleDeleteFile(file.filename)}
                         >
-                          <DeleteIcon
+                          {/* Delete Icon */}
+                          <Box
                             sx={{
-                              fontSize: "20px",
-                              color: "rgba(255, 0, 0, 0.8)",
-                              "&:hover": {
-                                color: "red",
-                              },
+                              position: "absolute",
+                              top: "8px",
+                              right: "8px",
+                              cursor: "pointer",
+                              zIndex: 2,
                             }}
-                          />
-                        </Box>
-
-                        {file.viewUrl ? (
-                          <>
-                            <CardMedia
-                              component="img"
-                              src={file.imageUrl}
-                              alt={file.filename}
+                            onClick={() => handleDeleteFile(file.filename)}
+                          >
+                            <DeleteIcon
                               sx={{
-                                maxHeight: "120px",
-                                objectFit: "contain", // Maintain aspect ratio
-                                marginBottom: "8px",
+                                fontSize: "20px",
+                                color: "rgba(255, 0, 0, 0.8)",
+                                "&:hover": {
+                                  color: "red",
+                                },
                               }}
                             />
+                          </Box>
+
+                          {file.viewUrl ? (
+                            <>
+                              <CardMedia
+                                component="img"
+                                src={file.imageUrl}
+                                alt={file.filename}
+                                sx={{
+                                  maxHeight: "120px",
+                                  objectFit: "contain", // Maintain aspect ratio
+                                  marginBottom: "8px",
+                                }}
+                              />
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  textAlign: "center",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                }}
+                                title={file.filename} // Tooltip for long filenames
+                              >
+                                <a
+                                  href={file.viewUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {file.filename}
+                                </a>
+                              </Typography>
+                            </>
+                          ) : (
                             <Typography
                               variant="body2"
-                              sx={{
-                                textAlign: "center",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                              title={file.filename} // Tooltip for long filenames
+                              textAlign="center"
+                              title={file.filename}
                             >
-                              <a
-                                href={file.viewUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {file.filename}
-                              </a>
+                              Preview not available for{" "}
+                              <strong>{file.filename}</strong>
                             </Typography>
-                          </>
-                        ) : (
-                          <Typography
-                            variant="body2"
-                            textAlign="center"
-                            title={file.filename}
-                          >
-                            Preview not available for <strong>{file.filename}</strong>
-                          </Typography>
-                        )}
-                      </Card>
-                    ))}
+                          )}
+                        </Card>
+                      )
+                    )}
                   </Box>
                 </Box>
               )}
@@ -956,7 +987,7 @@ function AddProjectPage({
             <TextField
               margin="dense"
               id="candidateName"
-              label="Candidate / Resource Name"
+              label="Candidate"
               type="text"
               fullWidth
               variant="outlined"
@@ -1022,7 +1053,11 @@ function AddProjectPage({
               onClick={(e) => handleAddSubmit(e)}
               disabled={loading} // Disable the button during loading
               style={{
-                backgroundColor: loading ? "#a5a5a5" : isHovered ? "#4a6180" : "#d9a990",
+                backgroundColor: loading
+                  ? "#a5a5a5"
+                  : isHovered
+                  ? "#4a6180"
+                  : "#d9a990",
                 borderRadius: "20px",
                 padding: "5px 15px",
                 color: "#fff",
@@ -1035,12 +1070,15 @@ function AddProjectPage({
               {loading ? "Adding..." : "Add Project"} {/* Show loading text */}
             </Button>
           ) : (
-
             <Button
               onClick={(e) => handleEditSubmit(e)}
               disabled={loading} // Disable the button during loading
               style={{
-                backgroundColor: loading ? "#a5a5a5" : isHovered ? "#4a6180" : "#d9a990",
+                backgroundColor: loading
+                  ? "#a5a5a5"
+                  : isHovered
+                  ? "#4a6180"
+                  : "#d9a990",
                 borderRadius: "20px",
                 padding: "5px 15px",
                 color: "#fff ",
@@ -1050,9 +1088,9 @@ function AddProjectPage({
               onMouseEnter={() => !loading && setIsHovered(true)}
               onMouseLeave={() => !loading && setIsHovered(false)}
             >
-              {loading ? "Updating..." : "Edit Project"} {/* Show loading text */}
+              {loading ? "Updating..." : "Edit Project"}{" "}
+              {/* Show loading text */}
             </Button>
-
           )}
         </DialogActions>
         {/* </Dialog> */}

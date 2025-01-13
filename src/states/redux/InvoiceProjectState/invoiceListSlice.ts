@@ -16,6 +16,7 @@ export interface Invoice {
   grandTotal?: number;
   
   projectName: string;
+  resumeName: string;
   rate: number;
   adminId: string;
   workingPeriod:number;

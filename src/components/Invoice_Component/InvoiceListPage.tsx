@@ -198,8 +198,9 @@ function InvoiceListPage() {
                       <TableCell style={{ paddingLeft: "0", paddingRight: "0", width: "150px" }}>
                         Invoice No
                       </TableCell>
-                      <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Project</TableCell>
                       <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Client Name</TableCell>
+                      <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Resume Name</TableCell>
+                      <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Project</TableCell>
                       <TableCell style={{ paddingLeft: "20px", paddingRight: "0" }}>Rate</TableCell>
                       <TableCell style={{ paddingLeft: "0", paddingRight: "0", width: "170px" }}>
                         Conversion Rate
@@ -211,9 +212,15 @@ function InvoiceListPage() {
                   <TableBody>
                     {Array.isArray(invoices) && invoices.length > 0 ? (
                       invoices.filter((invoice) => {
-                        if (searchInvoiceProject.length <= 0) return true;
+                        if (searchInvoiceProject.trim().length === 0) return true;
+
+                        const searchLower = searchInvoiceProject.toLowerCase();
                       
-                        return invoice.projectName?.toLowerCase().startsWith(searchInvoiceProject.toLowerCase()) || false;
+                        return (
+                          (invoice.projectName?.toLowerCase().startsWith(searchLower) ?? false) ||
+                          (invoice.clientDetails?.clientName?.toLowerCase().startsWith(searchLower) ?? false) ||
+                          (invoice.resumeName?.toLowerCase().startsWith(searchLower) ?? false)
+                        );
                       })
                       
                       .map((invoice, index) => {
@@ -224,10 +231,13 @@ function InvoiceListPage() {
                           <TableRow key={invoice._id}>
                             <TableCell>{index + 1}</TableCell>
                             <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>{invoice.invoiceNo}</TableCell>
+                            <TableCell>{invoice.clientDetails?.clientName}</TableCell>
+                            <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                              {invoice.resumeName || ""}
+                            </TableCell>
                             <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                               {invoice.projectName || "Unnamed Project"}
                             </TableCell>
-                            <TableCell>{invoice.clientDetails?.clientName}</TableCell>
                             <TableCell>
                               {invoice.rate}(
                               {invoice.currencyType === "rupees" ? (

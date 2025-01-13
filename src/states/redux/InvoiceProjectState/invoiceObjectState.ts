@@ -15,6 +15,7 @@ interface InvoiceObjectStateType {
   grandTotal?: number,
   taxAmount: number,
   projectName: string;
+  resumeName:string;
   rate?: number | null;
   workingPeriodType: "hours" | "months" | "fixed";
   currencyType: "rupees" | "dollars" | "pounds";
@@ -40,6 +41,7 @@ const initialState: { data: InvoiceObjectStateType; loading: "idle" | "loading" 
     grandTotal: 0,
     taxAmount: 0,
     projectName: "",
+    resumeName:"",
     rate: 1,
     workingPeriodType: "hours",
     currencyType: "rupees",

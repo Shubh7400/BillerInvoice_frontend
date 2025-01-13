@@ -302,8 +302,8 @@ const ProjectTable = ({
           handleProjectEdit={handleEditProject}
         />
         {clientObj &&
-          selectedClientState.loading !== "idle" &&
-          projectTableforClient ? (
+        selectedClientState.loading !== "idle" &&
+        projectTableforClient ? (
           <ClientInfoSection projectsForInvoice={projectsForInvoice} />
         ) : null}
       </div>
@@ -322,9 +322,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data?.length <= 0)) ||
-                  (clientProjectTableData &&
-                    (clientProjectTableData === "" ||
-                      clientProjectTableData?.length <= 0)) ? (
+                (clientProjectTableData &&
+                  (clientProjectTableData === "" ||
+                    clientProjectTableData?.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -337,34 +337,132 @@ const ProjectTable = ({
                 <Table>
                   <TableHead className={Styles.animated}>
                     <TableRow>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Sr.No.</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Project</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Client Name</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "20px", paddingRight: "0" }}>Rate</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Conversion Rate</TableCell>
-                      <TableCell sx={{ paddingX: "1px", width: "auto", paddingLeft: "30px", paddingRight: "0" }}>Action</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Selection</TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Sr.No.
+                      </TableCell>
+
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Client Name
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Resume Name
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Project
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "20px",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Rate
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Conversion Rate
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "1px",
+                          width: "auto",
+                          paddingLeft: "30px",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Action
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Selection
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {ProjectData &&
                       ProjectData?.filter((project) => {
                         if (searchProjectName?.length <= 0) return true;
-                        return project.projectName
-                          .toLowerCase()
-                          .startsWith(searchProjectName.toLowerCase());
+                        const searchLower = searchProjectName.toLowerCase();
+                        // return project.projectName
+                        //   .toLowerCase()
+                        //   .startsWith(searchProjectName.toLowerCase());
+                        // Check if any field matches the search term
+                        return (
+                          (project.projectName
+                            ?.toLowerCase()
+                            .startsWith(searchLower) ??
+                            false) ||
+                          (project.resumeName
+                            ?.toLowerCase()
+                            .startsWith(searchLower) ??
+                            false) ||
+                          (project.clientDetails?.clientName
+                            ?.toLowerCase()
+                            .startsWith(searchLower) ??
+                            false)
+                        );
                       }).map((project: ProjectType, index: number) => (
                         <TableRow key={project._id} className="p-3">
                           <TableCell
-                            sx={{ paddingX: "16px", textAlign: "center", width: "auto" }}
+                            sx={{
+                              paddingX: "16px",
+                              textAlign: "center",
+                              width: "auto",
+                            }}
                           >
                             {index + 1}
                           </TableCell>
-                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
-                            {project.projectName}
-                          </TableCell>
+
                           <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             {project.clientDetails?.clientName}
+                          </TableCell>
+                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
+                            {project.resumeName}
+                          </TableCell>
+                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
+                            {project.projectName}
                           </TableCell>
                           <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             {project.rate}(
@@ -435,7 +533,13 @@ const ProjectTable = ({
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell sx={{ paddingY: "8px", paddingX: "16px", width: "auto" }}>
+                          <TableCell
+                            sx={{
+                              paddingY: "8px",
+                              paddingX: "16px",
+                              width: "auto",
+                            }}
+                          >
                             <div>
                               <Button
                                 variant="contained"
@@ -479,30 +583,32 @@ const ProjectTable = ({
                       {getClientName(selectedProject.clientId)}
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Rate:</strong>{" "}
-                      {selectedProject.rate?.toFixed(2)}
+                      <strong>Rate:</strong> {selectedProject.rate?.toFixed(2)}
                       {selectedProject.currencyType === "rupees"
                         ? selectedProject.workingPeriodType === "fixed"
                           ? " ₹/fixed"
-                          : ` ₹/${selectedProject.workingPeriodType === "hours"
-                            ? "hours"
-                            : "months"
-                          }`
-                        : selectedProject.currencyType === "dollars"
-                          ? selectedProject.workingPeriodType === "fixed"
-                            ? " $/fixed"
-                            : ` $/${selectedProject.workingPeriodType === "hours"
-                              ? "hours"
-                              : "months"
-                            }`
-                          : selectedProject.currencyType === "pounds"
-                            ? selectedProject.workingPeriodType === "fixed"
-                              ? " £/fixed"
-                              : ` £/${selectedProject.workingPeriodType === "hours"
+                          : ` ₹/${
+                              selectedProject.workingPeriodType === "hours"
                                 ? "hours"
                                 : "months"
-                              }`
-                            : ""}
+                            }`
+                        : selectedProject.currencyType === "dollars"
+                        ? selectedProject.workingPeriodType === "fixed"
+                          ? " $/fixed"
+                          : ` $/${
+                              selectedProject.workingPeriodType === "hours"
+                                ? "hours"
+                                : "months"
+                            }`
+                        : selectedProject.currencyType === "pounds"
+                        ? selectedProject.workingPeriodType === "fixed"
+                          ? " £/fixed"
+                          : ` £/${
+                              selectedProject.workingPeriodType === "hours"
+                                ? "hours"
+                                : "months"
+                            }`
+                        : ""}
                     </Typography>
                     <Typography variant="body1">
                       <strong>Conversion Rate:</strong> &#x20B9;
@@ -560,8 +666,7 @@ const ProjectTable = ({
                     )}
                     {selectedProject.startDate && (
                       <Typography variant="body1">
-                        <strong>Start Date:</strong>{" "}
-                        {selectedProject.startDate}
+                        <strong>Start Date:</strong> {selectedProject.startDate}
                       </Typography>
                     )}
                     {selectedProject.endDate && (
@@ -591,73 +696,83 @@ const ProjectTable = ({
                     )}
 
                     {selectedProject.timeSheet && (
-                      <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
+                      <Typography variant="body1">
+                        <strong>Timesheet:</strong> {selectedProject.timeSheet}
+                      </Typography>
                     )}
-                   <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
-                    {selectedProject.uploadedFiles && selectedProject.uploadedFiles?.length > 0 && (
-                      <>
-                        <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: 2, // Space between capsules
-                            justifyContent: "flex-start", // Align items to the start
-                            alignItems: "center", // Align items in the center
-                          }}
-                        >
-                          {selectedProject.uploadedFiles.map((file, index) => (
-                            <ListItem
-                              key={index}
-                              component="a"
-                              href={file.viewUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              sx={{
-                                maxWidth: '200px',  // Add this
-                                minWidth: '100px',  // Add this
-                                height: 40,         // Change from 50 to 40
+                    <Typography variant="body1">
+                      <strong>Working Period Type:</strong>{" "}
+                      {selectedProject.workingPeriodType}
+                    </Typography>
+                    {selectedProject.uploadedFiles &&
+                      selectedProject.uploadedFiles?.length > 0 && (
+                        <>
+                          <Typography variant="body1">
+                            <strong>Uploaded Files:</strong>
+                          </Typography>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: 2, // Space between capsules
+                              justifyContent: "flex-start", // Align items to the start
+                              alignItems: "center", // Align items in the center
+                            }}
+                          >
+                            {selectedProject.uploadedFiles.map(
+                              (file, index) => (
+                                <ListItem
+                                  key={index}
+                                  component="a"
+                                  href={file.viewUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  sx={{
+                                    maxWidth: "200px", // Add this
+                                    minWidth: "100px", // Add this
+                                    height: 40, // Change from 50 to 40
 
-                          
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                padding: "8px 16px",
-                                boxShadow: 2,
-                                borderRadius: "25px", // Makes the shape capsule-like
-                                backgroundColor: "#f0f0f0", // Light background color
-                                color: "#333", // Text color
-                                textDecoration: "none",
-                                transition: "transform 0.3s, background-color 0.3s",
-                                "&:hover": {
-                                  transform: "scale(1.05)", // Slight zoom on hover
-                                  backgroundColor: "#e0e0e0", // Slightly darker background on hover
-                                },
-                              }}
-                            >
-                              <ListItemText
-                                primary={
-                                  <Typography
-                                    variant="body2"
-                                    sx={{
-                                      textAlign: "center",
-                                      overflow: "hidden",
-                                      textOverflow: "ellipsis",
-                                      whiteSpace: "nowrap",
-                                      fontWeight: "bold",
-                                      maxWidth: '168px',  // Add this
-                                    }}
-                                    title={file.filename}
-                                  >
-                                    {file.filename}
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                          ))}
-                        </Box>
-                      </>
-                    )}
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    padding: "8px 16px",
+                                    boxShadow: 2,
+                                    borderRadius: "25px", // Makes the shape capsule-like
+                                    backgroundColor: "#f0f0f0", // Light background color
+                                    color: "#333", // Text color
+                                    textDecoration: "none",
+                                    transition:
+                                      "transform 0.3s, background-color 0.3s",
+                                    "&:hover": {
+                                      transform: "scale(1.05)", // Slight zoom on hover
+                                      backgroundColor: "#e0e0e0", // Slightly darker background on hover
+                                    },
+                                  }}
+                                >
+                                  <ListItemText
+                                    primary={
+                                      <Typography
+                                        variant="body2"
+                                        sx={{
+                                          textAlign: "center",
+                                          overflow: "hidden",
+                                          textOverflow: "ellipsis",
+                                          whiteSpace: "nowrap",
+                                          fontWeight: "bold",
+                                          maxWidth: "168px", // Add this
+                                        }}
+                                        title={file.filename}
+                                      >
+                                        {file.filename}
+                                      </Typography>
+                                    }
+                                  />
+                                </ListItem>
+                              )
+                            )}
+                          </Box>
+                        </>
+                      )}
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={handleCloseModal} color="primary">
@@ -665,9 +780,7 @@ const ProjectTable = ({
                     </Button>
                   </DialogActions>
                 </Dialog>
-
               )}
-
             </div>
           )}
         </>
@@ -675,9 +788,9 @@ const ProjectTable = ({
         <>
           {/* Project Table for Client  */}
           {clientProjectTableError ||
-            clientProjectTableLoading ||
-            clientProjectTableData === "" ||
-            clientProjectTableData?.length <= 0 ? (
+          clientProjectTableLoading ||
+          clientProjectTableData === "" ||
+          clientProjectTableData?.length <= 0 ? (
             <div>
               <div></div>
               <div className="text-xl font-bold text-center p-4 ">
@@ -690,9 +803,9 @@ const ProjectTable = ({
                   </p>
                 ) : null}
                 {(data && (data === "" || data?.length <= 0)) ||
-                  (clientProjectTableData &&
-                    (clientProjectTableData === "" ||
-                      clientProjectTableData?.length <= 0)) ? (
+                (clientProjectTableData &&
+                  (clientProjectTableData === "" ||
+                    clientProjectTableData?.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -716,11 +829,12 @@ const ProjectTable = ({
                       >
                         Project
                       </TableCell>
+
                       {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Manager
-                      </TableCell> */}
+                      </TableCell>  */}
                       {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
@@ -763,9 +877,20 @@ const ProjectTable = ({
                       ProjectData.filter((project) => {
                         // Apply the same filter condition as ProjectTable 1
                         if (searchProjectName?.length <= 0) return true;
-                        return project.projectName
-                          .toLowerCase()
-                          .startsWith(searchProjectName.toLowerCase());
+                        const searchLower = searchProjectName.toLowerCase();
+                        // return project.projectName
+                        //   .toLowerCase()
+                        //   .startsWith(searchProjectName.toLowerCase());
+                        return (
+                          (project.projectName
+                            ?.toLowerCase()
+                            .startsWith(searchLower) ??
+                            false) ||
+                          (project.resumeName
+                            ?.toLowerCase()
+                            .startsWith(searchLower) ??
+                            false) 
+                        );
                       }).map((project: ProjectType, index: number) => (
                         <TableRow key={project._id} className="p-3">
                           <TableCell

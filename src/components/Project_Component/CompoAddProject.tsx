@@ -96,8 +96,6 @@ export default function CompoAddProject({
         : "/client/add-project"
     );
   };
-  
-  
 
   return (
     <>
