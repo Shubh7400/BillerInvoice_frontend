@@ -75,14 +75,12 @@
   .count_total h2{
     color: #ffffff;
     font-size: 25px;
-    /* margin-left: 20px; */
   }
   .count_total h1{
     color: #ffffff;
     font-size: 80px;
     line-height: 80px;
     font-weight: 300;
-    /* margin-left: 69px; */
     font-family: "Rubik", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
@@ -155,7 +153,6 @@
     font-size: 73px;
     line-height: 80px;
     font-weight: 300;
-    /* margin-left: 69px; */
     text-align: end;
     font-family: "Rubik", sans-serif;
   font-optical-sizing: auto;

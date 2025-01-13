@@ -133,10 +133,8 @@ export default function ClientSelectionTable({
                     <TableCell sx={{ padding: "0" }}>
                       {client.clientName}
                     </TableCell>
-                    {/* <TableCell sx={{ padding: '0' }}>{client.email}</TableCell> */}
                     <TableCell sx={{ padding: "0" }}>
                       {client.email[0] || "No email provided"}{" "}
-                      {/* Display only the first email */}
                     </TableCell>
                     <TableCell sx={{ padding: "0" }}>{client.gistin}</TableCell>
                     <TableCell sx={{ padding: "0" }}>

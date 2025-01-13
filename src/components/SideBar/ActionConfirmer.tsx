@@ -87,9 +87,9 @@ export default function ActionConfirmer({
             onClick={() => executeActionFunction()}
             autoFocus
             sx={{
-              backgroundColor: "#E4A98A", // Set your desired background color here
+              backgroundColor: "#E4A98A", 
               ":hover": {
-                backgroundColor: "#D08060", // Optional: Set hover color
+                backgroundColor: "#D08060",
               },
             }}
             variant="contained"

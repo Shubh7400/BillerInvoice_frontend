@@ -2,13 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import {
-  Grid,
   Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  styled,
-  SelectChangeEvent,
   Table,
   TableBody,
   TableCell,
@@ -17,12 +11,9 @@ import {
   TableRow,
 } from "@mui/material";
 import Styles from "../Project_Component/ProjectTable.module.css";
-import { CiEdit } from "react-icons/ci";
-import ActionConfirmer from "../SideBar/ActionConfirmer";
 import { useTheme } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@mui/material";
-import { InvoiceType, ProjectType } from "../../types/types";
 import { useState, useContext, useEffect } from "react";
 import { RootState, AppDispatch } from "../../states/redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -31,14 +22,10 @@ import { fetchInvoicesThunk, clearInvoices } from "../../states/redux/InvoicePro
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import DownloadPreview from "./DownloadPreview";
 import { Invoice } from "../../states/redux/InvoiceProjectState/invoiceListSlice";
-// import * as React from "react";
 import { createRoot } from "react-dom/client";
-// import Button from "@mui/material/Button";
 import { Provider } from "react-redux";
 import { store } from "../../states/redux/store";
-import { useSnackbar } from "notistack";
-import html2canvas from "html2canvas";
-// import DownloadPreview from "./DownloadPreview";
+import html2canvas from "html2canvas"
 import { RxCross1 } from "react-icons/rx";
 import TextField from "@mui/material/TextField";
 
@@ -48,7 +35,7 @@ function InvoiceListPage() {
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
   const materialTheme = useTheme();
-  const { isAuth, adminId } = useContext(AuthContext);
+  const {  adminId } = useContext(AuthContext);
   const searchParams = new URLSearchParams(location.search);
   const selectedYear = searchParams.get("year");
   const selectedMonth = searchParams.get("month");
@@ -61,13 +48,9 @@ function InvoiceListPage() {
     error: clientsError,
   } = useSelector((state: RootState) => state.allClientsState);
 
-  // const getClientNameForInvoice = (clientId: string) => {
-  //   const selectData = clients.find((item) => item._id === clientId);
-  //   return selectData?.clientName || "Unknown Client";
-  // };
   useEffect(() => {
     if (selectedYear && selectedMonth) {
-      dispatch(clearInvoices()); // Clear state before fetching
+      dispatch(clearInvoices()); 
       dispatch(
         fetchInvoicesThunk({ year: selectedYear, month: selectedMonth })
       );
@@ -84,16 +67,13 @@ function InvoiceListPage() {
   const [searchInvoiceProject,setSearchInvoiceProject] = useState("");
   const ViewAndPreviewPDF = async (invoice: Invoice) => {
     setShowView(true);
-
-    // Create a temporary container for rendering
     const div = document.createElement("div");
     div.style.width = "1050px";
     div.style.height = "1124px";
     div.style.position = "absolute";
-    div.style.top = "-9999px"; // Hide the div off-screen
+    div.style.top = "-9999px"; 
     document.body.appendChild(div);
 
-    // Render the component into the temporary container
     const root = createRoot(div);
     root.render(
       <Provider store={store}>
@@ -104,24 +84,17 @@ function InvoiceListPage() {
       </Provider>
     );
 
-    // Wait for rendering and generate an image
     setTimeout(async () => {
       try {
         const canvas = await html2canvas(div);
         const imgData = canvas.toDataURL("image/png");
-
-        // Set the generated image URL
         setTempImgData(imgData);
-
-        // Cleanup: Unmount and remove the temporary div
         root.unmount();
         document.body.removeChild(div);
-
-        console.log("Image Data URL:", imgData); // Optional: Debugging log
       } catch (error) {
         console.error("Error generating preview image:", error);
       }
-    }, 500); // Adjust delay if rendering takes longer
+    }, 500);
   };
 
   const previewExecution = (state: boolean) => {
@@ -130,7 +103,6 @@ function InvoiceListPage() {
   };
   return (
     <div>
-      {/* Header */}
       <div className="flex justify-between items-center pb-[10]">
         <div className="flex items-center gap-2">
           <button
@@ -162,10 +134,8 @@ function InvoiceListPage() {
       </div>
      
 
-      {/* Preview Section */}
       {showView ? (
         <div className="w-screen h-[900px] sm:h-[1200px] absolute top-[0px] right-[0] z-[100] bg-[#989fce] bg-opacity-80">
-          {/* Close Button */}
           <div
             className="fixed top-[25px] right-[20px] flex z-50 cursor-pointer hover:bg-inherit"
             onClick={() => previewExecution(false)}
@@ -173,7 +143,6 @@ function InvoiceListPage() {
             <RxCross1 size={40} color="black" />
           </div>
 
-          {/* Preview Image */}
           <div className="m-auto w-full h-auto flex justify-center items-start pt-0 mt-[15%] sm:mt-[5%]">
             {tempImgData ? (
               <img src={tempImgData} alt="Invoice Preview" className="w-auto h-auto max-w-full max-h-[90%]" />
@@ -182,13 +151,11 @@ function InvoiceListPage() {
         </div>
       ) : (
         <>
-          {/* Loading Spinner */}
           {loading ? (
             <div className="flex justify-center items-center mt-10">
               <Typography variant="h6">Loading invoices...</Typography>
             </div>
           ) : (
-            // Invoice Table (Only when preview is NOT shown)
             <div className="rounded-[20px] mt-5">
               <TableContainer className={Styles.table_scroll}>
                 <Table>
@@ -218,8 +185,6 @@ function InvoiceListPage() {
                       
                       .map((invoice, index) => {
                         if (!invoice) return null;
-                        // const clientName = getClientNameForInvoice(invoice.clientId);
-
                         return (
                           <TableRow key={invoice._id}>
                             <TableCell>{index + 1}</TableCell>

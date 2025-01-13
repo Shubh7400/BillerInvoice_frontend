@@ -7,12 +7,10 @@ import ClientInfoSection from "../Client_Component/ClientInfoSection";
 import { Button, TextField, useTheme } from "@mui/material";
 import Styles from "./invoive.module.css";
 import {
-  addProjectForInvoiceAction,
   removeProjectFromInvoiceAction,
 } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 import BillAmount from "./BillAmount";
 import { RxCross1 } from "react-icons/rx";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import Typography from "@mui/material/Typography";
@@ -28,24 +26,17 @@ import {
 } from "@mui/material";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import { getAdminByIdAction } from "../../states/redux/AdminStates/adminSlice";
-import { makeStateNeutralOfSelectedClient } from "../../states/redux/ClientStates/selectedClientSlice";
 import {
-  useAddNewProject,
   useUpdateProject,
 } from "../../states/query/Project_queries/projectQueries";
-import { queryClient } from "./../../index";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import {  DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import MenuItem from "@mui/material/MenuItem";
 import dayjs, { Dayjs } from "dayjs";
 import { updateInvoiceObjectStateAction } from "../../states/redux/InvoiceProjectState/invoiceObjectState";
 import { updateProjectForInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
-import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
-import { InvoiceType } from "../../types/types";
 import { MdOutlineReplay } from "react-icons/md";
 import { useSnackbar } from "notistack";
-import { log } from "console";
 let windowWidth: number | undefined = window.innerWidth;
 function InvoiceClientPage() {
   const { isAuth, adminId } = React.useContext(AuthContext);
@@ -86,13 +77,10 @@ function InvoiceClientPage() {
     setRateError("");
 
     try {
-      // Fetch the latest exchange rates
       const response = await axios.get(
         `https://api.exchangerate-api.com/v4/latest/USD`
       );
       const rates = response.data.rates;
-
-      // Identify the specific project
       const targetProject = editableProjects.find(
         (project) => project._id === projectId
       );
@@ -100,21 +88,17 @@ function InvoiceClientPage() {
       if (!targetProject) {
         throw new Error("Project not found.");
       }
-
-      // Ensure the currencyType is taken from the project
       const { currencyType, workingPeriodType, adminId, clientId } =
         targetProject;
 
       let newRate = 1;
       if (currencyType === "dollars") {
-        newRate = rates.INR; // USD to INR
+        newRate = rates.INR; 
       } else if (currencyType === "pounds") {
-        newRate = rates.INR / rates.GBP; // GBP to INR
+        newRate = rates.INR / rates.GBP;
       } else {
         throw new Error("Unsupported currency type.");
       }
-
-      // Update the project's conversion rate locally
       const updatedProjects = editableProjects.map((project) =>
         project._id === projectId
           ? { ...project, conversionRate: newRate }
@@ -127,8 +111,6 @@ function InvoiceClientPage() {
 
       if (updatedProject) {
         setEditableProjects(updatedProjects);
-
-        // Dispatch the updated project to Redux
         dispatch(updateProjectForInvoiceAction(updatedProject));
         dispatch(
           updateInvoiceObjectStateAction({
@@ -136,7 +118,6 @@ function InvoiceClientPage() {
           })
         );
 
-        // Construct the mutation data with FormData
         const formData = new FormData();
         formData.append("conversionRate", newRate.toString());
         formData.append("workingPeriodType", workingPeriodType);
@@ -149,22 +130,18 @@ function InvoiceClientPage() {
           updatedProjectData: formData,
         };
 
-        // Save the updated conversion rate to the database
         UpdateProjectMutationHandler.mutate(mutationData, {
           onSuccess: () => {
-            // Optionally show a success notification
-            console.log("Conversion rate updated successfully.");
+            
           },
           onError: (error) => {
             // Handle error and show notification
             setRateError("Failed to save conversion rate. Try again.");
-            console.error("Error updating conversion rate:", error);
           },
         });
       }
     } catch (error) {
       setRateError("Failed to fetch exchange rates. Try again.");
-      console.error("Error fetching exchange rates:", error);
     } finally {
       setLoadingRate(false);
     }
@@ -180,16 +157,13 @@ function InvoiceClientPage() {
       setId(project._id);
     }
   }, [projectsForInvoice, clientObj._id]);
-  console.log("id", id);
   const UpdateProjectMutationHandler = useUpdateProject(id, clientObj._id);
   const handleInputChange = (id: string, field: string, value: any) => {
-    const newValue = value === "" ? null : value; // Use null instead of empty string
+    const newValue = value === "" ? null : value; 
     setEditableProjects((prevProjects) =>
       prevProjects.map((project) => {
         if (project._id === id) {
           const updatedProject = { ...project, [field]: newValue };
-
-          // Dispatch updated project to Redux
           dispatch(
             updateInvoiceObjectStateAction({
               projectName: updatedProject.projectName,
@@ -202,7 +176,6 @@ function InvoiceClientPage() {
             })
           );
 
-          // Perform amount calculation based on workingPeriodType
           if (updatedProject.workingPeriodType && updatedProject.workingPeriod) {
             if (updatedProject.workingPeriodType === "hours") {
               updatedProject.amount =
@@ -224,7 +197,6 @@ function InvoiceClientPage() {
             }
           }
 
-          // Prepare FormData for mutation
           if (updatedProject._id) {
             const formData = new FormData();
             formData.append("projectName", updatedProject.projectName || "");
@@ -258,16 +230,11 @@ function InvoiceClientPage() {
               updatedProjectData: formData,
             };
 
-            // Save the updated data to the database
             UpdateProjectMutationHandler.mutate(mutationData, {
               onSuccess: () => {
                 dispatch(updateProjectForInvoiceAction(updatedProject));
-                // Optionally show success notification
-                console.log("Project updated successfully.");
               },
               onError: (error) => {
-                // Optionally handle and log the error
-                console.error("Error updating project:", error);
               },
             });
           }
@@ -288,7 +255,6 @@ function InvoiceClientPage() {
         setWorkingFixed(true);
       }
 
-      // Calculate ratePerDay on component mount
       if (project.workingPeriodType === "months" && project.rate) {
         if (invoiceDate) {
           const prevMonth = invoiceDate.subtract(1, "month");
@@ -296,13 +262,10 @@ function InvoiceClientPage() {
           updatedProject.ratePerDay = project.rate / daysInPrevMonth;
         }
       }
-
-      // Set default workingPeriod to 1 if workingPeriodType is "months"
       if (project.workingPeriodType === "months") {
         updatedProject.workingPeriod = project.workingPeriod !== undefined ? project.workingPeriod : 1;
       }
 
-      // Calculate the amount based on the workingPeriodType
       let amount = 0;
       if (project.rate && project.workingPeriodType) {
         if (project.workingPeriodType === "hours" && project.workingPeriod) {
@@ -338,12 +301,10 @@ function InvoiceClientPage() {
 
       updatedProject.amount = amount;
 
-      // Save updated ratePerDay to the database
       if (updatedProject.ratePerDay !== project.ratePerDay) {
         const projectId = updatedProject._id;
         if (!projectId) {
-          console.error("Project ID is undefined, cannot save ratePerDay.");
-          return updatedProject; // Skip mutation if projectId is undefined
+          return updatedProject; 
         }
 
         const formData = new FormData();
@@ -355,21 +316,14 @@ function InvoiceClientPage() {
 
         const mutationData = {
           projectId,
-          updatedProjectData: formData, // Pass FormData here
+          updatedProjectData: formData, 
         };
 
         UpdateProjectMutationHandler.mutate(mutationData, {
           onSuccess: () => {
-            console.log(
-              `RatePerDay updated successfully for project ${projectId}`
-            );
             dispatch(updateProjectForInvoiceAction(updatedProject));
           },
           onError: (error) => {
-            console.error(
-              `Failed to update ratePerDay for project ${projectId}`,
-              error
-            );
           },
         });
       }
@@ -497,7 +451,6 @@ function InvoiceClientPage() {
                       onChange={(newDate) => handleInvoiceDateChange(newDate)}
                       format="DD/MM/YYYY"
                       className="w-[150px]"
-                      // label="Invoice date"
                       sx={{
                         backgroundColor: "#cecece",
                         "& .MuiOutlinedInput-root": {
@@ -538,7 +491,7 @@ function InvoiceClientPage() {
                     onChange={(newDate) => handleInvoiceDateChange(newDate)}
                     format="DD/MM/YYYY"
                     sx={{
-                      width: "250px", // Explicitly set a wider width
+                      width: "250px", 
                       "& .MuiOutlinedInput-root": {
                         width: "100%",
                       },
@@ -552,7 +505,7 @@ function InvoiceClientPage() {
                     onChange={(newDate) => handleDueDateChange(newDate)}
                     format="DD/MM/YYYY"
                     sx={{
-                      width: "250px", // Explicitly set a wider width
+                      width: "250px", 
                       "& .MuiOutlinedInput-root": {
                         width: "100%",
                       },
@@ -575,7 +528,7 @@ function InvoiceClientPage() {
                 borderRadius: "20px !important",
                 width: "100%",
                 "& .MuiTable-root": {
-                  borderRadius: "20px !important", // Applied to the table root
+                  borderRadius: "20px !important", 
                 },
               }}
             >
@@ -615,9 +568,6 @@ function InvoiceClientPage() {
                     key={project._id}
                     className={`${Styles.project_row}`}
                   >
-                    {/* <TableCell className="text-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
-                      {project.projectName}
-                    </TableCell>                    */}
                     <TableCell className="text-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
                       <TextField
                         variant="outlined"
@@ -625,7 +575,7 @@ function InvoiceClientPage() {
                         type="text"
                         value={project.projectName}
                         onChange={(e) => {
-                          const target = e.target as HTMLInputElement; // Cast to HTMLInputElement
+                          const target = e.target as HTMLInputElement; 
                           handleInputChange(project._id ?? "", "projectName", target.value);
                         }}
                       />
@@ -685,14 +635,14 @@ function InvoiceClientPage() {
                           type="text"
                           value={project.workingPeriod}
                           onInput={(e) => {
-                            const target = e.target as HTMLInputElement; // Cast to HTMLInputElement
+                            const target = e.target as HTMLInputElement; 
                             const value = target.value;
                             if (!/^\d*$/.test(value)) {
-                              target.value = value.slice(0, -1); // Remove last character if invalid
+                              target.value = value.slice(0, -1); 
                             }
                           }}
                           onChange={(e) => {
-                            const target = e.target as HTMLInputElement; // Cast to HTMLInputElement
+                            const target = e.target as HTMLInputElement; 
                             handleInputChange(
                               project._id ?? "",
                               "workingPeriod",

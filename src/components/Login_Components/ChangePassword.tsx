@@ -1,7 +1,6 @@
 import { Alert, LinearProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
 import styles from "../../pages/Login/Login.module.css";
 import { LoginDataType, NewPasswordType } from "../../types/types";
 import { useResetPassword } from "../../states/query/ChangePassword_queries/changePasswordQueries";

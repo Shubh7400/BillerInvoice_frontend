@@ -91,7 +91,7 @@ const addProjectForInvoiceSlice = createSlice({
           }  
           return {
             ...project,
-            workingPeriod: workingPeriod !== undefined ? workingPeriod : 1, // Ensure default value
+            workingPeriod: workingPeriod !== undefined ? workingPeriod : 1, 
             amount,
             advanceAmount,
           };
@@ -138,7 +138,7 @@ const addProjectForInvoiceSlice = createSlice({
           draftState.projectsForInvoice[projectIndex] = {
             ...draftState.projectsForInvoice[projectIndex],
             ...updatedProject,
-            workingPeriod: workingPeriod !== undefined ? workingPeriod : 1, // Ensure default value
+            workingPeriod: workingPeriod !== undefined ? workingPeriod : 1, 
             amount,
             advanceAmount,
           };

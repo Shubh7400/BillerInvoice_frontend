@@ -1,13 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Grid,
-  Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  styled,
-  SelectChangeEvent,
+  Typography
 } from "@mui/material";
 import { AppDispatch, RootState } from "../../states/redux/store";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
@@ -19,9 +13,7 @@ import cubexoLogo from "../../utils/images/cubexoLogo.webp";
 import gamaedgeLogo from "../../utils/images/gammaedgeLogo.png";
 import { useNavigate } from "react-router-dom";
 import { Button, TextField, useTheme } from "@mui/material";
-import { FaRegUser } from "react-icons/fa";
 import Styles from "./client.module.css";
-import { Link } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 const ClientPageHeader = () => {
   const { isAuth, adminId } = useContext(AuthContext);
@@ -97,7 +89,6 @@ const ClientPageHeader = () => {
 
   if (
     loading === "pending" ||
-    // clients.loading === "pending" ||
     selectedClient.loading === "pending" ||
     addedNewClientState.loading === "pending"
   ) {

@@ -41,10 +41,7 @@ export default function AddClientPage({
 }) {
   const { adminId } = React.useContext(AuthContext);
   const [controlEditLoading, setControlEditLoading] = useState(false);
-  // const [addClientLoadingController, setAddClientLoadingController] =
-  //   useState(false);
 
-  // const materialTheme = useTheme();
   const [selectedCountry, setSelectedCountry] = useState<CountryInfoType>(
     {} as CountryInfoType
   );
@@ -62,7 +59,6 @@ export default function AddClientPage({
   const dispatch = useDispatch<AppDispatch>();
   const {
     loading: addClientLoading,
-    // data: addedClient,
     error: addClientError,
   } = useSelector((state: RootState) => state.addClientState);
   const editClientState = useSelector(
@@ -197,7 +193,7 @@ export default function AddClientPage({
     const { name, value } = e.target;
 
     if (name === "clientName") {
-      const clientNameRegex = /^[a-zA-Z\s]{2,50}$/; // Allow only alphabets and spaces, between 2 to 50 characters
+      const clientNameRegex = /^[a-zA-Z\s]{2,50}$/; 
       if (!clientNameRegex.test(value)) {
         setClientNameError(
           "Invalid Client Name. Only letters and spaces allowed, 2-50 characters."
@@ -220,14 +216,11 @@ export default function AddClientPage({
       }));
     } else if (name === "street") {
       const streetRegex = /^[a-zA-Z0-9\s.,'-]{3,50}$/;
-
-      // Check if the input matches the regex
       if (!streetRegex.test(value)) {
         setStreetError("Street name must be 3-50 characters and only contain letters, numbers, spaces, ., ',', '-', or '.");
       } else {
-        setStreetError(""); // Clear error if valid
+        setStreetError(""); 
       }
-
       setClientData((prevData) => ({
         ...prevData,
         address: {
@@ -299,7 +292,6 @@ export default function AddClientPage({
       if (!clientData.email.includes(inputEmail)) {
         setClientData((prev) => {
           const updatedEmails = [...prev.email, inputEmail];
-          console.log(updatedEmails);
           return {
             ...prev,
             email: updatedEmails,
@@ -318,19 +310,15 @@ export default function AddClientPage({
 
   const handleRemoveEmail = async (index: number) => {
     const emailToDelete = clientData.email[index];
-    const clientId = clientData._id; // Assuming the client ID is stored as `_id` in clientData
+    const clientId = clientData._id; 
 
     if (!clientId) {
-      console.error("Client ID is not available");
       return;
     }
 
     try {
-      // Dispatch the delete email action
       await dispatch(deleteEmailAction({ clientId, email: emailToDelete }));
 
-      // Optionally fetch updated client data after deletion
-      // fetchClientData();
       dispatch(getClientByIdAction(clientId));
      
     } catch (error) {
@@ -352,14 +340,11 @@ export default function AddClientPage({
     }
   };
 
-
-
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
       if (key === "pancardNo") {
         continue;
       }
-
       if (typeof obj[key] === "object" && obj[key] !== null) {
         if (Array.isArray(obj[key])) {
           if (key === "email" && obj[key].length === 0) {
@@ -397,7 +382,6 @@ export default function AddClientPage({
       !emailError 
     ) {
       dispatch(addNewClientAction(clientData));
-      // setAddClientLoadingController(true);
     } else {
       setIncompleteError("Incomplete fields");
     }
@@ -451,7 +435,7 @@ export default function AddClientPage({
         onChange={handleChange}
         onKeyDown={(e) => {
           if (e.key >= '0' && e.key <= '9') {
-            e.preventDefault(); // Block numeric input
+            e.preventDefault(); 
           }
         }}
         error={!!clientNameError && clientData.clientName !== ""}
@@ -578,18 +562,17 @@ export default function AddClientPage({
           value={clientData.contactNo}
           onChange={handleChange}
           onKeyDown={(e) => {
-            // Allow only numeric keys, backspace, and arrow keys
             if (
               !(
-                (e.key >= '0' && e.key <= '9') || // Numeric keys
-                e.key === 'Backspace' || // Backspace
-                e.key === 'ArrowLeft' || // Left arrow
-                e.key === 'ArrowRight' || // Right arrow
-                e.key === 'Delete' || // Delete key
-                e.key === 'Tab' // Tab key
+                (e.key >= '0' && e.key <= '9') || 
+                e.key === 'Backspace' || 
+                e.key === 'ArrowLeft' || 
+                e.key === 'ArrowRight' || 
+                e.key === 'Delete' || 
+                e.key === 'Tab' 
               )
             ) {
-              e.preventDefault(); // Block non-numeric input
+              e.preventDefault(); 
             }
           }}
           error={!!contactNoError && clientData.contactNo !== ""}

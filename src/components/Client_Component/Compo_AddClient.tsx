@@ -1,12 +1,5 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux"; // Assuming you're using Redux
 import {
@@ -20,8 +13,7 @@ import {
   CountryInfoType,
   StateInfoType,
 } from "../../types/types";
-import SelectCountryStateCity from "./Compo_CountrySelect";
-import { Alert, LinearProgress, Typography, useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import { CiEdit } from "react-icons/ci";
@@ -32,10 +24,8 @@ import {
 import { getAllClientsByAdminIdAction } from "../../states/redux/ClientStates/allClientSlice";
 import { getClientByIdAction } from "../../states/redux/ClientStates/selectedClientSlice";
 import "react-phone-number-input/style.css";
-import PhoneInput from "react-phone-number-input";
-import { E164Number } from "libphonenumber-js/core";
 import "../../styles/addClient.css";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function CompoAddClient({
   forEditClient,
@@ -50,7 +40,7 @@ export default function CompoAddClient({
   const [controlEditLoading, setControlEditLoading] = useState(false);
   const [addClientLoadingController, setAddClientLoadingController] =
     useState(false);
-  //--------------------------------------------------------
+ 
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
 
@@ -65,7 +55,7 @@ export default function CompoAddClient({
     setOpen(false);
   };
 
-  // -------------------------------------------------------
+ 
 
   const materialTheme = useTheme();
   const [selectedCountry, setSelectedCountry] = useState<CountryInfoType>(
@@ -150,7 +140,6 @@ export default function CompoAddClient({
 
   React.useEffect(() => {
     if (addClientLoading === "succeeded") {
-      // setAddClientLoadingController(false);
       dispatch(makeStateLoadingNeutralInAddClient(true));
       if (adminId) {
         dispatch(getAllClientsByAdminIdAction(adminId));
@@ -160,9 +149,7 @@ export default function CompoAddClient({
         variant: "success",
       });
       setFormError("");
-      // handleClose();
     } else if (addClientLoading === "failed") {
-      // setAddClientLoadingController(false);
       setFormError(`${addClientError}`);
       if (
         addClientError ===
@@ -258,9 +245,6 @@ export default function CompoAddClient({
     setFormError("");
     setIncompleteError("");
   };
-  // const handleMobileNoChange = (e: E164Number | undefined) => {
-  //   setClientData({ ...clientData, contactNo: e });
-  // };
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {

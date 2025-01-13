@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styles from "./sidebar.module.css";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink,  useNavigate } from "react-router-dom";
 import { AuthContext } from "../../states/context/AuthContext/AuthContext";
 import ActionConfirmer from "./ActionConfirmer";
 import logo from "../assets/cubexo_logo.png";

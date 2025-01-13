@@ -1,7 +1,6 @@
-// import { getCode, getName } from "country-list";
 import { Country, State, City } from "country-state-city";
 import Select from "react-select";
-import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import { useEffect, Dispatch, SetStateAction } from "react";
 import {
   CityInfoType,
   CountryInfoType,
@@ -31,7 +30,7 @@ export default function SelectCountryStateCity({
   stateString: string;
   cityString: string | undefined;
 }) {
-  console.log(stateString, " <<<<<>>>>>>>>", cityString);
+  
   const countriesArr: CountryInfoType[] = Country.getAllCountries().map(
     (country) => ({
       name: country.name,
@@ -76,7 +75,6 @@ export default function SelectCountryStateCity({
         citiesArr.length > 0
       ) {
         const city = citiesArr.find((c) => c.name === cityString);
-        console.log("Found city:", city); // Log the city being set
         city && setSelectedCity(city);
       }
     }
@@ -104,15 +102,15 @@ export default function SelectCountryStateCity({
         onChange={(item) => {
           if (item) {
             setSelectedCountry(item);
-            setSelectedState({} as StateInfoType); // Reset state when country changes
-            setSelectedCity({} as CityInfoType); // Reset city when country changes
+            setSelectedState({} as StateInfoType); 
+            setSelectedCity({} as CityInfoType); 
           }
         }}
         filterOption={(option, inputValue) =>
           option.label.toLowerCase().startsWith(inputValue.toLowerCase())
         }
-        placeholder="Select Country" // Custom placeholder
-        menuPortalTarget={document.body} // Render menu to body
+        placeholder="Select Country"
+        menuPortalTarget={document.body}
         styles={{
           menuPortal: (base) => ({ ...base, zIndex: 9999 }),
         }}
@@ -128,14 +126,14 @@ export default function SelectCountryStateCity({
         onChange={(item) => {
           if (item) {
             setSelectedState(item);
-            setSelectedCity({} as CityInfoType); // Reset city when state changes
+            setSelectedCity({} as CityInfoType); 
           }
         }}
         filterOption={(option, inputValue) =>
           option.label.toLowerCase().startsWith(inputValue.toLowerCase())
         }
-        placeholder="Select State" // Custom placeholder
-        menuPortalTarget={document.body} // Render menu to body
+        placeholder="Select State" 
+        menuPortalTarget={document.body} 
         styles={{
           menuPortal: (base) => ({ ...base, zIndex: 9999 }),
         }}
@@ -147,7 +145,7 @@ export default function SelectCountryStateCity({
         options={citiesArr}
         getOptionLabel={(options) => options.name}
         getOptionValue={(options) => options.name}
-        value={selectedCity.name ? selectedCity : null} // Ensure this references selectedCity
+        value={selectedCity.name ? selectedCity : null} 
         onChange={(item) => {
           if (item) {
             setSelectedCity(item);
@@ -156,8 +154,8 @@ export default function SelectCountryStateCity({
         filterOption={(option, inputValue) =>
           option.label.toLowerCase().startsWith(inputValue.toLowerCase())
         }
-        placeholder="Select City" // Custom placeholder
-        menuPortalTarget={document.body} // Render menu to body
+        placeholder="Select City" 
+        menuPortalTarget={document.body}
         styles={{
           menuPortal: (base) => ({ ...base, zIndex: 9999 }),
         }}
