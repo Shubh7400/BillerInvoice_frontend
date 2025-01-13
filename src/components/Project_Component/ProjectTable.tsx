@@ -530,14 +530,7 @@ const ProjectTable = ({
                   maxWidth="sm"
                   fullWidth
                 >
-                  <Box
-                    className="MuiBox-root"
-                    sx={{
-                      border: 4, 
-                      borderColor: materialTheme.palette.secondary.main, 
-                      borderRadius: "8px",
-                    }}
-                  >
+
                     <DialogTitle>Project Details</DialogTitle>
                     <DialogContent>
                       <Typography variant="body1">
