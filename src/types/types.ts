@@ -48,6 +48,7 @@ export interface UploadedFile {
   filename: string;
   url: string;
   imageUrl:string;
+  viewUrl:string;
 }
 export interface ProjectType {
   _id?: string;
@@ -74,6 +75,7 @@ export interface ProjectType {
   files?: FileData[]; 
   fileUrls?: string[];
   uploadedFiles?: UploadedFile[];
+  clientDetails?: ClientDetails;
 }
 export interface UpdateProjectDataType {
   _id?: string;
@@ -99,6 +101,7 @@ export interface UpdateProjectDataType {
   files?: FileData[]; 
   fileUrls?: string[];
   uploadedFiles?: UploadedFile[];
+  clientDetails?: ClientDetails;
 }
 export interface Address {
   street: string;
@@ -114,6 +117,7 @@ export interface ClientDetails {
   pancardNo: string;
   address: Address;
   email: string[];
+  contactNo:string;
 }
 
 export interface AdminDetails {
@@ -155,7 +159,7 @@ export interface InvoiceType {
   files?: FileData[];
   fileUrls?: string[];
   uploadedFiles?: UploadedFile[];
-   clientDetails?: ClientDetails;
+  clientDetails?: ClientDetails;
   adminDetails?: AdminDetails;
 }
 

@@ -59,6 +59,7 @@ function InvoiceClientPage() {
     (state: RootState) => state.projectsForInvoiceState
   );
 
+
   const handleRemoveProject = (project: ProjectType) => {
     if (project && project._id) {
       dispatch(removeProjectFromInvoiceAction(project._id));
@@ -461,7 +462,7 @@ function InvoiceClientPage() {
       </div>
       <div className="flex justify-between items-start gap-2">
         {clientObj && selectedClientState.loading !== "idle" ? (
-          <ClientInfoSection />
+          <ClientInfoSection projectsForInvoice={projectsForInvoice}/>
         ) : null}
         <div className="w-full flex justify-end">
           {windowWidth && windowWidth > 768 ? (
@@ -580,12 +581,12 @@ function InvoiceClientPage() {
             >
               <TableHead className={Styles.animated}>
                 <TableRow>
-                  <TableCell>Project Description</TableCell>
-                  <TableCell>Rate</TableCell>
+                  <TableCell className="w-[175px]">Project Description</TableCell>
+                  <TableCell className="w-[135px]">Rate</TableCell>
                   {editableProjects.map((project: ProjectType) => (
                     <>
                       {project.workingPeriodType === "months" && (
-                        <TableCell>Rate/day</TableCell>
+                        <TableCell className="w-[175px]">Rate/day</TableCell>
                       )}
                     </>
                   ))}
@@ -635,7 +636,7 @@ function InvoiceClientPage() {
                         variant="outlined"
                         size="small"
                         value={project.rate || ""}
-                        onChange={(e) => handleRateChange(Number(e.target.value), project)}
+                        onChange={(e) => handleRateChange(Number(e.target.value), project)}                      
                         InputProps={{
                           endAdornment: (
                             <Typography variant="body2" style={{ marginLeft: "8px" }}>

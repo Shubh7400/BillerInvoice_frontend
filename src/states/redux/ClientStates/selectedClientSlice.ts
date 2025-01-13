@@ -43,8 +43,9 @@ const selectedClientSlice = createSlice({
       })
       .addCase(getClientByIdAction.fulfilled, (state, action) => {
         state.loading = "succeeded";
-        state.data = action.payload;
+        state.data = action.payload || {}; // Fallback to an empty object if no data
       })
+    
       .addCase(getClientByIdAction.rejected, (state, action) => {
         state.loading = "failed";
         state.error = action.payload as string;

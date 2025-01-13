@@ -123,6 +123,26 @@ export async function deleteProject(projectId: string) {
   }
 }
 
+export async function deleteFileFromProject(projectId: string, filename: string) {
+  let token = localStorage.getItem('billAppAuthToken');
+  if (token) {
+    token = token.substring(1, token.length - 1);
+  }
+
+  try {
+    const response = await axios.delete(`${config.apiUrlProject}/${projectId}/file`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: { filename }, // Passing the filename in the body
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(`${error.response.data.message}`);
+  }
+}
+
+
 export async function getAllProjectsByAdminId(AdminId: string) {
   let token = localStorage.getItem("billAppAuthToken");
   if (token) {

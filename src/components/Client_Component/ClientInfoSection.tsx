@@ -2,58 +2,91 @@ import React, { useState, useEffect } from "react";
 import { ClientType } from "../../types/types";
 import { RootState } from "../../states/redux/store";
 import { useSelector } from "react-redux";
-
-function ClientInfoSection() {
+import { ProjectType } from "../../types/types";
+interface clientInfoProp {
+  projectsForInvoice: ProjectType[];
+}
+function ClientInfoSection({ projectsForInvoice }: clientInfoProp) {
   const selectedClientState = useSelector(
     (state: RootState) => state.selectedClientState
   );
 
-  const [clientData, setClientData] = useState<ClientType | null>(null);
-  const [loadingState, setLoadingState] = useState("idle");
+const initialClientData =
+  Object.keys(selectedClientState.data).length > 0
+    ? selectedClientState.data
+    : (projectsForInvoice[0]?.clientDetails as ClientType) || {};
 
-  useEffect(() => {
-    if (selectedClientState?.data) {
-      setClientData(selectedClientState.data);
-      setLoadingState(selectedClientState.loading);
+const [clientData, setClientData] = useState<ClientType | null>(
+  initialClientData
+);
+
+
+ const [loadingState, setLoadingState] = useState(
+   selectedClientState?.loading || "idle"
+ );
+
+useEffect(() => {
+  if (
+    selectedClientState?.data &&
+    Object.keys(selectedClientState.data).length > 0
+  ) {
+    // Valid client data from Redux
+    setClientData(selectedClientState.data);
+    setLoadingState(selectedClientState.loading);
+  } else if (projectsForInvoice?.length > 0) {
+    // Fallback to the first project's client data
+    const fallbackClient = projectsForInvoice[0]?.clientDetails as ClientType;
+    if (fallbackClient) {
+      setClientData(fallbackClient);
+      setLoadingState("succeeded");
     }
-  }, [selectedClientState]);
+  }
+}, [selectedClientState, projectsForInvoice]);
 
-  const firstEmail = clientData?.email?.[0];
-  const fullAddress = `${clientData?.address?.street}, ${clientData?.address?.city}, ${clientData?.address?.state}, ${clientData?.address?.country}`;
-  const contactNo = clientData?.contactNo;
+
+const fullAddress = `${clientData?.address?.street || "N/A"}, ${
+  clientData?.address?.city || "N/A"
+}, ${clientData?.address?.state || "N/A"}, ${
+  clientData?.address?.country || "N/A"
+}`;
+
   return (
     <div>
-      {clientData && loadingState !== "idle" ? (
-        <div className="flex flex-col justify-end items-start">
-          <div className="text-black ">
-            <div className="text-black overflow-hidden overflow-ellipsis">
-              <div className="flex items-center justify-between w-full">
-                <h2 className="text-md sm:text-xl mt-3 font-semibold overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden">
-                  {clientData.clientName}
-                </h2>
-              </div>
-              <div>
-                <p className="overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden">
-                  <b>Email: </b>
-                  {firstEmail}
-                </p>
-              </div>
-              <p className="mb-2">
-                <b>Address: </b>
-                {fullAddress}
-              </p>
-              {contactNo &&
-                 <p className="mb-2">
-                 <b>Contact No: </b>
-                 {contactNo}
-               </p>
-              }
-             
+    {loadingState === "pending" ? (
+      <p>Loading client information...</p>
+    ) : clientData && Object.keys(clientData).length > 0 ? (
+      <div className="flex flex-col justify-end items-start">
+        <div className="text-black ">
+          <div className="text-black overflow-hidden overflow-ellipsis">
+            <div className="flex items-center justify-between w-full">
+              <h2 className="text-md sm:text-xl mt-3 font-semibold overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden">
+                {clientData.clientName}
+              </h2>
             </div>
+            <div>
+              <p className="overflow-scroll overflow-x-hidden overflow-y-hidden sm:overflow-hidden mt-2">
+                <b>Email: </b>
+                {clientData.email?.[0] || "N/A"}
+              </p>
+            </div>
+            {clientData.contactNo && (
+              <p>
+                <b>Contact No: </b>
+                {clientData.contactNo}
+              </p>
+            )}
+            <p className="mb-2">
+              <b>Address: </b>
+              {fullAddress.trim() || "N/A"}
+            </p>
           </div>
         </div>
-      ) : null}
-    </div>
+      </div>
+    ) : (
+      <p>No client information available.</p>
+    )}
+  </div>
+    
   );
 }
 

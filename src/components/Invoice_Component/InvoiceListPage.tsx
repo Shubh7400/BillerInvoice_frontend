@@ -61,10 +61,10 @@ function InvoiceListPage() {
     error: clientsError,
   } = useSelector((state: RootState) => state.allClientsState);
 
-  const getClientNameForInvoice = (clientId: string) => {
-    const selectData = clients.find((item) => item._id === clientId);
-    return selectData?.clientName || "Unknown Client";
-  };
+  // const getClientNameForInvoice = (clientId: string) => {
+  //   const selectData = clients.find((item) => item._id === clientId);
+  //   return selectData?.clientName || "Unknown Client";
+  // };
   useEffect(() => {
     if (selectedYear && selectedMonth) {
       dispatch(clearInvoices()); // Clear state before fetching
@@ -79,11 +79,11 @@ function InvoiceListPage() {
       dispatch(getAllClientsByAdminIdAction(adminId));
     }
   }, [dispatch, adminId]);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showView, setShowView] = useState(false);
   const [tempImgData, setTempImgData] = useState("");
   const [searchInvoiceProject,setSearchInvoiceProject] = useState("");
   const ViewAndPreviewPDF = async (invoice: Invoice) => {
-    setShowPreview(true);
+    setShowView(true);
 
     // Create a temporary container for rendering
     const div = document.createElement("div");
@@ -97,7 +97,10 @@ function InvoiceListPage() {
     const root = createRoot(div);
     root.render(
       <Provider store={store}>
-        <DownloadPreview invoice={invoice} />
+        <DownloadPreview 
+        invoice={invoice} 
+        showPreview={false}
+        />
       </Provider>
     );
 
@@ -122,7 +125,7 @@ function InvoiceListPage() {
   };
 
   const previewExecution = (state: boolean) => {
-    setShowPreview(state);
+    setShowView(state);
     if (!state) setTempImgData("");
   };
   return (
@@ -160,7 +163,7 @@ function InvoiceListPage() {
      
 
       {/* Preview Section */}
-      {showPreview ? (
+      {showView ? (
         <div className="w-screen h-[900px] sm:h-[1200px] absolute top-[0px] right-[0] z-[100] bg-[#989fce] bg-opacity-80">
           {/* Close Button */}
           <div
@@ -197,12 +200,12 @@ function InvoiceListPage() {
                       </TableCell>
                       <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Project</TableCell>
                       <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Client Name</TableCell>
-                      <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Rate</TableCell>
+                      <TableCell style={{ paddingLeft: "20px", paddingRight: "0" }}>Rate</TableCell>
                       <TableCell style={{ paddingLeft: "0", paddingRight: "0", width: "170px" }}>
                         Conversion Rate
                       </TableCell>
-                      <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Amount</TableCell>
-                      <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>Action</TableCell>
+                      <TableCell style={{ paddingLeft: "15px", paddingRight: "0" }}>Amount</TableCell>
+                      <TableCell style={{ paddingLeft: "25px", paddingRight: "0" }}>Action</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -215,7 +218,7 @@ function InvoiceListPage() {
                       
                       .map((invoice, index) => {
                         if (!invoice) return null;
-                        const clientName = getClientNameForInvoice(invoice.clientId);
+                        // const clientName = getClientNameForInvoice(invoice.clientId);
 
                         return (
                           <TableRow key={invoice._id}>
@@ -224,7 +227,7 @@ function InvoiceListPage() {
                             <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                               {invoice.projectName || "Unnamed Project"}
                             </TableCell>
-                            <TableCell>{clientName}</TableCell>
+                            <TableCell>{invoice.clientDetails?.clientName}</TableCell>
                             <TableCell>
                               {invoice.rate}(
                               {invoice.currencyType === "rupees" ? (

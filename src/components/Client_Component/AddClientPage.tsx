@@ -30,7 +30,7 @@ import "react-phone-number-input/style.css";
 import "../../styles/addClient.css";
 import { useNavigate } from "react-router-dom";
 import { IoChevronBackSharp } from "react-icons/io5";
-
+import { deleteEmailAction } from "../../states/redux/ClientStates/removeClientEmailSlice";
 export default function AddClientPage({
   forEditClient,
   clientToEdit,
@@ -117,7 +117,7 @@ export default function AddClientPage({
   const [panNumberError, setPanNumberError] = useState<string | null>(null);
   const [contactNoError, setContactNoError] = useState<string>("");
   const [clientNameError, setClientNameError] = useState<string>("");
-
+  const [streetError, setStreetError] = useState<string | null>(null);
   React.useEffect(() => {
     if (editClientState.loading === "succeeded" && controlEditLoading) {
       setControlEditLoading(false);
@@ -202,13 +202,13 @@ export default function AddClientPage({
         setClientNameError(
           "Invalid Client Name. Only letters and spaces allowed, 2-50 characters."
         );
-      } 
+      }
       else if (
         clientsArr.some(
           (client) => client.clientName.trim().toLowerCase() === value.trim().toLowerCase()
         )
       ) {
-       
+
         setClientNameError("Client name already exists.");
       }
       else {
@@ -219,6 +219,15 @@ export default function AddClientPage({
         clientName: value,
       }));
     } else if (name === "street") {
+      const streetRegex = /^[a-zA-Z0-9\s.,'-]{3,50}$/;
+
+      // Check if the input matches the regex
+      if (!streetRegex.test(value)) {
+        setStreetError("Street name must be 3-50 characters and only contain letters, numbers, spaces, ., ',', '-', or '.");
+      } else {
+        setStreetError(""); // Clear error if valid
+      }
+
       setClientData((prevData) => ({
         ...prevData,
         address: {
@@ -227,7 +236,7 @@ export default function AddClientPage({
         },
       }));
     } else if (name === "postalCode") {
-      const postalCodeRegex = /^[1-9][0-9]{5}$/;
+      const postalCodeRegex = /^[a-zA-Z0-9\s\-]{3,10}$/;
       if (!postalCodeRegex.test(value)) {
         setPostalCodeError("Invalid Postal Code");
       } else {
@@ -266,7 +275,7 @@ export default function AddClientPage({
     } else if (name === "contactNo") {
       const contactRegex = /^[0-9]{10}$/;
       if (!contactRegex.test(value)) {
-        setContactNoError("Invalid Contact Number. Must be 10 digits.");
+        setContactNoError("Invalid Contact Number.");
       } else {
         setContactNoError("");
       }
@@ -306,6 +315,30 @@ export default function AddClientPage({
     }
   };
 
+
+  const handleRemoveEmail = async (index: number) => {
+    const emailToDelete = clientData.email[index];
+    const clientId = clientData._id; // Assuming the client ID is stored as `_id` in clientData
+
+    if (!clientId) {
+      console.error("Client ID is not available");
+      return;
+    }
+
+    try {
+      // Dispatch the delete email action
+      await dispatch(deleteEmailAction({ clientId, email: emailToDelete }));
+
+      // Optionally fetch updated client data after deletion
+      // fetchClientData();
+      dispatch(getClientByIdAction(clientId));
+     
+    } catch (error) {
+      console.error("Error deleting email:", error);
+    }
+  };
+
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -319,12 +352,7 @@ export default function AddClientPage({
     }
   };
 
-  const handleRemoveEmail = (index: number) => {
-    setClientData({
-      ...clientData,
-      email: clientData.email.filter((_, i) => i !== index),
-    });
-  };
+
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
@@ -364,7 +392,9 @@ export default function AddClientPage({
       !postalCodeError &&
       !gstNumberError &&
       !contactNoError &&
-      !clientNameError
+      !clientNameError &&
+      !streetError &&
+      !emailError 
     ) {
       dispatch(addNewClientAction(clientData));
       // setAddClientLoadingController(true);
@@ -382,6 +412,8 @@ export default function AddClientPage({
       !gstNumberError &&
       !contactNoError &&
       !clientNameError &&
+      !streetError &&
+      !emailError && 
       clientToEdit
     ) {
       const clientId = clientToEdit._id!;
@@ -414,9 +446,14 @@ export default function AddClientPage({
         className="mb-2"
         label="Client Name"
         name="clientName"
+        type="text"
         value={clientData.clientName}
         onChange={handleChange}
-        // error={Boolean(clientNameError)}
+        onKeyDown={(e) => {
+          if (e.key >= '0' && e.key <= '9') {
+            e.preventDefault(); // Block numeric input
+          }
+        }}
         error={!!clientNameError && clientData.clientName !== ""}
         helperText={
           clientNameError && clientData.clientName !== "" ? clientNameError : ""
@@ -447,7 +484,7 @@ export default function AddClientPage({
         )}
         {clientData.email.length > 0 && (
           <Box display="flex" flexWrap="wrap" gap={1}>
-            {clientData.email.map((email, index) => (
+            {clientData.email.map((email: string, index: number) => (
               <Chip
                 key={index}
                 label={email}
@@ -492,6 +529,10 @@ export default function AddClientPage({
           name="street"
           value={clientData.address.street}
           onChange={handleChange}
+          error={!!streetError && clientData.address.street !== ""}
+          helperText={
+            streetError && clientData.address.street !== "" ? streetError : ""
+          }
         />
       </div>
 
@@ -513,7 +554,7 @@ export default function AddClientPage({
       <div className="flex gap-5 mt-3">
         <TextField
           className="w-[100%]"
-          label="postalCode"
+          label="PostalCode"
           fullWidth
           name="postalCode"
           value={clientData.address.postalCode}
@@ -524,6 +565,7 @@ export default function AddClientPage({
               ? postalCodeError
               : ""
           }
+
         />
       </div>
 
@@ -535,10 +577,26 @@ export default function AddClientPage({
           name="contactNo"
           value={clientData.contactNo}
           onChange={handleChange}
+          onKeyDown={(e) => {
+            // Allow only numeric keys, backspace, and arrow keys
+            if (
+              !(
+                (e.key >= '0' && e.key <= '9') || // Numeric keys
+                e.key === 'Backspace' || // Backspace
+                e.key === 'ArrowLeft' || // Left arrow
+                e.key === 'ArrowRight' || // Right arrow
+                e.key === 'Delete' || // Delete key
+                e.key === 'Tab' // Tab key
+              )
+            ) {
+              e.preventDefault(); // Block non-numeric input
+            }
+          }}
           error={!!contactNoError && clientData.contactNo !== ""}
           helperText={
             contactNoError && clientData.contactNo !== "" ? contactNoError : ""
           }
+          required
         />
       </div>
 
@@ -551,6 +609,10 @@ export default function AddClientPage({
               !postalCodeError &&
               !gstNumberError &&
               !formError &&
+              !contactNoError &&
+              !clientNameError &&
+              !streetError &&
+              !emailError &&
               areAllFieldsFilled(clientData) &&
               areEntriesValid(clientData)
             ) {
