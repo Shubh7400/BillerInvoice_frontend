@@ -106,7 +106,8 @@ export default function AddClientPage({
   }));
 
   const [inputEmail, setInputEmail] = useState("");
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^(?!(?:(?:\.|\s|@).*@.*(?:\.|\s|@)))(?!.*\.\.)(?!.*@.*@)(?:(?:"(?:\\.|[^"\\])*")|(?:[^"().,:;<>@\[\]\s]+(?:\.[^"().,:;<>@\[\]\s]+)*))@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/;
+
   const [emailError, setEmailError] = useState("");
   const [postalCodeError, setPostalCodeError] = useState("");
   const [gstNumberError, setGstNumberError] = useState("");
@@ -193,7 +194,7 @@ export default function AddClientPage({
     const { name, value } = e.target;
 
     if (name === "clientName") {
-      const clientNameRegex = /^[a-zA-Z\s]{2,50}$/; 
+      const clientNameRegex = /^[a-zA-Z\s]{2,50}$/;
       if (!clientNameRegex.test(value)) {
         setClientNameError(
           "Invalid Client Name. Only letters and spaces allowed, 2-50 characters."
@@ -219,7 +220,7 @@ export default function AddClientPage({
       if (!streetRegex.test(value)) {
         setStreetError("Street name must be 3-50 characters and only contain letters, numbers, spaces, ., ',', '-', or '.");
       } else {
-        setStreetError(""); 
+        setStreetError("");
       }
       setClientData((prevData) => ({
         ...prevData,
@@ -287,16 +288,14 @@ export default function AddClientPage({
     setIncompleteError("");
   };
 
+  
   const handleAddEmail = () => {
     if (inputEmail && emailRegex.test(inputEmail)) {
       if (!clientData.email.includes(inputEmail)) {
-        setClientData((prev) => {
-          const updatedEmails = [...prev.email, inputEmail];
-          return {
-            ...prev,
-            email: updatedEmails,
-          };
-        });
+        setClientData((prev) => ({
+          ...prev,
+          email: [...prev.email, inputEmail],
+        }));
         setEmailError("");
         setInputEmail("");
       } else {
@@ -308,24 +307,27 @@ export default function AddClientPage({
   };
 
 
-  const handleRemoveEmail = async (index: number) => {
+  const handleRemoveEmail = async (index:any) => {
     const emailToDelete = clientData.email[index];
-    const clientId = clientData._id; 
-
-    if (!clientId) {
-      return;
-    }
 
     try {
-      await dispatch(deleteEmailAction({ clientId, email: emailToDelete }));
-
-      dispatch(getClientByIdAction(clientId));
-     
+      if (forEditClient) {
+        const clientId = clientData._id;
+        if (!clientId) return;
+        setClientData((prev) => ({
+          ...prev,
+          email: prev.email.filter((_, i) => i !== index),
+        }));
+      } else {
+        setClientData((prev) => ({
+          ...prev,
+          email: prev.email.filter((_, i) => i !== index),
+        }));
+      }
     } catch (error) {
-      console.error("Error deleting email:", error);
+      console.error("Error removing email:", error);
     }
   };
-
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -379,7 +381,7 @@ export default function AddClientPage({
       !contactNoError &&
       !clientNameError &&
       !streetError &&
-      !emailError 
+      !emailError
     ) {
       dispatch(addNewClientAction(clientData));
     } else {
@@ -397,7 +399,7 @@ export default function AddClientPage({
       !contactNoError &&
       !clientNameError &&
       !streetError &&
-      !emailError && 
+      !emailError &&
       clientToEdit
     ) {
       const clientId = clientToEdit._id!;
@@ -435,7 +437,7 @@ export default function AddClientPage({
         onChange={handleChange}
         onKeyDown={(e) => {
           if (e.key >= '0' && e.key <= '9') {
-            e.preventDefault(); 
+            e.preventDefault();
           }
         }}
         error={!!clientNameError && clientData.clientName !== ""}
@@ -467,8 +469,8 @@ export default function AddClientPage({
           <div style={{ color: "red", marginTop: 8 }}>{emailError}</div>
         )}
         {clientData.email.length > 0 && (
-          <Box display="flex" flexWrap="wrap" gap={1}>
-            {clientData.email.map((email: string, index: number) => (
+          <Box display="flex" flexWrap="wrap" gap={1} mt={2}>
+            {clientData.email.map((email, index) => (
               <Chip
                 key={index}
                 label={email}
@@ -478,6 +480,7 @@ export default function AddClientPage({
               />
             ))}
           </Box>
+
         )}
       </div>
       <div className="flex gap-5 mt-3">
@@ -564,15 +567,15 @@ export default function AddClientPage({
           onKeyDown={(e) => {
             if (
               !(
-                (e.key >= '0' && e.key <= '9') || 
-                e.key === 'Backspace' || 
-                e.key === 'ArrowLeft' || 
-                e.key === 'ArrowRight' || 
-                e.key === 'Delete' || 
-                e.key === 'Tab' 
+                (e.key >= '0' && e.key <= '9') ||
+                e.key === 'Backspace' ||
+                e.key === 'ArrowLeft' ||
+                e.key === 'ArrowRight' ||
+                e.key === 'Delete' ||
+                e.key === 'Tab'
               )
             ) {
-              e.preventDefault(); 
+              e.preventDefault();
             }
           }}
           error={!!contactNoError && clientData.contactNo !== ""}
