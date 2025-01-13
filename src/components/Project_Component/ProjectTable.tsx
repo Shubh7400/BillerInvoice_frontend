@@ -154,7 +154,7 @@ const ProjectTable = ({
     (state: RootState) => state.projectsForInvoiceState
   );
   useEffect(() => {
-    if (projectsForInvoice.length !== 0) {
+    if (projectsForInvoice?.length !== 0) {
       setProjectId(projectsForInvoice.map((project) => project._id));
       setProjectDetails(projectsForInvoice);
     }
@@ -310,7 +310,7 @@ const ProjectTable = ({
       {!projectTableforClient ? (
         <>
           {/* Project Table for all  */}
-          {isError || isLoading || (data === "" && data.length <= 0) ? (
+          {isError || isLoading || (data === "" && data?.length <= 0) ? (
             <div>
               <div className="text-xl font-bold text-center p-4 ">
                 <h3>PROJECT DETAILS</h3>
@@ -321,10 +321,10 @@ const ProjectTable = ({
                     </Alert>
                   </p>
                 ) : null}
-                {(data && (data === "" || data.length <= 0)) ||
+                {(data && (data === "" || data?.length <= 0)) ||
                   (clientProjectTableData &&
                     (clientProjectTableData === "" ||
-                      clientProjectTableData.length <= 0)) ? (
+                      clientProjectTableData?.length <= 0)) ? (
                   <p className="text-lg text-purple-500 font-thin dark:text-purple-300 p-4 ">
                     No project available !
                   </p>
@@ -349,7 +349,7 @@ const ProjectTable = ({
                   <TableBody>
                     {ProjectData &&
                       ProjectData?.filter((project) => {
-                        if (searchProjectName.length <= 0) return true;
+                        if (searchProjectName?.length <= 0) return true;
                         return project.projectName
                           .toLowerCase()
                           .startsWith(searchProjectName.toLowerCase());
@@ -594,7 +594,7 @@ const ProjectTable = ({
                       <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
                     )}
                    <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
-                    {selectedProject.uploadedFiles && selectedProject.uploadedFiles.length > 0 && (
+                    {selectedProject.uploadedFiles && selectedProject.uploadedFiles?.length > 0 && (
                       <>
                         <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
                         <Box
@@ -689,7 +689,7 @@ const ProjectTable = ({
                     </Alert>
                   </p>
                 ) : null}
-                {(data && (data === "" || data.length <= 0)) ||
+                {(data && (data === "" || data?.length <= 0)) ||
                   (clientProjectTableData &&
                     (clientProjectTableData === "" ||
                       clientProjectTableData?.length <= 0)) ? (
@@ -762,7 +762,7 @@ const ProjectTable = ({
                     {ProjectData &&
                       ProjectData.filter((project) => {
                         // Apply the same filter condition as ProjectTable 1
-                        if (searchProjectName.length <= 0) return true;
+                        if (searchProjectName?.length <= 0) return true;
                         return project.projectName
                           .toLowerCase()
                           .startsWith(searchProjectName.toLowerCase());
@@ -850,13 +850,13 @@ const ProjectTable = ({
             clientProjectTableError ||
             clientProjectTableLoading ||
             clientProjectTableData === "" ||
-            clientProjectTableData.length <= 0
+            clientProjectTableData?.length <= 0
           ) && projectTableforClient ? (
             <Button
               variant="contained"
               color="primary"
               onClick={() => handleConfirmSelection()}
-              disabled={projectId.length === 0}
+              disabled={projectId?.length === 0}
               sx={{
                 backgroundColor: "#d9a990",
                 borderRadius: "20px",
