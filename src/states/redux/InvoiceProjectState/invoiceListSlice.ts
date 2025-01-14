@@ -13,7 +13,7 @@ export interface Invoice {
   taxType:string;
   taxAmount:number;
   grandTotal?: number;
-  
+  sacNo?: number ;
   projectName: string;
   rate: number;
   adminId: string;

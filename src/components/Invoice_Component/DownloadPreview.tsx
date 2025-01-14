@@ -248,6 +248,7 @@ const DownloadPreview = ({
                           <th className="px-2 pb-4">Working Hours</th>
                         ))}
                     </>
+                    <th className="px-2 pb-4">SAC CODE</th>
                     <th className="px-2 pb-4">Conversion Rate</th>
                     <th className="px-2 pb-4">Subtotal</th>
                   </tr>
@@ -273,6 +274,7 @@ const DownloadPreview = ({
                           ))}
                       </>
                     ))}
+                     <th className="px-2 pb-4">SAC CODE</th>
                     <th className="px-2 pb-4">Conversion Rate</th>
                     <th className="px-2 pb-4">Subtotal</th>
                   </tr>
@@ -316,6 +318,9 @@ const DownloadPreview = ({
                       {invoice.workingPeriod || 1}
                     </td>
                   )}
+                   <td className="border px-2 pb-4 text-center">
+                    {invoice.sacNo}
+                  </td>
                   <td className="border px-2 pb-4 text-center">
                     &#x20B9; {invoice.conversionRate.toFixed(2)}
                   </td>
@@ -362,6 +367,9 @@ const DownloadPreview = ({
                           {project.workingPeriod || 1}
                         </td>
                       )}
+                      <td className="border px-2 pb-4 text-center">
+                        {project.sacNo}
+                      </td>
                       <td className="border px-2 pb-4 text-center">
                         &#x20B9;{project.conversionRate.toFixed(2)}
                       </td>

@@ -211,16 +211,16 @@ const ProjectTable = ({
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      
-      setProjectId([project._id]); 
-      setSelectedProjectId(project._id); 
-      setProjectDetails([project]); 
-      setAllChecked(false); 
+
+      setProjectId([project._id]);
+      setSelectedProjectId(project._id);
+      setProjectDetails([project]);
+      setAllChecked(false);
     } else {
-     
-      setProjectId([]); 
-      setSelectedProjectId(""); 
-      setProjectDetails([]); 
+
+      setProjectId([]);
+      setSelectedProjectId("");
+      setProjectDetails([]);
       setAllChecked(false);
     }
   };
@@ -287,7 +287,6 @@ const ProjectTable = ({
     setSelectedProject(null);
     setIsModalOpen(false);
   };
-
   return (
     <section>
       <div>
@@ -304,7 +303,7 @@ const ProjectTable = ({
           selectedClientState.loading !== "idle" &&
           projectTableforClient ? (
           <ClientInfoSection projectsForInvoice={projectsForInvoice} />
-        ) : null}
+        ) : null} 
       </div>
       {!projectTableforClient ? (
         <>
@@ -397,7 +396,6 @@ const ProjectTable = ({
                                   >
                                     <FaEye size={20} />
                                   </Button>
-
                                   <Button
                                     disabled={!adminId}
                                     variant="outlined"
@@ -567,7 +565,6 @@ const ProjectTable = ({
                         <strong>End Date:</strong> {selectedProject.endDate}
                       </Typography>
                     )}
-
                     {selectedProject.ratePerDay && (
                       <Typography variant="body1">
                         <strong>Rate/Day:</strong>
@@ -587,11 +584,10 @@ const ProjectTable = ({
                         {selectedProject.technology}
                       </Typography>
                     )}
-
                     {selectedProject.timeSheet && (
                       <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
                     )}
-                   <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
+                    <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
                     {selectedProject.uploadedFiles && selectedProject.uploadedFiles?.length > 0 && (
                       <>
                         <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
@@ -599,8 +595,8 @@ const ProjectTable = ({
                           sx={{
                             display: "flex",
                             flexWrap: "wrap",
-                            gap: 2, 
-                            justifyContent: "flex-start", 
+                            gap: 2,
+                            justifyContent: "flex-start",
                             alignItems: "center",
                           }}
                         >
@@ -612,23 +608,23 @@ const ProjectTable = ({
                               target="_blank"
                               rel="noopener noreferrer"
                               sx={{
-                                maxWidth: '200px',  
-                                minWidth: '100px',  
-                                height: 40,         
+                                maxWidth: '200px',
+                                minWidth: '100px',
+                                height: 40,
 
-                          
+
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 padding: "8px 16px",
                                 boxShadow: 2,
-                                borderRadius: "25px", 
-                                backgroundColor: "#f0f0f0", 
-                                color: "#333", 
+                                borderRadius: "25px",
+                                backgroundColor: "#f0f0f0",
+                                color: "#333",
                                 textDecoration: "none",
                                 transition: "transform 0.3s, background-color 0.3s",
                                 "&:hover": {
-                                  transform: "scale(1.05)", 
+                                  transform: "scale(1.05)",
                                   backgroundColor: "#e0e0e0",
                                 },
                               }}
@@ -643,7 +639,7 @@ const ProjectTable = ({
                                       textOverflow: "ellipsis",
                                       whiteSpace: "nowrap",
                                       fontWeight: "bold",
-                                      maxWidth: '168px', 
+                                      maxWidth: '168px',
                                     }}
                                     title={file.filename}
                                   >
@@ -676,7 +672,7 @@ const ProjectTable = ({
             clientProjectTableData === "" ||
             clientProjectTableData?.length <= 0 ? (
             <div>
-              <div></div>
+              
               <div className="text-xl font-bold text-center p-4 ">
                 <h3>PROJECT DETAILS</h3>
                 {isError || clientProjectTableError ? (
@@ -696,7 +692,8 @@ const ProjectTable = ({
                 ) : null}
               </div>
             </div>
-          ) : (
+          )
+           : (
             <div className="  rounded-[20px]">
               <TableContainer className={Styles.table_client_scroll}>
                 <Table>

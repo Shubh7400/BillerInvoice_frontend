@@ -70,6 +70,7 @@ export interface ProjectType {
   paidLeave?:number | undefined;
   timeSheet?:string | undefined;
   candidateName?: string | undefined;
+  sacNo?: number | null;
   startDate?: string | undefined;
   endDate?: string | undefined;
   files?: FileData[]; 
@@ -96,6 +97,7 @@ export interface UpdateProjectDataType {
   paidLeave?:number | undefined;
   timeSheet?:string | undefined;
   candidateName?: string | undefined;
+  sacNo?: number | null;
   startDate?: string | undefined;
   endDate?: string | undefined;
   files?: FileData[]; 
@@ -153,6 +155,8 @@ export interface InvoiceType {
   paymentStatus: boolean;
   amount?: number | null;
   advanceAmount?: number | null;
+  sacNo?: number | null;
+  candidateName?: string | undefined;
   workingPeriod?: number | null;
   ratePerDay?: number |null;  
   contactNo?:string;
