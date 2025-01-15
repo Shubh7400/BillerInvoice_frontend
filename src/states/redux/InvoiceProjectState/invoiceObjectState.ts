@@ -25,6 +25,7 @@ interface InvoiceObjectStateType {
   workingPeriod?: number | null;
   ratePerDay?: number | null;
   sacNo: number | null;
+  actualDays?: number | null;
 }
 
 const initialState: { data: InvoiceObjectStateType; loading: "idle" | "loading" | "pending" | "fulfilled"; error: string | null } = {
@@ -51,6 +52,7 @@ const initialState: { data: InvoiceObjectStateType; loading: "idle" | "loading" 
     workingPeriod: 1,
     ratePerDay: 1,
     sacNo:0,
+    actualDays:0
   },
   loading: "idle",
   error: null,

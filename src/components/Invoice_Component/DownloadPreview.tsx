@@ -315,7 +315,7 @@ const DownloadPreview = ({
                   )}
                   {invoice.workingPeriodType !== "fixed" && (
                     <td className="border px-2 pb-4 text-center">
-                      {invoice.workingPeriod || 1}
+                      {`${invoice.workingPeriod}/${invoice.actualDays}`}
                     </td>
                   )}
                    <td className="border px-2 pb-4 text-center">
@@ -364,7 +364,7 @@ const DownloadPreview = ({
                       )}
                       {project.workingPeriodType !== "fixed" && (
                         <td className="border px-2 pb-4 text-center">
-                          {project.workingPeriod || 1}
+                           {`${project.workingPeriod}/${project.actualDays}`}
                         </td>
                       )}
                       <td className="border px-2 pb-4 text-center">

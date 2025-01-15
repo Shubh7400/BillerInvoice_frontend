@@ -24,6 +24,7 @@ const addProjectForInvoiceSlice = createSlice({
           workingPeriodType,
           conversionRate,
           workingPeriod,
+          actualDays,
           advanceAmount,
         } = action.payload;
 
@@ -52,6 +53,7 @@ const addProjectForInvoiceSlice = createSlice({
           draftState.projectsForInvoice.push({
             ...action.payload,
             workingPeriod: workingPeriod !== undefined ? workingPeriod : 1,
+            actualDays: actualDays !== undefined ? actualDays : 30,
             amount , 
             advanceAmount: advanceAmount || 0, 
             ratePerDay,
@@ -73,6 +75,7 @@ const addProjectForInvoiceSlice = createSlice({
             workingPeriodType,
             conversionRate,
             workingPeriod,
+            actualDays,
             advanceAmount,
           } = project;
     
@@ -92,6 +95,7 @@ const addProjectForInvoiceSlice = createSlice({
           return {
             ...project,
             workingPeriod: workingPeriod !== undefined ? workingPeriod : 1, 
+            actualDays: actualDays !== undefined ? actualDays : 30, 
             amount,
             advanceAmount,
           };
@@ -112,6 +116,7 @@ const addProjectForInvoiceSlice = createSlice({
           workingPeriodType,
           conversionRate,
           workingPeriod,
+          actualDays,
           advanceAmount,
         } = updatedProject;
     
@@ -139,6 +144,7 @@ const addProjectForInvoiceSlice = createSlice({
             ...draftState.projectsForInvoice[projectIndex],
             ...updatedProject,
             workingPeriod: workingPeriod !== undefined ? workingPeriod : 1, 
+            actualDays: actualDays !== undefined ? actualDays : 30, 
             amount,
             advanceAmount,
           };

@@ -77,6 +77,7 @@ export interface ProjectType {
   fileUrls?: string[];
   uploadedFiles?: UploadedFile[];
   clientDetails?: ClientDetails;
+  actualDays?: number | null;
 }
 export interface UpdateProjectDataType {
   _id?: string;
@@ -104,6 +105,7 @@ export interface UpdateProjectDataType {
   fileUrls?: string[];
   uploadedFiles?: UploadedFile[];
   clientDetails?: ClientDetails;
+  actualDays?: number | null;
 }
 export interface Address {
   street: string;
@@ -165,6 +167,7 @@ export interface InvoiceType {
   uploadedFiles?: UploadedFile[];
   clientDetails?: ClientDetails;
   adminDetails?: AdminDetails;
+  actualDays?: number | null;
 }
 
 export interface LoginDataType {

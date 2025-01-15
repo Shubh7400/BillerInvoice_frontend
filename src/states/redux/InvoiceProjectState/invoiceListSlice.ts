@@ -28,6 +28,7 @@ export interface Invoice {
   amount:number;
   clientDetails?:ClientDetails;
   adminDetails?: AdminDetails;
+  actualDays?: number;
 }
 
 

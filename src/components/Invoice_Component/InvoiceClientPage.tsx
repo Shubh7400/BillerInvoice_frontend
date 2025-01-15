@@ -175,6 +175,7 @@ function InvoiceClientPage() {
               ratePerDay: updatedProject.ratePerDay,
               workingPeriodType: updatedProject.workingPeriodType,
               sacNo: updatedProject.sacNo,
+              actualDays: updatedProject.actualDays
             })
           );
 
@@ -221,10 +222,18 @@ function InvoiceClientPage() {
               "workingPeriod",
               updatedProject.workingPeriod?.toString() || "0"
             );
+            formData.append(
+              "actualDays",
+              updatedProject.actualDays?.toString() || "30"
+            );
             formData.append("amount", updatedProject.amount?.toString() || "0");
             formData.append(
               "advanceAmount",
               updatedProject.advanceAmount?.toString() || "0"
+            );
+            formData.append(
+              "sacNo",
+              updatedProject.sacNo?.toString() || "0"
             );
 
             const mutationData = {
@@ -258,14 +267,14 @@ function InvoiceClientPage() {
       }
 
       if (project.workingPeriodType === "months" && project.rate) {
-        if (invoiceDate) {
-          const prevMonth = invoiceDate.subtract(1, "month");
-          const daysInPrevMonth = prevMonth.daysInMonth();
-          updatedProject.ratePerDay = project.rate / daysInPrevMonth;
+        if (invoiceDate && project.actualDays) {
+          updatedProject.ratePerDay = project.rate / project.actualDays;
         }
       }
+
       if (project.workingPeriodType === "months") {
         updatedProject.workingPeriod = project.workingPeriod !== undefined ? project.workingPeriod : 1;
+        updatedProject.actualDays = project.actualDays !== undefined ? project.actualDays : 1;
       }
 
       let amount = 0;
@@ -298,6 +307,7 @@ function InvoiceClientPage() {
           workingPeriodType: updatedProject.workingPeriodType,
           clientId: updatedProject.clientId,
           adminId: updatedProject.adminId,
+          actualDays: updatedProject.actualDays,
         }));
       }
 
@@ -311,6 +321,7 @@ function InvoiceClientPage() {
 
         const formData = new FormData();
         formData.append("ratePerDay", String(updatedProject.ratePerDay ?? 0));
+        formData.append("actualDays", String(updatedProject.actualDays ?? 0));
         formData.append("workingPeriodType", updatedProject.workingPeriodType || "");
         formData.append("currencyType", updatedProject.currencyType || "");
         formData.append("adminId", updatedProject.adminId || "");
@@ -335,6 +346,7 @@ function InvoiceClientPage() {
 
     setEditableProjects(updatedProjects);
   }, [projectsForInvoice, invoiceDate, workingFixed]);
+
 
 
   React.useEffect(() => {
@@ -549,9 +561,14 @@ function InvoiceClientPage() {
                     <>
                       {project.workingPeriodType !== "fixed" &&
                         (project.workingPeriodType === "months" ? (
-                          <TableCell className="w-[175px]">
-                            Working Days
-                          </TableCell>
+                          <>
+                            <TableCell className="w-[175px]">
+                              Working Days
+                            </TableCell>
+                            <TableCell className="w-[175px]">
+                              Actual Days
+                            </TableCell>
+                          </>
                         ) : (
                           <TableCell className="w-[175px]">
                             Working Hours
@@ -655,6 +672,31 @@ function InvoiceClientPage() {
                         />
                       </TableCell>
                     )}
+                    {project.workingPeriodType === "months" &&
+                      <TableCell className="text-[13px] w-[150px]">
+                        <TextField
+                          variant="outlined"
+                          size="small"
+                          type="text"
+                          value={project.actualDays}
+                          onInput={(e) => {
+                            const target = e.target as HTMLInputElement;
+                            const value = target.value;
+                            if (!/^\d*$/.test(value)) {
+                              target.value = value.slice(0, -1);
+                            }
+                          }}
+                          onChange={(e) => {
+                            const target = e.target as HTMLInputElement;
+                            handleInputChange(
+                              project._id ?? "",
+                              "actualDays",
+                              Number(target.value)
+                            );
+                          }}
+                        />
+                      </TableCell>
+                    }
 
                     <TableCell className="text-[13px] w-[150px]">
                       <TextField
