@@ -50,7 +50,6 @@ function InvoiceClientPage() {
     (state: RootState) => state.projectsForInvoiceState
   );
 
-
   const handleRemoveProject = (project: ProjectType) => {
     if (project && project._id) {
       dispatch(removeProjectFromInvoiceAction(project._id));
@@ -168,6 +167,7 @@ function InvoiceClientPage() {
           dispatch(
             updateInvoiceObjectStateAction({
               projectName: updatedProject.projectName,
+              resumeName: updatedProject.resumeName,
               workingPeriod: updatedProject.workingPeriod,
               conversionRate: updatedProject.conversionRate,
               rate: updatedProject.rate,
@@ -203,6 +203,7 @@ function InvoiceClientPage() {
           if (updatedProject._id) {
             const formData = new FormData();
             formData.append("projectName", updatedProject.projectName || "");
+            formData.append("resumeName", updatedProject.resumeName || "");
             formData.append(
               "workingPeriodType",
               updatedProject.workingPeriodType || ""
@@ -281,9 +282,7 @@ function InvoiceClientPage() {
       if (project.rate && project.workingPeriodType) {
         if (project.workingPeriodType === "hours" && project.workingPeriod) {
           amount =
-            project.rate *
-            project.workingPeriod *
-            project.conversionRate;
+            project.rate * project.workingPeriod * project.conversionRate;
         } else if (
           project.workingPeriodType === "months" &&
           updatedProject.workingPeriod &&
@@ -445,7 +444,9 @@ function InvoiceClientPage() {
                     variant="outlined"
                     size="small"
                     value={invoiceObject.invoiceNo}
-                    onChange={(e) => handleInvoiceNoChange(Number(e.target.value))}
+                    onChange={(e) =>
+                      handleInvoiceNoChange(Number(e.target.value))
+                    }
                     className="w-[150px] "
                     sx={{
                       "& .MuiOutlinedInput-root": {
@@ -548,7 +549,9 @@ function InvoiceClientPage() {
             >
               <TableHead className={Styles.animated}>
                 <TableRow>
-                  <TableCell className="w-[175px]">Description</TableCell>
+                  <TableCell className="w-[175px]">
+                    Description
+                  </TableCell>
                   <TableCell className="w-[135px]">Rate</TableCell>
                   {editableProjects.map((project: ProjectType) => (
                     <>
@@ -593,7 +596,7 @@ function InvoiceClientPage() {
                         variant="outlined"
                         size="small"
                         type="text"
-                        value={project.projectName}
+                        value={`${project.resumeName} - ${project.projectName} `}
                         onChange={(e) => {
                           const target = e.target as HTMLInputElement;
                           handleInputChange(project._id ?? "", "projectName", target.value);
@@ -609,39 +612,54 @@ function InvoiceClientPage() {
                         onChange={(e) => handleRateChange(Number(e.target.value), project)}
                         InputProps={{
                           endAdornment: (
-                            <Typography variant="body2" style={{ marginLeft: "8px" }}>
+                            <Typography
+                              variant="body2"
+                              style={{ marginLeft: "8px" }}
+                            >
                               {project.currencyType === "rupees"
                                 ? project.workingPeriodType === "fixed"
                                   ? "₹/fixed"
-                                  : `₹/${project.workingPeriodType === "hours" ? "hours" : "months"}`
+                                  : `₹/${
+                                      project.workingPeriodType === "hours"
+                                        ? "hours"
+                                        : "months"
+                                    }`
                                 : project.currencyType === "dollars"
-                                  ? project.workingPeriodType === "fixed"
-                                    ? "$/fixed"
-                                    : `$/${project.workingPeriodType === "hours" ? "hours" : "months"}`
-                                  : project.currencyType === "pounds"
-                                    ? project.workingPeriodType === "fixed"
-                                      ? "£/fixed"
-                                      : `£/${project.workingPeriodType === "hours" ? "hours" : "months"}`
-                                    : ""}
+                                ? project.workingPeriodType === "fixed"
+                                  ? "$/fixed"
+                                  : `$/${
+                                      project.workingPeriodType === "hours"
+                                        ? "hours"
+                                        : "months"
+                                    }`
+                                : project.currencyType === "pounds"
+                                ? project.workingPeriodType === "fixed"
+                                  ? "£/fixed"
+                                  : `£/${
+                                      project.workingPeriodType === "hours"
+                                        ? "hours"
+                                        : "months"
+                                    }`
+                                : ""}
                             </Typography>
                           ),
                         }}
                       />
-
                     </TableCell>
 
                     {project.workingPeriodType === "months" && (
                       <TableCell className="text-[13px] w-[150px]">
                         <Typography variant="body2">
                           {project.ratePerDay
-                            ? ` ${project.currencyType === "rupees"
-                              ? "₹"
-                              : project.currencyType === "dollars"
-                                ? "$"
-                                : project.currencyType === "pounds"
+                            ? ` ${
+                                project.currencyType === "rupees"
+                                  ? "₹"
+                                  : project.currencyType === "dollars"
+                                  ? "$"
+                                  : project.currencyType === "pounds"
                                   ? "£"
                                   : ""
-                            } ${project.ratePerDay.toFixed(2)}`
+                              } ${project.ratePerDay.toFixed(2)}`
                             : "NA"}
                         </Typography>
                       </TableCell>
@@ -739,10 +757,10 @@ function InvoiceClientPage() {
                                 {project.currencyType === "rupees"
                                   ? "₹"
                                   : project.currencyType === "dollars"
-                                    ? "$"
-                                    : project.currencyType === "pounds"
-                                      ? "£"
-                                      : ""}
+                                  ? "$"
+                                  : project.currencyType === "pounds"
+                                  ? "£"
+                                  : ""}
                               </span>
                             ),
                           }}

@@ -53,6 +53,7 @@ export interface UploadedFile {
 export interface ProjectType {
   _id?: string;
   projectName: string;
+  resumeName: string;
   rate?: number | null;
   workingPeriodType: "hours" | "months" | "fixed";
   currencyType: "rupees" | "dollars" | "pounds";
@@ -82,6 +83,7 @@ export interface ProjectType {
 export interface UpdateProjectDataType {
   _id?: string;
   projectName?: string;
+  resumeName: string;
   rate?: number | null;
   workingPeriodType: "hours" | "months" | "fixed";
   currencyType: "rupees" | "dollars" | "pounds";
@@ -150,6 +152,7 @@ export interface InvoiceType {
   taxAmount:number;
   grandTotal?:number;
   projectName: string;
+  resumeName: string;
   rate?: number | null;
   workingPeriodType: "hours" | "months" | "fixed";
   currencyType: "rupees" | "dollars" | "pounds";
