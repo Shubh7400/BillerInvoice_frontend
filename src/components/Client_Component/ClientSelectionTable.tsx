@@ -27,6 +27,7 @@ import ActionConfirmer from "../SideBar/ActionConfirmer";
 import { useNavigate } from "react-router-dom";
 import { ClientType } from "../../types/types";
 import Styles from "./client.module.css";
+import { toggleClientStatusAction } from "../../states/redux/ClientStates/clientStatusUpdate";
 import { removeAllProjectsFromInvoiceAction } from "../../states/redux/InvoiceProjectState/addProjectForInvoiceSlice";
 
 type ClientSelectionTableProps = {
@@ -43,9 +44,8 @@ export default function ClientSelectionTable({
   const dispatch = useDispatch<AppDispatch>();
   const materialTheme = useTheme();
   const { adminId } = React.useContext(AuthContext);
-
-  const [selectedClientId, setSelectedClientId] = React.useState<string>("");
   const [clientDetails, setClientDetails] = React.useState<any>(null);
+
   const { deleteLoading, deleteData, deleteError } = useSelector(
     (state: RootState) => state.deleteClientState
   );
@@ -65,12 +65,13 @@ export default function ClientSelectionTable({
       enqueueSnackbar("Error in deleting client", { variant: "error" });
     }
   }, [deleteLoading, deleteError]);
+  const { loading: toggleLoading } = useSelector((state: RootState) => state.clientStatus);
 
   React.useEffect(() => {
     if (adminId) {
       dispatch(getAllClientsByAdminIdAction(adminId));
     }
-  }, [adminId, dispatch]);
+  }, [adminId, dispatch, toggleLoading]);
 
   React.useEffect(() => {
     dispatch(removeAllProjectsFromInvoiceAction());
@@ -95,6 +96,33 @@ export default function ClientSelectionTable({
   const handleRowClick = (clientId: string) => {
     setSelectedClientId(clientId);
   };
+
+
+  const [selectedClientId, setSelectedClientId] = React.useState<string>('');
+
+
+  const { clientStatus } = useSelector(
+    (state: RootState) => state.clientStatus
+  );
+  const handleToggleStatus = (clientId: string) => {
+    dispatch(toggleClientStatusAction(clientId))
+      .unwrap()
+      .then((updatedClient) => {
+        // Update the client status immediately in the local component state if necessary
+        const updatedClients = clients.map(client =>
+          client._id === updatedClient._id ? updatedClient : client
+        );
+        setClientDetails(updatedClient); // Optionally update the local state
+        enqueueSnackbar(
+          `Client status updated to ${updatedClient.isActive}`,
+          { variant: 'success' }
+        );
+      })
+      .catch((error) => {
+        enqueueSnackbar(`Error updating client status: ${error}`, { variant: 'error' });
+      });
+  };
+
 
   return (
     <Box>
@@ -137,6 +165,7 @@ export default function ClientSelectionTable({
                       {client.email[0] || "No email provided"}{" "}
                     </TableCell>
                     <TableCell sx={{ padding: "0" }}>{client.gistin}</TableCell>
+                    
                     <TableCell sx={{ padding: "0" }}>
                       <div className="flex">
                         <div className={Styles.editButton}>
@@ -146,16 +175,30 @@ export default function ClientSelectionTable({
                           />
                         </div>
                         <div className={Styles.editButton}>
-                          {deleteLoading === "pending" &&
-                          deletingClientIdString === client._id ? (
-                            <CircularProgress size={25} />
-                          ) : (
-                            <ActionConfirmer
-                              actionTag="Delete"
-                              actionFunction={handleDeleteClient}
-                              parameter={client._id}
-                            />
-                          )}
+                          <Button
+                            variant="contained"
+                            color={client.isActive === 'active' ? 'success' : 'error'}
+                            onClick={() => handleToggleStatus(client._id || '')}
+                            disabled={toggleLoading === 'pending'}
+                            sx={{
+                              borderRadius: '50px',  // Capsule shape
+                              width: '100px',        // Fixed width for uniformity
+                              padding: '8px 16px',   // Adjust padding as needed
+                              textTransform: 'none', // Prevent uppercase text
+                              justifyContent: 'center', // Ensure text is centered
+                              backgroundColor: client.isActive === 'active' ? '#4caf50' : '#f44336', // Custom background color
+                              color: 'white', // Force white text color
+                              '&:hover': { // Ensure hover state also has white text
+                                backgroundColor: client.isActive === 'active' ? '#388e3c' : '#d32f2f',
+                                color: 'white', // White text on hover
+                              },
+                              '& .MuiButton-label': { color: 'white' }, // Ensure label text is white
+                            }}
+                          >
+                            {toggleLoading === 'pending' && selectedClientId === client._id ? (
+                              <CircularProgress size={20} />
+                            ) : client.isActive === 'active' ? 'Active' : 'Inactive'}
+                          </Button>
                         </div>
                       </div>
                     </TableCell>

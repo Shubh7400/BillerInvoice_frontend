@@ -92,6 +92,7 @@ function AddProjectPage({
     user: client.user,
     sameState: client.sameState,
     contactNo: client.contactNo,
+
   }));
 
   const handleToAddClick = () => {

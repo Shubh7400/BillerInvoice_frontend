@@ -601,6 +601,8 @@ function InvoiceClientPage() {
                           const target = e.target as HTMLInputElement;
                           handleInputChange(project._id ?? "", "projectName", target.value);
                         }}
+                        // multiline
+                        // rows={4}  // You can adjust this to fit your needs
                       />
                     </TableCell>
 

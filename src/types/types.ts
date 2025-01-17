@@ -37,6 +37,7 @@ export interface ClientType {
   user: string;
   sameState?: boolean;
   contactNo: string;
+  isActive?: string; 
 }
 
 export interface FileData {
