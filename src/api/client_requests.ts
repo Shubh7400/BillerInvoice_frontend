@@ -90,6 +90,28 @@ export async function deleteClientByClientId(clientId: string) {
   }
 }
 
+export async function toggleClientStatusByClientId(clientId: string) {
+  let token = localStorage.getItem("billAppAuthToken");
+  if (token) {
+    token = token.substring(1, token.length - 1);
+  }
+  try {
+    const response = await axios.patch(
+      `${config.apiUrlClient}/${clientId}/toggle-status`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(`${error.response.data.message}`);
+  }
+}
+
+
 export async function deleteEmailByClientId(clientId: string, email: string) {
   let token = localStorage.getItem("billAppAuthToken");
   if (token) {

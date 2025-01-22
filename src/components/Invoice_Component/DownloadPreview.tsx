@@ -3,7 +3,7 @@ import "./DownloadPreview.module.css";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { RootState } from "../../states/redux/store";
-import { ClientType} from "../../types/types";
+import { ClientType } from "../../types/types";
 import cubexoLogo from "../assets/cubexo_logo.png";
 import gammaedgeLogo from "../../utils/images/gammaedgeLogo.png";
 import billbg from "../assets/invoice_bg.png";
@@ -71,8 +71,8 @@ const DownloadPreview = ({
         className="relative w-full h-[297mm] bg-center overflow-hidden "
         style={{
           backgroundImage: `url(${billbg})`,
-          backgroundSize: "100% 100%", 
-          backgroundRepeat: "no-repeat", 
+          backgroundSize: "100% 100%",
+          backgroundRepeat: "no-repeat",
         }}
       >
         <div className="absolute inset-0 p-8 pt-20 flex flex-col">
@@ -95,7 +95,7 @@ const DownloadPreview = ({
             {!showPreview && invoice ? (
               <div className="w-[20%]">
                 <div className="text-black  px-2  mb-1">
-                  Invoice Number: {invoice.invoiceNo} 
+                  Invoice Number: {invoice.invoiceNo}
                 </div>
                 <div className="text-black px-2  mb-1">
                   Bill date: {dayjs(invoice.billDate).format("DD/MM/YYYY")}
@@ -135,7 +135,7 @@ const DownloadPreview = ({
                     <b>Pan:</b> {invoice.adminDetails?.pancardNo}
                   </p>
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                  <b>Address: </b> <span>{invoice.adminDetails?.address?.street}</span>
+                    <b>Address: </b> <span>{invoice.adminDetails?.address?.street}</span>
                     <br />
                     {invoice.adminDetails?.address?.city}, {invoice.adminDetails?.address?.state}{" "}
                     {invoice.adminDetails?.address?.postalCode} - {invoice.adminDetails?.address?.country}
@@ -159,7 +159,7 @@ const DownloadPreview = ({
                     <b>Pan:</b> {data.pancardNo}
                   </p>
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                  <b>Address: </b><span>{data.address?.street}</span>
+                    <b>Address: </b><span>{data.address?.street}</span>
                     <br />
                     {data.address?.city}, {data.address?.state}{" "}
                     {data.address?.postalCode} - {data.address?.country}
@@ -174,18 +174,18 @@ const DownloadPreview = ({
               {!showPreview && invoice ? (
                 <div className="text-black">
                   <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
-                    Bill To
+                    Billing To
                   </h1>
                   <h3 className="text-sm font-bold p-[3px]">
                     {invoice.clientDetails?.clientName}
                   </h3>
-                   <p className="text-xs p-[3px] text-[15px]">
+                  <p className="text-xs p-[3px] text-[15px]">
                     <b>Gstin:</b> {invoice.clientDetails?.gistin}
                     <br />
                     <b>Pan:</b> {invoice.clientDetails?.pancardNo}
                   </p>
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                  <b>Address: </b>{invoice.clientDetails?.address?.street}
+                    <b>Address: </b>{invoice.clientDetails?.address?.street}
                     <br />
                     {invoice.clientDetails?.address?.city}, {invoice.clientDetails?.address?.state}{" "}
                     {invoice.clientDetails?.address?.postalCode} - {invoice.clientDetails?.address?.country}
@@ -198,20 +198,20 @@ const DownloadPreview = ({
               ) : (
                 <div className="text-black">
                   <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2">
-                    Bill To
+                    Billing To
                   </h1>
                   <h3 className="text-sm font-bold p-[3px]">
-                    {projectsForInvoice[0]?.clientDetails?.clientName}        
+                    {projectsForInvoice[0]?.clientDetails?.clientName}
                   </h3>
                   <p className="text-xs p-[3px] text-[15px]">
                     <b>Gstin:</b> {projectsForInvoice[0]?.clientDetails?.gistin}
-                    <br />        
+                    <br />
                     <b>Pan:</b> {projectsForInvoice[0]?.clientDetails?.pancardNo}
                   </p>
                   <p className="text-xs opacity-70 p-[3px] text-[15px]">
-                  <b>Address: </b>{clientObj.address?.street}
+                    <b>Address: </b>{clientObj.address?.street}
                     <br />
-                    
+
                     {projectsForInvoice[0]?.clientDetails?.address?.city}, {projectsForInvoice[0]?.clientDetails?.address?.state}{" "}
                     {projectsForInvoice[0]?.clientDetails?.address?.postalCode} - {projectsForInvoice[0]?.clientDetails?.address?.country}
                     <br />
@@ -234,7 +234,8 @@ const DownloadPreview = ({
                 <thead className="bg-[#94b9ff] text-white ">
                   <tr>
                     <th className="px-2 pb-4">Sr.no.</th>
-                    <th className="px-2 pb-4">Project Description</th>
+                    <th className="px-2 pb-4">Description</th>
+                    {/* <th className="px-2 pb-4">Project Period</th> */}
                     <th className="px-2 pb-4">Rate</th>
 
                     <>
@@ -248,6 +249,7 @@ const DownloadPreview = ({
                           <th className="px-2 pb-4">Working Hours</th>
                         ))}
                     </>
+                    <th className="px-2 pb-4">SAC CODE</th>
                     <th className="px-2 pb-4">Conversion Rate</th>
                     <th className="px-2 pb-4">Subtotal</th>
                   </tr>
@@ -256,7 +258,8 @@ const DownloadPreview = ({
                 <thead className="bg-[#94b9ff] text-white ">
                   <tr>
                     <th className="px-2 pb-4">Sr.no.</th>
-                    <th className="px-2 pb-4">Project Name</th>
+                    <th className="px-2 pb-4">Description</th>
+                    {/* <th className="px-2 pb-4">Project Period</th> */}
                     <th className="px-2 pb-4">Rate</th>
                     {projectsForInvoice?.map((project, index) => (
                       <>
@@ -273,6 +276,7 @@ const DownloadPreview = ({
                           ))}
                       </>
                     ))}
+                    <th className="px-2 pb-4">SAC CODE</th>
                     <th className="px-2 pb-4">Conversion Rate</th>
                     <th className="px-2 pb-4">Subtotal</th>
                   </tr>
@@ -280,12 +284,12 @@ const DownloadPreview = ({
               )}
             </>
 
-            {!showPreview && invoice ?(
+            {!showPreview && invoice ? (
               <tbody>
                 <tr className="text-black">
                   <td className="border px-2 pb-4 text-center">{1}</td>
                   <td className="border px-2 pb-4 text-center">
-                    {invoice.projectName}
+                    {`${invoice.resumeName} - ${invoice.projectName} `}
                   </td>
                   <td className="border px-2 pb-4 text-center">
                     {invoice.rate}(
@@ -311,11 +315,18 @@ const DownloadPreview = ({
                       {invoice.ratePerDay?.toFixed(2)}
                     </td>
                   )}
-                  {invoice.workingPeriodType !== "fixed" && (
-                    <td className="border px-2 pb-4 text-center">
-                      {invoice.workingPeriod || 1}
-                    </td>
-                  )}
+                  {invoice.workingPeriodType !== "fixed" &&
+                    (invoice.workingPeriodType === "months" ? (
+                      <td className="border px-2 pb-4 text-center">{`${invoice.workingPeriod}/${invoice.actualDays}`}</td>)
+                      : (
+                        <td className="border px-2 pb-4 text-center">
+                          {invoice.workingPeriod}
+                        </td>
+                      ))
+                  }
+                  <td className="border px-2 pb-4 text-center">
+                    {invoice.sacNo}
+                  </td>
                   <td className="border px-2 pb-4 text-center">
                     &#x20B9; {invoice.conversionRate.toFixed(2)}
                   </td>
@@ -331,7 +342,8 @@ const DownloadPreview = ({
                     <tr key={project._id} className="text-black">
                       <td className="border px-2 pb-4 text-center">{index + 1}</td>
                       <td className="border px-2 pb-4 text-center">
-                        {project.projectName}
+
+                        {`${project.resumeName} - ${project.projectName}`}
                       </td>
                       <td className="border px-2 pb-4 text-center">
                         {project.rate}(
@@ -357,11 +369,18 @@ const DownloadPreview = ({
                           {project.ratePerDay?.toFixed(2)}
                         </td>
                       )}
-                      {project.workingPeriodType !== "fixed" && (
-                        <td className="border px-2 pb-4 text-center">
-                          {project.workingPeriod || 1}
-                        </td>
-                      )}
+                      {project.workingPeriodType !== "fixed" &&
+                        (project.workingPeriodType === "months" ? (
+                          <td className="border px-2 pb-4 text-center">{`${project.workingPeriod}/${project.actualDays}`}</td>)
+                          : (
+                            <td className="border px-2 pb-4 text-center">
+                              {project.workingPeriod}
+                            </td>
+                          ))
+                      }
+                      <td className="border px-2 pb-4 text-center">
+                        {project.sacNo}
+                      </td>
                       <td className="border px-2 pb-4 text-center">
                         &#x20B9;{project.conversionRate.toFixed(2)}
                       </td>
@@ -374,7 +393,7 @@ const DownloadPreview = ({
               )}
           </table>
           <div className="flex justify-between mt-4">
-            {!showPreview && invoice ?(
+            {!showPreview && invoice ? (
               <div className="text-sm">
                 <h1 className="text-[20px] flex items-center h-[30px] mt-[-10px] text-white bg-[#94b9ff] w-[300px] rounded pb-[20px] pl-2 ">
                   Payment information
@@ -407,7 +426,7 @@ const DownloadPreview = ({
                     SUBTOTAL: <span>&#8377; {invoiceObject.amountWithoutTax.toFixed(2)}</span>
                   </div>
                 )}
-             
+
               {!showPreview && invoice ? (
                 invoice.taxType !== "" && (
                   <div className="flex justify-between mb-[10px]">

@@ -15,6 +15,7 @@ interface InvoiceObjectStateType {
   grandTotal?: number,
   taxAmount: number,
   projectName: string;
+  resumeName:string;
   rate?: number | null;
   workingPeriodType: "hours" | "months" | "fixed";
   currencyType: "rupees" | "dollars" | "pounds";
@@ -24,6 +25,8 @@ interface InvoiceObjectStateType {
   advanceAmount?: number | null;
   workingPeriod?: number | null;
   ratePerDay?: number | null;
+  sacNo: number | null;
+  actualDays?: number | null;
 }
 
 const initialState: { data: InvoiceObjectStateType; loading: "idle" | "loading" | "pending" | "fulfilled"; error: string | null } = {
@@ -40,6 +43,7 @@ const initialState: { data: InvoiceObjectStateType; loading: "idle" | "loading" 
     grandTotal: 0,
     taxAmount: 0,
     projectName: "",
+    resumeName:"",
     rate: 1,
     workingPeriodType: "hours",
     currencyType: "rupees",
@@ -48,7 +52,9 @@ const initialState: { data: InvoiceObjectStateType; loading: "idle" | "loading" 
     amount: 0,
     advanceAmount: 0,
     workingPeriod: 1,
-    ratePerDay: 1
+    ratePerDay: 1,
+    sacNo:0,
+    actualDays:0
   },
   loading: "idle",
   error: null,

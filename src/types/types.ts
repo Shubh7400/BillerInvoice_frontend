@@ -37,6 +37,7 @@ export interface ClientType {
   user: string;
   sameState?: boolean;
   contactNo: string;
+  isActive?: string; 
 }
 
 export interface FileData {
@@ -53,6 +54,7 @@ export interface UploadedFile {
 export interface ProjectType {
   _id?: string;
   projectName: string;
+  resumeName: string;
   rate?: number | null;
   workingPeriodType: "hours" | "months" | "fixed";
   currencyType: "rupees" | "dollars" | "pounds";
@@ -70,16 +72,19 @@ export interface ProjectType {
   paidLeave?:number | undefined;
   timeSheet?:string | undefined;
   candidateName?: string | undefined;
+  sacNo?: number | null;
   startDate?: string | undefined;
   endDate?: string | undefined;
   files?: FileData[]; 
   fileUrls?: string[];
   uploadedFiles?: UploadedFile[];
   clientDetails?: ClientDetails;
+  actualDays?: number | null;
 }
 export interface UpdateProjectDataType {
   _id?: string;
   projectName?: string;
+  resumeName: string;
   rate?: number | null;
   workingPeriodType: "hours" | "months" | "fixed";
   currencyType: "rupees" | "dollars" | "pounds";
@@ -96,12 +101,14 @@ export interface UpdateProjectDataType {
   paidLeave?:number | undefined;
   timeSheet?:string | undefined;
   candidateName?: string | undefined;
+  sacNo?: number | null;
   startDate?: string | undefined;
   endDate?: string | undefined;
   files?: FileData[]; 
   fileUrls?: string[];
   uploadedFiles?: UploadedFile[];
   clientDetails?: ClientDetails;
+  actualDays?: number | null;
 }
 export interface Address {
   street: string;
@@ -146,6 +153,7 @@ export interface InvoiceType {
   taxAmount:number;
   grandTotal?:number;
   projectName: string;
+  resumeName: string;
   rate?: number | null;
   workingPeriodType: "hours" | "months" | "fixed";
   currencyType: "rupees" | "dollars" | "pounds";
@@ -153,6 +161,8 @@ export interface InvoiceType {
   paymentStatus: boolean;
   amount?: number | null;
   advanceAmount?: number | null;
+  sacNo?: number | null;
+  candidateName?: string | undefined;
   workingPeriod?: number | null;
   ratePerDay?: number |null;  
   contactNo?:string;
@@ -161,6 +171,7 @@ export interface InvoiceType {
   uploadedFiles?: UploadedFile[];
   clientDetails?: ClientDetails;
   adminDetails?: AdminDetails;
+  actualDays?: number | null;
 }
 
 export interface LoginDataType {

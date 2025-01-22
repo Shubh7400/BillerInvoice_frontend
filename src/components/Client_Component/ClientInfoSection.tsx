@@ -42,6 +42,24 @@ useEffect(() => {
     }
   }
 }, [selectedClientState, projectsForInvoice]);
+// useEffect(() => {
+//   if (
+//     selectedClientState?.data &&
+//     Object.keys(selectedClientState.data).length > 0
+//   ) {
+//     if (selectedClientState.data !== clientData) {
+//       setClientData(selectedClientState.data);
+//     }
+//     setLoadingState(selectedClientState.loading);
+//   } else if (projectsForInvoice?.length > 0) {
+//     const fallbackClient = projectsForInvoice[0]?.clientDetails as ClientType;
+//     if (fallbackClient && fallbackClient !== clientData) {
+//       setClientData(fallbackClient);
+//       setLoadingState("succeeded");
+//     }
+//   }
+// }, [selectedClientState, projectsForInvoice, clientData]);
+
 
 
 const fullAddress = `${clientData?.address?.street || "N/A"}, ${

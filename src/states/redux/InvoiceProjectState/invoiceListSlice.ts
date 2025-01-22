@@ -13,8 +13,9 @@ export interface Invoice {
   taxType:string;
   taxAmount:number;
   grandTotal?: number;
-  
+  sacNo?: number ;
   projectName: string;
+  resumeName: string;
   rate: number;
   adminId: string;
   workingPeriod:number;
@@ -28,6 +29,7 @@ export interface Invoice {
   amount:number;
   clientDetails?:ClientDetails;
   adminDetails?: AdminDetails;
+  actualDays?: number;
 }
 
 

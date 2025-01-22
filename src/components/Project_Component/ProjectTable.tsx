@@ -211,16 +211,16 @@ const ProjectTable = ({
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      
-      setProjectId([project._id]); 
-      setSelectedProjectId(project._id); 
-      setProjectDetails([project]); 
-      setAllChecked(false); 
+
+      setProjectId([project._id]);
+      setSelectedProjectId(project._id);
+      setProjectDetails([project]);
+      setAllChecked(false);
     } else {
-     
-      setProjectId([]); 
-      setSelectedProjectId(""); 
-      setProjectDetails([]); 
+
+      setProjectId([]);
+      setSelectedProjectId("");
+      setProjectDetails([]);
       setAllChecked(false);
     }
   };
@@ -287,7 +287,6 @@ const ProjectTable = ({
     setSelectedProject(null);
     setIsModalOpen(false);
   };
-
   return (
     <section>
       <div>
@@ -335,34 +334,132 @@ const ProjectTable = ({
                 <Table>
                   <TableHead className={Styles.animated}>
                     <TableRow>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Sr.No.</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Project</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Client Name</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "20px", paddingRight: "0" }}>Rate</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Conversion Rate</TableCell>
-                      <TableCell sx={{ paddingX: "1px", width: "auto", paddingLeft: "30px", paddingRight: "0" }}>Action</TableCell>
-                      <TableCell sx={{ paddingX: "10px", width: "auto", paddingLeft: "0", paddingRight: "0", }}>Selection</TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Sr.No.
+                      </TableCell>
+
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Client Name
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Resume Name
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Project
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "20px",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Rate
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Conversion Rate
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "1px",
+                          width: "auto",
+                          paddingLeft: "30px",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Action
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          paddingX: "10px",
+                          width: "auto",
+                          paddingLeft: "0",
+                          paddingRight: "0",
+                        }}
+                      >
+                        Selection
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {ProjectData &&
                       ProjectData?.filter((project) => {
                         if (searchProjectName?.length <= 0) return true;
-                        return project.projectName
-                          .toLowerCase()
-                          .startsWith(searchProjectName.toLowerCase());
+                        const searchLower = searchProjectName.toLowerCase();
+                        // return project.projectName
+                        //   .toLowerCase()
+                        //   .startsWith(searchProjectName.toLowerCase());
+                        // Check if any field matches the search term
+                        return (
+                          (project.projectName
+                            ?.toLowerCase()
+                            .startsWith(searchLower) ??
+                            false) ||
+                          (project.resumeName
+                            ?.toLowerCase()
+                            .startsWith(searchLower) ??
+                            false) ||
+                          (project.clientDetails?.clientName
+                            ?.toLowerCase()
+                            .startsWith(searchLower) ??
+                            false)
+                        );
                       }).map((project: ProjectType, index: number) => (
                         <TableRow key={project._id} className="p-3">
                           <TableCell
-                            sx={{ paddingX: "16px", textAlign: "center", width: "auto" }}
+                            sx={{
+                              paddingX: "16px",
+                              textAlign: "center",
+                              width: "auto",
+                            }}
                           >
                             {index + 1}
                           </TableCell>
+
                           <TableCell sx={{ paddingX: "16px", width: "auto" }}>
-                            {project.projectName}
+                            {getClientName(project.clientId) || project.clientDetails?.clientName}
                           </TableCell>
                           <TableCell sx={{ paddingX: "16px", width: "auto" }}>
-                            {project.clientDetails?.clientName}
+                            {project.resumeName}
+                          </TableCell>
+                          <TableCell sx={{ paddingX: "16px", width: "auto" }}>
+                            {project.projectName}
                           </TableCell>
                           <TableCell sx={{ paddingX: "16px", width: "auto" }}>
                             {project.rate}(
@@ -397,7 +494,6 @@ const ProjectTable = ({
                                   >
                                     <FaEye size={20} />
                                   </Button>
-
                                   <Button
                                     disabled={!adminId}
                                     variant="outlined"
@@ -433,7 +529,13 @@ const ProjectTable = ({
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell sx={{ paddingY: "8px", paddingX: "16px", width: "auto" }}>
+                          <TableCell
+                            sx={{
+                              paddingY: "8px",
+                              paddingX: "16px",
+                              width: "auto",
+                            }}
+                          >
                             <div>
                               <Button
                                 variant="contained"
@@ -473,12 +575,15 @@ const ProjectTable = ({
                       {selectedProject.projectName}
                     </Typography>
                     <Typography variant="body1">
+                      <strong>Resume Name:</strong>{" "}
+                      {selectedProject.resumeName}
+                    </Typography>
+                    <Typography variant="body1">
                       <strong>Client Name:</strong>{" "}
                       {getClientName(selectedProject.clientId)}
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Rate:</strong>{" "}
-                      {selectedProject.rate?.toFixed(2)}
+                      <strong>Rate:</strong> {selectedProject.rate?.toFixed(2)}
                       {selectedProject.currencyType === "rupees"
                         ? selectedProject.workingPeriodType === "fixed"
                           ? " ₹/fixed"
@@ -558,8 +663,7 @@ const ProjectTable = ({
                     )}
                     {selectedProject.startDate && (
                       <Typography variant="body1">
-                        <strong>Start Date:</strong>{" "}
-                        {selectedProject.startDate}
+                        <strong>Start Date:</strong> {selectedProject.startDate}
                       </Typography>
                     )}
                     {selectedProject.endDate && (
@@ -567,7 +671,6 @@ const ProjectTable = ({
                         <strong>End Date:</strong> {selectedProject.endDate}
                       </Typography>
                     )}
-
                     {selectedProject.ratePerDay && (
                       <Typography variant="body1">
                         <strong>Rate/Day:</strong>
@@ -587,11 +690,12 @@ const ProjectTable = ({
                         {selectedProject.technology}
                       </Typography>
                     )}
-
                     {selectedProject.timeSheet && (
-                      <Typography variant="body1"><strong>Timesheet:</strong> {selectedProject.timeSheet}</Typography>
+                      <Typography variant="body1">
+                        <strong>Timesheet:</strong> {selectedProject.timeSheet}
+                      </Typography>
                     )}
-                   <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
+                    <Typography variant="body1"><strong>Working Period Type:</strong> {selectedProject.workingPeriodType}</Typography>
                     {selectedProject.uploadedFiles && selectedProject.uploadedFiles?.length > 0 && (
                       <>
                         <Typography variant="body1"><strong>Uploaded Files:</strong></Typography>
@@ -599,8 +703,8 @@ const ProjectTable = ({
                           sx={{
                             display: "flex",
                             flexWrap: "wrap",
-                            gap: 2, 
-                            justifyContent: "flex-start", 
+                            gap: 2,
+                            justifyContent: "flex-start",
                             alignItems: "center",
                           }}
                         >
@@ -612,23 +716,23 @@ const ProjectTable = ({
                               target="_blank"
                               rel="noopener noreferrer"
                               sx={{
-                                maxWidth: '200px',  
-                                minWidth: '100px',  
-                                height: 40,         
+                                maxWidth: '200px',
+                                minWidth: '100px',
+                                height: 40,
 
-                          
+
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 padding: "8px 16px",
                                 boxShadow: 2,
-                                borderRadius: "25px", 
-                                backgroundColor: "#f0f0f0", 
-                                color: "#333", 
+                                borderRadius: "25px",
+                                backgroundColor: "#f0f0f0",
+                                color: "#333",
                                 textDecoration: "none",
                                 transition: "transform 0.3s, background-color 0.3s",
                                 "&:hover": {
-                                  transform: "scale(1.05)", 
+                                  transform: "scale(1.05)",
                                   backgroundColor: "#e0e0e0",
                                 },
                               }}
@@ -643,7 +747,7 @@ const ProjectTable = ({
                                       textOverflow: "ellipsis",
                                       whiteSpace: "nowrap",
                                       fontWeight: "bold",
-                                      maxWidth: '168px', 
+                                      maxWidth: '168px',
                                     }}
                                     title={file.filename}
                                   >
@@ -663,9 +767,7 @@ const ProjectTable = ({
                     </Button>
                   </DialogActions>
                 </Dialog>
-
               )}
-
             </div>
           )}
         </>
@@ -676,7 +778,7 @@ const ProjectTable = ({
             clientProjectTableData === "" ||
             clientProjectTableData?.length <= 0 ? (
             <div>
-              <div></div>
+
               <div className="text-xl font-bold text-center p-4 ">
                 <h3>PROJECT DETAILS</h3>
                 {isError || clientProjectTableError ? (
@@ -696,138 +798,159 @@ const ProjectTable = ({
                 ) : null}
               </div>
             </div>
-          ) : (
-            <div className="  rounded-[20px]">
-              <TableContainer className={Styles.table_client_scroll}>
-                <Table>
-                  <TableHead className={Styles.animated}>
-                    <TableRow>
-                      <TableCell style={{ paddingRight: "0" }}>
-                        Select
-                      </TableCell>
-                      {/* <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+          )
+            : (
+              <div className="  rounded-[20px]">
+                <TableContainer className={Styles.table_client_scroll}>
+                  <Table>
+                    <TableHead className={Styles.animated}>
+                      <TableRow>
+                        <TableCell style={{ paddingRight: "0" }}>
+                          Select
+                        </TableCell>
+                        {/* <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
                           Sr.No.
                         </TableCell> */}
-                      <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Project
-                      </TableCell>
-                      {/* <TableCell
+                        <TableCell
+                          style={{ paddingLeft: "0", paddingRight: "0" }}
+                        >
+                          Resume Name
+                        </TableCell>
+                        <TableCell
+                          style={{ paddingLeft: "0", paddingRight: "0" }}
+                        >
+                          Project
+                        </TableCell>
+
+                        {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Manager
-                      </TableCell> */}
-                      {/* <TableCell
+                      </TableCell>  */}
+                        {/* <TableCell
                         style={{ paddingLeft: "0", paddingRight: "0" }}
                       >
                         Project Period
                       </TableCell> */}
-                      <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Rate
-                      </TableCell>
-                      <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Conversion Rate
-                      </TableCell>
-                      <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        Action
-                      </TableCell>
-                      <TableCell
-                        style={{ paddingLeft: "0", paddingRight: "0" }}
-                      >
-                        {" "}
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {ProjectData &&
-                      ProjectData.filter((project) => {
-                        if (searchProjectName?.length <= 0) return true;
-                        return project.projectName
-                          .toLowerCase()
-                          .startsWith(searchProjectName.toLowerCase());
-                      }).map((project: ProjectType, index: number) => (
-                        <TableRow key={project._id} className="p-3">
-                          <TableCell
-                            style={{
-                              paddingTop: "0",
-                              paddingBottom: "0",
-                              paddingLeft: "20px",
-                            }}
-                          >
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  checked={projectId.includes(project._id)}
-                                  sx={{
-                                    color: materialTheme.palette.primary.main,
-                                    "&.Mui-checked": {
+                        <TableCell
+                          style={{ paddingLeft: "0", paddingRight: "0" }}
+                        >
+                          Rate
+                        </TableCell>
+                        <TableCell
+                          style={{ paddingLeft: "0", paddingRight: "0" }}
+                        >
+                          Conversion Rate
+                        </TableCell>
+                        <TableCell
+                          style={{ paddingLeft: "0", paddingRight: "0" }}
+                        >
+                          Action
+                        </TableCell>
+                        <TableCell
+                          style={{ paddingLeft: "0", paddingRight: "0" }}
+                        >
+                          {" "}
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {ProjectData &&
+                        ProjectData.filter((project) => {
+                          if (searchProjectName?.length <= 0) return true;
+                          const searchLower = searchProjectName.toLowerCase();
+                          // return project.projectName
+                          //   .toLowerCase()
+                          //   .startsWith(searchProjectName.toLowerCase());
+                          return (
+                            (project.projectName
+                              ?.toLowerCase()
+                              .startsWith(searchLower) ??
+                              false) ||
+                            (project.resumeName
+                              ?.toLowerCase()
+                              .startsWith(searchLower) ??
+                              false)
+                          );
+                        }).map((project: ProjectType, index: number) => (
+                          <TableRow key={project._id} className="p-3">
+                            <TableCell
+                              style={{
+                                paddingTop: "0",
+                                paddingBottom: "0",
+                                paddingLeft: "20px",
+                              }}
+                            >
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    checked={projectId.includes(project._id)}
+                                    sx={{
                                       color: materialTheme.palette.primary.main,
-                                    },
-                                  }}
-                                  onChange={(e) =>
-                                    handleSingleCheckboxChange(
-                                      e,
-                                      index,
-                                      project
-                                    )
-                                  }
-                                />
-                              }
-                              label=""
-                            />
-                          </TableCell>
-                          <TableCell style={{ padding: "0" }}>
-                            {project.projectName}
-                          </TableCell>
-                          <TableCell style={{ padding: "0" }}>
-                            {project.rate}(
-                            {project.currencyType === "rupees" ? (
-                              <span>&#x20B9;</span>
-                            ) : project.currencyType === "dollars" ? (
-                              <span>$</span>
-                            ) : project.currencyType === "pounds" ? (
-                              <span>&#163;</span>
-                            ) : null}
-                            /{project.workingPeriodType})
-                          </TableCell>
-                          <TableCell style={{ padding: "0" }}>
-                            <span>&#x20B9; </span>
-                            {project.conversionRate.toFixed(2)}
-                          </TableCell>
-                          <TableCell style={{ padding: "0" }}>
-                            <div className="flex">
-                              <div className={Styles.editButton}>
-                                <CompoAddProject
-                                  clientId={selectedClientState.data._id}
-                                  adminId={adminId}
-                                  forAddProject={false}
-                                  projectToEdit={project}
-                                  handleProjectEdit={handleEditProject}
-                                />
+                                      "&.Mui-checked": {
+                                        color: materialTheme.palette.primary.main,
+                                      },
+                                    }}
+                                    onChange={(e) =>
+                                      handleSingleCheckboxChange(
+                                        e,
+                                        index,
+                                        project
+                                      )
+                                    }
+                                  />
+                                }
+                                label=""
+                              />
+                            </TableCell>
+                            <TableCell style={{ padding: "0" }}>
+                              {project.resumeName}
+                            </TableCell>
+                            <TableCell style={{ padding: "0" }}>
+                              {project.projectName}
+                            </TableCell>
+                            <TableCell style={{ padding: "0" }}>
+                              {project.rate}(
+                              {project.currencyType === "rupees" ? (
+                                <span>&#x20B9;</span>
+                              ) : project.currencyType === "dollars" ? (
+                                <span>$</span>
+                              ) : project.currencyType === "pounds" ? (
+                                <span>&#163;</span>
+                              ) : null}
+                              /{project.workingPeriodType})
+                            </TableCell>
+                            <TableCell style={{ padding: "0" }}>
+                              <span>&#x20B9; </span>
+                              {project.conversionRate.toFixed(2)}
+                            </TableCell>
+                            <TableCell style={{ padding: "0" }}>
+                              <div className="flex">
+                                <div className={Styles.editButton}>
+                                  <CompoAddProject
+                                    clientId={selectedClientState.data._id}
+                                    adminId={adminId}
+                                    forAddProject={false}
+                                    projectToEdit={project}
+                                    handleProjectEdit={handleEditProject}
+                                  />
+                                </div>
+                                <div className={Styles.editButton}>
+                                  <ActionConfirmer
+                                    actionTag="Delete"
+                                    actionFunction={handleProjectDelete}
+                                    parameter={project._id}
+                                  />
+                                </div>
                               </div>
-                              <div className={Styles.editButton}>
-                                <ActionConfirmer
-                                  actionTag="Delete"
-                                  actionFunction={handleProjectDelete}
-                                  parameter={project._id}
-                                />
-                              </div>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+            )}
         </>
       )}
       {ProjectData && projectTableforClient && (

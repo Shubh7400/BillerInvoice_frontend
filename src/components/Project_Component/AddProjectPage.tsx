@@ -35,14 +35,14 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  Card, CardMedia
+  Card,
+  CardMedia,
 } from "@mui/material";
 import { Typography,  Box} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 interface ImageConverterProps {
   selectedProjectData: ProjectType;
 }
-
 
 function AddProjectPage({
   adminId,
@@ -92,6 +92,7 @@ function AddProjectPage({
     user: client.user,
     sameState: client.sameState,
     contactNo: client.contactNo,
+
   }));
 
   const handleToAddClick = () => {
@@ -122,6 +123,7 @@ function AddProjectPage({
   const [projectData, setProjectData] = useState<ProjectType>({
     _id: "",
     projectName: "",
+    resumeName: "",
     rate: 0,
     workingPeriodType: "hours",
     currencyType: "rupees",
@@ -139,7 +141,7 @@ function AddProjectPage({
     startDate: "",
     endDate: "",
     files: [],
-    uploadedFiles: []
+    uploadedFiles: [],
   });
 
   const {
@@ -155,6 +157,7 @@ function AddProjectPage({
         adminId: selectedProjectData.adminId,
         clientId: selectedProjectData.clientId,
         projectName: selectedProjectData.projectName,
+        resumeName: selectedProjectData.resumeName,
         rate: selectedProjectData.rate,
         workingPeriodType: selectedProjectData.workingPeriodType,
         currencyType: selectedProjectData.currencyType,
@@ -337,6 +340,10 @@ function AddProjectPage({
       setFormError("Project name compulsary*");
       return false;
     }
+    if (obj.resumeName === "") {
+      setFormError("Resume name compulsary*");
+      return false;
+    }
     if (obj.conversionRate === "") {
       setProjectData({ ...obj, conversionRate: 1 });
     }
@@ -455,6 +462,7 @@ function AddProjectPage({
       setProjectData({
         _id: "",
         projectName: "",
+        resumeName: "",
         rate: 0,
         workingPeriodType: "hours",
         currencyType: "rupees",
@@ -531,14 +539,13 @@ function AddProjectPage({
   };
 
   const handleDeleteFile = (filename: string) => {
-    const projectId = selectedProjectData?._id;  // Get project ID
+    const projectId = selectedProjectData?._id; // Get project ID
     if (projectId) {
       dispatch(deleteFileFromProjectAction({ projectId, filename }));
     } else {
-      console.error('Project ID is missing');
+      console.error("Project ID is missing");
     }
   };
-
 
   return (
     <>
@@ -637,6 +644,20 @@ function AddProjectPage({
               onChange={handleChange}
               required
             />
+
+            <TextField
+              margin="dense"
+              id="resumeName"
+              label="Resume Name"
+              type="text"
+              fullWidth
+              variant="outlined"
+              name="resumeName"
+              value={projectData.resumeName}
+              onChange={handleChange}
+              required
+            />
+
             <div className="flex gap-2">
               <TextField
                 select
@@ -774,7 +795,6 @@ function AddProjectPage({
               name="technology"
               value={projectData.technology}
               onChange={handleChange}
-
             />
 
             <FormControl component="fieldset" margin="dense" fullWidth>
@@ -802,6 +822,7 @@ function AddProjectPage({
                 }}
                 fullWidth
               />
+
               {!forAddProject && (
                 <Box
                   sx={{
@@ -919,7 +940,7 @@ function AddProjectPage({
             <TextField
               margin="dense"
               id="candidateName"
-              label="Candidate / Resource Name"
+              label="Candidate"
               type="text"
               fullWidth
               variant="outlined"
@@ -980,7 +1001,11 @@ function AddProjectPage({
               onClick={(e) => handleAddSubmit(e)}
               disabled={loading} 
               style={{
-                backgroundColor: loading ? "#a5a5a5" : isHovered ? "#4a6180" : "#d9a990",
+                backgroundColor: loading
+                  ? "#a5a5a5"
+                  : isHovered
+                  ? "#4a6180"
+                  : "#d9a990",
                 borderRadius: "20px",
                 padding: "5px 15px",
                 color: "#fff",
@@ -993,12 +1018,15 @@ function AddProjectPage({
               {loading ? "Adding..." : "Add Project"}
             </Button>
           ) : (
-
             <Button
               onClick={(e) => handleEditSubmit(e)}
               disabled={loading} 
               style={{
-                backgroundColor: loading ? "#a5a5a5" : isHovered ? "#4a6180" : "#d9a990",
+                backgroundColor: loading
+                  ? "#a5a5a5"
+                  : isHovered
+                  ? "#4a6180"
+                  : "#d9a990",
                 borderRadius: "20px",
                 padding: "5px 15px",
                 color: "#fff ",
@@ -1010,7 +1038,6 @@ function AddProjectPage({
             >
               {loading ? "Updating..." : "Edit Project"} 
             </Button>
-
           )}
         </DialogActions>
       </div>
