@@ -35,7 +35,7 @@ function InvoiceListPage() {
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
   const materialTheme = useTheme();
-  const {  adminId } = useContext(AuthContext);
+  const { adminId } = useContext(AuthContext);
   const searchParams = new URLSearchParams(location.search);
   const selectedYear = searchParams.get("year");
   const selectedMonth = searchParams.get("month");
@@ -50,7 +50,7 @@ function InvoiceListPage() {
 
   useEffect(() => {
     if (selectedYear && selectedMonth) {
-      dispatch(clearInvoices()); 
+      dispatch(clearInvoices());
       dispatch(
         fetchInvoicesThunk({ year: selectedYear, month: selectedMonth })
       );
@@ -64,22 +64,22 @@ function InvoiceListPage() {
   }, [dispatch, adminId]);
   const [showView, setShowView] = useState(false);
   const [tempImgData, setTempImgData] = useState("");
-  const [searchInvoiceProject,setSearchInvoiceProject] = useState("");
+  const [searchInvoiceProject, setSearchInvoiceProject] = useState("");
   const ViewAndPreviewPDF = async (invoice: Invoice) => {
     setShowView(true);
     const div = document.createElement("div");
     div.style.width = "1050px";
     div.style.height = "1124px";
     div.style.position = "absolute";
-    div.style.top = "-9999px"; 
+    div.style.top = "-9999px";
     document.body.appendChild(div);
 
     const root = createRoot(div);
     root.render(
       <Provider store={store}>
-        <DownloadPreview 
-        invoice={invoice} 
-        showPreview={false}
+        <DownloadPreview
+          invoice={invoice}
+          showPreview={false}
         />
       </Provider>
     );
@@ -116,23 +116,23 @@ function InvoiceListPage() {
           </Typography>
         </div>
         <div className={Styles.search_input}>
-            <TextField
-              label="Search by Project name"
-              type="text"
-              variant="outlined"
-              value={searchInvoiceProject || ""}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setSearchInvoiceProject(e.target.value)
-              }
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "50px",
-                },
-              }}
-            />
+          <TextField
+            label="Search by Project name"
+            type="text"
+            variant="outlined"
+            value={searchInvoiceProject || ""}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setSearchInvoiceProject(e.target.value)
+            }
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "50px",
+              },
+            }}
+          />
         </div>
       </div>
-     
+
 
       {showView ? (
         <div className="w-screen h-[900px] sm:h-[1200px] absolute top-[0px] right-[0] z-[100] bg-[#989fce] bg-opacity-80">
@@ -182,59 +182,68 @@ function InvoiceListPage() {
                         if (searchInvoiceProject.trim().length === 0) return true;
 
                         const searchLower = searchInvoiceProject.toLowerCase();
-                      
+
                         return (
                           (invoice.projectName?.toLowerCase().startsWith(searchLower) ?? false) ||
                           (invoice.clientDetails?.clientName?.toLowerCase().startsWith(searchLower) ?? false) ||
                           (invoice.resumeName?.toLowerCase().startsWith(searchLower) ?? false)
                         );
                       })
-                      
-                      .map((invoice, index) => {
-                        if (!invoice) return null;
-                        return (
-                          <TableRow key={invoice._id}>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>{invoice.invoiceNo}</TableCell>
-                            <TableCell>{invoice.clientDetails?.clientName}</TableCell>
-                            <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
-                              {invoice.resumeName || ""}
-                            </TableCell>
-                            <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
-                              {invoice.projectName || "Unnamed Project"}
-                            </TableCell>
-                            <TableCell>
-                              {invoice.rate}(
-                              {invoice.currencyType === "rupees" ? (
-                                <span>&#x20B9;</span>
-                              ) : invoice.currencyType === "dollars" ? (
-                                <span>$</span>
-                              ) : invoice.currencyType === "pounds" ? (
-                                <span>&#163;</span>
-                              ) : null}
-                              /{invoice.workingPeriodType})
-                            </TableCell>
-                            <TableCell>&#x20B9; {invoice.conversionRate?invoice.conversionRate.toFixed(2): 'N/A'}</TableCell>
-                            <TableCell>&#x20B9; {invoice.conversionRate ?invoice.amountAfterTax.toFixed(2): 'N/A'}</TableCell>
-                            <TableCell>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => ViewAndPreviewPDF(invoice)}
-                                sx={{
-                                  backgroundColor: "#d9a990",
-                                  borderRadius: "20px",
-                                  ":hover": {
-                                    backgroundColor: "#4a6180",
-                                  },
-                                }}
-                              >
-                                View
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })
+
+                        .map((invoice, index) => {
+                          if (!invoice) return null;
+                          return (
+                            <TableRow key={invoice._id}>
+                              <TableCell>{index + 1}</TableCell>
+                              <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>{invoice.invoiceNo}</TableCell>
+                              <TableCell>{invoice.clientDetails?.clientName}</TableCell>
+                              <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                                {invoice.resumeName || ""}
+                              </TableCell>
+                              <TableCell style={{ paddingLeft: "0", paddingRight: "0" }}>
+                                {invoice.projectName || "Unnamed Project"}
+                              </TableCell>
+                              <TableCell>
+                                {invoice.rate}(
+                                {invoice.currencyType === "rupees" ? (
+                                  <span>&#x20B9;</span>
+                                ) : invoice.currencyType === "dollars" ? (
+                                  <span>$</span>
+                                ) : invoice.currencyType === "pounds" ? (
+                                  <span>&#163;</span>
+                                ) : null}
+                                /{invoice.workingPeriodType})
+                              </TableCell>
+                              <TableCell sx={{ paddingX: "16px", width: "auto" }}>
+                                {invoice.currencyType === "rupees" ? (
+                                  <span>NA</span>
+                                ) : (
+                                  <span>
+                                    &#x20B9; {(invoice?.conversionRate ?? 0).toFixed(2)}
+                                  </span>
+                                )}
+                              </TableCell>
+
+                              <TableCell>&#x20B9; {invoice.conversionRate ? invoice.amountAfterTax.toFixed(2) : 'N/A'}</TableCell>
+                              <TableCell>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => ViewAndPreviewPDF(invoice)}
+                                  sx={{
+                                    backgroundColor: "#d9a990",
+                                    borderRadius: "20px",
+                                    ":hover": {
+                                      backgroundColor: "#4a6180",
+                                    },
+                                  }}
+                                >
+                                  View
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
                     ) : (
                       <TableRow>
                         <TableCell colSpan={8} style={{ textAlign: "center", padding: "20px" }}>

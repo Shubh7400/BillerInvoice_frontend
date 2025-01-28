@@ -250,7 +250,10 @@ const DownloadPreview = ({
                         ))}
                     </>
                     <th className="px-2 pb-4">SAC CODE</th>
-                    <th className="px-2 pb-4">Conversion Rate</th>
+                    {
+                      invoice.currencyType !== "rupees" &&
+                      <th className="px-2 pb-4">Conversion Rate</th>
+                    }
                     <th className="px-2 pb-4">Subtotal</th>
                   </tr>
                 </thead>
@@ -274,11 +277,16 @@ const DownloadPreview = ({
                           ) : (
                             <th className="px-2 pb-4">Working Hours</th>
                           ))}
+                        <th className="px-2 pb-4">SAC CODE</th>
+                        {
+                          project.currencyType !== "rupees" &&
+                          <th className="px-2 pb-4">Conversion Rate</th>
+                        }
+                        <th className="px-2 pb-4">Subtotal</th>
                       </>
+
                     ))}
-                    <th className="px-2 pb-4">SAC CODE</th>
-                    <th className="px-2 pb-4">Conversion Rate</th>
-                    <th className="px-2 pb-4">Subtotal</th>
+
                   </tr>
                 </thead>
               )}
@@ -327,9 +335,12 @@ const DownloadPreview = ({
                   <td className="border px-2 pb-4 text-center">
                     {invoice.sacNo}
                   </td>
-                  <td className="border px-2 pb-4 text-center">
-                    &#x20B9; {invoice.conversionRate.toFixed(2)}
-                  </td>
+                  {
+                    invoice.currencyType !== "rupees" &&
+                    <td className="border px-2 pb-4 text-center">
+                      &#x20B9; {invoice.conversionRate.toFixed(2)}
+                    </td>
+                  }
                   <td className="border px-2 pb-4 text-center">
                     &#x20B9; {invoice.amountWithoutTax?.toFixed(2)}
                   </td>
@@ -381,9 +392,12 @@ const DownloadPreview = ({
                       <td className="border px-2 pb-4 text-center">
                         {project.sacNo}
                       </td>
-                      <td className="border px-2 pb-4 text-center">
-                        &#x20B9;{project.conversionRate.toFixed(2)}
-                      </td>
+                      {
+                        project.currencyType !== "rupees" &&
+                        <td className="border px-2 pb-4 text-center">
+                          &#x20B9; {project.conversionRate.toFixed(2)}
+                        </td>
+                      }
                       <td className="border px-2 pb-4 text-center">
                         &#x20B9; {project.amount?.toFixed(2)}
                       </td>

@@ -38,7 +38,7 @@ import {
   Card,
   CardMedia,
 } from "@mui/material";
-import { Typography,  Box} from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 interface ImageConverterProps {
   selectedProjectData: ProjectType;
@@ -181,7 +181,7 @@ function AddProjectPage({
   interface FileData {
     name: string;
     file: File;
-    url: string; 
+    url: string;
   }
 
   const fetchExchangeRate = async () => {
@@ -189,19 +189,19 @@ function AddProjectPage({
     setRateError("");
     try {
       const response = await axios.get(
-        `https://api.exchangerate-api.com/v4/latest/USD` 
+        `https://api.exchangerate-api.com/v4/latest/USD`
       );
 
       const rates = response.data.rates;
       if (currencyType === "dollars") {
-        setConversionRate(rates.INR); 
+        setConversionRate(rates.INR);
         setProjectData((prevData) => ({
           ...prevData,
           currencyType: "dollars",
           conversionRate: rates.INR,
         }));
       } else if (currencyType === "pounds") {
-        setConversionRate(rates.INR / rates.GBP); 
+        setConversionRate(rates.INR / rates.GBP);
         setProjectData((prevData) => ({
           ...prevData,
           currencyType: "pounds",
@@ -253,13 +253,13 @@ function AddProjectPage({
       const files = e.target.files;
       const updatedFiles = Array.from(files).map((file) => ({
         name: file.name,
-        file: file, 
-        url: URL.createObjectURL(file), 
+        file: file,
+        url: URL.createObjectURL(file),
       }));
 
       setProjectData((prevData) => ({
         ...prevData,
-        files: [...(prevData.files || []), ...updatedFiles], 
+        files: [...(prevData.files || []), ...updatedFiles],
       }));
       return;
     }
@@ -502,41 +502,75 @@ function AddProjectPage({
 
   const [startDateError, setStartDateError] = useState(false);
   const [endDateError, setEndDateError] = useState(false);
+  const [startMonthError, setStartMonthError] = React.useState(false);
+  const [endMonthError, setEndMonthError] = React.useState(false);
+
 
   const handleDateChange = (field: string, value: dayjs.Dayjs | null) => {
     if (!value) {
+      // If the date is null, reset the field and errors
       setProjectData((prevData) => ({ ...prevData, [field]: null }));
       if (field === "startDate") {
         setStartDateError(false);
+        setStartMonthError(false);
       }
       if (field === "endDate") {
         setEndDateError(false);
+        setEndMonthError(false);
       }
-    } else {
+      return;
+    }
+
+    // Retain partially entered date
+    const isPartialDate = !value.isValid();
+    if (isPartialDate) {
       setProjectData((prevData) => ({
         ...prevData,
-        [field]: value.toISOString(),
+        [field]: value.toString(),
       }));
-      if (field === "startDate") {
-        if (projectData.endDate && value.isAfter(dayjs(projectData.endDate))) {
-          setStartDateError(true);
-        } else {
-          setStartDateError(false);
-        }
-      }
+      return;
+    }
 
-      if (field === "endDate") {
-        if (
-          projectData.startDate &&
-          value.isBefore(dayjs(projectData.startDate))
-        ) {
-          setEndDateError(true);
-        } else {
-          setEndDateError(false);
-        }
+    // Validate the month (Day.js months are 0-indexed: 0 = January, 11 = December)
+    const month = value.month() + 1; // Convert to 1-indexed month for user display
+    if (month < 1 || month > 12) {
+      if (field === "startDate") setStartMonthError(true);
+      if (field === "endDate") setEndMonthError(true);
+      return;
+    } else {
+      if (field === "startDate") setStartMonthError(false);
+      if (field === "endDate") setEndMonthError(false);
+    }
+
+    // Update the date if valid
+    setProjectData((prevData) => ({
+      ...prevData,
+      [field]: value.toISOString(),
+    }));
+
+    // Validate start date
+    if (field === "startDate") {
+      if (projectData.endDate && value.isAfter(dayjs(projectData.endDate))) {
+        setStartDateError(true);
+      } else {
+        setStartDateError(false);
+      }
+    }
+
+    // Validate end date
+    if (field === "endDate") {
+      if (
+        projectData.startDate &&
+        value.isBefore(dayjs(projectData.startDate))
+      ) {
+        setEndDateError(true);
+      } else {
+        setEndDateError(false);
       }
     }
   };
+
+
 
   const handleDeleteFile = (filename: string) => {
     const projectId = selectedProjectData?._id; // Get project ID
@@ -838,7 +872,7 @@ function AddProjectPage({
                     sx={{
                       display: "flex",
                       flexWrap: "wrap",
-                      gap: "16px", 
+                      gap: "16px",
                       justifyContent: "start",
                       alignItems: "center",
                     }}
@@ -847,8 +881,8 @@ function AddProjectPage({
                       <Card
                         key={index}
                         sx={{
-                          width: 150, 
-                          height: file.imageUrl ? 200 : 100, 
+                          width: 150,
+                          height: file.imageUrl ? 200 : 100,
                           display: "flex",
                           flexDirection: file.imageUrl ? "column" : "row",
                           justifyContent: file.imageUrl ? "space-between" : "center",
@@ -859,13 +893,13 @@ function AddProjectPage({
                           transition: "transform 0.3s",
                           backgroundColor: file.imageUrl
                             ? "white"
-                            : "#f8d7da", 
+                            : "#f8d7da",
                           color: file.imageUrl ? "inherit" : "#721c24",
                           border: file.imageUrl ? "none" : "1px solid #f5c6cb",
                           "&:hover": {
-                            transform: "scale(1.05)", 
+                            transform: "scale(1.05)",
                           },
-                          position: "relative", 
+                          position: "relative",
                         }}
                       >
                         {/* Delete Icon */}
@@ -898,7 +932,7 @@ function AddProjectPage({
                               alt={file.filename}
                               sx={{
                                 maxHeight: "120px",
-                                objectFit: "contain", 
+                                objectFit: "contain",
                                 marginBottom: "8px",
                               }}
                             />
@@ -910,7 +944,7 @@ function AddProjectPage({
                                 textOverflow: "ellipsis",
                                 whiteSpace: "nowrap",
                               }}
-                              title={file.filename} 
+                              title={file.filename}
                             >
                               <a
                                 href={file.viewUrl}
@@ -949,7 +983,6 @@ function AddProjectPage({
               onChange={handleChange}
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              {" "}
               <div
                 style={{ display: "flex", gap: "16px", alignItems: "center" }}
               >
@@ -958,18 +991,20 @@ function AddProjectPage({
                   value={
                     projectData.startDate ? dayjs(projectData.startDate) : null
                   }
-                  onChange={(newValue) =>
-                    handleDateChange("startDate", newValue)
-                  }
+                  onChange={(newValue) => handleDateChange("startDate", newValue)}
+                  format="MM/DD/YYYY"
+                  disableOpenPicker={false}
                   slotProps={{
                     textField: {
                       variant: "outlined",
                       fullWidth: true,
                       margin: "normal",
-                      error: startDateError, 
-                      helperText: startDateError
-                        ? "Start date should be less than end date"
-                        : "",
+                      error: startDateError || startMonthError,
+                      helperText: startMonthError
+                        ? "Month must be between 1 and 12"
+                        : startDateError
+                          ? "Start date should be less than end date"
+                          : "",
                     },
                   }}
                 />
@@ -979,33 +1014,41 @@ function AddProjectPage({
                     projectData.endDate ? dayjs(projectData.endDate) : null
                   }
                   onChange={(newValue) => handleDateChange("endDate", newValue)}
+                  format="MM/DD/YYYY"
+                  disableOpenPicker={false}
                   slotProps={{
                     textField: {
                       variant: "outlined",
                       fullWidth: true,
                       margin: "normal",
-                      error: endDateError, 
-                      helperText: endDateError
-                        ? "End date should be greater than start date"
-                        : "",
+                      error: endDateError || endMonthError,
+                      helperText: endMonthError
+                        ? "Month must be between 1 and 12"
+                        : endDateError
+                          ? "End date should be greater than start date"
+                          : "",
                     },
                   }}
                 />
               </div>
             </LocalizationProvider>
+
+
+
+
           </form>
         </DialogContent>
         <DialogActions>
           {forAddProject && !toEdit ? (
             <Button
               onClick={(e) => handleAddSubmit(e)}
-              disabled={loading} 
+              disabled={loading}
               style={{
                 backgroundColor: loading
                   ? "#a5a5a5"
                   : isHovered
-                  ? "#4a6180"
-                  : "#d9a990",
+                    ? "#4a6180"
+                    : "#d9a990",
                 borderRadius: "20px",
                 padding: "5px 15px",
                 color: "#fff",
@@ -1020,13 +1063,13 @@ function AddProjectPage({
           ) : (
             <Button
               onClick={(e) => handleEditSubmit(e)}
-              disabled={loading} 
+              disabled={loading}
               style={{
                 backgroundColor: loading
                   ? "#a5a5a5"
                   : isHovered
-                  ? "#4a6180"
-                  : "#d9a990",
+                    ? "#4a6180"
+                    : "#d9a990",
                 borderRadius: "20px",
                 padding: "5px 15px",
                 color: "#fff ",
@@ -1036,7 +1079,7 @@ function AddProjectPage({
               onMouseEnter={() => !loading && setIsHovered(true)}
               onMouseLeave={() => !loading && setIsHovered(false)}
             >
-              {loading ? "Updating..." : "Edit Project"} 
+              {loading ? "Updating..." : "Edit Project"}
             </Button>
           )}
         </DialogActions>

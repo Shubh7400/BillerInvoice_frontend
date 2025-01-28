@@ -50,14 +50,7 @@ function InvoiceClientPage() {
     (state: RootState) => state.projectsForInvoiceState
   );
 
-  const handleRemoveProject = (project: ProjectType) => {
-    if (project && project._id) {
-      dispatch(removeProjectFromInvoiceAction(project._id));
-      setTimeout(() => {
-        navigate(-1);
-      }, 600);
-    }
-  };
+  
 
   const navigate = useNavigate();
   const [editableProjects, setEditableProjects] = useState(projectsForInvoice);
@@ -577,12 +570,17 @@ function InvoiceClientPage() {
                             Working Hours
                           </TableCell>
                         ))}
+                      <TableCell className="w-[175px]">SAC Code</TableCell>
+                      {
+                        project.currencyType !== "rupees" &&
+                        <TableCell className="w-[110px]">Conversion Rate</TableCell>
+                      }
+
+                      <TableCell className="w-[110px]">Subtotal</TableCell>
+                     
                     </>
                   ))}
-                  <TableCell className="w-[175px]">SAC Code</TableCell>
-                  <TableCell className="w-[175px]">Conversion Rate</TableCell>
-                  <TableCell className="w-[110px]">Subtotal</TableCell>
-                  <TableCell className="w-[110px]">Remove</TableCell>
+
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -601,8 +599,6 @@ function InvoiceClientPage() {
                           const target = e.target as HTMLInputElement;
                           handleInputChange(project._id ?? "", "projectName", target.value);
                         }}
-                        // multiline
-                        // rows={4}  // You can adjust this to fit your needs
                       />
                     </TableCell>
 
@@ -621,28 +617,25 @@ function InvoiceClientPage() {
                               {project.currencyType === "rupees"
                                 ? project.workingPeriodType === "fixed"
                                   ? "₹/fixed"
-                                  : `₹/${
-                                      project.workingPeriodType === "hours"
-                                        ? "hours"
-                                        : "months"
-                                    }`
+                                  : `₹/${project.workingPeriodType === "hours"
+                                    ? "hours"
+                                    : "months"
+                                  }`
                                 : project.currencyType === "dollars"
-                                ? project.workingPeriodType === "fixed"
-                                  ? "$/fixed"
-                                  : `$/${
-                                      project.workingPeriodType === "hours"
+                                  ? project.workingPeriodType === "fixed"
+                                    ? "$/fixed"
+                                    : `$/${project.workingPeriodType === "hours"
+                                      ? "hours"
+                                      : "months"
+                                    }`
+                                  : project.currencyType === "pounds"
+                                    ? project.workingPeriodType === "fixed"
+                                      ? "£/fixed"
+                                      : `£/${project.workingPeriodType === "hours"
                                         ? "hours"
                                         : "months"
-                                    }`
-                                : project.currencyType === "pounds"
-                                ? project.workingPeriodType === "fixed"
-                                  ? "£/fixed"
-                                  : `£/${
-                                      project.workingPeriodType === "hours"
-                                        ? "hours"
-                                        : "months"
-                                    }`
-                                : ""}
+                                      }`
+                                    : ""}
                             </Typography>
                           ),
                         }}
@@ -653,15 +646,14 @@ function InvoiceClientPage() {
                       <TableCell className="text-[13px] w-[150px]">
                         <Typography variant="body2">
                           {project.ratePerDay
-                            ? ` ${
-                                project.currencyType === "rupees"
-                                  ? "₹"
-                                  : project.currencyType === "dollars"
-                                  ? "$"
-                                  : project.currencyType === "pounds"
+                            ? ` ${project.currencyType === "rupees"
+                              ? "₹"
+                              : project.currencyType === "dollars"
+                                ? "$"
+                                : project.currencyType === "pounds"
                                   ? "£"
                                   : ""
-                              } ${project.ratePerDay.toFixed(2)}`
+                            } ${project.ratePerDay.toFixed(2)}`
                             : "NA"}
                         </Typography>
                       </TableCell>
@@ -745,30 +737,28 @@ function InvoiceClientPage() {
 
 
 
+                    {
+                      project.currencyType !== "rupees" && (
+                        <TableCell className="text-[13px] w-[150px] ">
+                          <div className="relative">
+                            <TextField
+                              variant="outlined"
+                              size="small"
+                              value={project.conversionRate.toFixed(2)}
+                              onChange={(e) => fetchExchangeRate(project._id ?? "")}
+                              InputProps={{
+                                startAdornment: (
+                                  <span>
+                                    {project.currencyType === "dollars"
+                                      ? "$"
+                                      : project.currencyType === "pounds"
+                                        ? "£"
+                                        : ""}
+                                  </span>
 
-                    <TableCell className="text-[13px] w-[150px] ">
-                      <div className="relative">
-                        <TextField
-                          variant="outlined"
-                          size="small"
-                          value={project.conversionRate.toFixed(2)}
-                          onChange={(e) => fetchExchangeRate(project._id ?? "")}
-                          InputProps={{
-                            startAdornment: (
-                              <span>
-                                {project.currencyType === "rupees"
-                                  ? "₹"
-                                  : project.currencyType === "dollars"
-                                  ? "$"
-                                  : project.currencyType === "pounds"
-                                  ? "£"
-                                  : ""}
-                              </span>
-                            ),
-                          }}
-                        />
-                        {project.currencyType !== "rupees" ? (
-                          <>
+                                ),
+                              }}
+                            />
                             <Button
                               onClick={() => fetchExchangeRate(project._id!)}
                               disabled={loadingRate}
@@ -784,20 +774,13 @@ function InvoiceClientPage() {
                               <MdOutlineReplay />
                             </Button>
                             {rateError && <p>{rateError}</p>}
-                          </>
-                        ) : null}
-                      </div>
-                    </TableCell>
+                          </div>
+                        </TableCell>
+                      )
+                    }
+
                     <TableCell className="text-[13px]w-[110px]">
                       &#x20B9;{project.amount ? project.amount.toFixed(2) : 0}
-                    </TableCell>
-                    <TableCell className="w-[110px]">
-                      <Button
-                        onClick={() => handleRemoveProject(project)}
-                        className={Styles.removeButton}
-                      >
-                        <RxCross1 />
-                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

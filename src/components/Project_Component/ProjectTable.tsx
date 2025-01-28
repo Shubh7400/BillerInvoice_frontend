@@ -474,9 +474,15 @@ const ProjectTable = ({
                           </TableCell>
 
                           <TableCell sx={{ paddingX: "16px", width: "auto" }}>
-                            <span>&#x20B9; </span>
-                            {(project?.conversionRate ?? 0).toFixed(2)}
+                            {project.currencyType === "rupees" ? (
+                              <span>NA</span>
+                            ) : (
+                              <span>
+                                &#x20B9; {(project?.conversionRate ?? 0).toFixed(2)}
+                              </span>
+                            )}
                           </TableCell>
+
 
                           <TableCell sx={{ paddingX: "16px", width: "255px" }}>
                             <div className="flex">
@@ -920,10 +926,16 @@ const ProjectTable = ({
                               ) : null}
                               /{project.workingPeriodType})
                             </TableCell>
-                            <TableCell style={{ padding: "0" }}>
-                              <span>&#x20B9; </span>
-                              {project.conversionRate.toFixed(2)}
+                            <TableCell sx={{ paddingX: "16px", width: "auto" }}>
+                              {project.currencyType === "rupees" ? (
+                                <span>NA</span>
+                              ) : (
+                                <span>
+                                  &#x20B9; {(project?.conversionRate ?? 0).toFixed(2)}
+                                </span>
+                              )}
                             </TableCell>
+
                             <TableCell style={{ padding: "0" }}>
                               <div className="flex">
                                 <div className={Styles.editButton}>
