@@ -73,6 +73,7 @@ export interface ProjectType {
   timeSheet?:string | undefined;
   candidateName?: string | undefined;
   sacNo?: number | null;
+  description?: string| undefined;
   startDate?: string | undefined;
   endDate?: string | undefined;
   files?: FileData[]; 
@@ -102,6 +103,7 @@ export interface UpdateProjectDataType {
   timeSheet?:string | undefined;
   candidateName?: string | undefined;
   sacNo?: number | null;
+  description?: string|undefined;
   startDate?: string | undefined;
   endDate?: string | undefined;
   files?: FileData[]; 
@@ -162,6 +164,7 @@ export interface InvoiceType {
   amount?: number | null;
   advanceAmount?: number | null;
   sacNo?: number | null;
+  description?: string| undefined;
   candidateName?: string | undefined;
   workingPeriod?: number | null;
   ratePerDay?: number |null;  

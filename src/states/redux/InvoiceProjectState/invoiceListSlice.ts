@@ -14,6 +14,7 @@ export interface Invoice {
   taxAmount:number;
   grandTotal?: number;
   sacNo?: number ;
+  description?: string;
   projectName: string;
   resumeName: string;
   rate: number;

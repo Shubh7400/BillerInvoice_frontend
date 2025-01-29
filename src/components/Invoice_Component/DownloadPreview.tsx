@@ -297,7 +297,7 @@ const DownloadPreview = ({
                 <tr className="text-black">
                   <td className="border px-2 pb-4 text-center">{1}</td>
                   <td className="border px-2 pb-4 text-center">
-                    {`${invoice.resumeName} - ${invoice.projectName} `}
+                    {`${invoice.description}`}
                   </td>
                   <td className="border px-2 pb-4 text-center">
                     {invoice.rate}(
@@ -354,7 +354,7 @@ const DownloadPreview = ({
                       <td className="border px-2 pb-4 text-center">{index + 1}</td>
                       <td className="border px-2 pb-4 text-center">
 
-                        {`${project.resumeName} - ${project.projectName}`}
+                        {`${project.description}`}
                       </td>
                       <td className="border px-2 pb-4 text-center">
                         {project.rate}(
@@ -445,9 +445,9 @@ const DownloadPreview = ({
                 invoice.taxType !== "" && (
                   <div className="flex justify-between mb-[10px]">
                     {invoice.taxType === 'igst' ? (
-                      <span>IGST:</span>
+                      <span>IGST @18% :</span>
                     ) : invoice.taxType === 'sgst_cgst' ? (
-                      <span>SGST/CGST:</span>
+                      <span>SGST/CGST @18% :</span>
                     ) : null}
                     <span>&#8377;{invoice.taxAmount.toFixed(2)}</span>
                   </div>
@@ -456,9 +456,9 @@ const DownloadPreview = ({
                 invoiceObject.taxType !== "" && (
                   <div className="flex justify-between mb-[10px]">
                     {invoiceObject.taxType === 'igst' ? (
-                      <span>IGST:</span>
+                      <span>IGST @18% :</span>
                     ) : invoiceObject.taxType === 'sgst_cgst' ? (
-                      <span>SGST/CGST:</span>
+                      <span>SGST/CGST @18%:</span>
                     ) : null}
                     <span>&#8377;{taxAmount.toFixed(2)}</span>
                   </div>
