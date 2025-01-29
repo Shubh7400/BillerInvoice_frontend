@@ -297,7 +297,7 @@ const DownloadPreview = ({
                 <tr className="text-black">
                   <td className="border px-2 pb-4 text-center">{1}</td>
                   <td className="border px-2 pb-4 text-center">
-                    {`${invoice.description}`}
+                    {`${invoice.description ?? ""}`}
                   </td>
                   <td className="border px-2 pb-4 text-center">
                     {invoice.rate}(
@@ -354,7 +354,7 @@ const DownloadPreview = ({
                       <td className="border px-2 pb-4 text-center">{index + 1}</td>
                       <td className="border px-2 pb-4 text-center">
 
-                        {`${project.description}`}
+                      {`${project.description ?? ""}`}
                       </td>
                       <td className="border px-2 pb-4 text-center">
                         {project.rate}(

@@ -567,9 +567,7 @@ function InvoiceClientPage() {
             component={Paper}
             className={`${Styles.table_scroll}`}
           >
-            <Table
-              sx={{ minWidth: "1500px" }}
-            >
+            <Table sx={{ minWidth: "1500px" }}>
               <TableHead className={Styles.animated}>
                 <TableRow>
                   <TableCell className="w-[300px]">Description</TableCell>
@@ -632,7 +630,7 @@ function InvoiceClientPage() {
                         variant="outlined"
                         size="small"
                         type="text"
-                        value={project.description || ""}
+                        value={project.description ?? ""}
                         onChange={(e) => {
                           handleInputChange(
                             project._id ?? "",
@@ -656,7 +654,7 @@ function InvoiceClientPage() {
                           startAdornment: (
                             <Typography
                               variant="body2"
-                              style={{ marginLeft: "8px", marginRight: "6px"}}
+                              style={{ marginLeft: "8px", marginRight: "6px" }}
                             >
                               {project.currencyType === "rupees"
                                 ? "₹"
