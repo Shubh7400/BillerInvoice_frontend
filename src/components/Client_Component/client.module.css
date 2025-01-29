@@ -4,7 +4,9 @@
 	height: 75vh;
 	background: #F5F5F5;
 	overflow-y: auto;
+    overflow-x: auto;
     border-radius: 20px;
+    white-space: nowrap;
 }
 .table_scroll::-webkit-scrollbar-track
 {

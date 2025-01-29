@@ -161,6 +161,7 @@ function InvoiceClientPage() {
               ratePerDay: updatedProject.ratePerDay,
               workingPeriodType: updatedProject.workingPeriodType,
               sacNo: updatedProject.sacNo,
+              description: updatedProject.description,
               actualDays: updatedProject.actualDays,
             })
           );
@@ -222,6 +223,7 @@ function InvoiceClientPage() {
               updatedProject.advanceAmount?.toString() || "0"
             );
             formData.append("sacNo", updatedProject.sacNo?.toString() || "0");
+            formData.append("description", updatedProject.description || "");
 
             const mutationData = {
               projectId: updatedProject._id,
@@ -413,7 +415,7 @@ function InvoiceClientPage() {
     };
     dispatch(updateProjectForInvoiceAction(updatedProject));
     dispatch(updateInvoiceObjectStateAction(updatedProject));
-  }
+  };
   const handleResumeNameChange = (
     newResumeName: string,
     project: ProjectType
@@ -422,8 +424,8 @@ function InvoiceClientPage() {
       ...project,
       resumeName: newResumeName,
     };
-    dispatch(updateProjectForInvoiceAction(updatedProject)); 
-    dispatch(updateInvoiceObjectStateAction(updatedProject)); 
+    dispatch(updateProjectForInvoiceAction(updatedProject));
+    dispatch(updateInvoiceObjectStateAction(updatedProject));
   };
 
   const handleProjectNameChange = (
@@ -434,8 +436,8 @@ function InvoiceClientPage() {
       ...project,
       projectName: newProjectName,
     };
-    dispatch(updateProjectForInvoiceAction(updatedProject)); 
-    dispatch(updateInvoiceObjectStateAction(updatedProject)); 
+    dispatch(updateProjectForInvoiceAction(updatedProject));
+    dispatch(updateInvoiceObjectStateAction(updatedProject));
   };
 
   return (
@@ -560,24 +562,29 @@ function InvoiceClientPage() {
         </div>
       </div>
       {projectsForInvoice.length > 0 ? (
-        <div className="rounded-[20px]">
+        <div className="rounded-[20px] overflow-x-auto">
           <TableContainer
             component={Paper}
             className={`${Styles.table_scroll}`}
           >
             <Table
-              sx={{
-                borderRadius: "20px !important",
-                width: "100%",
-                "& .MuiTable-root": {
-                  borderRadius: "20px !important",
-                },
-              }}
+              sx={{ minWidth: "1500px" }}
             >
               <TableHead className={Styles.animated}>
                 <TableRow>
-                  <TableCell className="w-[175px]">Description</TableCell>
-                  <TableCell className="w-[135px]">Rate</TableCell>
+                  <TableCell className="w-[300px]">Description</TableCell>
+                  {editableProjects.map((project: ProjectType) => (
+                    <>
+                      <TableCell className="w-[200px]">
+                        Rate/
+                        {project.workingPeriodType === "fixed"
+                          ? "fixed"
+                          : project.workingPeriodType === "hours"
+                          ? "hour"
+                          : "month"}
+                      </TableCell>
+                    </>
+                  ))}
                   {editableProjects.map((project: ProjectType) => (
                     <>
                       {project.workingPeriodType === "months" && (
@@ -590,19 +597,19 @@ function InvoiceClientPage() {
                       {project.workingPeriodType !== "fixed" &&
                         (project.workingPeriodType === "months" ? (
                           <>
-                            <TableCell className="w-[175px]">
+                            <TableCell className="w-[110px]">
                               Working Days
                             </TableCell>
-                            <TableCell className="w-[175px]">
+                            <TableCell className="w-[110px]">
                               Actual Days
                             </TableCell>
                           </>
                         ) : (
-                          <TableCell className="w-[175px]">
+                          <TableCell className="w-[110px]">
                             Working Hours
                           </TableCell>
                         ))}
-                      <TableCell className="w-[175px]">SAC Code</TableCell>
+                      <TableCell className="w-[120px]">SAC Code</TableCell>
                       {project.currencyType !== "rupees" && (
                         <TableCell className="w-[110px]">
                           Conversion Rate
@@ -610,10 +617,8 @@ function InvoiceClientPage() {
                       )}
 
                       <TableCell className="w-[110px]">Subtotal</TableCell>
-
                     </>
-))}
-
+                  ))}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -621,32 +626,22 @@ function InvoiceClientPage() {
                   <TableRow
                     key={project._id}
                     className={`${Styles.project_row}`}
-                  >            
-                    <TableCell className="text-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
-                      <div className="flex items-center">
-                      
-                        <TextField
-                          variant="outlined"
-                          size="small"
-                          value={project.resumeName || ""}
-                          onChange={(e) =>
-                            handleResumeNameChange(e.target.value, project)
-                          }
-                          placeholder="Resume Name"
-                          className="mr-2 w-[45%]" 
-                        />
-                        <span className="text-gray-500"> - </span>
-                        <TextField
-                          variant="outlined"
-                          size="small"
-                          value={project.projectName || ""}
-                          onChange={(e) =>
-                            handleProjectNameChange(e.target.value, project)
-                          }
-                          placeholder="Project Name"
-                          className="ml-2 w-[45%]"  
-                        />
-                      </div>
+                  >
+                    <TableCell className="text-[13px] align-top !h-auto w-[300px]">
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        type="text"
+                        value={project.description || ""}
+                        onChange={(e) => {
+                          handleInputChange(
+                            project._id ?? "",
+                            "description",
+                            e.target.value
+                          );
+                        }}
+                        fullWidth
+                      />
                     </TableCell>
 
                     <TableCell className="text-[13px] w-[150px]">
@@ -658,35 +653,17 @@ function InvoiceClientPage() {
                           handleRateChange(Number(e.target.value), project)
                         }
                         InputProps={{
-                          endAdornment: (
+                          startAdornment: (
                             <Typography
                               variant="body2"
-                              style={{ marginLeft: "8px" }}
+                              style={{ marginLeft: "8px", marginRight: "6px"}}
                             >
                               {project.currencyType === "rupees"
-                                ? project.workingPeriodType === "fixed"
-                                  ? "₹/fixed"
-                                  : `₹/${
-                                      project.workingPeriodType === "hours"
-                                        ? "hours"
-                                        : "months"
-                                    }`
+                                ? "₹"
                                 : project.currencyType === "dollars"
-                                ? project.workingPeriodType === "fixed"
-                                  ? "$/fixed"
-                                  : `$/${
-                                      project.workingPeriodType === "hours"
-                                        ? "hours"
-                                        : "months"
-                                    }`
+                                ? "$"
                                 : project.currencyType === "pounds"
-                                ? project.workingPeriodType === "fixed"
-                                  ? "£/fixed"
-                                  : `£/${
-                                      project.workingPeriodType === "hours"
-                                        ? "hours"
-                                        : "months"
-                                    }`
+                                ? "£"
                                 : ""}
                             </Typography>
                           ),
@@ -713,7 +690,7 @@ function InvoiceClientPage() {
                     )}
 
                     {project.workingPeriodType !== "fixed" && (
-                      <TableCell className="text-[13px] w-[150px]">
+                      <TableCell className="text-[13px] w-[120px]">
                         <TextField
                           variant="outlined"
                           size="small"
@@ -738,7 +715,7 @@ function InvoiceClientPage() {
                       </TableCell>
                     )}
                     {project.workingPeriodType === "months" && (
-                      <TableCell className="text-[13px] w-[150px]">
+                      <TableCell className="text-[13px] w-[120px]">
                         <TextField
                           variant="outlined"
                           size="small"
@@ -763,7 +740,7 @@ function InvoiceClientPage() {
                       </TableCell>
                     )}
 
-                    <TableCell className="text-[13px] w-[150px]">
+                    <TableCell className="text-[13px] w-[120px]">
                       <TextField
                         variant="outlined"
                         size="small"
@@ -789,7 +766,7 @@ function InvoiceClientPage() {
                     </TableCell>
 
                     {project.currencyType !== "rupees" && (
-                      <TableCell className="text-[13px] w-[150px] ">
+                      <TableCell className="text-[13px] w-[120px] ">
                         <div className="relative">
                           <TextField
                             variant="outlined"
