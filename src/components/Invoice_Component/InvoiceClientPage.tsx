@@ -672,7 +672,15 @@ function InvoiceClientPage() {
                     key={project._id}
                     className={`${Styles.project_row}`}
                   >
-                    <TableCell className="text-[13px] align-top !h-auto w-[200px]">
+                    <TableCell  key={`description-${project._id}`}
+                        className={`${
+                          project.workingPeriodType === "months"
+                            ? "w-[200px]"
+                            : project.workingPeriodType === "hours" ||
+                              project.workingPeriodType === "fixed"
+                            ? "w-[150px]"
+                            : "w-[150px]"
+                        }`}>
                       <TextField
                         variant="outlined"
                         size="small"
