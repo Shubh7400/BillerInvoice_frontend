@@ -576,11 +576,11 @@ function InvoiceClientPage() {
                         key={`description-${project._id}`}
                         className={`${
                           project.workingPeriodType === "months"
-                            ? "w-[180px]"
+                            ? "w-[200px]"
                             : project.workingPeriodType === "hours" ||
                               project.workingPeriodType === "fixed"
-                            ? "w-[90px]"
-                            : "w-[90px]"
+                            ? "w-[150px]"
+                            : "w-[150px]"
                         }`}
                       >
                         Description
@@ -672,7 +672,7 @@ function InvoiceClientPage() {
                     key={project._id}
                     className={`${Styles.project_row}`}
                   >
-                    <TableCell className="text-[13px] align-top !h-auto w-[180px]">
+                    <TableCell className="text-[13px] align-top !h-auto w-[200px]">
                       <TextField
                         variant="outlined"
                         size="small"
@@ -688,6 +688,7 @@ function InvoiceClientPage() {
                         sx={{
                           "& .MuiOutlinedInput-root": {
                             borderRadius: "30px", 
+                            width:"200px"
                           },
                           "& input": {
                             padding: "10px", 
