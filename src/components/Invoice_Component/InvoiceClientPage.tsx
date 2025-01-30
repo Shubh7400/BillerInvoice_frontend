@@ -567,13 +567,36 @@ function InvoiceClientPage() {
             component={Paper}
             className={`${Styles.table_scroll}`}
           >
-            <Table sx={{ minWidth: "1500px" }}>
+            <Table sx={{ minWidth: "1500px" }} size="small">
               <TableHead className={Styles.animated}>
                 <TableRow>
-                  <TableCell className="w-[300px]">Description</TableCell>
                   {editableProjects.map((project: ProjectType) => (
                     <>
-                      <TableCell className="w-[200px]">
+                      <TableCell
+                        key={`description-${project._id}`}
+                        className={`${
+                          project.workingPeriodType === "months"
+                            ? "w-[180px]"
+                            : project.workingPeriodType === "hours" ||
+                              project.workingPeriodType === "fixed"
+                            ? "w-[90px]"
+                            : "w-[90px]"
+                        }`}
+                      >
+                        Description
+                      </TableCell>
+                    </>
+                  ))}
+                  {editableProjects.map((project: ProjectType) => (
+                    <>
+                      <TableCell
+                        key={`rate-${project._id}`}
+                        className={`${
+                          project.workingPeriodType === "months"
+                            ? "w-[110px]"
+                            : "w-[90px]"
+                        }`}
+                      >
                         Rate/
                         {project.workingPeriodType === "fixed"
                           ? "fixed"
@@ -586,7 +609,13 @@ function InvoiceClientPage() {
                   {editableProjects.map((project: ProjectType) => (
                     <>
                       {project.workingPeriodType === "months" && (
-                        <TableCell className="w-[175px]">Rate/day</TableCell>
+                        <TableCell
+                          key={`rate-day-${project._id}`}
+                          className="w-[110px]"
+                          sx={{ padding: "4px" }}
+                        >
+                          Rate/day
+                        </TableCell>
                       )}
                     </>
                   ))}
@@ -595,26 +624,44 @@ function InvoiceClientPage() {
                       {project.workingPeriodType !== "fixed" &&
                         (project.workingPeriodType === "months" ? (
                           <>
-                            <TableCell className="w-[110px]">
+                            <TableCell
+                              key={`working-days-${project._id}`}
+                              className="w-[90px]"
+                            >
                               Working Days
                             </TableCell>
-                            <TableCell className="w-[110px]">
+                            <TableCell
+                              key={`actual-days-${project._id}`}
+                              className="w-[90px]"
+                            >
                               Actual Days
                             </TableCell>
                           </>
                         ) : (
-                          <TableCell className="w-[110px]">
+                          <TableCell
+                            key={`working-hours-${project._id}`}
+                            className="w-[90px]"
+                          >
                             Working Hours
                           </TableCell>
                         ))}
-                      <TableCell className="w-[120px]">SAC Code</TableCell>
+                      <TableCell className="w-[110px]">SAC Code</TableCell>
                       {project.currencyType !== "rupees" && (
-                        <TableCell className="w-[110px]">
+                        <TableCell
+                          key={`conversion-rate-${project._id}`}
+                          className="w-[90px]"
+                          sx={{ padding: "4px" }}
+                        >
                           Conversion Rate
                         </TableCell>
                       )}
 
-                      <TableCell className="w-[110px]">Subtotal</TableCell>
+                      <TableCell
+                        key={`subtotal-${project._id}`}
+                        className="w-[90px]"
+                      >
+                        Subtotal
+                      </TableCell>
                     </>
                   ))}
                 </TableRow>
@@ -625,11 +672,10 @@ function InvoiceClientPage() {
                     key={project._id}
                     className={`${Styles.project_row}`}
                   >
-                    <TableCell className="text-[13px] align-top !h-auto w-[300px]">
+                    <TableCell className="text-[13px] align-top !h-auto w-[180px]">
                       <TextField
                         variant="outlined"
                         size="small"
-                        type="text"
                         value={project.description ?? ""}
                         onChange={(e) => {
                           handleInputChange(
@@ -639,14 +685,30 @@ function InvoiceClientPage() {
                           );
                         }}
                         fullWidth
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: "30px", 
+                          },
+                          "& input": {
+                            padding: "10px", 
+                          },
+                        }}
                       />
                     </TableCell>
 
-                    <TableCell className="text-[13px] w-[150px]">
+                    <TableCell
+                      key={`rate-${project._id}`}
+                      className={`${
+                        project.workingPeriodType === "months"
+                          ? "w-[110px]"
+                          : "w-[90px]"
+                      }`}
+                    >
                       <TextField
                         variant="outlined"
                         size="small"
                         value={project.rate || ""}
+                        sx={{ width: "130px" }}
                         onChange={(e) =>
                           handleRateChange(Number(e.target.value), project)
                         }
@@ -670,7 +732,7 @@ function InvoiceClientPage() {
                     </TableCell>
 
                     {project.workingPeriodType === "months" && (
-                      <TableCell className="text-[13px] w-[150px]">
+                      <TableCell className="text-[13px] w-[110px]">
                         <Typography variant="body2">
                           {project.ratePerDay
                             ? ` ${
@@ -688,12 +750,19 @@ function InvoiceClientPage() {
                     )}
 
                     {project.workingPeriodType !== "fixed" && (
-                      <TableCell className="text-[13px] w-[120px]">
+                      <TableCell
+                        className={`text-[13px] ${
+                          project.workingPeriodType === "months"
+                            ? "w-[90px]"
+                            : "w-[80px]"
+                        }`}
+                      >
                         <TextField
                           variant="outlined"
                           size="small"
                           type="text"
                           value={project.workingPeriod}
+                          sx={{ width: "80px" }}
                           onInput={(e) => {
                             const target = e.target as HTMLInputElement;
                             const value = target.value;
@@ -713,12 +782,13 @@ function InvoiceClientPage() {
                       </TableCell>
                     )}
                     {project.workingPeriodType === "months" && (
-                      <TableCell className="text-[13px] w-[120px]">
+                      <TableCell className="text-[13px] w-[90px]">
                         <TextField
                           variant="outlined"
                           size="small"
                           type="text"
                           value={project.actualDays}
+                          sx={{ width: "80px" }}
                           onInput={(e) => {
                             const target = e.target as HTMLInputElement;
                             const value = target.value;
@@ -738,12 +808,16 @@ function InvoiceClientPage() {
                       </TableCell>
                     )}
 
-                    <TableCell className="text-[13px] w-[120px]">
+                    <TableCell
+                      className="text-[13px] w-[90px]"
+                      sx={{ padding: "4px" }}
+                    >
                       <TextField
                         variant="outlined"
                         size="small"
                         type="text"
                         value={project.sacNo || ""}
+                        sx={{ width: "80px" }}
                         onInput={(e) => {
                           const target = e.target as HTMLInputElement;
                           const value = target.value;
@@ -764,12 +838,13 @@ function InvoiceClientPage() {
                     </TableCell>
 
                     {project.currencyType !== "rupees" && (
-                      <TableCell className="text-[13px] w-[120px] ">
+                      <TableCell className="text-[13px] w-[90px]">
                         <div className="relative">
                           <TextField
                             variant="outlined"
                             size="small"
                             value={project.conversionRate.toFixed(2)}
+                            sx={{ width: "80px" }}
                             onChange={(e) =>
                               fetchExchangeRate(project._id ?? "")
                             }
@@ -804,7 +879,7 @@ function InvoiceClientPage() {
                       </TableCell>
                     )}
 
-                    <TableCell className="text-[13px]w-[110px]">
+                    <TableCell className="text-[13px]w-[100px]">
                       &#x20B9;{project.amount ? project.amount.toFixed(2) : 0}
                     </TableCell>
                   </TableRow>
