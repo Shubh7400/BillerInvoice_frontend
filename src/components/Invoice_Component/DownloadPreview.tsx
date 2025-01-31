@@ -333,7 +333,7 @@ const DownloadPreview = ({
                       ))
                   }
                   <td className="border px-2 pb-4 text-center">
-                    {invoice.sacNo}
+                  {invoice.sacNo ? invoice.sacNo : ""}
                   </td>
                   {
                     invoice.currencyType !== "rupees" &&
@@ -390,7 +390,7 @@ const DownloadPreview = ({
                           ))
                       }
                       <td className="border px-2 pb-4 text-center">
-                        {project.sacNo}
+                      {project.sacNo ? project.sacNo : ""}
                       </td>
                       {
                         project.currencyType !== "rupees" &&

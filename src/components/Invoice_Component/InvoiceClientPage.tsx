@@ -163,6 +163,8 @@ function InvoiceClientPage() {
               sacNo: updatedProject.sacNo,
               description: updatedProject.description,
               actualDays: updatedProject.actualDays,
+              billDate: invoiceDate ? invoiceDate.toISOString() : "", 
+              dueDate: dueDate ? dueDate.toISOString() : "",
             })
           );
 
@@ -224,6 +226,11 @@ function InvoiceClientPage() {
             );
             formData.append("sacNo", updatedProject.sacNo?.toString() || "0");
             formData.append("description", updatedProject.description || "");
+            formData.append(
+              "billDate",
+              invoiceDate ? invoiceDate.toISOString() : ""
+            );
+            formData.append("dueDate", dueDate ? dueDate.toISOString() : "");
 
             const mutationData = {
               projectId: updatedProject._id,
@@ -288,6 +295,7 @@ function InvoiceClientPage() {
         dispatch(
           updateInvoiceObjectStateAction({
             projectName: updatedProject.projectName,
+            resumeName: updatedProject.resumeName,
             workingPeriod: updatedProject.workingPeriod,
             conversionRate: updatedProject.conversionRate,
             rate: updatedProject.rate,
@@ -297,6 +305,9 @@ function InvoiceClientPage() {
             clientId: updatedProject.clientId,
             adminId: updatedProject.adminId,
             actualDays: updatedProject.actualDays,
+            description: updatedProject.description,
+            billDate: invoiceDate ? invoiceDate.toISOString() : "", // Include updated invoice date
+            dueDate: dueDate ? dueDate.toISOString() : "",
           })
         );
       }
@@ -352,19 +363,36 @@ function InvoiceClientPage() {
     navigate(-1);
   };
 
-  
+
   const handleInvoiceDateChange = (newDate: dayjs.Dayjs | null) => {
-    if (!newDate || !newDate.isValid()) {
-      enqueueSnackbar("Invalid date. Please select again.", {
+    
+    if (
+      !newDate ||
+      !newDate.isValid() ||
+      newDate.year().toString().length < 4 || 
+      newDate.month() === undefined || 
+      newDate.date() === undefined 
+    ) {
+      return; 
+    }
+    if (dueDate && newDate.isAfter(dueDate)) {
+      enqueueSnackbar("Invoice date cannot be after the due date.", {
         variant: "error",
       });
-      dispatch(updateInvoiceObjectStateAction({ billDate: "" }));
       return;
     }
 
     setInvoiceDate(newDate);
 
-    // Convert to ISO string with error handling
+    
+    if (!dueDate || !dueDate.isValid()) {
+      const newDueDate = newDate.add(1, "day");
+      setDueDate(newDueDate);
+      dispatch(
+        updateInvoiceObjectStateAction({ dueDate: newDueDate.toISOString() })
+      );
+    }
+
     try {
       const iso8601InvoiceDate = newDate.toISOString();
       dispatch(
@@ -384,6 +412,15 @@ function InvoiceClientPage() {
       setAllowDownload(false);
       return;
     }
+
+    if (
+      newDate.year().toString().length < 4 ||
+      newDate.month() === undefined ||
+      newDate.date() === undefined
+    ) {
+      return;
+    }
+
     if (newDate.isBefore(invoiceDate)) {
       enqueueSnackbar("Due date cannot be before invoice date.", {
         variant: "error",
@@ -392,8 +429,10 @@ function InvoiceClientPage() {
       dispatch(updateInvoiceObjectStateAction({ dueDate: "" }));
       return;
     }
+
     setDueDate(newDate);
     setAllowDownload(true);
+
     try {
       const iso8601DueDate = newDate.toISOString();
       dispatch(updateInvoiceObjectStateAction({ dueDate: iso8601DueDate }));
@@ -412,17 +451,6 @@ function InvoiceClientPage() {
     const updatedProject = {
       ...project,
       rate: newRate,
-    };
-    dispatch(updateProjectForInvoiceAction(updatedProject));
-    dispatch(updateInvoiceObjectStateAction(updatedProject));
-  };
-  const handleResumeNameChange = (
-    newResumeName: string,
-    project: ProjectType
-  ) => {
-    const updatedProject = {
-      ...project,
-      resumeName: newResumeName,
     };
     dispatch(updateProjectForInvoiceAction(updatedProject));
     dispatch(updateInvoiceObjectStateAction(updatedProject));
@@ -648,8 +676,8 @@ function InvoiceClientPage() {
                       <TableCell className="w-[110px]">SAC Code</TableCell>
                       {project.currencyType !== "rupees" && (
                         <TableCell
-                          key={`conversion-rate-${project._id}`}
-                          className="w-[90px]"
+                          key={`conversionRate-${project._id}`}
+                          className="w-[120px]"
                           sx={{ padding: "4px" }}
                         >
                           Conversion Rate
@@ -672,15 +700,17 @@ function InvoiceClientPage() {
                     key={project._id}
                     className={`${Styles.project_row}`}
                   >
-                    <TableCell  key={`description-${project._id}`}
-                        className={`${
-                          project.workingPeriodType === "months"
-                            ? "w-[200px]"
-                            : project.workingPeriodType === "hours" ||
-                              project.workingPeriodType === "fixed"
-                            ? "w-[150px]"
-                            : "w-[150px]"
-                        }`}>
+                    <TableCell
+                      key={`description-${project._id}`}
+                      className={`${
+                        project.workingPeriodType === "months"
+                          ? "w-[200px]"
+                          : project.workingPeriodType === "hours" ||
+                            project.workingPeriodType === "fixed"
+                          ? "w-[150px]"
+                          : "w-[150px]"
+                      }`}
+                    >
                       <TextField
                         variant="outlined"
                         size="small"
@@ -695,11 +725,11 @@ function InvoiceClientPage() {
                         fullWidth
                         sx={{
                           "& .MuiOutlinedInput-root": {
-                            borderRadius: "30px", 
-                            width:"200px"
+                            borderRadius: "30px",
+                            width: "200px",
                           },
                           "& input": {
-                            padding: "10px", 
+                            padding: "10px",
                           },
                         }}
                       />
@@ -847,13 +877,13 @@ function InvoiceClientPage() {
                     </TableCell>
 
                     {project.currencyType !== "rupees" && (
-                      <TableCell className="text-[13px] w-[90px]">
+                      <TableCell className="text-[13px] w-[120px]">
                         <div className="relative">
                           <TextField
                             variant="outlined"
                             size="small"
                             value={project.conversionRate.toFixed(2)}
-                            sx={{ width: "80px" }}
+                            sx={{ width: "120px" }}
                             onChange={(e) =>
                               fetchExchangeRate(project._id ?? "")
                             }
@@ -867,22 +897,27 @@ function InvoiceClientPage() {
                                     : ""}
                                 </span>
                               ),
+                              endAdornment: (
+                                <Button
+                                  onClick={() =>
+                                    fetchExchangeRate(project._id!)
+                                  }
+                                  disabled={loadingRate}
+                                  sx={{
+                                    minWidth: "24px",
+                                    padding: "0",
+                                    marginLeft: "-8px",
+                                    "&:hover": {
+                                      backgroundColor: "transparent",
+                                    },
+                                  }}
+                                >
+                                  <MdOutlineReplay fontSize="small" />
+                                </Button>
+                              ),
                             }}
                           />
-                          <Button
-                            onClick={() => fetchExchangeRate(project._id!)}
-                            disabled={loadingRate}
-                            sx={{
-                              position: "absolute",
-                              right: "-12px",
-                              top: "-1px",
-                              "&:hover": {
-                                backgroundColor: "transparent",
-                              },
-                            }}
-                          >
-                            <MdOutlineReplay />
-                          </Button>
+
                           {rateError && <p>{rateError}</p>}
                         </div>
                       </TableCell>
