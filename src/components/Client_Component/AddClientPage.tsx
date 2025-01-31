@@ -115,6 +115,7 @@ export default function AddClientPage({
   const [contactNoError, setContactNoError] = useState<string>("");
   const [clientNameError, setClientNameError] = useState<string>("");
   const [streetError, setStreetError] = useState<string | null>(null);
+  
   React.useEffect(() => {
     if (editClientState.loading === "succeeded" && controlEditLoading) {
       setControlEditLoading(false);
@@ -199,23 +200,23 @@ export default function AddClientPage({
         setClientNameError(
           "Invalid Client Name. Only letters and spaces allowed, 2-50 characters."
         );
-      }
-      else if (
+      } else if (
         clientsArr.some(
-          (client) => client.clientName.trim().toLowerCase() === value.trim().toLowerCase()
+          (client) =>
+            client.clientName.trim().toLowerCase() === value.trim().toLowerCase() &&
+            client._id !== clientToEdit?._id 
         )
       ) {
-
         setClientNameError("Client name already exists.");
-      }
-      else {
+      } else {
         setClientNameError("");
-      }
+      }   
       setClientData((prevData) => ({
         ...prevData,
         clientName: value,
       }));
-    } else if (name === "street") {
+    }
+     else if (name === "street") {
       const streetRegex = /^[a-zA-Z0-9\s.,'-]{3,50}$/;
       if (!streetRegex.test(value)) {
         setStreetError("Street name must be 3-50 characters and only contain letters, numbers, spaces, ., ',', '-', or '.");
