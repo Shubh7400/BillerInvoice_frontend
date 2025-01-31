@@ -195,7 +195,7 @@ export default function AddClientPage({
     const { name, value } = e.target;
 
     if (name === "clientName") {
-      const clientNameRegex = /^[a-zA-Z\s]{2,50}$/;
+      const clientNameRegex =  /^(?!.*[@!#$%^*()_+={}\[\]:;"'<>,.?/\\|`~])(?!.*\s{2,})[a-zA-Z0-9&.\-' ]{2,100}$/;
       if (!clientNameRegex.test(value)) {
         setClientNameError(
           "Invalid Client Name. Only letters and spaces allowed, 2-50 characters."
@@ -436,11 +436,6 @@ export default function AddClientPage({
         type="text"
         value={clientData.clientName}
         onChange={handleChange}
-        onKeyDown={(e) => {
-          if (e.key >= '0' && e.key <= '9') {
-            e.preventDefault();
-          }
-        }}
         error={!!clientNameError && clientData.clientName !== ""}
         helperText={
           clientNameError && clientData.clientName !== "" ? clientNameError : ""
