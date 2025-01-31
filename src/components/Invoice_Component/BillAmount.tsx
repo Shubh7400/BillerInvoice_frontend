@@ -72,31 +72,29 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
     }
 
     if (
-      projectsForInvoice?.[0]?.clientDetails?.address?.country &&
+      selectedClientState?.data.address?.country &&
       adminState?.data?.address?.country &&
-      projectsForInvoice?.[0]?.clientDetails?.address.country.trim().toLowerCase() ===
+      selectedClientState.data.address.country.trim().toLowerCase() === 
       adminState.data.address.country.trim().toLowerCase()
     ) {
       setSameCountry(true);
-    }
-    else {
+    } else {
       setSameCountry(false);
     }
 
     if (
-      projectsForInvoice?.[0]?.clientDetails?.address?.state &&
+      selectedClientState?.data.address?.state &&
       adminState?.data?.address?.state &&
-      projectsForInvoice?.[0]?.clientDetails?.address.state.trim().toLowerCase() ===
+      selectedClientState.data.address.state.trim().toLowerCase() === 
       adminState.data.address.state.trim().toLowerCase()
     ) {
       setClientSameState(true);
-    }
-    else {
+    } else {
       setClientSameState(false);
     }
 
+  }, [adminState, selectedClientState]);
 
-  }, [adminState, projectsForInvoice, clientSameState]);
 
   React.useEffect(() => {
     toggleDrawer(true);
