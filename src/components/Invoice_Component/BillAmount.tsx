@@ -26,7 +26,7 @@ let windowWidth: number | undefined = window.innerWidth;
 interface billAmountProps {
   workingFixed?: boolean;
 }
-export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
+export default function InvoiceDrawer({ workingFixed}: billAmountProps) {
   const materialTheme = useTheme();
   const { visibility } = React.useContext(ThemeContext);
   const adminState = useSelector((state: RootState) => state.adminState);
@@ -40,8 +40,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
   const [invoiceNo, setInvoiceNo] = React.useState(0);
   const [clientSameState, setClientSameState] = React.useState(false);
   const [sameCountry, setSameCountry] = React.useState(false);
-  const [invoiceDate, setInvoiceDate] = React.useState(dayjs());
-  const [dueDate, setDueDate] = React.useState(dayjs());
+  // const [invoiceDate, setInvoiceDate] = React.useState(dayjs());
+  // const [dueDate, setDueDate] = React.useState(dayjs());
   const [previewAllowed, setPreviewAllowed] = React.useState(true);
   const [showPreview, setShowPreview] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -65,8 +65,8 @@ export default function InvoiceDrawer({ workingFixed }: billAmountProps) {
       dispatch(
         updateInvoiceObjectStateAction({
           invoiceNo: +adminState.data.invoiceNo + 1,
-          billDate: invoiceDate.toISOString(),
-          dueDate: dueDate.toISOString(),
+          // billDate: invoiceDate.toISOString(),
+          // dueDate: dueDate.toISOString(),
         })
       );
     }
