@@ -72,8 +72,10 @@ export default function AddClientPage({
     gistin: "",
     address: {
       street: "",
-      city: selectedCountry.name,
-      state: selectedState.name,
+      city: selectedCountry.name || "",
+      state: selectedState.name || "",
+    //   city: "", 
+    // state: "",
       country: selectedCity.name,
       postalCode: "",
     },
@@ -156,29 +158,37 @@ export default function AddClientPage({
     }
   }, [adminId]);
 
-  React.useEffect(() => {
-    if (addClientLoading === "succeeded") {
-      dispatch(makeStateLoadingNeutralInAddClient(true));
-      if (adminId) {
-        dispatch(getAllClientsByAdminIdAction(adminId));
-      }
-      enqueueSnackbar({
-        message: "Client added successfully",
-        variant: "success",
-      });
-      setFormError("");
-    } else if (addClientLoading === "failed") {
-      setFormError(`${addClientError}`);
-      enqueueSnackbar({
-        message: "Error in adding client. Try again!",
-        variant: "error",
-      });
-      dispatch(makeStateLoadingNeutralInAddClient(true));
+  const [hasClientBeenAdded, setHasClientBeenAdded] = useState(false);
+
+React.useEffect(() => {
+  if (addClientLoading === "succeeded" && !hasClientBeenAdded) {
+    setHasClientBeenAdded(true); // Prevent multiple triggers
+
+    dispatch(makeStateLoadingNeutralInAddClient(true));
+    
+    if (adminId) {
+      dispatch(getAllClientsByAdminIdAction(adminId));
     }
-  }, [addClientLoading, addClientError]);
+
+    enqueueSnackbar({
+      message: "Client added successfully",
+      variant: "success",
+    });
+
+    setFormError("");
+  } else if (addClientLoading === "failed") {
+    setFormError(`${addClientError}`);
+    enqueueSnackbar({
+      message: "Error in adding client. Try again!",
+      variant: "error",
+    });
+    dispatch(makeStateLoadingNeutralInAddClient(true));
+  }
+}, [addClientLoading, addClientError, adminId, hasClientBeenAdded, dispatch]);
 
   React.useEffect(() => {
     setClientData((prevData) => ({
+
       ...prevData,
       address: {
         ...prevData.address,
@@ -187,12 +197,14 @@ export default function AddClientPage({
         city: selectedCity.name || "",
       },
     }));
+    
   }, [selectedCountry, selectedState, selectedCity]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+    
 
     if (name === "clientName") {
       const clientNameRegex =  /^(?!.*[@!#$%^*()_+={}\[\]:;"'<>,.?/\\|`~])(?!.*\s{2,})[a-zA-Z0-9&.\-' ]{2,100}$/;
@@ -244,7 +256,27 @@ export default function AddClientPage({
           postalCode: value,
         },
       }));
-    } else if (name === "pancardNo") {
+      
+    }else if (name === "state") {
+      // State is optional (No validation)
+      setClientData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData.address,
+          state: value,
+        },
+      }));
+    } else if (name === "city") {
+      // City is optional (No validation)
+      setClientData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData.address,
+          city: value,
+        },
+      }));
+    }
+     else if (name === "pancardNo") {
       const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
       if (value === "" || panRegex.test(value)) {
         setPanNumberError(null);
@@ -278,6 +310,7 @@ export default function AddClientPage({
         ...prevData,
         contactNo: value,
       }));
+      
     } else {
       setClientData({
         ...clientData,
@@ -288,7 +321,6 @@ export default function AddClientPage({
     setFormError("");
     setIncompleteError("");
   };
-
   
   const handleAddEmail = () => {
     if (inputEmail && emailRegex.test(inputEmail)) {
@@ -345,7 +377,7 @@ export default function AddClientPage({
 
   function areAllFieldsFilled(obj: any) {
     for (const key in obj) {
-      if (key === "pancardNo") {
+      if (key === "pancardNo" || key === "state" || key === "city" || key ==="postalCode" || key==="street") {
         continue;
       }
       if (typeof obj[key] === "object" && obj[key] !== null) {
@@ -447,11 +479,12 @@ export default function AddClientPage({
       <div className="flex flex-col gap-3 mt-3">
         <TextField
           fullWidth
-          label="Enter email and press enter"
+          label="Add email and press enter"
           value={inputEmail}
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
           placeholder="Add email and press Enter"
+          required
           aria-label="Enter email address"
           InputProps={{
             style: {

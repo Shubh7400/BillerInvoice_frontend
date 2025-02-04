@@ -2,7 +2,7 @@ import { Country, State, City } from "country-state-city";
 import Select from "react-select";
 import { useEffect, Dispatch, SetStateAction } from "react";
 import {
-  CityInfoType,
+  CityInfoType,   
   CountryInfoType,
   StateInfoType,
 } from "../../types/types";
@@ -57,6 +57,7 @@ export default function SelectCountryStateCity({
     countryCode: city.countryCode,
     stateCode: city.stateCode,
   }));
+  console.log("Cities for state:", selectedState?.name, citiesArr);
 
   useEffect(() => {
     if (forEditClient) {
@@ -92,7 +93,8 @@ export default function SelectCountryStateCity({
   return (
     <div className="my-2 flex flex-col">
       <label className="text-xs py-1 opacity-60">
-        Country: <b>{countryString}</b>
+        {/* {/* Country: <b>{countryString}</b> */}
+        Country <span className="text-black-500">*</span>: <b>{countryString}</b> 
       </label>
       <Select
         options={countriesArr}
@@ -163,3 +165,4 @@ export default function SelectCountryStateCity({
     </div>
   );
 }
+

@@ -62,10 +62,10 @@ useEffect(() => {
 
 
 
-const fullAddress = `${clientData?.address?.street || "N/A"}, ${
-  clientData?.address?.city || "N/A"
-}, ${clientData?.address?.state || "N/A"}, ${
-  clientData?.address?.country || "N/A"
+const fullAddress = `${clientData?.address?.street || ""}, ${
+  clientData?.address?.city || ""
+} ${clientData?.address?.state || ""} ${
+  clientData?.address?.country || ""
 }`;
 
   return (
