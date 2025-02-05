@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useCallback } from "react";
 import axios from "axios";
 import { ClientType, ProjectType } from "../../types/types";
 import { AppDispatch, RootState } from "../../states/redux/store";
@@ -117,7 +118,7 @@ function InvoiceClientPage() {
         };
 
         UpdateProjectMutationHandler.mutate(mutationData, {
-          onSuccess: () => { },
+          onSuccess: () => {},
           onError: (error) => {
             // Handle error and show notification
             setRateError("Failed to save conversion rate. Try again.");
@@ -143,7 +144,6 @@ function InvoiceClientPage() {
   }, [projectsForInvoice, clientObj._id]);
   const UpdateProjectMutationHandler = useUpdateProject(id, clientObj._id);
   const handleInputChange = (id: string, field: string, value: any) => {
-    
     const newValue =
       value === "" ? null : field === "sacNo" ? Number(value) : value; // Convert sacNo to number
     setEditableProjects((prevProjects) =>
@@ -241,7 +241,7 @@ function InvoiceClientPage() {
               onSuccess: () => {
                 dispatch(updateProjectForInvoiceAction(updatedProject));
               },
-              onError: (error) => { },
+              onError: (error) => {},
             });
           }
           return updatedProject;
@@ -340,7 +340,7 @@ function InvoiceClientPage() {
           onSuccess: () => {
             dispatch(updateProjectForInvoiceAction(updatedProject));
           },
-          onError: (error) => { },
+          onError: (error) => {},
         });
       }
 
@@ -363,30 +363,28 @@ function InvoiceClientPage() {
     navigate(-1);
   };
 
-
   const handleInvoiceDateChange = (newDate: dayjs.Dayjs | null) => {
+    if (!newDate || !newDate.isValid()) return;
 
     if (
-      !newDate ||
-      !newDate.isValid() ||
       newDate.year().toString().length < 4 ||
       newDate.month() === undefined ||
       newDate.date() === undefined
     ) {
       return;
     }
+
+    console.log("Setting invoice date:", newDate.format());
+    setInvoiceDate(newDate);
+    dispatch(
+      updateInvoiceObjectStateAction({ billDate: newDate.toISOString() })
+    );
     if (dueDate && newDate.isAfter(dueDate)) {
-      dispatch(
-        updateInvoiceObjectStateAction({ billDate: newDate })
-      );
       enqueueSnackbar("Invoice date cannot be after the due date.", {
         variant: "error",
       });
       return;
     }
-
-    setInvoiceDate(newDate);
-
 
     if (!dueDate || !dueDate.isValid()) {
       const newDueDate = newDate.add(1, "day");
@@ -394,18 +392,6 @@ function InvoiceClientPage() {
       dispatch(
         updateInvoiceObjectStateAction({ dueDate: newDueDate.toISOString() })
       );
-    }
-
-    try {
-      const iso8601InvoiceDate = newDate.toISOString();
-      dispatch(
-        updateInvoiceObjectStateAction({ billDate: iso8601InvoiceDate })
-      );
-    } catch (error) {
-      console.error("Error converting invoice date to ISO string:", error);
-      enqueueSnackbar("Failed to process the invoice date. Please try again.", {
-        variant: "error",
-      });
     }
   };
 
@@ -458,7 +444,45 @@ function InvoiceClientPage() {
     dispatch(updateProjectForInvoiceAction(updatedProject));
     dispatch(updateInvoiceObjectStateAction(updatedProject));
   };
+  const [rateInput, setRateInput] = useState<string>(() => {
+    const firstProject = editableProjects[0];
+    return firstProject ? firstProject.rate?.toString() || "" : "";
+  });
 
+  useEffect(() => {
+    if (editableProjects.length > 0) {
+      const firstProject = editableProjects[0]; 
+      const handler = setTimeout(() => {
+        if (rateInput !== "" && rateInput !== firstProject.rate?.toString()) {
+          handleRateChange(Number(rateInput), firstProject);
+        }
+      }, 500); 
+
+      return () => clearTimeout(handler);
+    }
+  }, [rateInput, editableProjects]);
+
+  const [tempDescriptions, setTempDescriptions] = useState<{
+    [key: string]: string;
+  }>({});
+
+  const handleDescriptionChange = useCallback((id: string, value: string) => {
+    if (!id) return; 
+    setTempDescriptions((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      Object.entries(tempDescriptions).forEach(([id, value]) => {
+        handleInputChange(id, "description", value);
+      });
+    }, 1000); 
+
+    return () => clearTimeout(timer);
+  }, [tempDescriptions]);
 
   const handleProjectNameChange = (
     newProjectName: string,
@@ -606,13 +630,11 @@ function InvoiceClientPage() {
                     <>
                       <TableCell
                         key={`description-${project._id}`}
-                        className={`${project.workingPeriodType === "months"
-                          ? "w-[200px]"
-                          : project.workingPeriodType === "hours" ||
-                            project.workingPeriodType === "fixed"
-                            ? "w-[150px]"
+                        className={`${
+                          project.workingPeriodType === "months"
+                            ? "w-[200px]"
                             : "w-[150px]"
-                          }`}
+                        }`}
                       >
                         Description
                       </TableCell>
@@ -622,17 +644,18 @@ function InvoiceClientPage() {
                     <>
                       <TableCell
                         key={`rate-${project._id}`}
-                        className={`${project.workingPeriodType === "months"
-                          ? "w-[110px]"
-                          : "w-[90px]"
-                          }`}
+                        className={`${
+                          project.workingPeriodType === "months"
+                            ? "w-[110px]"
+                            : "w-[90px]"
+                        }`}
                       >
                         Rate/
                         {project.workingPeriodType === "fixed"
                           ? "fixed"
                           : project.workingPeriodType === "hours"
-                            ? "hour"
-                            : "month"}
+                          ? "hour"
+                          : "month"}
                       </TableCell>
                     </>
                   ))}
@@ -704,52 +727,54 @@ function InvoiceClientPage() {
                   >
                     <TableCell
                       key={`description-${project._id}`}
-                      className={`${project.workingPeriodType === "months"
-                        ? "w-[200px]"
-                        : project.workingPeriodType === "hours" ||
-                          project.workingPeriodType === "fixed"
-                          ? "w-[150px]"
+                      className={`${
+                        project.workingPeriodType === "months"
+                          ? "w-[200px]"
                           : "w-[150px]"
-                        }`}
+                      }`}
                     >
                       <TextField
                         variant="outlined"
                         size="small"
-                        value={project.description ?? ""}
-                        onChange={(e) => {
-                          handleInputChange(
-                            project._id ?? "",
-                            "description",
+                        value={
+                          tempDescriptions[String(project._id)] ??
+                          project.description ??
+                          ""
+                        }
+                        onChange={(e) =>
+                          handleDescriptionChange(
+                            String(project._id),
                             e.target.value
-                          );
-                        }}
+                          )
+                        }
                         fullWidth
                         sx={{
                           "& .MuiOutlinedInput-root": {
                             borderRadius: "30px",
                             width: "200px",
                           },
-                          "& input": {
-                            padding: "10px",
-                          },
+                          "& input": { padding: "10px" },
                         }}
                       />
                     </TableCell>
-                    
                     <TableCell
                       key={`rate-${project._id}`}
-                      className={`${project.workingPeriodType === "months" ? "w-[110px]" : "w-[90px]"
-                        }`}
+                      className={`${
+                        project.workingPeriodType === "months"
+                          ? "w-[110px]"
+                          : "w-[90px]"
+                      }`}
                     >
+                      
                       <TextField
                         variant="outlined"
                         size="small"
-                        value={project.rate || ""}
+                        value={rateInput}
                         sx={{ width: "130px" }}
                         onChange={(e) => {
                           const inputValue = e.target.value;
                           if (/^\d{0,12}$/.test(inputValue)) {
-                            handleRateChange(Number(inputValue), project);
+                            setRateInput(inputValue); 
                           }
                         }}
                         InputProps={{
@@ -758,45 +783,47 @@ function InvoiceClientPage() {
                               variant="body2"
                               style={{ marginLeft: "8px", marginRight: "6px" }}
                             >
-                              {project.currencyType === "rupees"
+                              {editableProjects.length > 0 &&
+                              editableProjects[0].currencyType === "rupees"
                                 ? "₹"
-                                : project.currencyType === "dollars"
-                                  ? "$"
-                                  : project.currencyType === "pounds"
-                                    ? "£"
-                                    : ""}
+                                : editableProjects.length > 0 &&
+                                  editableProjects[0].currencyType === "dollars"
+                                ? "$"
+                                : editableProjects.length > 0 &&
+                                  editableProjects[0].currencyType === "pounds"
+                                ? "£"
+                                : ""}
                             </Typography>
                           ),
                         }}
                       />
+                      ;
                     </TableCell>
-
-
                     {project.workingPeriodType === "months" && (
                       <TableCell className="text-[13px] w-[110px]">
                         <Typography variant="body2">
                           {project.ratePerDay
-                            ? ` ${project.currencyType === "rupees"
-                              ? "₹"
-                              : project.currencyType === "dollars"
-                                ? "$"
-                                : project.currencyType === "pounds"
+                            ? ` ${
+                                project.currencyType === "rupees"
+                                  ? "₹"
+                                  : project.currencyType === "dollars"
+                                  ? "$"
+                                  : project.currencyType === "pounds"
                                   ? "£"
                                   : ""
-                            } ${project.ratePerDay.toFixed(2)}`
+                              } ${project.ratePerDay.toFixed(2)}`
                             : "NA"}
                         </Typography>
                       </TableCell>
                     )}
-
                     {project.workingPeriodType !== "fixed" && (
                       <TableCell
-                        className={`text-[13px] ${project.workingPeriodType === "months"
-                          ? "w-[90px]"
-                          : "w-[80px]"
-                          }`}
+                        className={`text-[13px] ${
+                          project.workingPeriodType === "months"
+                            ? "w-[90px]"
+                            : "w-[80px]"
+                        }`}
                       >
-                       
                         <TextField
                           variant="outlined"
                           size="small"
@@ -809,22 +836,21 @@ function InvoiceClientPage() {
 
                             // Allow only numbers and limit to 4 digits
                             if (!/^\d{0,4}$/.test(value)) {
-                              target.value = value.slice(0, 4).replace(/\D/g, ''); // Trim to 4 digits and remove non-numeric characters
+                              target.value = value
+                                .slice(0, 4)
+                                .replace(/\D/g, ""); 
                             }
                           }}
                           onChange={(e) => {
                             const target = e.target as HTMLInputElement;
-                            let value = target.value.replace(/\D/g, ''); // Remove non-numeric characters
-
-                            // Update the state only if the value is a valid number
-                            if (value !== '') {
+                            let value = target.value.replace(/\D/g, ""); 
+                            if (value !== "") {
                               handleInputChange(
                                 project._id ?? "",
                                 "workingPeriod",
                                 Number(value)
                               );
                             } else {
-                              // If the value is empty, you can set it to 0 or any other default value
                               handleInputChange(
                                 project._id ?? "",
                                 "workingPeriod",
@@ -837,7 +863,6 @@ function InvoiceClientPage() {
                     )}
                     {project.workingPeriodType === "months" && (
                       <TableCell className="text-[13px] w-[90px]">
-                       
                         <TextField
                           variant="outlined"
                           size="small"
@@ -847,17 +872,15 @@ function InvoiceClientPage() {
                           onInput={(e) => {
                             const target = e.target as HTMLInputElement;
                             const value = target.value;
-
-                            // Allow only digits and limit to 4 characters
                             if (!/^\d{0,4}$/.test(value)) {
-                              target.value = value.slice(0, 4).replace(/\D/g, '');
+                              target.value = value
+                                .slice(0, 4)
+                                .replace(/\D/g, "");
                             }
                           }}
                           onChange={(e) => {
                             const target = e.target as HTMLInputElement;
                             const value = target.value;
-
-                            // Ensure the value is a 4-digit number
                             if (/^\d{0,4}$/.test(value)) {
                               handleInputChange(
                                 project._id ?? "",
@@ -869,36 +892,38 @@ function InvoiceClientPage() {
                         />
                       </TableCell>
                     )}
-
                     <TableCell
                       className="text-[13px] w-[90px]"
                       sx={{ padding: "4px" }}
                     >
-                     
                       <TextField
                         variant="outlined"
                         size="small"
                         type="text"
                         value={project.sacNo || ""}
-                        sx={{ width: "100px" }} // Adjust width for better visibility
-                        error={!!project.sacNo && !/^99\d{2}(\d{2})?$/.test(project.sacNo.toString())}
+                        sx={{ width: "100px" }} 
+                        error={
+                          !!project.sacNo &&
+                          !/^99\d{2}(\d{2})?$/.test(project.sacNo.toString())
+                        }
                         helperText={
-                          !!project.sacNo && !/^99\d{2}(\d{2})?$/.test(project.sacNo.toString())
+                          !!project.sacNo &&
+                          !/^99\d{2}(\d{2})?$/.test(project.sacNo.toString())
                             ? "Invalid SAC No (must start with 99 and be 4 or 6 digits)"
                             : ""
                         }
-                        inputProps={{ maxLength: 6 }} // Limits input to 6 characters
+                        inputProps={{ maxLength: 6 }} 
                         onInput={(e) => {
                           const target = e.target as HTMLInputElement;
                           let value = target.value;
 
                           // Allow only numbers & limit to 6 digits
                           if (!/^\d*$/.test(value)) {
-                            value = value.replace(/\D/g, ""); // Remove non-numeric characters
+                            value = value.replace(/\D/g, ""); 
                           }
 
                           if (value.length > 6) {
-                            value = value.slice(0, 6); // Trim to 6 digits
+                            value = value.slice(0, 6); 
                           }
 
                           target.value = value;
@@ -908,14 +933,11 @@ function InvoiceClientPage() {
                           handleInputChange(
                             project._id ?? "",
                             "sacNo",
-                            target.value ? Number(target.value) : null // Convert to number
+                            target.value ? Number(target.value) : null 
                           );
                         }}
                       />
-
-
                     </TableCell>
-
                     {project.currencyType !== "rupees" && (
                       <TableCell className="text-[13px] w-[120px]">
                         <div className="relative">
@@ -933,8 +955,8 @@ function InvoiceClientPage() {
                                   {project.currencyType === "dollars"
                                     ? "$"
                                     : project.currencyType === "pounds"
-                                      ? "£"
-                                      : ""}
+                                    ? "£"
+                                    : ""}
                                 </span>
                               ),
                               endAdornment: (
@@ -962,7 +984,6 @@ function InvoiceClientPage() {
                         </div>
                       </TableCell>
                     )}
-
                     <TableCell className="text-[13px]w-[100px]">
                       &#x20B9;{project.amount ? project.amount.toFixed(2) : 0}
                     </TableCell>
