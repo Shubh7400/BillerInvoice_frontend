@@ -451,12 +451,12 @@ function InvoiceClientPage() {
 
   useEffect(() => {
     if (editableProjects.length > 0) {
-      const firstProject = editableProjects[0]; 
+      const firstProject = editableProjects[0];
       const handler = setTimeout(() => {
         if (rateInput !== "" && rateInput !== firstProject.rate?.toString()) {
           handleRateChange(Number(rateInput), firstProject);
         }
-      }, 500); 
+      }, 500);
 
       return () => clearTimeout(handler);
     }
@@ -467,7 +467,7 @@ function InvoiceClientPage() {
   }>({});
 
   const handleDescriptionChange = useCallback((id: string, value: string) => {
-    if (!id) return; 
+    if (!id) return;
     setTempDescriptions((prev) => ({
       ...prev,
       [id]: value,
@@ -479,7 +479,7 @@ function InvoiceClientPage() {
       Object.entries(tempDescriptions).forEach(([id, value]) => {
         handleInputChange(id, "description", value);
       });
-    }, 1000); 
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [tempDescriptions]);
@@ -733,7 +733,7 @@ function InvoiceClientPage() {
                           : "w-[150px]"
                       }`}
                     >
-                      <TextField
+                      {/* <TextField
                         variant="outlined"
                         size="small"
                         value={
@@ -755,6 +755,42 @@ function InvoiceClientPage() {
                           },
                           "& input": { padding: "10px" },
                         }}
+                      /> */}
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        value={
+                          tempDescriptions[String(project._id)] ??
+                          project.description ??
+                          ""
+                        }
+                        onChange={(e) => {
+                          const inputValue = e.target.value;
+                          if (inputValue.length <= 100) {
+                            handleDescriptionChange(
+                              String(project._id),
+                              inputValue
+                            );
+                          }
+                        }}
+                        fullWidth
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: "30px",
+                            width: "200px",
+                          },
+                          "& input": { padding: "10px" },
+                        }}
+                        inputProps={{ maxLength: 100 }} // Prevents typing beyond 100 characters
+                        helperText={
+                          (
+                            tempDescriptions[String(project._id)] ??
+                            project.description ??
+                            ""
+                          ).length >= 100
+                            ? "Character limit reached (100)"
+                            : ""
+                        }
                       />
                     </TableCell>
                     <TableCell
@@ -765,7 +801,6 @@ function InvoiceClientPage() {
                           : "w-[90px]"
                       }`}
                     >
-                      
                       <TextField
                         variant="outlined"
                         size="small"
@@ -774,7 +809,7 @@ function InvoiceClientPage() {
                         onChange={(e) => {
                           const inputValue = e.target.value;
                           if (/^\d{0,12}$/.test(inputValue)) {
-                            setRateInput(inputValue); 
+                            setRateInput(inputValue);
                           }
                         }}
                         InputProps={{
@@ -838,12 +873,12 @@ function InvoiceClientPage() {
                             if (!/^\d{0,4}$/.test(value)) {
                               target.value = value
                                 .slice(0, 4)
-                                .replace(/\D/g, ""); 
+                                .replace(/\D/g, "");
                             }
                           }}
                           onChange={(e) => {
                             const target = e.target as HTMLInputElement;
-                            let value = target.value.replace(/\D/g, ""); 
+                            let value = target.value.replace(/\D/g, "");
                             if (value !== "") {
                               handleInputChange(
                                 project._id ?? "",
@@ -901,7 +936,7 @@ function InvoiceClientPage() {
                         size="small"
                         type="text"
                         value={project.sacNo || ""}
-                        sx={{ width: "100px" }} 
+                        sx={{ width: "100px" }}
                         error={
                           !!project.sacNo &&
                           !/^99\d{2}(\d{2})?$/.test(project.sacNo.toString())
@@ -912,18 +947,18 @@ function InvoiceClientPage() {
                             ? "Invalid SAC No (must start with 99 and be 4 or 6 digits)"
                             : ""
                         }
-                        inputProps={{ maxLength: 6 }} 
+                        inputProps={{ maxLength: 6 }}
                         onInput={(e) => {
                           const target = e.target as HTMLInputElement;
                           let value = target.value;
 
                           // Allow only numbers & limit to 6 digits
                           if (!/^\d*$/.test(value)) {
-                            value = value.replace(/\D/g, ""); 
+                            value = value.replace(/\D/g, "");
                           }
 
                           if (value.length > 6) {
-                            value = value.slice(0, 6); 
+                            value = value.slice(0, 6);
                           }
 
                           target.value = value;
@@ -933,7 +968,7 @@ function InvoiceClientPage() {
                           handleInputChange(
                             project._id ?? "",
                             "sacNo",
-                            target.value ? Number(target.value) : null 
+                            target.value ? Number(target.value) : null
                           );
                         }}
                       />
